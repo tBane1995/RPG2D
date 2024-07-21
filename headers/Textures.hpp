@@ -42,10 +42,14 @@ void loadTextures() {
 
 	loadTexture("GUI/slotTexture1.png", 40, 40);
 	loadTexture("GUI/slotTexture2.png", 40, 40);
+	loadTexture("GUI/slotSelectorTexture1.png", 40, 40);
+	loadTexture("GUI/dialogBoxTexture.png", 300, 75);
 	loadTexture("GUI/wideArrowUp1.png", 80, 20);
 	loadTexture("GUI/wideArrowUp2.png", 80, 20);
 	loadTexture("GUI/wideArrowDown1.png", 80, 20);
 	loadTexture("GUI/wideArrowDown2.png", 80, 20);
+	loadTexture("GUI/hand.png", 8, 8);
+	loadTexture("GUI/talk.png", 8, 8);
 
 	// TILES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -100,8 +104,21 @@ void loadTextures() {
 	loadTexture("items/axe.png", 32, 32);
 	loadTexture("items/stone hammer.png", 32, 32);
 
+	// HELMET
+	loadTexture("items/skin helmet.png", 32, 32);	// TO-DO to delete
+	loadTexture("items/wool helmet.png", 32, 32);	// TO-DO to delete
+
+	// ARMORS
+	loadTexture("items/skin jacket.png", 32, 32);	// TO-DO to delete
+	loadTexture("items/torn shirt.png", 32, 32);	// TO-DO to delete
+	loadTexture("items/wool shirt.png", 32, 32);	// TO-DO to delete
+
+	// PANTS
+	loadTexture("items/skin pants.png", 32, 32);	// TO-DO to delete
+	loadTexture("items/wool pants.png", 32, 32);	// TO-DO to delete
+
 	// HERBS
-	loadTexture("items/herb.png", 30, 50);
+	loadTexture("items/mana plant.png", 30, 50);
 	loadTexture("items/health herb.png", 32, 34);
 	loadTexture("items/health root.png", 31, 46);	
 	loadTexture("items/health plant.png", 30, 44);
@@ -116,7 +133,7 @@ void loadTextures() {
 
 	// OTHERS
 	loadTexture("items/bone.png", 32, 32);
-	loadTexture("items/bone1.png", 40, 40);
+	loadTexture("items/bone.png", 40, 40);
 	loadTexture("items/tooth.png", 32, 32);
 	loadTexture("items/wolf skin.png", 32, 32);
 
@@ -132,6 +149,7 @@ void loadTextures() {
 	characters.push_back("characters/jack");
 	characters.push_back("characters/john");
 	characters.push_back("characters/peter");
+	characters.push_back("characters/pit");
 
 	for (auto& c : characters) {
 		for (int i = 0; i < 4; i++) {
@@ -146,10 +164,10 @@ void loadTextures() {
 			loadTexture(c + "/attackBottom" + to_string(i) + ".png", 32, 58);
 			loadTexture(c + "/attackLeft" + to_string(i) + ".png", 32, 58);
 
-			loadTexture(c + "/walkTop" + to_string(i) + ".png", 32, 58);
-			loadTexture(c + "/walkRight" + to_string(i) + ".png", 32, 58);
-			loadTexture(c + "/walkBottom" + to_string(i) + ".png", 32, 58);
-			loadTexture(c + "/walkLeft" + to_string(i) + ".png", 32, 58);
+			loadTexture(c + "/runTop" + to_string(i) + ".png", 32, 58);
+			loadTexture(c + "/runRight" + to_string(i) + ".png", 32, 58);
+			loadTexture(c + "/runBottom" + to_string(i) + ".png", 32, 58);
+			loadTexture(c + "/runLeft" + to_string(i) + ".png", 32, 58);
 
 		}
 	}
@@ -175,21 +193,25 @@ void loadTextures() {
 			loadTexture("monsters/" + m + "/attackBottom" + to_string(i) + ".png", 63, 87);
 			loadTexture("monsters/" + m + "/attackLeft" + to_string(i) + ".png", 63, 87);
 
-			loadTexture("monsters/" + m + "/walkTop" + to_string(i) + ".png", 63, 87);
-			loadTexture("monsters/" + m + "/walkRight" + to_string(i) + ".png", 63, 87);
-			loadTexture("monsters/" + m + "/walkBottom" + to_string(i) + ".png", 63, 87);
-			loadTexture("monsters/" + m + "/walkLeft" + to_string(i) + ".png", 63, 87);
+			loadTexture("monsters/" + m + "/runTop" + to_string(i) + ".png", 63, 87);
+			loadTexture("monsters/" + m + "/runRight" + to_string(i) + ".png", 63, 87);
+			loadTexture("monsters/" + m + "/runBottom" + to_string(i) + ".png", 63, 87);
+			loadTexture("monsters/" + m + "/runLeft" + to_string(i) + ".png", 63, 87);
 
 		}
 	}
 	
 	// FURNITURES
 	loadTexture("furnitures/table1.png", 32, 32);
+	loadTexture("furnitures/bench1.png", 32, 32);
 	loadTexture("furnitures/chest1.png", 32, 32);
 	loadTexture("furnitures/wardrobe1.png", 32, 50);
+	loadTexture("furnitures/bookshelf1.png", 32, 50);
 	loadTexture("furnitures/furnace1.png", 32, 50);
 	loadTexture("furnitures/bed1.png", 32, 50);
 	loadTexture("furnitures/chair1.png", 34, 38);
+	loadTexture("furnitures/barrel1.png", 34, 38);
+	loadTexture("furnitures/lectern1.png", 34, 38);
 
 	loadTexture("walls/wooden_wall_bottom.png", 16, 16);
 	loadTexture("walls/wooden_wall_top_0.png", 16, 16);
@@ -227,6 +249,65 @@ void loadTextures() {
 	loadTexture("walls/mud_wall_top_8.png", 16, 16);
 	loadTexture("walls/mud_wall_top_9.png", 16, 16);
 	
+	// BODY SETS
+	std::vector < string > bodySets;
+	bodySets.clear();
+	bodySets.push_back("hero");
+	
+	for (auto& set : bodySets) {
+		for (int i = 0; i < 4; i++) {
+
+			loadTexture("sets/body/" + set + "/idleTop" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/idleRight" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/idleBottom" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/idleLeft" + to_string(i) + ".png", 32, 58);
+
+			loadTexture("sets/body/" + set + "/runTop" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/runRight" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/runBottom" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/runLeft" + to_string(i) + ".png", 32, 58);
+
+			loadTexture("sets/body/" + set + "/attackTop" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/attackRight" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/attackBottom" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/body/" + set + "/attackLeft" + to_string(i) + ".png", 32, 58);
+
+		}
+	}
+	
+
+	// ITEMS SETS
+	std::vector < string > itemSets;
+	itemSets.clear();
+	itemSets.push_back("skin jacket");
+	itemSets.push_back("skin pants");
+	itemSets.push_back("skin helmet");
+	itemSets.push_back("torn shirt");
+	itemSets.push_back("wool shirt");
+	itemSets.push_back("wool helmet");
+	itemSets.push_back("wool pants");
+
+	for (auto& set : itemSets) {
+
+		for (int i = 0; i < 4; i++) {
+			
+			loadTexture("sets/items/" + set + "/idleTop" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/idleRight" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/idleBottom" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/idleLeft" + to_string(i) + ".png", 32, 58);
+
+			loadTexture("sets/items/" + set + "/runTop" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/runRight" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/runBottom" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/runLeft" + to_string(i) + ".png", 32, 58);
+
+			loadTexture("sets/items/" + set + "/attackTop" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/attackRight" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/attackBottom" + to_string(i) + ".png", 32, 58);
+			loadTexture("sets/items/" + set + "/attackLeft" + to_string(i) + ".png", 32, 58);
+
+		}
+	}
 }
 
 Texture* getTexture(string name) {
@@ -237,7 +318,7 @@ Texture* getTexture(string name) {
 		}
 	}
 
-	cout << "error - getTexture - texture: \"" << name << "\" not exists\n";
+	std::cout << "error - get Texture - Texture: \"" << name << "\" not exists\n";
 	return nullptr;
 }
 

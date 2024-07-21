@@ -12,21 +12,15 @@ sf::Sprite lifeBarBackgroundSprite;
 sf::Texture lifeBarTexture;         // lifebar
 sf::Sprite lifeBarSprite;
 
-enum class gameStates { start, game, inventory, dialogue };
-gameStates gameState;
-
 bool defeatAllBeasts = false;
 bool collectAllItems = false;
 
-//void loadTextures();
 void refreshLifeBar();
 void drawLifeBar();
 bool playerAttack();
 bool talkWithCharacter();
 bool collectItems();
 void deleteCollectedItems();
-void useItem();
-void drawInventory();
 void playerLoadTestBag();   // TO-DO
 
 void game() {
@@ -37,6 +31,7 @@ void game() {
     window->setIcon(64, 64, ico.getPixelsPtr());
 
     loadDialogues();
+    loadQuests();
 
     //createView();
     cam = new Camera();
@@ -74,10 +69,7 @@ void game() {
         window->display();
     }
 
-
-    gameState = gameStates::dialogue;
-    page = 0;
-    currentDialogue = getDialogue(0);
+    setDialogue(0);
 
     /*
     sf::Music music;
@@ -94,12 +86,10 @@ void game() {
     world->load();
 
     createPlayer();
-    player->setPosition(480, 220);
     cam->setPosition(player->position);
     cam->update();
 
     playerLoadTestBag();    // TO-DO - TEST
-    createInventory();
 
     while (window->isOpen()) {
 
@@ -142,9 +132,9 @@ void game() {
                     }
 
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        inventory = new InventoryPanel(player->bag);
                         gameState = gameStates::inventory;
                     }
-
 
                 }
                 else if (gameState == gameStates::inventory) {
@@ -159,26 +149,110 @@ void game() {
                         gameState = gameStates::game;
                     }
 
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                        if (bagCursor - 1 >= 0)
-                            if ((bagCursor - 1) % inventoryItemsInRow != inventoryItemsInRow - 1)
-                                bagCursor -= 1;
-
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                        if (bagCursor + 1 < player->bag->items.size())
-                            if ((bagCursor + 1) % inventoryItemsInRow != 0)
-                                bagCursor += 1;
-
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                        if (bagCursor - 6 >= 0)
-                            bagCursor -= 6;
-
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                        if (bagCursor + 6 < player->bag->items.size())
-                            bagCursor += 6;
-
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+                        // TO-DO - to precise
                         useItem();
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                        cursor -= 1;
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                        cursor += 1;
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+                        cursor -= itemsInRow;
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+                        cursor += itemsInRow;
+                    }
+                }
+                else if (gameState == gameStates::trade) {
+                    // TRADE
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+                        gameState = gameStates::game;
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+                        gameState = gameStates::game;
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+                        if (activePanel == activeInventoryPanel::Right) {
+                            if (cursor % itemsInRow == 0) {
+                                activePanel = activeInventoryPanel::Left;
+                                cursor = cursor + itemsInRow - 1;
+                            }
+                            else
+                                cursor -= 1;
+                        }
+                        else {  
+                            if((cursor%itemsInRow!=0))
+                                cursor -= 1;
+                        }
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+                        
+                        if (activePanel == activeInventoryPanel::Left) {
+                            if (cursor % itemsInRow == itemsInRow - 1) {
+                                activePanel = activeInventoryPanel::Right;
+                                cursor = cursor - itemsInRow + 1;
+                            }
+                            else
+                                cursor += 1;
+                        }
+                        else {
+                            if(cursor%itemsInRow != itemsInRow - 1)
+                                cursor += 1;
+                        }
+                        
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+                        if(cursor >= itemsInRow)
+                            cursor -= itemsInRow;
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+                        if(cursor < (itemsInCol-1)*itemsInRow)
+                            cursor += itemsInRow;
+                    }
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+
+                        if (activePanel == activeInventoryPanel::Left) {
+                            
+                            if (inventoryLeft->inventory->items.size() > 0) {
+                                if (cursor < inventoryLeft->inventory->items.size()) {
+                                    
+                                    transferItem(inventoryLeft->inventory->items[cursor], inventoryLeft->inventory, inventoryRight->inventory);
+
+                                    if (cursor != 0 && cursor >= inventoryLeft->inventory->items.size())
+                                        cursor = inventoryLeft->inventory->items.size() - 1;
+                                }
+                                
+                            }
+                        }
+
+                        if (activePanel == activeInventoryPanel::Right) {
+                            if (inventoryRight->inventory->items.size() > 0) {
+                                if (cursor < inventoryRight->inventory->items.size()) {
+                                    
+                                    transferItem(inventoryRight->inventory->items[cursor], inventoryRight->inventory, inventoryLeft->inventory);
+
+                                    if (cursor != 0 && cursor >= inventoryRight->inventory->items.size())
+                                        cursor = inventoryRight->inventory->items.size() - 1;
+                                }
+                                
+                            }
+                        }
+                    }
+
                 }
                 else if (gameState == gameStates::dialogue) {
 
@@ -186,7 +260,7 @@ void game() {
                     if (dialogueState == dialogueStates::dialogue) {
                         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
 
-                            if ((page + 1) * 4 < countOfLines)
+                            if ((page + 1) * 5 < countOfLines)
                                 page += 1;
                             else {
                                 if (currentDialogue->options.size() == 0) {
@@ -260,8 +334,8 @@ void game() {
 
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
-                    sf::Vector2i mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
-                    sf::Vector2f worldMousePosition = window->mapPixelToCoords(mousePosition);	// Zamień na współrzędne świata, uwzględniając aktualny widok
+                    mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
+                    worldMousePosition = window->mapPixelToCoords(mousePosition);	// Zamień na współrzędne świata, uwzględniając aktualny widok
                     cout << "cursor at " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
 
                     Point start(player->position.x, player->position.y);
@@ -319,7 +393,9 @@ void game() {
         dt = currentTime.asSeconds() - prevTime.asSeconds();
 
         world->mapVisiblings();
-
+        
+        checkQuests();
+        
         for (auto& go : gameObjects)
             if(visiblings(go))
                 go->update(dt);
@@ -328,7 +404,13 @@ void game() {
 
         cam->setPosition(player->position);
         cam->update();
-        updateInventory();
+        
+        if(gameState == gameStates::inventory)
+            updateInventoryPanel();
+
+        if(gameState == gameStates::trade)
+            updateTradePanel(); 
+        
         refreshLifeBar();
 
 
@@ -351,7 +433,11 @@ void game() {
         }
 
         if (gameState == gameStates::inventory)
-            drawInventory();
+            drawInventoryPanel();
+
+        if (gameState == gameStates::trade) {
+            drawTradePanel();
+        }
 
         if (gameState == gameStates::dialogue) {
 
@@ -449,10 +535,8 @@ bool talkWithCharacter() {
             if (intersectionTwoEllipses(x1, y1, rx1, ry1, x2, y2, rx2, ry2)) {
 
                 // talking 
-                gameState = gameStates::dialogue;
-                dialogueState = dialogueStates::dialogue;
-                currentDialogue = character->dialogue;
-                page = 0;
+                // TO-DO
+                setDialogue(character->dialogue);
                 return true;
             }
         }
@@ -508,6 +592,25 @@ bool collectItems() {
         }
     }
 
+    for (auto& furniture : furnitures) {
+
+        if( furniture->inventory != nullptr ) {
+            x2 = furniture->position.x;
+            y2 = furniture->position.y;
+            rx2 = furniture->collider->width;
+            ry2 = furniture->collider->height;
+
+            if (intersectionRectangleWithElipse(x2, y2, rx2, ry2, x1, y1, rx1, ry1)) {
+                inventoryLeft = new InventoryPanel(furniture->inventory, -300);
+                inventoryRight = new InventoryPanel(player->bag, 300);
+                cursor = 0;
+                activePanel = activeInventoryPanel::Left;
+                gameState = gameStates::trade;
+                return true;
+            }
+        }
+    }
+     
     return false;
 }
 
@@ -560,56 +663,9 @@ void deleteCollectedItems() {
 
 }
 
-void useItem() {
-
-    Item* item = player->bag->items[bagCursor];
-
-    if (item->type == itemType::herb || item->type == itemType::potion || item->type == itemType::food) {
-        player->heal(item->attributes[attribute::HP]);
-        player->bag->counts[bagCursor] -= 1;
-    }
-
-    // UPDATE PLAYER BAG ( delete itemst who have 0 )
-    if (player->bag->counts[bagCursor] < 1)
-    {
-        Inventory* newBag = new Inventory();
-        newBag->items.clear();
-        newBag->counts.clear();
-        for (int i = 0; i < player->bag->items.size(); i++)
-        {
-            if (i != bagCursor) {
-                newBag->items.push_back(player->bag->items[i]);
-                newBag->counts.push_back(player->bag->counts[i]);
-            }
-        }
-
-        player->bag = newBag;
-    }
-}
-
-void drawInventory() {
-
-    window->draw(bgInventory);
-
-    for (auto& spr : slotInventorySprites) {
-        window->draw(spr);
-    }
-
-    for (auto& spr : itemsInventorySprites) {
-        window->draw(spr);
-    }
-
-    for (auto& t : inventoryCounts) {
-        window->draw(t);
-    }
-
-    window->draw(itemName);
-
-    window->draw(selector);
-}
-
 void playerLoadTestBag() {  // TO-DO
 
+    /*
     // weapons
     player->bag->addItem("items/wooden club");
     player->bag->addItem("items/knife");
@@ -642,6 +698,7 @@ void playerLoadTestBag() {  // TO-DO
     player->bag->addItem("items/bone");
     player->bag->addItem("items/wolf skin");
     player->bag->addItem("items/tooth");
+    */
 }
 
 #endif

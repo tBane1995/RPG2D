@@ -101,11 +101,11 @@ void drawDialogBox(sf::RenderWindow* window, int currentPage = 0) {
 	background.setPosition(cam->position.x, cam->position.y + screenHeight / 2.0f - dialogSize.y / 2.0f);
 	window->draw(background);
 
-	for (int i = 0; i < 4; i++) {
-		if (i + 4 * page >= wrappedText.size())
+	for (int i = 0; i < 5; i++) {
+		if (i + 5 * page >= wrappedText.size())
 			break;
 
-		sf::Text text = sf::Text(wrappedText[i + 4 * page], dialogBoxFont, characterSize);
+		sf::Text text = sf::Text(wrappedText[i + 5 * page], dialogBoxFont, characterSize);
 		text.setFillColor(textDialogueColor);
 		textPosition.x = background.getPosition().x - dialogSize.x / 2.f + padding;
 		textPosition.y = background.getPosition().y - dialogSize.y / 2.f + float(i) * lineHeight + padding;
@@ -164,7 +164,6 @@ void drawChooseBox(sf::RenderWindow* window) {
 
 void loadDialogue(int dialogID) {
 
-	wcout << L"WCZYTUJE DIALOG: " << dialogID;
 	string textID = to_string(dialogID);
 
 	while (textID.size() < 3)
@@ -209,6 +208,22 @@ void loadDialogue(int dialogID) {
 	file.close();
 }
 
+void setDialogue(int id) {
+
+	gameState = gameStates::dialogue;
+	dialogueState = dialogueStates::dialogue;
+	currentDialogue = getDialogue(id);
+	page = 0;
+}
+
+void setDialogue(Dialogue* dial) {
+
+	gameState = gameStates::dialogue;
+	dialogueState = dialogueStates::dialogue;
+	currentDialogue = dial;
+	page = 0;
+}
+
 void loadDialogues() {
 	dialogues.clear();
 
@@ -230,6 +245,11 @@ void loadDialogues() {
 	loadDialogue(9);
 	loadDialogue(10);
 	loadDialogue(11);
+	loadDialogue(12);
+
+	loadDialogue(13);
+	loadDialogue(14);
+	loadDialogue(15);
 
 }
 #endif
