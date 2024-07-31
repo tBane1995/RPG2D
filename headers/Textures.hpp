@@ -44,11 +44,13 @@ void loadTextures() {
 	loadTexture("GUI/slotTexture2.png", 40, 40);
 	loadTexture("GUI/slotSelectorTexture1.png", 40, 40);
 	loadTexture("GUI/dialogBoxTexture.png", 300, 75);
+	loadTexture("GUI/journalTexture.png", 300, 200);
 	loadTexture("GUI/wideArrowUp1.png", 80, 20);
 	loadTexture("GUI/wideArrowUp2.png", 80, 20);
 	loadTexture("GUI/wideArrowDown1.png", 80, 20);
 	loadTexture("GUI/wideArrowDown2.png", 80, 20);
 	loadTexture("GUI/hand.png", 8, 8);
+	loadTexture("GUI/grey_hand.png", 8, 8);
 	loadTexture("GUI/talk.png", 8, 8);
 
 	// TILES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,17 +107,23 @@ void loadTextures() {
 	loadTexture("items/stone hammer.png", 32, 32);
 
 	// HELMET
-	loadTexture("items/skin helmet.png", 32, 32);	// TO-DO to delete
-	loadTexture("items/wool helmet.png", 32, 32);	// TO-DO to delete
+	loadTexture("items/skin helmet.png", 32, 32);
+	loadTexture("items/wool hat.png", 32, 32);
 
 	// ARMORS
-	loadTexture("items/skin jacket.png", 32, 32);	// TO-DO to delete
-	loadTexture("items/torn shirt.png", 32, 32);	// TO-DO to delete
-	loadTexture("items/wool shirt.png", 32, 32);	// TO-DO to delete
+	loadTexture("items/plate armor.png", 32, 32);
+	loadTexture("items/chain mail.png", 32, 32);
+	loadTexture("items/skin jacket.png", 32, 32);
+	loadTexture("items/torn shirt.png", 32, 32);
+	loadTexture("items/wool shirt.png", 32, 32);
 
 	// PANTS
-	loadTexture("items/skin pants.png", 32, 32);	// TO-DO to delete
-	loadTexture("items/wool pants.png", 32, 32);	// TO-DO to delete
+	loadTexture("items/chain mail pants.png", 32, 32);
+	loadTexture("items/skin pants.png", 32, 32);
+	loadTexture("items/wool pants.png", 32, 32);
+
+	// SHIELDS
+	loadTexture("items/shield.png", 32, 32);	// TO-DO to delete
 
 	// HERBS
 	loadTexture("items/mana plant.png", 30, 50);
@@ -141,7 +149,6 @@ void loadTextures() {
 
 	loadTexture("paths/stonepath1.png", 32, 32);
 	loadTexture("paths/stonepath2.png", 32, 32);
-
 
 	// CHARACTERS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -284,8 +291,27 @@ void loadTextures() {
 	itemSets.push_back("skin helmet");
 	itemSets.push_back("torn shirt");
 	itemSets.push_back("wool shirt");
-	itemSets.push_back("wool helmet");
+	itemSets.push_back("wool hat");
 	itemSets.push_back("wool pants");
+	itemSets.push_back("wooden club");
+	itemSets.push_back("axe");
+	itemSets.push_back("club");
+	itemSets.push_back("iron club");
+	itemSets.push_back("stone hammer");
+	itemSets.push_back("sword");
+	itemSets.push_back("long sword");
+	itemSets.push_back("gladius");
+	itemSets.push_back("wide blade");
+	itemSets.push_back("knife");
+	itemSets.push_back("dagger");
+	itemSets.push_back("hatchet");
+	itemSets.push_back("curved sword");
+	itemSets.push_back("chain mail");
+	itemSets.push_back("chain mail pants");
+	itemSets.push_back("plate armor");
+	itemSets.push_back("shield");
+
+
 
 	for (auto& set : itemSets) {
 

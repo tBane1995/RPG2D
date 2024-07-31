@@ -32,19 +32,16 @@
 #include "headers/GameObjects.hpp"
 #include "headers/Tiles.hpp"	// gameObject::Terrain and gameObject::Floor
 
-
 #include "headers/GameStates.hpp"
 
-#include "headers/Paths.hpp"
 #include "headers/Items.hpp"
 #include "headers/States.hpp"
 #include "headers/Player.hpp"
 #include "headers/Units.hpp"
 #include "headers/Monsters.hpp"
 #include "headers/Natures.hpp"
-#include "headers/InventoryPanel.hpp"
-#include "headers/TradePanel.hpp"
 #include "headers/Furnitures.hpp"
+#include "headers/Paths.hpp"
 #include "headers/Walls.hpp"
 #include "headers/Dialogues.hpp"
 #include "headers/Character.hpp"
@@ -52,8 +49,13 @@
 #include "headers/Buildings.hpp"
 #include "headers/loadGameObjects.hpp"
 #include "headers/Maps.hpp"
-#include "headers/MapEditorPalette.hpp"
 #include "headers/Quests.hpp"
+
+#include "headers/MapEditorPalette.hpp"
+
+#include "headers/InventoryPanel.hpp"
+#include "headers/TradePanel.hpp"
+#include "headers/JournalPanel.hpp"
 
 #include "Game.hpp"
 #include "MapEditor.hpp"
@@ -61,14 +63,12 @@
 void editPixels() {
 
     sf::Image i;
-    i.loadFromFile("assets/sets/items/wool helmet/attackBottom0.png");
+    i.loadFromFile("assets/sets/items/wool hat/attackBottom0.png");
 
-    //sf::Color color = sf::Color(127,127,127);
     sf::Color color = sf::Color(255,255,255);
     sf::Color newColor = i.getPixel(0, 0);
-    //sf::Color newColor = sf::Color(150, 94, 63);
 
-    string folder_path = "assets/sets/items/torn shirt";
+    string folder_path = "assets/sets/items/shield";
 
     std::vector < std::string > png_files;
 
@@ -97,15 +97,19 @@ void editPixels() {
 
 int main()
 {
+    //editPixels();   // TO-DO
+
 	loadFonts();
 	loadTextures();		// TO-DO "FROM FILE"
 	loadItems();		// TO-DO "FROM FILE"
+    loadDialogues();
+    loadQuests();
 	loadPrefabs();		// TO-DO "FROM FILE"
 	
 
 	window->setKeyRepeatEnabled(false);	// TO-DO commentary
 	
-    //editPixels();
+    
 	game();
 	mapEditor();
 	    

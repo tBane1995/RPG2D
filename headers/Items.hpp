@@ -3,7 +3,7 @@
 
 // TO-DO
 enum class attribute { ATTACK, DEFEND, HP, MP, HP_max, MP_max, STRENGTH, DEXTERITY, INTELLIGENCE };
-enum class itemType { herb, potion, food, weapon, helmet, armor, pants, other };
+enum class itemType { herb, potion, food, weapon, helmet, armor, pants, shield, other };
 
 class Item {
 public:
@@ -196,6 +196,14 @@ void loadItems() {
 	
 	// ARMORS
 
+	item = new Item("items/plate armor", itemType::armor, L"zbroja płytowa");
+	item->attributes[attribute::DEFEND] = 20;
+	items.push_back(item);
+
+	item = new Item("items/chain mail", itemType::armor, L"kolczuga");
+	item->attributes[attribute::DEFEND] = 10;
+	items.push_back(item);
+
 	item = new Item("items/skin jacket", itemType::armor, L"skórzana kurtka");
 	item->attributes[attribute::DEFEND] = 5;
 	items.push_back(item);
@@ -209,6 +217,10 @@ void loadItems() {
 	items.push_back(item);
 
 	// PANTS
+
+	item = new Item("items/chain mail pants", itemType::pants, L"nogawice kolcze");
+	item->attributes[attribute::DEFEND] = 10;
+	items.push_back(item);
 
 	item = new Item("items/skin pants", itemType::pants, L"skórzane spodnie");
 	item->attributes[attribute::DEFEND] = 5;
@@ -224,9 +236,16 @@ void loadItems() {
 	item->attributes[attribute::DEFEND] = 2;
 	items.push_back(item);
 
-	item = new Item("items/wool helmet", itemType::helmet, L"wełniana czapka");
+	item = new Item("items/wool hat", itemType::helmet, L"wełniana czapka");
 	item->attributes[attribute::DEFEND] = 1;
 	items.push_back(item);
+
+	// SHIELDS
+
+	item = new Item("items/shield", itemType::shield, L"zwyczajna tarcza");
+	item->attributes[attribute::DEFEND] = 2;
+	items.push_back(item);
+
 
 	// HERBS
 	

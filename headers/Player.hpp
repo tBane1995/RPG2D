@@ -6,6 +6,8 @@ public:
 	Item* helmet;
 	Item* armor;
 	Item* pants;
+	Item* weapon;
+	Item* shield;
 
 	// TO-DO sf::Texture to Texture*
 	// BODY
@@ -29,11 +31,23 @@ public:
 	Texture* pantsRunTextures[16];
 	Texture* pantsAttackTextures[16];
 
+	// WEAPON
+	Texture* weaponIdleTextures[16];
+	Texture* weaponRunTextures[16];
+	Texture* weaponAttackTextures[16];
+
+	// SHIELD
+	Texture* shieldIdleTextures[16];
+	Texture* shieldRunTextures[16];
+	Texture* shieldAttackTextures[16];
+
 	// SPRITES
 	sf::Sprite bodySprite;
 	sf::Sprite helmetSprite;
 	sf::Sprite armorSprite;
 	sf::Sprite pantsSprite;
+	sf::Sprite weaponSprite;
+	sf::Sprite shieldSprite;
 
 	int direction;
 	int frame;	// current frame number
@@ -64,7 +78,7 @@ public:
 		state = states::idle;
 		actionRange = 25.0f;
 		cooldown = 0.0f;
-		attackTime = 1.0f;
+		attackTime = 0.7f;
 
 		position.x = 682;
 		position.y = 226;
@@ -81,23 +95,53 @@ public:
 
 		body = "sets/body/hero";
 		
-		helmet = nullptr;
-		armor = getItem("items/torn shirt");
-		pants = nullptr;
+		bag = new Inventory();
+		/*
+		bag->addItem("items/torn shirt");
+		bag->addItem("items/axe");
+		bag->addItem("items/bone");
+		bag->addItem("items/health herb");
+		bag->addItem("items/skin helmet");
+		bag->addItem("items/skin pants");
+		bag->addItem("items/wooden club");
+		bag->addItem("items/skin jacket");
+		bag->addItem("items/club");
+		bag->addItem("items/iron club");
+		bag->addItem("items/stone hammer");
+		bag->addItem("items/sword");
+		bag->addItem("items/long sword");
+		bag->addItem("items/gladius");
+		bag->addItem("items/wide blade");
+		bag->addItem("items/knife");
+		bag->addItem("items/dagger");
+		bag->addItem("items/hatchet");
+		bag->addItem("items/curved sword");
+		bag->addItem("items/chain mail");
+		bag->addItem("items/chain mail pants");
+		bag->addItem("items/wool hat");
+		bag->addItem("items/wool pants");
+		bag->addItem("items/wool shirt");
+		bag->addItem("items/raw meat");
+		bag->addItem("items/plate armor");
+		*/
+		// ITEMS TO-DO - CREATE ITEM SETS
+		//bag->addItem("items/skin pants");
+
+		helmet = getItem("items/skin helmet");
+		armor = getItem("items/skin jacket");
+		pants = getItem("items/skin pants");
+		weapon = getItem("items/hatchet");
+		shield = nullptr;
 
 		loadBody();
 		loadHelmet();
 		loadArmor();
 		loadPants();
-
-		bag = new Inventory();
-		bag->addItem("items/torn shirt");
-
+		loadWeapon();
+		loadShield();
 		
 
 		setActionRangeArea();
-
-		
 		
 		toDelete = false;
 		isVisible = false;
@@ -203,8 +247,6 @@ public:
 
 		if (armor != nullptr) {
 		
-			cout << armor->name << "\n";
-
 			for (int i = 0; i < 4; i++) {
 				armorIdleTextures[i] = getTexture("sets/" + armor->name + "/idleTop" + to_string(i));
 				armorIdleTextures[4 + i] = getTexture("sets/" + armor->name + "/idleRight" + to_string(i));
@@ -263,6 +305,76 @@ public:
 
 	}
 
+	void loadWeapon() {
+
+		for (int i = 0; i < 16; i++) {
+			weaponIdleTextures[i] = nullptr;
+			weaponRunTextures[i] = nullptr;
+			weaponAttackTextures[i] = nullptr;
+
+		}
+
+		if (weapon != nullptr) {
+
+			for (int i = 0; i < 4; i++) {
+				weaponIdleTextures[i] = getTexture("sets/" + weapon->name + "/idleTop" + to_string(i));
+				weaponIdleTextures[4 + i] = getTexture("sets/" + weapon->name + "/idleRight" + to_string(i));
+				weaponIdleTextures[8 + i] = getTexture("sets/" + weapon->name + "/idleBottom" + to_string(i));
+				weaponIdleTextures[12 + i] = getTexture("sets/" + weapon->name + "/idleLeft" + to_string(i));
+
+				weaponRunTextures[i] = getTexture("sets/" + weapon->name + "/runTop" + to_string(i));
+				weaponRunTextures[4 + i] = getTexture("sets/" + weapon->name + "/runRight" + to_string(i));
+				weaponRunTextures[8 + i] = getTexture("sets/" + weapon->name + "/runBottom" + to_string(i));
+				weaponRunTextures[12 + i] = getTexture("sets/" + weapon->name + "/runLeft" + to_string(i));
+
+				weaponAttackTextures[i] = getTexture("sets/" + weapon->name + "/attackTop" + to_string(i));
+				weaponAttackTextures[4 + i] = getTexture("sets/" + weapon->name + "/attackRight" + to_string(i));
+				weaponAttackTextures[8 + i] = getTexture("sets/" + weapon->name + "/attackBottom" + to_string(i));
+				weaponAttackTextures[12 + i] = getTexture("sets/" + weapon->name + "/attackLeft" + to_string(i));
+
+			}
+		}
+
+		weaponSprite = sf::Sprite();
+		weaponSprite.setOrigin(32, 58);
+
+	}
+
+	void loadShield() {
+
+		for (int i = 0; i < 16; i++) {
+			shieldIdleTextures[i] = nullptr;
+			shieldRunTextures[i] = nullptr;
+			shieldAttackTextures[i] = nullptr;
+
+		}
+
+		if (shield != nullptr) {
+
+			for (int i = 0; i < 4; i++) {
+				shieldIdleTextures[i] = getTexture("sets/" + shield->name + "/idleTop" + to_string(i));
+				shieldIdleTextures[4 + i] = getTexture("sets/" + shield->name + "/idleRight" + to_string(i));
+				shieldIdleTextures[8 + i] = getTexture("sets/" + shield->name + "/idleBottom" + to_string(i));
+				shieldIdleTextures[12 + i] = getTexture("sets/" + shield->name + "/idleLeft" + to_string(i));
+
+				shieldRunTextures[i] = getTexture("sets/" + shield->name + "/runTop" + to_string(i));
+				shieldRunTextures[4 + i] = getTexture("sets/" + shield->name + "/runRight" + to_string(i));
+				shieldRunTextures[8 + i] = getTexture("sets/" + shield->name + "/runBottom" + to_string(i));
+				shieldRunTextures[12 + i] = getTexture("sets/" + shield->name + "/runLeft" + to_string(i));
+
+				shieldAttackTextures[i] = getTexture("sets/" + shield->name + "/attackTop" + to_string(i));
+				shieldAttackTextures[4 + i] = getTexture("sets/" + shield->name + "/attackRight" + to_string(i));
+				shieldAttackTextures[8 + i] = getTexture("sets/" + shield->name + "/attackBottom" + to_string(i));
+				shieldAttackTextures[12 + i] = getTexture("sets/" + shield->name + "/attackLeft" + to_string(i));
+
+			}
+		}
+
+		shieldSprite = sf::Sprite();
+		shieldSprite.setOrigin(32, 58);
+
+	}
+
 	void setActionRangeArea() {
 		actionRangeArea = sf::CircleShape(actionRange + collider->width/2.0f);
 		actionRangeArea.setFillColor(sf::Color(128, 64, 64, 128));
@@ -297,6 +409,9 @@ public:
 		if (pants != nullptr)
 			defend += pants->attributes[attribute::DEFEND];
 
+		if (shield != nullptr)
+			defend += shield->attributes[attribute::DEFEND];
+
 		int dam = damage - defend;
 
 		if (dam > 0) {
@@ -308,7 +423,10 @@ public:
 	}
 	
 	float getDamage() {
-		return STRENGTH * 3 + DEXTERITY;
+		float damage = STRENGTH * 3 + DEXTERITY;
+		if (weapon != nullptr)
+			damage += weapon->attributes[attribute::ATTACK];
+		return damage;
 	}
 
 	void heal(float HP) {
@@ -350,6 +468,12 @@ public:
 			
 			if(pants!=nullptr)
 				pantsSprite.setTexture(*pantsAttackTextures[direction * 4 + frame]->texture);
+
+			if (weapon != nullptr)
+				weaponSprite.setTexture(*weaponAttackTextures[direction * 4 + frame]->texture);
+
+			if (shield != nullptr)
+				shieldSprite.setTexture(*shieldAttackTextures[direction * 4 + frame]->texture);
 		}		
 		else if (state == states::walk) {
 
@@ -371,6 +495,13 @@ public:
 			
 			if(pants!=nullptr)
 				pantsSprite.setTexture(*pantsRunTextures[direction * 4 + frame]->texture);
+
+			if (weapon != nullptr)
+				weaponSprite.setTexture(*weaponRunTextures[direction * 4 + frame]->texture);
+			
+			if (shield != nullptr)
+				shieldSprite.setTexture(*shieldRunTextures[direction * 4 + frame]->texture);
+
 		}
 		else if(state == states::idle) {
 
@@ -386,15 +517,24 @@ public:
 			if(pants!=nullptr)
 				pantsSprite.setTexture(*pantsIdleTextures[direction * 4 +frame]->texture);
 			
+			if (weapon != nullptr)
+				weaponSprite.setTexture(*weaponIdleTextures[direction * 4 + frame]->texture);
+
+			if (shield != nullptr)
+				shieldSprite.setTexture(*shieldIdleTextures[direction * 4 + frame]->texture);
 		}
 
 		if (cooldown > 0.0f)
 			cooldown -= dt;
 
 		bodySprite.setPosition(position);
+		
 		helmetSprite.setPosition(position);
 		armorSprite.setPosition(position);
 		pantsSprite.setPosition(position);
+		weaponSprite.setPosition(position);
+		shieldSprite.setPosition(position);
+		
 		actionRangeArea.setPosition(position);
 		
 	}
@@ -405,11 +545,48 @@ public:
 			GameObject::draw(window);
 		}
 		
-		window->draw(bodySprite);		
-		window->draw(helmetSprite);
-		window->draw(pantsSprite);
-		window->draw(armorSprite);		
-		
+		if (direction == 0) {
+			// TOP
+			window->draw(weaponSprite);
+			window->draw(shieldSprite);
+			window->draw(bodySprite);
+			window->draw(helmetSprite);
+			window->draw(pantsSprite);
+			window->draw(armorSprite);
+
+		}
+
+		if (direction == 1) {
+			// RIGHT
+			
+			window->draw(shieldSprite);
+			window->draw(bodySprite);
+			window->draw(helmetSprite);
+			window->draw(pantsSprite);
+			window->draw(armorSprite);
+			window->draw(weaponSprite);
+		}
+
+		if (direction == 2) {
+			// BOTTOM
+			window->draw(bodySprite);
+			window->draw(helmetSprite);
+			window->draw(pantsSprite);
+			window->draw(armorSprite);
+			window->draw(shieldSprite);
+			window->draw(weaponSprite);
+		}
+
+		if (direction == 3) {
+			// LEFT
+			window->draw(weaponSprite);
+			window->draw(bodySprite);
+			window->draw(helmetSprite);
+			window->draw(pantsSprite);
+			window->draw(armorSprite);
+			window->draw(shieldSprite);
+			
+		}
 		
 	}
 };
