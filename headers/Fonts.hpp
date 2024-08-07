@@ -5,7 +5,9 @@
 sf::Font basicFont;
 sf::Font dialogBoxFont;
 
-sf::Color textDialogueColor = sf::Color(234, 224, 175);
+sf::Color textColor = sf::Color(234, 224, 175);
+sf::Color textActiveColor = sf::Color(255, 201, 14);
+
 sf::Color textNameColor = sf::Color::White;
 sf::Color titleColor = sf::Color::White;
 
@@ -70,4 +72,23 @@ std::vector < std::wstring > wrapText(std::wstring text, int characterSize, int 
 	return wrappedText;
 }
 
+std::string getShortName(std::string fullname) {
+
+	std::string shortname = "";
+	for (int i = fullname.size() - 1; i >= 0 && fullname[i] != '/'; i--) {
+		shortname = fullname[i] + shortname;
+	}
+
+	return shortname;
+}
+
+std::wstring getShortName(std::wstring fullname) {
+
+	std::wstring shortname = L"";
+	for (int i = fullname.size() - 1; i >= 0 && fullname[i] != L'/'; i--) {
+		shortname = fullname[i] + shortname;
+	}
+
+	return shortname;
+}
 #endif

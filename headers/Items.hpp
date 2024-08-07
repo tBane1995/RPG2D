@@ -33,15 +33,6 @@ Item* getItem(string location) {
 	return nullptr;
 }
 
-string getItemName(Item* item) {
-
-	string name = "";
-	for (int i = item->name.size()-1; i >= 0 && item->name[i] != '/'; i--)
-		name = item->name[i] + name;
-
-	return name;
-}
-
 wstring getItemDescription(Item* item) {
 	
 	wstring description = item->description + L"\n\n";
@@ -193,6 +184,12 @@ void loadItems() {
 	item->attributes[attribute::ATTACK] = 1;
 	items.push_back(item);
 
+	// SHIELDS
+
+	item = new Item("items/shield", itemType::shield, L"zwyczajna tarcza");
+	item->attributes[attribute::DEFEND] = 2;
+	items.push_back(item);
+
 	
 	// ARMORS
 
@@ -240,12 +237,7 @@ void loadItems() {
 	item->attributes[attribute::DEFEND] = 1;
 	items.push_back(item);
 
-	// SHIELDS
-
-	item = new Item("items/shield", itemType::shield, L"zwyczajna tarcza");
-	item->attributes[attribute::DEFEND] = 2;
-	items.push_back(item);
-
+	
 
 	// HERBS
 	
@@ -288,6 +280,9 @@ void loadItems() {
 	items.push_back(item);
 
 	item = new Item("items/tooth", itemType::other, L"kieł zwierza");
+	items.push_back(item);
+
+	item = new Item("items/spike", itemType::other, L"kolec zwierza");
 	items.push_back(item);
 
 	item = new Item("items/wolf skin", itemType::other, L"skóra wilka");

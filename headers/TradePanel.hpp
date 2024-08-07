@@ -17,9 +17,9 @@ void updateTradePanel() {
 		inventoryRight->update(-1);
 
 		if (inventoryLeft->inventory != nullptr )
-			if(inventoryLeft->inventory->items.size() > 0 )
-				if(cursor + inventoryLeft->scroll * itemsInRow < inventoryLeft->inventory->items.size())
-					item = inventoryLeft->inventory->items[cursor + inventoryLeft->scroll * itemsInRow];
+			if(inventoryLeft->sortedItems.size() > 0 )
+				if(cursor + inventoryLeft->scroll * itemsInRow < inventoryLeft->sortedItems.size())
+					item = inventoryLeft->sortedItems[cursor + inventoryLeft->scroll * itemsInRow];
 	}
 
 	if (activePanel == activeInventoryPanel::Right) {
@@ -27,9 +27,9 @@ void updateTradePanel() {
 		inventoryRight->update(cursor);
 
 		if (inventoryRight->inventory != nullptr)
-			if (inventoryRight->inventory->items.size() > 0)
-				if (cursor + inventoryRight->scroll * itemsInRow < inventoryRight->inventory->items.size())
-					item = inventoryRight->inventory->items[cursor + inventoryRight->scroll * itemsInRow];
+			if (inventoryRight->sortedItems.size() > 0)
+				if (cursor + inventoryRight->scroll * itemsInRow < inventoryRight->sortedItems.size())
+					item = inventoryRight->sortedItems[cursor + inventoryRight->scroll * itemsInRow];
 	}
 	
 	drawItemStats = false;
@@ -51,14 +51,14 @@ void updateTradePanel() {
 
 		itemName = sf::Text();
 		itemName.setCharacterSize(28);
-		itemName.setFillColor(textDialogueColor);
+		itemName.setFillColor(textColor);
 		itemName.setFont(basicFont);
 		itemName.setPosition(cam->position.x - 300 + 192, cam->position.y + 275 - 64);
-		itemName.setString(getItemName(item));
+		itemName.setString(getShortName(item->name));
 
 		itemDescription = sf::Text();
 		itemDescription.setCharacterSize(16);
-		itemDescription.setFillColor(textDialogueColor);
+		itemDescription.setFillColor(textColor);
 		itemDescription.setFont(basicFont);
 		itemDescription.setPosition(cam->position.x - 300 + 192, cam->position.y + 275 - 32);
 		itemDescription.setString(getItemDescription(item));
