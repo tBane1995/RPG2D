@@ -36,12 +36,12 @@ public:
 			int y = cam->position.y + position_y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
 			slotsSprites[i].setOrigin(slotSide / 2, slotSide / 2);
 			slotsSprites[i].setPosition(x, y);
-			slotsSprites[i].setTexture(*getTexture("GUI/slotTexture1")->texture);
+			slotsSprites[i].setTexture(*getTexture("GUI/slot1")->texture);
 		}
 
 		// SELECTOR
 		selector = sf::Sprite();
-		selector.setTexture(*getTexture("GUI/slotSelectorTexture1")->texture);
+		selector.setTexture(*getTexture("GUI/selector")->texture);
 		selector.setOrigin(slotSide / 2, slotSide / 2);
 
 		drawSelector = false;
@@ -127,7 +127,7 @@ public:
 					int height = counts[i].getLocalBounds().height;
 					counts[i].setOrigin(width / 2, height / 2);
 					counts[i].setPosition(x - width / 2 + 24, y - height / 2 + 24);
-					counts[i].setFillColor(textNameColor);
+					counts[i].setFillColor(textColor);
 
 				}
 			}
@@ -178,7 +178,7 @@ void updateInventoryPanel() {
 	drawItemStats = false;
 	
 	background = sf::Sprite();
-	background.setTexture(*getTexture("GUI/dialogBoxTexture")->texture);
+	background.setTexture(*getTexture("GUI/infoPanel")->texture);
 	background.setPosition(cam->position.x, cam->position.y + 275);
 	background.setOrigin(300,75);
 

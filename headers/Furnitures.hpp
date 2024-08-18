@@ -11,7 +11,7 @@ public:
 	sf::Sprite takeItSprite;
 	bool showHand;
 
-	Furniture(string name, float width, float height) : GameObject(name, 0, 0, width, height, true, true) {
+	Furniture(string name, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, true) {
 		type = gameObjectType::Furniture;
 		
 		texture = getTexture(name);
@@ -43,6 +43,7 @@ public:
 			inventory->addItem("items/wooden club");
 			inventory->addItem("items/wool shirt");   // TO-DO to delete
 			inventory->addItem("items/wool pants");   // TO-DO to delete			
+			inventory->addItem("items/wool hat");   // TO-DO to delete			
 		}
 
 		if (name == "furnitures/table1") {
