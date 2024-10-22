@@ -4,7 +4,7 @@
 class DialogueOption {
 public:
 	std::wstring text;
-	int nextDialogueID;
+	short nextDialogueID;
 
 	DialogueOption(int nextDialogueID, std::wstring text) {
 		this->nextDialogueID = nextDialogueID;
@@ -14,23 +14,21 @@ public:
 
 class Dialogue {
 public:
-	int id;
+	short id;
 	std::wstring text;
 	std::vector < DialogueOption > options;
 
-	Dialogue(int id, std::wstring text) {
+	Dialogue(short id, std::wstring text) {
 		this->id = id;
 		this->text = text;
 	}
 };
 
-std::vector < Dialogue* > dialogues;
-Dialogue* currentDialogue;
-enum class dialogueStates { dialogue, choose };
-dialogueStates dialogueState;
-int chooseOption = 0;
+// TO-DO //////////////////////////////
 
-Dialogue* getDialogue(int id) {
+std::vector < Dialogue* > dialogues;
+
+Dialogue* getDialogue(short id) {
 	for (auto& d : dialogues)
 		if (d->id == id)
 			return d;
@@ -39,105 +37,233 @@ Dialogue* getDialogue(int id) {
 	return nullptr;
 }
 
+enum class DialogueState { Showing, Choosing, Answering, End};
 
-// variables used to render dialogues
-float characterSize = 24;
-
-float lineHeight = 24;
-float padding = 10.0f;
-sf::Vector2f dialogSize = sf::Vector2f(600, 160);
-sf::Vector2f textPosition;
-int countOfLines = 0;
-int page = 0;
-std::vector < wstring > lines;
-std::vector < wstring > wrappedText;
-std::vector < DialogueOption > availableOptions;
-int dialogScroll;
-
-
-void setTextToDialogBox(std::wstring text) {
-
-	float maxWidth = dialogSize.x - 2.0f * padding;
-
-	wrappedText = wrapText(text, characterSize, maxWidth);
-	countOfLines = wrappedText.size();
-}
-
-void drawDialogBox(sf::RenderWindow* window, int currentPage = 0) {
-
-	page = currentPage;	// global variable "page"
-
-	sf::Texture dialogBoxTexture;
-	if (!dialogBoxTexture.loadFromFile("assets/GUI/infoPanel.png")) {
-		return;
-	}
+class DialogueBox {
+public:
+	DialogueState state;
+	Dialogue* currentDialogue;
+	short page;
+	short lastPage;
+	short chooseScroll;
+	short chooseCursor;
 
 	sf::Sprite background;
-	background.setTexture(dialogBoxTexture);
-	background.setOrigin(dialogSize.x / 2.0f, dialogSize.y / 2.0f);
-	background.setPosition(cam->position.x, cam->position.y + screenHeight / 2.0f - dialogSize.y / 2.0f);
-	window->draw(background);
+	sf::Text texts[5];
 
-	for (int i = 0; i < 5; i++) {
-		if (i + 5 * page >= wrappedText.size())
-			break;
+	std::vector < std::wstring > lines;
+	std::vector < std::wstring > answers;
 
-		sf::Text text = sf::Text(wrappedText[i + 5 * page], dialogBoxFont, characterSize);
-		text.setFillColor(textColor);
-		textPosition.x = background.getPosition().x - dialogSize.x / 2.f + padding;
-		textPosition.y = background.getPosition().y - dialogSize.y / 2.f + float(i) * lineHeight + padding;
-		text.setPosition(textPosition);
+	short animationingLine;	// animation
+	short animationingChar; // animation
+	sf::Time animStart;
 
-		window->draw(text);
+	DialogueBox(Dialogue* dialogue) {
+		state = DialogueState::Showing;
+		
+		currentDialogue = dialogue;
+		
+		page = 0;
+		lastPage = 0;
+
+		chooseScroll = 0;
+		chooseCursor = 0;
+
+		background = sf::Sprite();
+		background.setTexture(*getSingleTexture("GUI/infoPanel")->texture);
+		background.setOrigin(300, 75);
+		background.setPosition(cam->position.x, cam->position.y+screenHeight/2.0f-75.0f);
+
+		loadDialogueAndAnswers();
+
+		for (int i = 0; i < 5;i++) {
+			texts[i] = sf::Text();
+
+			sf::Vector2f pos;
+			pos.x = cam->position.x - 300 + 10;	// margin 10 
+			pos.y = cam->position.y + screenHeight/2.0f - 150 + 10 + i * 24;
+
+			texts[i].setPosition(pos);
+			texts[i].setFont(basicFont);
+			texts[i].setCharacterSize(24);
+			texts[i].setFillColor(dialoguesColor);
+		}
+
+		animationingLine = 0;
+		animationingChar = 0;
+		animStart = currentTime;
 	}
 
-}
+	void loadPage() {
 
-bool scriptResult(std::wstring text) {
+		if (state == DialogueState::Showing) {
+			for (int i = 0; i < 5; i++) {
+				if (page * 5 + i < lines.size()) {
+					
+					if (page * 5 + i < animationingLine) {
+						texts[i].setString(lines[page * 5 + i]);
+					}
+					else if (animationingLine == page * 5 + i) {
+						
+						std::wstring animText = lines[page * 5 + i].substr(0, animationingChar);
+						
+						if ((currentTime - animStart).asSeconds() > 0.025f) {
+							//cout << (currentTime - animStart).asSeconds() << "\n";
+							animationingChar += 1;
 
-	return true;
+							if (animationingChar == lines[page * 5 + i].size()) {
+								animationingChar = 0;
+								animationingLine += 1;
+							}
 
-}
+							animStart = currentTime;
+						}
 
-void drawChooseBox(sf::RenderWindow* window) {
-	sf::Texture dialogBoxTexture;
-	if (!dialogBoxTexture.loadFromFile("assets/GUI/infoPanel.png")) {
-		return;
+						texts[i].setString(animText);
+					}
+					else {
+						texts[i].setString("");
+					}
+
+					texts[i].setFillColor(dialoguesColor);
+					
+				}
+				else
+					texts[i].setString("");
+					
+			}
+		}
+
+		if (state == DialogueState::Choosing) {
+			for (int i = 0; i < 5; i++) {
+				if (chooseScroll + i < answers.size()) {
+					if(chooseCursor == i)
+						texts[i].setFillColor(dialoguesActiveColor);
+					else
+						texts[i].setFillColor(dialoguesColor);
+					texts[i].setString(answers[chooseScroll + i]);
+				}
+				else
+					texts[i].setString("");
+			}
+		}
 	}
 
-	sf::Sprite background;
-	background.setTexture(dialogBoxTexture);
-	background.setOrigin(dialogSize.x / 2.0f, dialogSize.y / 2.0f);
-	background.setPosition(cam->position.x, cam->position.y + screenHeight / 2.0f - dialogSize.y / 2.0f);
-	window->draw(background);
+	void loadDialogueAndAnswers() {
 
+		short maxLineWidth = 600 - 2 * 10;
+		lines = wrapText(currentDialogue->text, basicFont, 24, maxLineWidth);			
+		lastPage = ceil(float(lines.size()) / 5.0f);
 
-	availableOptions.clear();
-	for (auto& o : currentDialogue->options) {
-
-		availableOptions.push_back(o);
+		answers.clear();
+		for (auto& option : currentDialogue->options) {
+			answers.push_back(option.text);
+		}
 	}
 
-	for (int i = 0; i < 5; i++) {
+	void update(sf::Event& event) {
+		if (event.type == sf::Event::KeyPressed) {
 
-		if (i + dialogScroll >= availableOptions.size())
-			return;
+			if (state == DialogueState::Showing) {
 
-		sf::Text text = sf::Text(availableOptions[i + dialogScroll].text, dialogBoxFont, characterSize);
-		if (i == chooseOption)
-			text.setFillColor(textActiveColor);
-		else
-			text.setFillColor(textColor);
-		textPosition.x = background.getPosition().x - dialogSize.x / 2.f + padding;
-		textPosition.y = background.getPosition().y - dialogSize.y / 2.f + float(i) * lineHeight + padding;
-		text.setPosition(textPosition);
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
 
-		window->draw(text);
+					if (animationingLine == lines.size()) {
+						state = DialogueState::End;
+						//cout << "konczymy dialog\n";
+					}
+					else if (animationingLine == (page+1) * 5) {
+						page += 1;
 
+						if (page == lastPage) {
+
+							if (answers.size() > 0) {
+								state = DialogueState::Choosing;
+								chooseCursor = 0;
+								chooseScroll = 0;
+							}
+							else {
+								state = DialogueState::End;
+								//cout << "konczymy dialog\n";
+							}
+								
+						}
+					}
+					else {
+						animationingLine = (page+1) * 5;
+						animationingChar = 0;
+						animStart = currentTime;
+					}
+	
+				}
+			}
+			else if (state == DialogueState::Choosing) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+					
+					if(chooseCursor > 0 || chooseScroll > 0)
+						chooseCursor -= 1;
+
+					if (chooseCursor < 0) {
+						
+						chooseCursor = 0;
+						chooseScroll -= 1;
+					}
+
+					loadPage();
+				}
+
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+					chooseCursor += 1;
+					if (chooseScroll + chooseCursor >= answers.size()) {
+						chooseCursor -= 1;
+					}else if (chooseCursor > 4) {
+						chooseCursor = 4;
+						chooseScroll += 1;
+					}
+
+					loadPage();
+				}
+
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+
+					int selectedOption = chooseScroll + chooseCursor;
+					currentDialogue = getDialogue(currentDialogue->options[selectedOption].nextDialogueID);
+					
+					if (currentDialogue != nullptr) {
+						loadDialogueAndAnswers();
+						state = DialogueState::Showing;
+						animationingLine = 0;
+						animationingChar = 0;
+						animStart = currentTime;
+						page = 0;
+						loadPage();
+					}
+					else {
+						state = DialogueState::End;
+					}
+						
+					
+				}
+			}
+
+		}
+
+		background.setPosition(cam->position.x, cam->position.y + screenHeight / 2.0f - 75.0f);
 	}
 
+	void draw() {
+		
+		window->draw(background);
 
-}
+		loadPage();
+
+		for (auto& text : texts)
+			window->draw(text);
+	}
+};
+
+DialogueBox* dialogueBox = nullptr;
+
 
 void loadDialogue(int dialogID) {
 
@@ -158,16 +284,13 @@ void loadDialogue(int dialogID) {
 	getline(file, lineUTF8);
 	std::istringstream lineStream(lineUTF8);
 
-	cout << "\n";
 	string textPart;
 	lineStream >> std::quoted(textPart);
-
-	std::cout << '\n';
 
 	// stworzenie dialogu
 	Dialogue* dial = new Dialogue(dialogID, ConvertUtf8ToWide(textPart));
 
-	int id = -1;
+	short id = -1;
 	char comma;
 
 	// wczytanie odpowiedzi do dialogu
@@ -183,22 +306,6 @@ void loadDialogue(int dialogID) {
 	dialogues.push_back(dial);
 
 	file.close();
-}
-
-void setDialogue(int id) {
-
-	gameState = gameStates::dialogue;
-	dialogueState = dialogueStates::dialogue;
-	currentDialogue = getDialogue(id);
-	page = 0;
-}
-
-void setDialogue(Dialogue* dial) {
-
-	gameState = gameStates::dialogue;
-	dialogueState = dialogueStates::dialogue;
-	currentDialogue = dial;
-	page = 0;
 }
 
 void loadDialogues() {

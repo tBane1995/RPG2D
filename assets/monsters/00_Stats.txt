@@ -25,12 +25,3 @@ Kolcorożec	| 15-18
 Golem		| 18-20
 Troll		| 20-23
 Bies		| 23-26
-
-Do zrobienia assety
-Jaszczur
-Niedźwiedź
-Szpon
-Kolcorożec
-Golem
-Troll
-Bies

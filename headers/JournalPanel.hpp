@@ -10,12 +10,12 @@ public:
 
 	JournalPanel() {
 		panel = sf::Sprite();
-		panel.setTexture(*getTexture("GUI/bigPanel")->texture);
+		panel.setTexture(*getSingleTexture("GUI/bigPanel")->texture);
 		panel.setOrigin(300, 200);
 
 		description = sf::Text();
 		description.setFont(basicFont);
-		description.setFillColor(textColor);
+		description.setFillColor(dialoguesColor);
 		description.setCharacterSize(18);
 	}
 
@@ -31,10 +31,10 @@ public:
 				actualQuests.push_back(quest);
 
 		titles.clear();
-		for (int i = 0; i < 18; i++) {
+		for (short i = 0; i < 18; i++) {
 			titles.push_back(sf::Text());
 			titles[i].setFont(basicFont);
-			titles[i].setFillColor((i == cursor) ? textActiveColor : textColor);
+			titles[i].setFillColor((i == cursor) ? dialoguesActiveColor : dialoguesColor);
 			titles[i].setCharacterSize(18);
 			titles[i].setPosition(cam->position.x - 280, cam->position.y + (20 * i) - 180);
 			titles[i].setString((i < actualQuests.size()) ? actualQuests[i]->name : L"-");
@@ -43,11 +43,11 @@ public:
 
 		// DESCRIPTION OF QUEST
 		description.setPosition(cam->position.x-100, cam->position.y-180);
-		std::vector < std::wstring > descriptionLines = wrapText((cursor < actualQuests.size()) ? actualQuests[cursor]->steps[actualQuests[cursor]->currentStep]->text : L"-", 18, 490);
+		std::vector < std::wstring > descriptionLines = wrapText((cursor < actualQuests.size()) ? actualQuests[cursor]->steps[actualQuests[cursor]->currentStep]->text : L"-",basicFont, 18, 490);
 		
 		std::wstring descriptionText = L"";
 
-		for (int i = 0; i < descriptionLines.size(); i++)
+		for (short i = 0; i < descriptionLines.size(); i++)
 			descriptionText += descriptionLines[i] + L"\n";
 
 		description.setString(descriptionText);

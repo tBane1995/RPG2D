@@ -25,7 +25,7 @@ public:
 	~HitText() { }
 
 	void update() {
-		int deleter = (currentTime-startTime).asMilliseconds()*0.1;
+		short deleter = (currentTime-startTime).asMilliseconds()*0.1;
 		text.setPosition(position.x, position.y-deleter);
 	}
 
@@ -43,7 +43,7 @@ public:
 		hits.clear();
 	}
 
-	void addHitText(sf::Vector2f position, string value, sf::Color color = textColor) {
+	void addHitText(sf::Vector2f position, string value, sf::Color color = dialoguesColor) {
 
 		hits.push_back(new HitText(position, value, color));
 		

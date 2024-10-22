@@ -12,10 +12,10 @@ bool selection_state;
 sf::RectangleShape selectArea;
 
 void mouseSelection() {
-    int start_x = std::min(startWorldMousePosition.x, worldMousePosition.x);
-    int start_y = std::min(startWorldMousePosition.y, worldMousePosition.y);
-    int end_x = std::max(startWorldMousePosition.x, worldMousePosition.x);
-    int end_y = std::max(startWorldMousePosition.y, worldMousePosition.y);
+    float start_x = std::min(startWorldMousePosition.x, worldMousePosition.x);
+    float start_y = std::min(startWorldMousePosition.y, worldMousePosition.y);
+    float end_x = std::max(startWorldMousePosition.x, worldMousePosition.x);
+    float end_y = std::max(startWorldMousePosition.y, worldMousePosition.y);
 
     selectArea = sf::RectangleShape(sf::Vector2f(end_x - start_x, end_y - start_y));
     selectArea.setOrigin((end_x - start_x) / 2, (end_y - start_y) / 2);

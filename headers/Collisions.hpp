@@ -22,7 +22,7 @@ bool pointInEllipse(float px, float py, float cx, float cy, float rx, float ry) 
 bool intersectionTwoEllipses(float x1, float y1, float rx1, float ry1, float x2, float y2, float rx2, float ry2) {
 
     // Sprawdzenie punktów na pierwszej elipsie względem drugiej elipsy
-    for (int i = 0; i < numPoints; ++i) {
+    for (short i = 0; i < numPoints; ++i) {
 
         angle = 2 * M_PI * i / numPoints;
         px = x1 + rx1 * std::cos(angle);
@@ -34,7 +34,7 @@ bool intersectionTwoEllipses(float x1, float y1, float rx1, float ry1, float x2,
     }
 
     // Sprawdzenie punktów na drugiej elipsie względem pierwszej elipsy
-    for (int i = 0; i < numPoints; ++i) {
+    for (short i = 0; i < numPoints; ++i) {
 
         angle = 2 * M_PI * i / numPoints;
         px = x2 + rx2 * std::cos(angle);
@@ -61,7 +61,7 @@ bool intersectionTwoRectangles(float x1, float y1, float width1, float height1, 
 bool intersectionRectangleWithElipse(float r_x, float r_y, float r_width, float r_height, float e_x, float e_y, float e_radiusx, float e_radiusy) {
 
     // Sprawdzenie punktów na pierwszej elipsie względem drugiej elipsy
-    for (int i = 0; i < numPoints; ++i) {
+    for (short i = 0; i < numPoints; ++i) {
 
         angle = 2 * M_PI * i / numPoints;
         px = e_x + e_radiusx * std::cos(angle);
@@ -74,6 +74,44 @@ bool intersectionRectangleWithElipse(float r_x, float r_y, float r_width, float 
 
     return false;
 
+}
+
+bool onSegment(sf::Vector2f _p, sf::Vector2f _q, sf::Vector2f _r)  {
+    return _q.x <= std::max(_p.x, _r.x) && _q.x >= std::min(_p.x, _r.x) &&
+        _q.y <= std::max(_p.y, _r.y) && _q.y >= std::min(_p.y, _r.y);
+}
+
+int orientation(sf::Vector2f _p, sf::Vector2f _q, sf::Vector2f _r)  {
+    float val = (_q.y - _p.y) * (_r.x - _q.x) - (_q.x - _p.x) * (_r.y - _q.y);
+    if (val == 0) return 0; // kolinearne
+
+    return(val > 0) ? 1
+        : 2; // 1 = zgodnie ze wskazówkami zegara, 2 = przeciwnie
+}
+
+
+bool intersectionTwoLines( sf::Vector2f _p1, sf::Vector2f _q1, sf::Vector2f _p2, sf::Vector2f _q2) {
+
+    // if line is a point return false
+    if (_p1 == _q1 || _p2 == _q2)
+        return false;
+
+    int o1 = orientation(_p1, _q1, _p2);
+    int o2 = orientation(_p1, _q1, _q2);
+    int o3 = orientation(_p2, _q2, _p1);
+    int o4 = orientation(_p2, _q2, _q1);
+
+    if (o1 != o2 && o3 != o4) return true;
+
+    if (o1 == 0 && onSegment(_p1, _p2, _q1)) return true;
+
+    if (o2 == 0 && onSegment(_p1, _q2, _q1)) return true;
+
+    if (o3 == 0 && onSegment(_p2, _p1, _q2)) return true;
+
+    if (o4 == 0 && onSegment(_p2, _q1, _q2)) return true;
+
+    return false;
 }
 
 

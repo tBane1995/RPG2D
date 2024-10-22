@@ -10,8 +10,6 @@ public:
     Floors* floors;
     Water* waters;
 
-    Shader* shader;
-
     sf::RectangleShape borders;
     sf::Text coordsText;
 
@@ -28,21 +26,19 @@ public:
 
     bool isVisible;
 
-    Map(int x, int y) {
+    Map(short x, short y) {
        
         coords = sf::Vector2i(x, y);
         terrain = new Terrain(x*16, y*16, 16, 16);
         floors = new Floors(x*16, y*16, 16, 16);
         waters = new Water(x * 16, y * 16, 16, 16);
+        
         clearAllLists();
-        //load();
 
         isVisible = false;
 
-        shader = getShader("shaders/water");
-
         // TO-DO
-        int borderWidth = 2;
+        short borderWidth = 2;
         borders = sf::RectangleShape(sf::Vector2f(256-2*borderWidth, 256-2*borderWidth));
         borders.setPosition(x * 256, y * 256);
         borders.setFillColor(sf::Color::Transparent);
@@ -98,8 +94,8 @@ public:
         }
 
         // save tiles
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
+        for (short y = 0; y < 16; y++) {
+            for (short x = 0; x < 16; x++) {
 
                 file << terrain->tiles[y*terrain->width + x];
                 if (x != terrain->width-1 )
@@ -112,8 +108,8 @@ public:
         file << "\n";
 
         // save floors
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
+        for (short y = 0; y < 16; y++) {
+            for (short x = 0; x < 16; x++) {
 
                 file << floors->floors[y*floors->width + x];
                 if (x != floors->width-1)
@@ -128,7 +124,7 @@ public:
         if(_natures.size() > 0)
             file << "// NATURES\n";
         for (auto& nature : _natures)
-            file << "Nature " << char(34) << nature->name << char(34) << " " << int(nature->position.x) << " " << int(nature->position.y) << "\n";
+            file << "Nature " << char(34) << nature->name << char(34) << " " << short(nature->position.x) << " " << short(nature->position.y) << "\n";
         if (_natures.size() > 0)
             file << "\n";
 
@@ -136,7 +132,7 @@ public:
         if (_itemsOnMap.size() > 0)
             file << "// ITEMS\n";
         for (auto& item : _itemsOnMap)
-            file << "Item " << char(34) << item->name << char(34) << " " << int(item->position.x) << " " << int(item->position.y) << "\n";
+            file << "Item " << char(34) << item->name << char(34) << " " << short(item->position.x) << " " << short(item->position.y) << "\n";
         if (_itemsOnMap.size() > 0)
             file << "\n";
 
@@ -144,7 +140,7 @@ public:
         if (_paths.size() > 0)
             file << "// PATHS\n";
         for (auto& path : _paths)
-            file << "Path " << char(34) << path->name << char(34) << " " << int(path->position.x) << " " << int(path->position.y) << "\n";
+            file << "Path " << char(34) << path->name << char(34) << " " << short(path->position.x) << " " << short(path->position.y) << "\n";
         if (_paths.size() > 0)
             file << "\n";
 
@@ -152,7 +148,7 @@ public:
         if (_furnitures.size() > 0)
             file << "// FURNITURES\n";
         for (auto& furniture : _furnitures)
-            file << "Furniture " << char(34) << furniture->name << char(34) << " " << int(furniture->position.x) << " " << int(furniture->position.y) << "\n";
+            file << "Furniture " << char(34) << furniture->name << char(34) << " " << short(furniture->position.x) << " " << short(furniture->position.y) << "\n";
         if (_furnitures.size() > 0)
             file << "\n";
 
@@ -160,7 +156,7 @@ public:
         if (_walls.size() > 0)
             file << "// WALLS\n";
         for (auto& wall : _walls)
-            file << "Wall " << char(34) << wall->name << char(34) << " " << int(wall->position.x) << " " << int(wall->position.y) << "\n";
+            file << "Wall " << char(34) << wall->name << char(34) << " " << short(wall->position.x) << " " << short(wall->position.y) << "\n";
         if (_walls.size() > 0)
             file << "\n";
 
@@ -168,7 +164,7 @@ public:
         if (_doors.size() > 0)
             file << "// DOORS\n";
         for (auto& door : _doors)
-            file << "Door " << char(34) << door->name << char(34) << " " << int(door->position.x) << " " << int(door->position.y) << "\n";
+            file << "Door " << char(34) << door->name << char(34) << " " << short(door->position.x) << " " << short(door->position.y) << "\n";
         if (_doors.size() > 0)
             file << "\n";
 
@@ -176,7 +172,7 @@ public:
         if (_monsters.size() > 0)
             file << "// MONSTERS\n";
         for (auto& monster : _monsters)
-            file << "Monster " << char(34) << monster->name << char(34) << " " << int(monster->base.x) << " " << int(monster->base.y) << "\n";
+            file << "Monster " << char(34) << monster->name << char(34) << " " << short(monster->base.x) << " " << short(monster->base.y) << "\n";
         if (_monsters.size() > 0)
             file << "\n";
 
@@ -185,7 +181,7 @@ public:
         if(_buildings.size() > 0)
             file << "// BUILDINGS\n";
         for (auto& building : _buildings)
-            file << "Building " << char(34) << building->name << char(34) << " " << int(building->position.x) << " " << int(building->position.y) << "\n";
+            file << "Building " << char(34) << building->name << char(34) << " " << short(building->position.x) << " " << short(building->position.y) << "\n";
         if (_buildings.size() > 0)
             file << "\n";
 
@@ -193,7 +189,7 @@ public:
         if (_characters.size() > 0)
             file << "// CHARACTERS\n";
         for (auto& character : _characters)
-            file << "Character " << char(34) << character->name << char(34) << " " << int(character->position.x) << " " << int(character->position.y) << "\n";
+            file << "Character " << char(34) << character->name << char(34) << " " << short(character->position.x) << " " << short(character->position.y) << "\n";
         if (_characters.size() > 0)
             file << "\n";
 
@@ -201,7 +197,7 @@ public:
         if (_inventoriesOnMap.size() > 0)
             file << "// INVENTORIES\n";
         for (auto& inventory : _inventoriesOnMap)
-            file << "Inventory " << char(34) << inventory->name << char(34) << " " << int(inventory->position.x) << " " << int(inventory->position.y) << "\n";
+            file << "Inventory " << char(34) << inventory->name << char(34) << " " << short(inventory->position.x) << " " << short(inventory->position.y) << "\n";
         if (_inventoriesOnMap.size() > 0)
             file << "\n";
 
@@ -219,7 +215,7 @@ public:
             //cout << "cant open map: " << filename << "\n";
             return;
         }
-            
+        
         //cout << "open map: " << filename << "\n";
 
         string line;
@@ -227,9 +223,9 @@ public:
         string objectName;
 
         // load tiles
-        int value;
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
+        short value;
+        for (short y = 0; y < 16; y++) {
+            for (short x = 0; x < 16; x++) {
                 file >> value;
                 editTile(x, y, value);
 
@@ -239,9 +235,11 @@ public:
             }
         }
 
+        
+
         // load floors
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 16; x++) {
+        for (short y = 0; y < 16; y++) {
+            for (short x = 0; x < 16; x++) {
                 file >> value;
                 editFloor(x, y, value);
             }
@@ -261,7 +259,7 @@ public:
 
             if (objectType == "Nature") {
 
-                int x, y;
+                short x, y;
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
                 lineStream >> x;
@@ -274,7 +272,7 @@ public:
 
             if (objectType == "Item") {
 
-                int x, y;
+                short x, y;
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
                 lineStream >> x;
@@ -289,7 +287,7 @@ public:
             if (objectType == "Path") {
 
                 string name;
-                int x, y;
+                short x, y;
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
                 lineStream >> x;
@@ -302,7 +300,7 @@ public:
 
             if (objectType == "Furniture") {
                 string name;
-                int x, y;
+                short x, y;
 
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
@@ -316,7 +314,7 @@ public:
 
             if (objectType == "Wall") {
                 string name;
-                int x, y;
+                short x, y;
 
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
@@ -330,7 +328,7 @@ public:
 
             if (objectType == "Door") {
                 string name;
-                int x, y;
+                short x, y;
 
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
@@ -344,7 +342,7 @@ public:
 
             if (objectType == "Monster") {
 
-                int x, y;
+                short x, y;
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
                 lineStream >> x;
@@ -356,7 +354,7 @@ public:
             }
 
             if (objectType == "Building") {
-                int x, y;
+                short x, y;
 
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
@@ -369,7 +367,7 @@ public:
             }
 
             if (objectType == "Character") {
-                int x, y;
+                short x, y;
 
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
@@ -383,7 +381,7 @@ public:
             }
 
             if (objectType == "Inventory") {
-                int x, y;
+                short x, y;
 
                 getline(lineStream, objectName, '"'); // Pomijamy pierwszy znak cudzysłowu
                 getline(lineStream, objectName, '"'); // Wczytaj nazwę do kolejnego cudzysłowu
@@ -394,25 +392,27 @@ public:
             }
         }
 
+        
+
         file.close();
     }
 
-    void editTile(sf::Vector2f worldMousePosition, int value) {
+    void editTile(sf::Vector2f worldMousePosition, short value) {
 
         terrain->edit(worldMousePosition, value);
     }
 
-    void editTile(int x, int y, int value) {
+    void editTile(short x, short y, short value) {
         terrain->edit(x, y, value);
         
     }
 
-    void editFloor(sf::Vector2f worldMousePosition, int value) {
+    void editFloor(sf::Vector2f worldMousePosition, short value) {
 
         floors->edit(worldMousePosition, value);
     }
 
-    void editFloor(int x, int y, int value) {
+    void editFloor(short x, short y, short value) {
 
         floors->edit(x, y, value);
     }
@@ -552,10 +552,7 @@ public:
 
     void update(float dt) {
     
-        shader->shader->setUniform("time", currentTime.asSeconds());
         waters->update();
-
-        
 
     }
 
@@ -570,7 +567,7 @@ public:
     {
         window->draw(*terrain);
         window->draw(*floors);
-        window->draw(*waters, &(*shader->shader));
+        window->draw(*waters);
     }
 
 };
@@ -590,21 +587,23 @@ public:
         maps.clear();
 
         // 8 x 4
-        int start_x = 0;
-        int end_x = 16;
-        int start_y = 0;
-        int end_y = 16;
+        short start_x = 0;
+        short end_x = 16;
+        short start_y = 0;
+        short end_y = 16;
 
         // CREATING MAPS
-        for (int y = start_y; y <= end_y; y++)
-            for (int x = start_x; x <= end_x; x++)
+        for (short y = start_y; y <= end_y; y++)
+            for (short x = start_x; x <= end_x; x++)
                 maps.push_back(new Map(x, y));
+
+        
 
         for (auto& map : maps) {
             map->load();
         }
-
-
+        
+        
         // MAP IS VISIBLE OR NOT
         mapVisiblings();
 
@@ -613,7 +612,7 @@ public:
 
         for (auto& map : maps)
             map->addGameObjectsToMainLists();
-
+        
     }
 
     Map* getMap(sf::Vector2f position) {
@@ -702,6 +701,6 @@ public:
 
 };
 
-World* world = nullptr;
+//World* world = nullptr;
 
 #endif

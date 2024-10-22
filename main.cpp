@@ -16,51 +16,68 @@
 #include <algorithm>
 #include <numeric>
 #include <functional>
-
 #include <string>
-#include <windows.h>
+#include <regex>    // for std::smatch
+//#include <windows.h>
 
 #include "headers/Window.hpp"
 #include "headers/Time.hpp"
 #include "headers/Camera.hpp"
 #include "headers/Mouse.hpp"
+#include "headers/Theme.hpp"
 
 #include "headers/Fonts.hpp"
 #include "headers/Textures.hpp"
 #include "headers/Shaders.hpp"
-
+#include "headers/Point.hpp"
 #include "headers/Collisions.hpp"
 
+#include "headers/GameStates.hpp"           
+#include "headers/RenderParameters.hpp"     // bools of the render value for example renderCoords, renderBorders
 
 #include "headers/GameObjects.hpp"
 #include "headers/TerrainAndFloors.hpp"     // Terrain and Floors
 #include "headers/Water.hpp"
+#include "headers/Borders.hpp"
 #include "headers/Pathfinding.hpp"
-
-#include "headers/GameStates.hpp"           
 
 #include "headers/HitTexts.hpp"             // Hit texts
 #include "headers/Items.hpp"                // manage of items, itemsOnMap, Inventory and InventoryOnMap
 #include "headers/UnitStates.hpp"           // states for Units
 #include "headers/Player.hpp"               // manage of Player
-#include "headers/Units.hpp"                // manage of Units
-#include "headers/Monsters.hpp"             // manage of Monster
-#include "headers/Natures.hpp"              // manage of Natures
-#include "headers/Furnitures.hpp"           // manage of Furnitures
-#include "headers/Paths.hpp"                // manage of Paths
-#include "headers/Walls.hpp"                // manage of Walls
+#include "headers/Units.hpp"                // manage of Units 
+#include "headers/Monsters.hpp"             // manage of Monster (dziobak, kolcorozec, bies, etc.)
+#include "headers/Natures.hpp"              // manage of Natures (tree, rock, boulder, etc.)
+#include "headers/Objects.hpp"              // manage of Objects (palisade, etc.)
+#include "headers/Furnitures.hpp"           // manage of Furnitures (barel, table, chest, etc.)
+#include "headers/FlatObjects.hpp"          // manage of Flat Objects (flat plants, flat rocks, etc.)
+#include "headers/Walls.hpp"                // manage of Walls 
 #include "headers/Doors.hpp"                // manage of Doors
+#include "headers/Plants.hpp"               // manage of Plants ( TO-DO - TEST )
+#include "headers/SmallObjects.hpp"         // manage of small objects (grass, etc.)
 #include "headers/Dialogues.hpp"            
 #include "headers/Character.hpp"            // manage of Characters
-#include "headers/Prefabs.hpp"              // all prefabs: itemsOnMap, InventoryOnMap, Characters, Monsters, Natures, Furnitures, Walls etc .. 
-#include "headers/BuildingsManager.hpp"            // manage of Buildings
+#include "headers/Prefabs.hpp"              // manage of all prefabs
+#include "headers/BuildingsManager.hpp"     // manage of Buildings
 #include "headers/GameObjectsManager.hpp"   // manage of GameObjects - update/sort/render/
-#include "headers/Maps.hpp"
+#include "headers/Map.hpp"
 #include "headers/Quests.hpp"
 
 #include "headers/GUI.hpp"
 #include "headers/PrefabToPaint.hpp"
 #include "headers/BrushSizes.hpp"
+
+#include "headers/TextArea.hpp"
+#include "headers/Buttons.hpp"
+#include "headers/Scrollbar.hpp"
+#include "headers/Dialog.hpp"
+#include "headers/Message.hpp"
+#include "headers/ScrollableText.hpp"
+#include "headers/OpenFileDialog.hpp"
+#include "headers/CheckBox.hpp"
+
+#include "headers/Tips.hpp"
+#include "headers/MenuBar.hpp"
 #include "headers/Tools.hpp"
 #include "headers/Palette.hpp"
 #include "headers/Painter.hpp"
@@ -74,6 +91,7 @@
 #include "Game.hpp"
 #include "MapEditor.hpp"
 #include "BuildingEditor.hpp"
+#include "MeshEditor.hpp"
 
 
 
@@ -517,26 +535,21 @@ void convertPNGsToSet() {
 }
 
 void testGLSL() {
-    // Tworzenie okna
-    sf::RenderWindow window(sf::VideoMode(512, 512), "GLSL Shader Animation");
+
+    sf::RenderWindow window(sf::VideoMode(512, 512), "test GLSL");
     
-    // Wczytywanie tekstury
     sf::Texture texture;
     if (!texture.loadFromFile("assets/noise.png"))
         return;
 
-    // Tworzenie sprite'a
     sf::Sprite sprite(texture);
 
-    // Wczytywanie shadera
     sf::Shader shader;
     if (!shader.loadFromFile("assets/shaders/circles.frag", sf::Shader::Fragment))
         return;
 
-    // Zegar do animacji
     sf::Clock clock;
 
-    // Główna pętla
     while (window.isOpen())
     {
         sf::Event event;
@@ -547,22 +560,119 @@ void testGLSL() {
 
         }
 
-        window.clear();
-
+        float time = clock.getElapsedTime().asSeconds();
         shader.setUniform("u_resolution", sf::Vector2f(1024,1024));
-
-        // Pobieranie czasu i wysyłanie do shadera
-        float time = clock.getElapsedTime().asSeconds(); 
         shader.setUniform("u_time", time);
 
-        // Przypisanie tekst
-        // shader.setUniform("texture", texture);
-        // Rysowanie sprite'a z shaderem
+        window.clear();
         window.draw(sprite, &shader);
-
         window.display();
     }
 
+}
+
+
+
+void testOpenDialogBox() {
+
+    //window->setFramerateLimit(4);
+    
+    cam = new Camera();
+    
+    OpenFileDialog* openDial = new OpenFileDialog(L"Load Map");
+    
+    while (window->isOpen())
+    {
+        prevTime = currentTime;
+        currentTime = timeClock.getElapsedTime();
+        dt = currentTime.asSeconds() - prevTime.asSeconds();
+
+        mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
+        worldMousePosition = window->mapPixelToCoords(mousePosition);
+
+        GUIwasHover = false;
+        GUIwasClicked = false;
+
+        sf::Event event;
+        while (window->pollEvent(event)) {
+
+            if (openDial) {
+                openDial->update(event);
+
+                
+                if (openDial->fileSelected) {
+                    cout << openDial->getPathfile() << "\n";
+                    delete openDial;
+                    openDial = nullptr;
+                }
+                
+            }
+        }
+
+        // RENDER
+        window->clear();
+        if(openDial)
+            openDial->draw();
+        window->display();
+    }
+
+}
+
+class Line {
+public:
+    sf::Vector2f start;
+    sf::Vector2f end;
+    sf::Vertex vertices[2];
+    sf::Color color; 
+
+    Line(const sf::Vector2f& _start, const sf::Vector2f& _end) {
+        start = _start;
+        end = _end;
+        color = sf::Color::Blue;
+    }
+
+    void setColor(sf::Color _color) {
+        color = _color;
+    }
+
+    sf::Vertex* getVertices() {
+        vertices[0] = sf::Vertex(start, color);
+        vertices[1] = sf::Vertex(end, color);
+        return vertices;
+    }
+};
+
+void testIntersectionTwoLines() {
+    
+    Line line1(sf::Vector2f(400, 300), sf::Vector2f(550, 300));
+    Line line2(sf::Vector2f(450, 350), sf::Vector2f(600, 350));
+    float len = 150;;
+    float angle = 0;
+    window->setFramerateLimit(30);
+
+    while (window->isOpen()) {
+
+        line1.end.x = line1.start.x - sin(angle*M_PI/180.0f)*len;
+        line1.end.y = line1.start.y + cos(angle*M_PI/180.0f)*len;
+        angle += 1;
+
+        if (angle >= 360.0f)
+            angle -= 360.0f;
+
+        if (intersectionTwoLines(line1.start, line1.end, line2.start, line2.end)) {
+            line1.setColor(sf::Color::Red);
+            line2.setColor(sf::Color::Red);
+        }
+        else {
+            line1.setColor(sf::Color::Blue);
+            line2.setColor(sf::Color::Blue);
+        }
+
+        window->clear();
+        window->draw(line1.getVertices(), 2, sf::Lines);
+        window->draw(line2.getVertices(), 2, sf::Lines);
+        window->display();
+    }
 }
 
 int main()
@@ -571,31 +681,33 @@ int main()
     // TOOLS - be careful with that
     //createSetsFromIdle("assets/monsters/kolcorozec/");
     //createSetsFromRuns("assets/monsters/jaszczur/");
-    //editWhitePixelsToTransparent("assets/monsters/niedzwiedz/");
-    //testSelectingFunction();
-    //testElipseSelectingFunction();
-    //convertPNGsToFramePNGs();
+    //editWhitePixelsToTransparent("assets/monsters/dziobak/");
+    //convertPNGsToSet();
     
     // LOADS
 	loadFonts();
-	loadTextures();		// TO-DO "FROM FILE"
-	loadShaders();		// TO-DO "FROM FILE"
-	loadItems();		// TO-DO "FROM FILE"
+	loadSingleTextures();	// TO-DO "FROM FILE"
+	loadShaders();		    // TO-DO "FROM FILE"
+	loadItems();		    // TO-DO "FROM FILE"
     loadInventories();
     loadDialogues();
     loadQuests();
-	loadPrefabs();		// TO-DO "FROM FILE"
-	
-
-	//window->setKeyRepeatEnabled(false);	// TO-DO commentary
-	
-    // PROGRAMS
-	game();
-	//MapEditor();
-    //BuildingEditor();
+	loadPrefabs();		    // TO-DO "FROM FILE"
+    
+	window->setKeyRepeatEnabled(false);	// TO-DO commentary
+    
+    // TESTS
     //testSelectingFunction();
     //testElipseSelectingFunction();
-    //convertPNGsToSet();
     //testGLSL();
+    //testOpenDialogBox();
+    //testIntersectionTwoLines();
+    
+    // PROGRAMS
+	//game();
+    MapEditor();
+    //BuildingEditor();
+    //MeshEditor();
+
     return 0;
 }

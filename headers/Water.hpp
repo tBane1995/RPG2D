@@ -1,14 +1,48 @@
 #ifndef Water_hpp
 #define Water_hpp
 
+class WaterPrefab : public GameObject {
+public:
+	short id;
+	TerrainPrefab* terrain;
+	Shader* shader;
+
+	WaterPrefab(string name, short id, TerrainPrefab* terrain) : GameObject(name) {
+		type = GameObjectType::Water;
+		
+		this->terrain = terrain;
+		this->id = id;
+		
+		if(terrain!=nullptr)
+			texture = terrain->texture;
+
+		shader = getShader("shaders/" + name);
+
+		collider->shape->setPosition(position);
+	}
+
+	virtual ~WaterPrefab() {
+
+	}
+
+	virtual void update(float dt) {
+		sf::Vector2f position;
+		position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
+		position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
+	}
+
+	virtual void draw() {
+		window->draw(*collider->shape);
+	}
+
+};
+
 class Water : public sf::Drawable, public sf::Transformable {
 public:
-	int width, height;
-	sf::Vector2i coords;
-	sf::VertexArray vertexes;
-	Texture* noiseTexture;
-
-	std::vector < std::vector < bool > > waters;
+	int width, height;				// normal is a 16x16
+	sf::Vector2i coords;			// multiply by 16x16
+	sf::VertexArray vertexes;		// vertexes of water
+	std::vector < short > tiles;	// tiles
 
 	Water(int x, int y, int width, int height) {
 
@@ -18,37 +52,37 @@ public:
 		this->width = width;
 		this->height = height;
 
-		// resize the array of water
-		waters.resize(height);
-		for (auto& water : waters)
-			water.resize(width);
-
-		// all the water is false
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++) {
-				waters[y][x] = false;
-			}
-		
-		noiseTexture = getTexture("noise");
-
+		tiles.resize(width * height, -1);
 
 	}
 
-	void edit(int x, int y, bool haveWater) {
-		waters[y][x] = haveWater;
+	void edit(int x, int y, short value = -1) {
+		tiles[y*width + x] = value;
+	}
+
+	void edit(sf::Vector2f worldMousePosition, short value = -1) {
+
+		short coord_x = (worldMousePosition.x - coords.x * 16) / 16;
+		short coord_y = (worldMousePosition.y - coords.y * 16) / 16;
+
+		if (coord_x < 0 || coord_x >= width || coord_y < 0 || coord_y >= height)
+			return;
+
+		tiles[coord_y*width + coord_x] = value;
+
 	}
 
 	void update() {
 
 		vertexes.clear();
 		vertexes.setPrimitiveType(sf::Triangles);
-		for(int y = 0;y < height; y++)
+		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++) {
 
-				if (waters[y][x] == true) {
-					
+				if (tiles[y*width + x] > -1 ) {
+
 					sf::Vertex tile[6];
-					
+
 					int coord_x = (coords.x + x);
 					int coord_y = (coords.y + y);
 
@@ -58,9 +92,9 @@ public:
 					tile[3].position = sf::Vector2f(coord_x * tileSide, (coord_y + 1) * tileSide);
 					tile[4].position = sf::Vector2f((coord_x + 1) * tileSide, coord_y * tileSide);
 					tile[5].position = sf::Vector2f((coord_x + 1) * tileSide, (coord_y + 1) * tileSide);
-					
-					int tu = (int(coord_x * tileSide) % noiseTexture->texture->getSize().x);
-					int tv = (int(coord_y * tileSide) % noiseTexture->texture->getSize().y);
+
+					short tu = (short(coord_x * tileSide) % 64) + ((tiles[y*width + x]) * 64);
+					short tv = (short(coord_y * tileSide) % 64);
 
 					tile[0].texCoords = sf::Vector2f(tu, tv);
 					tile[1].texCoords = sf::Vector2f(tu + tileSide, tv);
@@ -71,10 +105,10 @@ public:
 
 					for (int i = 0; i < 6; i++)
 						vertexes.append(tile[i]);
-					
+
 				}
 
-				
+
 			}
 	}
 
@@ -82,13 +116,52 @@ private:
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-	
 		states.transform *= getTransform();
-		states.texture = &(*noiseTexture->texture);
+		states.texture = &(*getSingleTexture("tiles/0_tileset")->texture);
+		states.shader = &(*getShader("shaders/lake")->shader);
 		target.draw(vertexes, states);
 
 
 	}
 };
+
+std::vector < WaterPrefab* > waterGameObjects;
+short countOfBasicWater;
+
+void createWaterPrefabs() {
+
+	waterGameObjects.clear();
+
+	waterGameObjects.push_back(new WaterPrefab("empty", 0, nullptr));
+	waterGameObjects.push_back(new WaterPrefab("palette_lake", 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[0])));
+	countOfBasicWater = 2;
+
+	/////////////////////////////////////////////////////
+	for (int i = 0; i < countOfBasicWater; i++) {
+
+		string shader_name = waterGameObjects[i + 1]->name;
+
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 0])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 1])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 2])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 3])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 4])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 5])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 6])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 7])));
+
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 8])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 9])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 10])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 11])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 12])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 13])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 14])));
+		waterGameObjects.push_back(new WaterPrefab(shader_name, i + 1, dynamic_cast<TerrainPrefab*>(terrainGameObjects[countOfBasicTerrain + i * 16 + 15])));
+
+	}
+
+
+}
 
 #endif

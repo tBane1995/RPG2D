@@ -10,29 +10,30 @@ public:
 	string name;
 	string bodySet;
 
-	int LEVEL;
-	int EXPERIENCE;
-	int SKILL_POINTS;
+	short LEVEL;
+	short EXPERIENCE;
+	short SKILL_POINTS;
 
-	int HP, HP_FULL;
-	int MP, MP_FULL;
-	int STRENGTH;
-	int DEXTERITY;
-	int INTELLIGENCE;
+	short HP, HP_FULL;
+	short MP, MP_FULL;
+	short STRENGTH;
+	short DEXTERITY;
+	short INTELLIGENCE;
 
-	int ACTION_RANGE;	// range of action 
-	int VIEW_RANGE;	// range of view
+	short ACTION_RANGE;	// range of action 
+	short VIEW_RANGE;	// range of view
 	
 	unitStates state;		// idle, run or attack
-	int frame;			// current frame
-	int direction;		// direction 0 - Top, 1 - Right, 2 - Bottom, 3 - Left
+	short frame;			// current frame
+	short direction;		// direction 0 - Top, 1 - Right, 2 - Bottom, 3 - Left
+
 	float countdown;	// timer to calculate frame
 	float cooldown;		// timer past attack to freeze
 	float attackTime;	// attack time in seconds
 
-	Texture* idleTextures[16];		// idle textures	
-	Texture* runTextures[16];		// run textures
-	Texture* attackTextures[16];	// attack textures
+	SingleTexture* idleTextures[16];		// idle textures	
+	SingleTexture* runTextures[16];		// run textures
+	SingleTexture* attackTextures[16];	// attack textures
 	sf::Sprite sprite;				// sprite to render texture
 
 	sf::CircleShape viewRangeArea;		// is a range of see of units // in this range player can be a select as target
@@ -43,9 +44,9 @@ public:
 	sf::Vector2f target;
 
 
-	Unit(string name, string bodySet, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, false) {
+	Unit(string name, string bodySet, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, ColliderType::Elipse) {
 
-		type = gameObjectType::Unit;
+		type = GameObjectType::Unit;
 
 		this->name = name;
 		this->bodySet = bodySet;
@@ -63,8 +64,8 @@ public:
 		DEXTERITY = 5;
 		INTELLIGENCE = 5;
 
-		VIEW_RANGE = 256.0f;
-		ACTION_RANGE = 32.0f;
+		VIEW_RANGE = 256;
+		ACTION_RANGE = 32;
 
 		state = unitStates::idle;
 		frame = 0;
@@ -83,7 +84,7 @@ public:
 
 	Unit(GameObject* object, float x, float y) : GameObject(object, x, y) {
 		
-		type = gameObjectType::Unit;
+		type = GameObjectType::Unit;
 
 		this->name = dynamic_cast<Unit*>(object)->name;
 		this->bodySet = dynamic_cast<Unit*>(object)->bodySet;
@@ -118,43 +119,47 @@ public:
 		createActionRangeArea();
 	}
 
-	~Unit() { }
+	virtual ~Unit() {
+	
+	}
 
 	void loadBody() {
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			idleTextures[i] = nullptr;
 			runTextures[i] = nullptr;
 			attackTextures[i] = nullptr;
 
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
-			idleTextures[i] = getTexture(bodySet + "/idleTop" + to_string(i));
-			idleTextures[4 + i] = getTexture(bodySet + "/idleRight" + to_string(i));
-			idleTextures[8 + i] = getTexture(bodySet + "/idleBottom" + to_string(i));
-			idleTextures[12 + i] = getTexture(bodySet + "/idleLeft" + to_string(i));
+			idleTextures[i] = getSingleTexture(bodySet + "/idleTop" + to_string(i));
+			idleTextures[4 + i] = getSingleTexture(bodySet + "/idleRight" + to_string(i));
+			idleTextures[8 + i] = getSingleTexture(bodySet + "/idleBottom" + to_string(i));
+			idleTextures[12 + i] = getSingleTexture(bodySet + "/idleLeft" + to_string(i));
 
-			runTextures[i] = getTexture(bodySet + "/runTop" + to_string(i));
-			runTextures[4 + i] = getTexture(bodySet + "/runRight" + to_string(i));
-			runTextures[8 + i] = getTexture(bodySet + "/runBottom" + to_string(i));
-			runTextures[12 + i] = getTexture(bodySet + "/runLeft" + to_string(i));
+			runTextures[i] = getSingleTexture(bodySet + "/runTop" + to_string(i));
+			runTextures[4 + i] = getSingleTexture(bodySet + "/runRight" + to_string(i));
+			runTextures[8 + i] = getSingleTexture(bodySet + "/runBottom" + to_string(i));
+			runTextures[12 + i] = getSingleTexture(bodySet + "/runLeft" + to_string(i));
 
-			attackTextures[i] = getTexture(bodySet + "/attackTop" + to_string(i));
-			attackTextures[4 + i] = getTexture(bodySet + "/attackRight" + to_string(i));
-			attackTextures[8 + i] = getTexture(bodySet + "/attackBottom" + to_string(i));
-			attackTextures[12 + i] = getTexture(bodySet + "/attackLeft" + to_string(i));
+			attackTextures[i] = getSingleTexture(bodySet + "/attackTop" + to_string(i));
+			attackTextures[4 + i] = getSingleTexture(bodySet + "/attackRight" + to_string(i));
+			attackTextures[8 + i] = getSingleTexture(bodySet + "/attackBottom" + to_string(i));
+			attackTextures[12 + i] = getSingleTexture(bodySet + "/attackLeft" + to_string(i));
 
 		}
 
+		texture = idleTextures[0];
+
 		sprite = sf::Sprite();
-		sprite.setOrigin(idleTextures[0]->texture->getSize().x/2, idleTextures[0]->texture->getSize().y/2 );
+		sprite.setOrigin(texture->texture->getSize().x / 2, texture->texture->getSize().y / 2 );
 
 	}
 
 	void createViewRangeArea() {
 		viewRangeArea = sf::CircleShape(VIEW_RANGE + collider->width/2.0f);
-		viewRangeArea.setFillColor(sf::Color(64, 64, 128, 128));
+		viewRangeArea.setFillColor(sf::Color(64, 64, 128, 96));
 		viewRangeArea.setOutlineColor(sf::Color(64, 64, 196, 128));
 		viewRangeArea.setOutlineThickness(4.0f);
 		viewRangeArea.setOrigin(VIEW_RANGE + collider->width/2.0f, VIEW_RANGE + collider->length/2.0f);
@@ -163,7 +168,7 @@ public:
 
 	void createActionRangeArea() {
 		actionRangeArea = sf::CircleShape(ACTION_RANGE + collider->width/2.0f);
-		actionRangeArea.setFillColor(sf::Color(128, 64, 64, 128));
+		actionRangeArea.setFillColor(sf::Color(128, 64, 64, 96));
 		actionRangeArea.setOutlineColor(sf::Color(196, 64, 64, 128));
 		actionRangeArea.setOutlineThickness(4.0f);
 		actionRangeArea.setOrigin(ACTION_RANGE + collider->width / 2.0f, ACTION_RANGE + collider->width/2.0f);
@@ -182,7 +187,7 @@ public:
 		lifeBar.setPosition(position.x, position.y - collider->height - 10);
 	}
 
-	int takeDamage(int damage) {
+	short takeDamage(short damage) {
 
 		HP -= damage;
 
@@ -192,8 +197,8 @@ public:
 		return damage;
 	}
 
-	int getDamage() {
-		int damage = STRENGTH * 2;
+	short getDamage() {
+		short damage = STRENGTH * 2;
 		damage = damage * (rand() % 50 + 75) / 100;	// 75% - 125%
 		return damage;
 	}
@@ -300,7 +305,8 @@ public:
 		}
 
 		calculateCurrentFrame(dt);
-		sprite.setTexture(*idleTextures[direction * 4 + frame]->texture);
+		texture = idleTextures[direction * 4 + frame];
+		sprite.setTexture(*texture->texture);
 	}
 
 	void run(float dt) {
@@ -308,7 +314,8 @@ public:
 		goToTarget(dt);
 
 		calculateCurrentFrame(dt);
-		sprite.setTexture(*runTextures[direction * 4 + frame]->texture);
+		texture = runTextures[direction * 4 + frame];
+		sprite.setTexture(*texture->texture);
 	}
 
 	void attack(float dt) {
@@ -319,7 +326,7 @@ public:
 			
 			if (rand() % (DEXTERITY + 10) - rand() % (player->DEXTERITY + 5) > 0) {
 				
-				int damage = player->takeDamage(getDamage());
+				short damage = player->takeDamage(getDamage());
 				hits->addHitText(hitposition, to_string(damage), sf::Color::Red);
 			}
 			else {
@@ -338,13 +345,15 @@ public:
 		if (frame >= 4) 
 			frame = 3;
 
-		sprite.setTexture(*attackTextures[direction * 4 + frame]->texture);
+		texture = attackTextures[direction * 4 + frame];
+		sprite.setTexture(*texture->texture);
 	}
 
 	void idling(float dt) {
 
 		calculateCurrentFrame(dt);
-		sprite.setTexture(*idleTextures[direction * 4 + frame]->texture);
+		texture = idleTextures[direction * 4 + frame];
+		sprite.setTexture(*texture->texture);
 		sprite.setPosition(position);
 	}
 
@@ -367,6 +376,8 @@ public:
 
 	virtual void draw() {
 
+		GameObject::draw();
+
 		window->draw(sprite);
 		window->draw(lifeBarBackground);
 		window->draw(lifeBar);
@@ -374,12 +385,11 @@ public:
 		GameObject::draw();
 	}
 
-	virtual void drawStatistic() {
-		
+	virtual void drawAllStatistics() {
 		window->draw(viewRangeArea);
 		window->draw(actionRangeArea);
 
-		GameObject::drawStatistic();
+		GameObject::drawAllStatistics();
 	}
 
 };

@@ -1,8 +1,8 @@
 // Author: Stefan Gustavson
 // Title: Worley noise 2x2x2
 
-uniform vec2 u_resolution;
-uniform float u_time;
+uniform vec2 resolution;
+uniform float time;
 
 // Cellular noise ("Worley noise") in 3D in GLSL.
 // Copyright (c) Stefan Gustavson 2011-04-19. All rights reserved.
@@ -75,9 +75,9 @@ vec2 cellular2x2x2(vec3 P) {
 }
 
 void main() {
- vec2 st = (2.*gl_TexCoord[0].xy * u_resolution.x - u_resolution.xy ) / u_resolution.y;
+ vec2 st = (2.*gl_TexCoord[0].xy * resolution.x - resolution.xy ) / resolution.y;
  st *= 10.;
- vec2 F = cellular2x2x2(vec3(st,u_time));
+ vec2 F = cellular2x2x2(vec3(st,time));
  float n = smoothstep(0.4, 0.5, F.x);
 
  vec3 background = vec3(0.2, 0.4, 0.05);

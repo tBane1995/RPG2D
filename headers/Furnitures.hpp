@@ -3,24 +3,23 @@
 
 class Furniture : public GameObject {
 public:
-	Texture* texture;
 	sf::Sprite sprite;
 
 	Inventory* inventory;
-	Texture* takeItTexture;
+	SingleTexture* takeItTexture;
 	sf::Sprite takeItSprite;
 	bool showHand;
 
-	Furniture(string name, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, true) {
-		type = gameObjectType::Furniture;
+	Furniture(string name, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, ColliderType::Rectangle) {
+		type = GameObjectType::Furniture;
 		
-		texture = getTexture(name);
+		texture = getSingleTexture(name);
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
 
 		inventory = nullptr;
-		takeItTexture = getTexture("GUI/hand");
+		takeItTexture = getSingleTexture("GUI/hand");
 		takeItSprite = sf::Sprite();
 		takeItSprite.setTexture(*takeItTexture->texture);
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
@@ -28,26 +27,37 @@ public:
 	}
 	
 	Furniture(GameObject* object, float x, float y) : GameObject(object, x, y) {
-		type = gameObjectType::Furniture;
+		type = GameObjectType::Furniture;
 		
-		texture = getTexture(name);
+		texture = getSingleTexture(name);
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
 
 		inventory = nullptr;
 		
-		takeItTexture = getTexture("GUI/hand");
+		takeItTexture = getSingleTexture("GUI/hand");
 		takeItSprite = sf::Sprite();
 		takeItSprite.setTexture(*takeItTexture->texture);
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
+
+		sprite.setPosition(position);
+		takeItSprite.setPosition(position.x, position.y - 50);
+	}
+
+	virtual ~Furniture() {
+
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
 	}
 
 	virtual void update(float dt) {
 
-		sprite.setPosition(position);
-		takeItSprite.setPosition(position.x, position.y - 50);
+		
 		showHand = false;
 
 		if (player != nullptr) {
@@ -72,9 +82,9 @@ public:
 					showHand = true;
 
 					if (inventory->items.size() > 0)
-						takeItSprite.setTexture(*getTexture("GUI/hand")->texture);
+						takeItSprite.setTexture(*getSingleTexture("GUI/hand")->texture);
 					else
-						takeItSprite.setTexture(*getTexture("GUI/grey_hand")->texture);
+						takeItSprite.setTexture(*getSingleTexture("GUI/grey_hand")->texture);
 				}
 
 			}
@@ -94,7 +104,7 @@ public:
 	}
 
 	virtual void draw() {
-		if (mouseIsOver)
+		if (mouseIsHover)
 			GameObject::draw();
 
 		window->draw(sprite);

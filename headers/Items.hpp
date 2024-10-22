@@ -8,9 +8,9 @@ enum class itemType { herb, potion, food, weapon, helmet, armor, pants, shield, 
 class Item {
 public:
 	string name;
-	Texture* texture;
+	SingleTexture* texture;
 	itemType type;
-	std::map < attribute, int > attributes;		// TO-DO
+	std::map < attribute, short > attributes;		// TO-DO
 	wstring description;
 
 	Item(string name, itemType type, wstring description) {
@@ -18,7 +18,7 @@ public:
 		this->name = name;
 		this->type = type;
 		this->description = description;
-		this->texture = getTexture(name);
+		this->texture = getSingleTexture(name);
 	}
 };
 
@@ -70,49 +70,57 @@ wstring getItemDescription(Item* item) {
 class ItemOnMap : public GameObject {
 public:
 	Item* item;
-	Texture* texture;
 	sf::Sprite sprite;
-	int count;
+	short count;
 	bool collected;
 
-	ItemOnMap(Item* item, float x, float y, int count = 1 ) : GameObject(item->name, x, y, 16, 8, 32, false, false) {
-		type = gameObjectType::ItemOnMap;
+	ItemOnMap(Item* item, float x, float y, short count = 1 ) : GameObject(item->name, x, y, 16, 8, 32, true, ColliderType::Elipse) {
+		type = GameObjectType::ItemOnMap;
 		this->item = item;
 		this->count = count;
 		collected = false;
 
-		texture = getTexture(item->name);
+		texture = getSingleTexture(item->name);
 		sprite = sf::Sprite();
  		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
 		sprite.setPosition(x, y);
-		sprite.setScale(0.5f, 0.5f);
+		sprite.setScale(0.75f, 0.75f);
 	}
 
 	ItemOnMap(GameObject* object, float x, float y) : GameObject(object, x, y) {
-		type = gameObjectType::ItemOnMap;
+		type = GameObjectType::ItemOnMap;
 		this->item = getItem(object->name);
 		this->count = 1;
 		collected = false;
 
-		texture = getTexture(item->name);
+		texture = getSingleTexture(item->name);
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
-		sprite.setPosition(x, y);
-		sprite.setScale(0.5f, 0.5f);
+		sprite.setPosition(position);
+		sprite.setScale(0.75f, 0.75f);
+	}
+
+	virtual ~ItemOnMap() {
+
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
 	}
 
 	virtual void update(float dt) {
 
-		sprite.setPosition(position);
+		
 	}
 
 	virtual void draw() {
 
 		window->draw(sprite);
 		
-		if (mouseIsOver) {
+		if (mouseIsHover) {
 
 			GameObject::draw();
 			window->draw(textname);
@@ -293,8 +301,8 @@ void loadItems() {
 class Inventory {
 public:
 	std::vector < Item* > items;
-	std::vector < int > counts;
-	int id;
+	std::vector < short > counts;
+	short id;
 
 	Inventory() {
 
@@ -304,7 +312,7 @@ public:
 		counts.clear();
 	}
 
-	Inventory(int id) {
+	Inventory(short id) {
 
 		this->id = id;
 
@@ -312,9 +320,9 @@ public:
 		counts.clear();
 	}
 
-	void addItem(string location, int count = 1) {
+	void addItem(string location, short count = 1) {
 
-		for (int i = 0; i < items.size(); i++)
+		for (short i = 0; i < items.size(); i++)
 			if (items[i]->name == location) {
 				counts[i] += count;
 				return;
@@ -324,11 +332,11 @@ public:
 		counts.push_back(count);
 	}
 
-	void addItem(Item* item, int count = 1) {
+	void addItem(Item* item, short count = 1) {
 
 		bool addedItem = false;
 
-		for (int i = 0; i < items.size(); i++)
+		for (short i = 0; i < items.size(); i++)
 			if (items[i] == item) {
 				counts[i] += count;
 				return;
@@ -338,9 +346,9 @@ public:
 		counts.push_back(count);
 	}
 
-	bool hasItemsInInventory(string location, int count=1) {
+	bool hasItemsInInventory(string location, short count=1) {
 		
-		for (int i = 0; i < items.size(); i++)
+		for (short i = 0; i < items.size(); i++)
 			if (items[i]->name == location) {
 				
 				if (counts[i] >= count)
@@ -352,17 +360,17 @@ public:
 		return false;
 	}
 
-	void removeItem(string name, int count = 1) {
-		for (int i = 0; i < items.size(); i++)
+	void removeItem(string name, short count = 1) {
+		for (short i = 0; i < items.size(); i++)
 			if (items[i]->name == name) {
 				counts[i] -= count;
 			}
 
 		// delete zeros (count)
 		std::vector < Item* > newItems;
-		std::vector < int > newCounts;
+		std::vector < short > newCounts;
 
-		for (int i = 0; i < items.size(); i++) {
+		for (short i = 0; i < items.size(); i++) {
 			if (counts[i] > 0) {
 				newItems.push_back(items[i]);
 				newCounts.push_back(counts[i]);
@@ -374,17 +382,17 @@ public:
 		counts = newCounts;
 	}
 
-	void removeItem(Item* item, int count = 1) {
-		for (int i = 0; i < items.size(); i++)
+	void removeItem(Item* item, short count = 1) {
+		for (short i = 0; i < items.size(); i++)
 			if (items[i] == item) {
 				counts[i] -= count;
 			}
 
 		// delete zeros (count)
 		std::vector < Item* > newItems;
-		std::vector < int > newCounts;
+		std::vector < short > newCounts;
 
-		for (int i = 0; i < items.size(); i++) {
+		for (short i = 0; i < items.size(); i++) {
 			if (counts[i] > 0) {
 				newItems.push_back(items[i]);
 				newCounts.push_back(counts[i]);
@@ -419,53 +427,58 @@ void loadInventories() {
 	
 }
 
-Inventory* getInventory(int id) {
+Inventory* getInventory(short id) {
 
 	for (auto& i : inventories)
 		if (i->id == id)
 			return i;
 
 
-	cout << "Inventory id=" << id << " not exists!";
+	cout << "Inventory id=" << id << " not exists!\n";
 	return nullptr;
 
 }
 
 class InventoryOnMap : public GameObject {
 public:
-	Texture* texture;
 	sf::Sprite sprite;
 	bool collected;
 	Inventory* inventory;
 
-	InventoryOnMap(Inventory* inventory, float x, float y) : GameObject("inventory", x, y, 16, 8, 16, false, false) {
-		type = gameObjectType::InventoryOnMap;
-		texture = getTexture("items/bag");
+	InventoryOnMap(Inventory* inventory, float x, float y) : GameObject("inventory", x, y, 16, 8, 16, true, ColliderType::Elipse) {
+		type = GameObjectType::InventoryOnMap;
+		texture = getSingleTexture("items/bag");
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
-		sprite.setPosition(x, y);
-		sprite.setScale(0.5f, 0.5f);
+		sprite.setPosition(position);
+		sprite.setScale(0.75f, 0.75f);
 		collected = false;
 		this->inventory = inventory;
 	}
 	
-	virtual void update(float dt) {
-	
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
 		sprite.setPosition(position);
+	}
+
+	virtual ~InventoryOnMap() {
+
+	}
+
+	virtual void update(float dt) {
+
 	}
 
 	virtual void draw() {
 
-		if (mouseIsOver)
+		if (mouseIsHover)
 			GameObject::draw();
 
 		window->draw(sprite);
 
 	}
 
-
-	~InventoryOnMap() { }
 };
 
 std::vector < InventoryOnMap* > inventoriesOnMap;

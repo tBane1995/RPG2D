@@ -24,7 +24,7 @@ public:
 		}
 
 		if (condition == questCondition::showDialogue) {
-			setDialogue(atoi(value.c_str()));
+			//setDialogue(atoi(value.c_str()));
 			return true;
 		}
 
@@ -67,7 +67,7 @@ public:
 		if (condition == questCondition::position)
 		{
 			std::istringstream iss(value);
-			int pos_x, pos_y;
+			short pos_x, pos_y;
 
 			iss >> pos_x >> pos_y;
 
@@ -89,13 +89,13 @@ public:
 
 class Quest {
 public:
-	int id;
+	short id;
 	std::wstring name;
 	questState state;
 	std::vector < Step* > steps;
-	int currentStep;
+	short currentStep;
 
-	Quest(int id, std::wstring name) {
+	Quest(short id, std::wstring name) {
 		
 		this->id = id;
 		this->name = name;
@@ -141,7 +141,7 @@ void loadQuests() {
 	quests.push_back(quest);
 
 	quest = new Quest(2, L"Wzdłóż ścieżki");
-	quest->addStep(questCondition::position, "2750 340", L"Powinienem sprawdzić dokąd zaprowadzi mnie ta ścieżka.");
+	quest->addStep(questCondition::position, "4100 650", L"Powinienem sprawdzić dokąd zaprowadzi mnie ta ścieżka.");
 	quest->addStep(questCondition::showDialogue, "15", L"ścieżka się skończyła, jak na razie nic więcej nie wymyślę.");
 	quests.push_back(quest);
 

@@ -16,31 +16,58 @@ GameObject* getPrefab(string name) {
 void loadPrefabs() {
 
     prefabs.clear();
- 
-    // TREES
+    
+    // NATURES
     // name, radius, width, height
-    prefabs.push_back(new Nature("natures/tree1", 36, 18, 145));
-    prefabs.push_back(new Nature("natures/tree2", 44, 22, 185));
-    prefabs.push_back(new Nature("natures/tree3", 36, 18, 145));
-    prefabs.push_back(new Nature("natures/tree4", 40, 20, 185));
-
-    prefabs.push_back(new Nature("natures/tree5", 36, 18, 145));
-    prefabs.push_back(new Nature("natures/tree6", 50, 25, 185));
-    prefabs.push_back(new Nature("natures/tree7", 36, 18, 145));
-    prefabs.push_back(new Nature("natures/tree8", 50, 25, 185));
     prefabs.push_back(new Nature("natures/tree9", 50, 25, 185));
+    prefabs.push_back(new Nature("natures/reed1", 16, 8, 16));
+    prefabs.push_back(new Nature("natures/reed2", 16, 8, 16));
+    prefabs.push_back(new Nature("natures/boulder1", 90, 45, 65));
+    prefabs.push_back(new Nature("natures/boulder2", 90, 45, 65));
+    prefabs.push_back(new Nature("natures/boulder3", 90, 45, 57));
+    prefabs.push_back(new Nature("natures/column", 50, 35, 57));
+    prefabs.push_back(new Nature("natures/driftwood", 125, 35, 30));
+    prefabs.push_back(new Nature("natures/rock1", 32, 12, 10));
+    prefabs.push_back(new Nature("natures/rock2", 28, 12, 10));
+
+    // OBJECTS
+    prefabs.push_back(new Object("objects/palisade", 32, 32, 128, true));
+    prefabs.push_back(new Object("objects/wooden_gate", 128, 32, 128, false));  // TO-DO
+    prefabs.push_back(new Object("objects/great_stone_gate", 128, 32, 128, false));  // TO-DO
+    prefabs.push_back(new Object("objects/stone_wall", 16, 16, 64, true));
+    prefabs.push_back(new Object("objects/great_stone_wall", 32, 32, 128, true));
+    prefabs.push_back(new Object("objects/great_gate", 64, 32, 128, false));
+    prefabs.push_back(new Object("objects/brazier", 64, 64, 64, true));
+    prefabs.push_back(new Object("objects/well", 72, 38, 60, true));
+
+    // FLAT OBJECTS
+    prefabs.push_back(new FlatObject("flatObjects/stonepath1", 64, 32, 32));
+    prefabs.push_back(new FlatObject("flatObjects/stonepath2", 64, 32, 32));
+
+    prefabs.push_back(new FlatObject("flatObjects/herb1", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/herb2", 16, 8, 16));
 
 
-    prefabs.push_back(new Nature("natures/bush1", 110, 55, 75));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock1", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock2", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock3", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock4", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock5", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock6", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock7", 16, 8, 16));
+    prefabs.push_back(new FlatObject("flatObjects/small_rock8", 16, 8, 16));
 
-    // ROCKS
-    // name, radius, width, height
-    prefabs.push_back(new Nature("natures/rocks1", 90, 45, 65));
-    prefabs.push_back(new Nature("natures/rocks2", 90, 45, 65));
-    prefabs.push_back(new Nature("natures/rocks3", 90, 45, 57));
+    // SMALL OBJECTS
+    prefabs.push_back(new SmallObject("smallObjects/grass1", 16, 8, 16));
+    prefabs.push_back(new SmallObject("smallObjects/grass2", 16, 8, 16));
+    prefabs.push_back(new SmallObject("smallObjects/grass3", 16, 8, 16));
 
     // FURNITURES - TO-DO - heights
     prefabs.push_back(new Furniture("furnitures/table", 60, 26, 36));
+    prefabs.push_back(new Furniture("furnitures/table_alchemist", 60, 26, 36));
+    prefabs.push_back(new Furniture("furnitures/table_alchemist_2", 60, 26, 36));
+    prefabs.push_back(new Furniture("furnitures/table_herbalist", 60, 26, 36));
+    prefabs.push_back(new Furniture("furnitures/table_herbalist_2", 60, 26, 36));
     prefabs.push_back(new Furniture("furnitures/bench", 60, 26, 36));
     prefabs.push_back(new Furniture("furnitures/chest", 60, 26, 36));
     prefabs.push_back(new Furniture("furnitures/wardrobe", 64, 32, 60));
@@ -52,46 +79,34 @@ void loadPrefabs() {
     prefabs.push_back(new Furniture("furnitures/lectern", 24, 16, 40));
 
     // WALLS
-    prefabs.push_back(new Wall("walls/wooden_wall_bottom", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_0", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_1", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_2", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_3", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_4", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_5", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_6", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_7", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_8", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/wooden_wall_top_9", 32, 32, 32));
+    Wall* wall = new Wall("walls/empty_wall", 32, 32, 32);
+    prefabs.push_back(wall);
 
-    prefabs.push_back(new Wall("walls/stone_wall_bottom", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_0", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_1", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_2", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_3", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_4", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_5", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_6", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_7", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_8", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/stone_wall_top_9", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/mud_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/stone_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/stone_wall_overgrown", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/wooden_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/brick_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/mulch_wall", 32, 32, 32));
 
-    prefabs.push_back(new Wall("walls/mud_wall_bottom", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_0", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_1", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_2", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_3", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_4", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_5", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_6", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_7", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_8", 32, 32, 32));
-    prefabs.push_back(new Wall("walls/mud_wall_top_9", 32, 32, 32));
+    std::vector < string > walls_names;
+    walls_names.push_back("walls/set_mud_wall");
+    walls_names.push_back("walls/set_stone_wall");
+    walls_names.push_back("walls/set_wooden_wall");
+    walls_names.push_back("walls/set_brick_wall");
+    walls_names.push_back("walls/set_mulch_wall");
+
+    for (auto& texture : singleTextures) {
+        for (auto& name : walls_names) {
+            if (texture->name.find(name) != std::string::npos) {
+                Wall* wall = new Wall(texture->name, 32, 32, 32);
+                prefabs.push_back(wall);
+                //cout << "created prefab: " << wall->name << "\n";
+            }
+        }
+    }
+
     
-
-    // PATHS
-    prefabs.push_back(new Path("paths/stonepath1", 64, 32, 32));
-    prefabs.push_back(new Path("paths/stonepath2", 64, 32, 32));
 
     // DOORS
     prefabs.push_back(new Door("doors/door_0"));

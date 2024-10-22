@@ -35,7 +35,7 @@ void updateTradePanel() {
 	drawItemStats = false;
 
 	background = sf::Sprite();
-	background.setTexture(*getTexture("GUI/infoPanel")->texture);
+	background.setTexture(*getSingleTexture("GUI/infoPanel")->texture);
 	background.setPosition(cam->position.x, cam->position.y + 275);
 	background.setOrigin(300, 75);
 
@@ -51,14 +51,14 @@ void updateTradePanel() {
 
 		itemName = sf::Text();
 		itemName.setCharacterSize(28);
-		itemName.setFillColor(textColor);
+		itemName.setFillColor(dialoguesColor);
 		itemName.setFont(basicFont);
 		itemName.setPosition(cam->position.x - 300 + 192, cam->position.y + 275 - 64);
 		itemName.setString(getShortName(item->name));
 
 		itemDescription = sf::Text();
 		itemDescription.setCharacterSize(16);
-		itemDescription.setFillColor(textColor);
+		itemDescription.setFillColor(dialoguesColor);
 		itemDescription.setFont(basicFont);
 		itemDescription.setPosition(cam->position.x - 300 + 192, cam->position.y + 275 - 32);
 		itemDescription.setString(getItemDescription(item));

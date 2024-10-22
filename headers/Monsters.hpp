@@ -7,12 +7,12 @@ public:
 	bool isAlive;
 	sf::Vector2f base;
 	sf::Time deathTime;
-	int EXPERIENCE;
+	short EXPERIENCE;
 	std::vector < Point > path;
 	std::vector < sf::CircleShape > pathpoints;
 
-	Monster(string name, float width, float length, float height,  int EXP) : Unit(name, name, width, length, height) {
-		type = gameObjectType::Monster;
+	Monster(string name, float width, float length, float height, short EXP) : Unit(name, name, width, length, height) {
+		type = GameObjectType::Monster;
 		direction = 2;
 		isAlive = true;
 		base = position;	
@@ -27,7 +27,7 @@ public:
 	}
 
 	Monster(GameObject* object, float x, float y) : Unit(object, x, y) {
-		type = gameObjectType::Monster;
+		type = GameObjectType::Monster;
 		direction = 2;
 		isAlive = true;
 		base = position;
@@ -39,24 +39,28 @@ public:
 		loadTextures();
 	}
 
+	virtual ~Monster() {
+
+	}
+
 	void loadTextures() {
 
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
-			attackTextures[i] = getTexture(name + "/attackTop" + to_string(i));
-			attackTextures[4 + i] = getTexture(name + "/attackRight" + to_string(i));
-			attackTextures[8 + i] = getTexture(name + "/attackBottom" + to_string(i));
-			attackTextures[12 + i] = getTexture(name + "/attackLeft" + to_string(i));
+			attackTextures[i] = getSingleTexture(name + "/attackTop" + to_string(i));
+			attackTextures[4 + i] = getSingleTexture(name + "/attackRight" + to_string(i));
+			attackTextures[8 + i] = getSingleTexture(name + "/attackBottom" + to_string(i));
+			attackTextures[12 + i] = getSingleTexture(name + "/attackLeft" + to_string(i));
 
-			idleTextures[i] = getTexture(name + "/idleTop" + to_string(i));
-			idleTextures[4 + i] = getTexture(name + "/idleRight" + to_string(i));
-			idleTextures[8 + i] = getTexture(name + "/idleBottom" + to_string(i));
-			idleTextures[12 + i] = getTexture(name + "/idleLeft" + to_string(i));
+			idleTextures[i] = getSingleTexture(name + "/idleTop" + to_string(i));
+			idleTextures[4 + i] = getSingleTexture(name + "/idleRight" + to_string(i));
+			idleTextures[8 + i] = getSingleTexture(name + "/idleBottom" + to_string(i));
+			idleTextures[12 + i] = getSingleTexture(name + "/idleLeft" + to_string(i));
 
-			runTextures[i] = getTexture(name + "/runTop" + to_string(i));
-			runTextures[4 + i] = getTexture(name + "/runRight" + to_string(i));
-			runTextures[8 + i] = getTexture(name + "/runBottom" + to_string(i));
-			runTextures[12 + i] = getTexture(name + "/runLeft" + to_string(i));
+			runTextures[i] = getSingleTexture(name + "/runTop" + to_string(i));
+			runTextures[4 + i] = getSingleTexture(name + "/runRight" + to_string(i));
+			runTextures[8 + i] = getSingleTexture(name + "/runBottom" + to_string(i));
+			runTextures[12 + i] = getSingleTexture(name + "/runLeft" + to_string(i));
 
 		}
 
@@ -263,7 +267,6 @@ public:
 
 			setLifeBar();
 			createTextname();
-
 		}
 
 	}
@@ -275,7 +278,7 @@ public:
 		if (collisionPrediction(this, 0, 0))
 			collider->shape->setFillColor(sf::Color::Red);
 		else
-			collider->shape->setFillColor(sf::Color(128, 64, 128, 128));
+			collider->shape->setFillColor(sf::Color(128, 64, 128, 96));
 		
 		viewRangeArea.setPosition(position);
 		actionRangeArea.setPosition(position);
@@ -296,16 +299,41 @@ public:
 
 		if (isAlive) {
 
+			Unit::draw();
+
 			window->draw(sprite);
 			window->draw(lifeBarBackground);
 			window->draw(lifeBar);
 
-			Unit::draw();
+			
 		}
 	}
 
-	virtual void drawStatistic() {
+	virtual void drawStatistics() {
+		
 
+		if(renderViewRange)
+			window->draw(viewRangeArea);
+		
+		if(renderActionRange)
+			window->draw(actionRangeArea);
+		
+		if (renderMonsterBases) {
+			for (auto& p : pathpoints)
+				window->draw(p);
+
+			sf::CircleShape meta(8);
+			meta.setFillColor(sf::Color::Blue);
+			meta.setOrigin(8, 8);
+			meta.setPosition(target.x, target.y);
+			window->draw(meta);
+		}
+
+		Unit::drawStatistics();
+	}
+
+	virtual void drawAllStatistics() {
+		
 		for (auto& p : pathpoints)
 			window->draw(p);
 
@@ -315,7 +343,7 @@ public:
 		meta.setPosition(target.x, target.y);
 		window->draw(meta);
 
-		Unit::drawStatistic();
+		Unit::drawAllStatistics();
 	}
 };
 

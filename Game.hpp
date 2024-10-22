@@ -35,6 +35,8 @@ void statsEvents();
 
 void game() {
 
+    window->setTitle("GAME 2D RPG");
+
     // load the icon for windows
     sf::Image ico;
     ico.loadFromFile("assets/logo/GameLogo.png");
@@ -42,7 +44,6 @@ void game() {
 
     cam = new Camera();
     window->setView(cam->view);
-
     prevTime = timeClock.getElapsedTime();
     currentTime = prevTime;
 
@@ -51,22 +52,26 @@ void game() {
     gameState = gameStates::start;
 
     sf::Text title = sf::Text("welcome", basicFont, 32);
-    title.setFillColor(titleColor);
+    title.setFillColor(textColor);
     title.setOrigin(title.getLocalBounds().width / 2.f, title.getLocalBounds().height / 2.f);
+    title.setPosition(cam->position.x, cam->position.y - 50);
 
     sf::Text press = sf::Text("press Spacebar to continue", basicFont, 16);
-    press.setFillColor(titleColor);
+    press.setFillColor(textColor);
     press.setOrigin(press.getLocalBounds().width / 2.f, press.getLocalBounds().height / 2.f);
+    press.setPosition(cam->position.x, cam->position.y + 50);
 
-    sf::Event event;
-    while (window->waitEvent(event)) {
-        if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            break;
+    bool skip = false;
+
+    while(window->isOpen() && !skip){
+
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                skip = true;
+                break;
+            }
         }
-
-        window->setView(cam->view);
-        title.setPosition(cam->position.x, cam->position.y - 50);
-        press.setPosition(cam->position.x, cam->position.y + 50);
 
         window->clear(sf::Color::Black);
         window->draw(title);
@@ -76,10 +81,16 @@ void game() {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     controls = new ControlsPanel();
-    
-    while (window->waitEvent(event)) {
-        if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            break;
+    skip = false;
+
+    while (window->isOpen() && !skip) {
+
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                skip = true;
+                break;
+            }
         }
 
         controls->update();
@@ -103,18 +114,32 @@ void game() {
     music.play();           // TO-DO
     */
     
+    ////////////////////////////////////////////////////
+
     gameState = gameStates::game;
 
     clearAllMainListsOfGameObjects();
-    world = new World();
-    world->mapVisiblings();
-    world->load();
+
+    createTerrainPrefabs();
+    createFloorsPrefabs();
+    createWaterPrefabs();
+
+    mapa = new Mapa();
+    mapa->load();
+    mapa->mapVisiblings();
 
     createPlayer();
     cam->setPosition(player->position);
     cam->update();
 
-    setDialogue(0);
+    updateGameObjects();
+
+    /////////////////////////////////////////////////
+
+    gameState = gameStates::dialogue;
+    //dialogueBox = new DialogueBox(getDialogue(5));
+    dialogueBox = new DialogueBox(getDialogue(0));
+    
 
     // TEST TRADE   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
@@ -129,15 +154,15 @@ void game() {
     */
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
-
     while (window->isOpen()) {
 
         prevTime = currentTime;
         currentTime = timeClock.getElapsedTime();
+        dt = currentTime.asSeconds() - prevTime.asSeconds();
 
         sf::Event event;
         while (window->pollEvent(event)) {
+
             if (event.type == sf::Event::Closed)
                 window->close();
 
@@ -151,9 +176,6 @@ void game() {
                 }
                 else if (gameState == gameStates::trade) {
                     tradeEvents();
-                }
-                else if (gameState == gameStates::dialogue) {
-                    dialogueEvents();
                 }
                 else if (gameState == gameStates::journal) {
                     journalEvents();
@@ -186,7 +208,18 @@ void game() {
                 }
             }
 
+            if (dialogueBox != nullptr) {
+                dialogueBox->update(event);
 
+                if (dialogueBox->state == DialogueState::End) {
+                    delete dialogueBox;
+                    dialogueBox = nullptr;
+                    gameState = gameStates::game;
+                }
+            }
+                
+
+            
         } // events
 
         // UPDATES
@@ -224,23 +257,21 @@ void game() {
 
         deleteCollectedItems();
 
-        dt = currentTime.asSeconds() - prevTime.asSeconds();
+        updateShaders();
 
-        world->mapVisiblings();
-        world->update(dt);
-
-        if(gameState != gameStates::dialogue)
-            checkQuests();
-        
-        for (auto& go : gameObjects)
-            if(visiblings(go))
-                go->update(dt);
-
-        std::sort(gameObjects.begin(), gameObjects.end(), [](const auto& a, const auto& b) { return a->position.y < b->position.y; });
+        mapa->mapVisiblings();
+        mapa->update();
 
         cam->setPosition(player->position);
         cam->update();
-        
+
+        updateGameObjects();
+        sortGameObjects();
+
+
+        if(gameState != gameStates::dialogue)
+            checkQuests();
+
         if(gameState == gameStates::inventory)
             updateInventoryPanel();
 
@@ -261,21 +292,14 @@ void game() {
         window->clear(sf::Color(64, 128, 64));
         window->setView(cam->view);
 
-        world->draw();
+        mapa->draw();
 
-        for (auto& m : world->maps)
-            for (auto& b : m->_buildings)
-                window->draw(*b->floors);
-
-        for (auto& path : paths)
-            if(visiblings(path))
-                path->draw();
-
-        for (auto& go : gameObjects) {
-            if (go->type != gameObjectType::Path)
-                if(visiblings(go))
-                    go->draw();
+        for (auto& building : buildings) {
+            window->draw(*building->floors);
+            building->draw();
         }
+
+        drawGameObjects();
 
         coverOutsideIfPlayerInBuilding();
         hits->draw();
@@ -285,15 +309,8 @@ void game() {
 
         if (gameState == gameStates::dialogue) {
 
-            if (dialogueState == dialogueStates::dialogue) {
-                setTextToDialogBox(currentDialogue->text);
-                drawDialogBox(window, page);
-            }
-
-            if (dialogueState == dialogueStates::choose) {
-                drawChooseBox(window);
-
-            }
+            if(dialogueBox != nullptr)
+                dialogueBox->draw();
         }
 
         if (gameState == gameStates::trade) {
@@ -317,8 +334,8 @@ void game() {
 
 
 void refreshLifeBar() {
-    int x = cam->position.x - screenWidth / 2.0f;
-    int y = cam->position.y - screenHeight / 2.0f;
+    short x = cam->position.x - screenWidth / 2.0f;
+    short y = cam->position.y - screenHeight / 2.0f;
 
     borderLifeBar = sf::RectangleShape(sf::Vector2f(200.0f, 30.0f));
     borderLifeBar.setPosition(x, y);
@@ -408,7 +425,7 @@ bool talkWithCharacter() {
 
                 // talking 
                 // TO-DO
-                setDialogue(character->dialogue);
+                //setDialogue(character->dialogue);
                 return true;
             }
         }
@@ -531,7 +548,7 @@ void deleteCollectedItems() {
     newItemsOnMapList.clear();
 
     for (auto& go : gameObjects) {
-        if (go->type != gameObjectType::ItemOnMap) {
+        if (go->type != GameObjectType::ItemOnMap) {
             newGameObjectsList.push_back(go);
         }
     }
@@ -551,7 +568,7 @@ void deleteCollectedItems() {
     newInventoriesOnMapList.clear();
 
     for (auto& go : gameObjects) {
-        if (go->type != gameObjectType::InventoryOnMap) {
+        if (go->type != GameObjectType::InventoryOnMap) {
             newGameObjectsList.push_back(go);
         }
     }
@@ -580,7 +597,7 @@ void coverOutsideIfPlayerInBuilding() {
     for (auto& b : buildings) {
         if (b->playerInside()) {
 
-            int x1, x2, y1, y2;
+            float x1, x2, y1, y2;
             x1 = b->position.x - b->size.x / 2 * 16;
             x2 = b->position.x + b->size.x / 2 * 16;
             y1 = b->position.y - b->size.y * 16;
@@ -655,17 +672,14 @@ void inventoryEvents() {
     // TO-DO WASD with inventory->scroll
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-        delete inventory;
         gameState = gameStates::game;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-        delete inventory;
         gameState = gameStates::game;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
-        delete inventory;
         cursor = 0;
         journal = new JournalPanel();
         gameState = gameStates::journal;
@@ -677,7 +691,7 @@ void inventoryEvents() {
 
         if (cursor + inventory->scroll * itemsInRow >= inventory->sortedItems.size()) {
             
-            int maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+            short maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
             if (maxScroll < 0)
                 maxScroll = 0;
 
@@ -721,7 +735,7 @@ void inventoryEvents() {
             if ((cursor / itemsInRow * itemsInRow) + itemsInRow < inventory->sortedItems.size())
                 cursor += itemsInRow;
 
-            int maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+            short maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
             if (maxScroll < 0)
                 maxScroll = 0;
 
@@ -743,13 +757,11 @@ void inventoryEvents() {
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
-        delete inventory;
         gameState = gameStates::journal;
         journal = new JournalPanel();
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
-        delete inventory;
         gameState = gameStates::stats;
         stats = new StatsPanel();
     }
@@ -761,14 +773,10 @@ void tradeEvents() {
     // TO-DO - whole function to repair
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-        delete inventoryLeft;
-        delete inventoryRight;
         gameState = gameStates::game;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-        delete inventoryLeft;
-        delete inventoryRight;
         gameState = gameStates::game;
     }
 
@@ -785,7 +793,7 @@ void tradeEvents() {
                 else {
                     cursor = cursor + itemsInRow - 1;
 
-                    int diff = cursor + inventoryLeft->scroll * itemsInRow - (inventoryLeft->sortedItems.size() - 1);
+                    short diff = cursor + inventoryLeft->scroll * itemsInRow - (inventoryLeft->sortedItems.size() - 1);
                     if (diff > 0)
                         cursor -= diff;
                 }
@@ -811,7 +819,7 @@ void tradeEvents() {
             else if ((cursor + inventoryLeft->scroll * itemsInRow >= inventoryLeft->sortedItems.size()-1) || cursor % itemsInRow == itemsInRow - 1) {
                 activePanel = activeInventoryPanel::Right;
 
-                int diff = cursor + inventoryRight->scroll * itemsInRow - (inventoryRight->sortedItems.size() - 1);
+                short diff = cursor + inventoryRight->scroll * itemsInRow - (inventoryRight->sortedItems.size() - 1);
                 if (diff > 0)
                     cursor -= diff;
                 cursor -= cursor % itemsInRow;
@@ -862,7 +870,7 @@ void tradeEvents() {
                 if ((cursor / itemsInRow * itemsInRow) + itemsInRow < inventoryRight->sortedItems.size())
                     cursor += itemsInRow;
 
-                int maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                short maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                 if (maxScroll < 0)
                     maxScroll = 0;
 
@@ -891,7 +899,7 @@ void tradeEvents() {
                 if ((cursor / itemsInRow * itemsInRow) + itemsInRow < inventoryLeft->sortedItems.size())
                     cursor += itemsInRow;
 
-                int maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                short maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                 if (maxScroll < 0)
                     maxScroll = 0;
 
@@ -927,7 +935,7 @@ void tradeEvents() {
 
                     if (cursor + inventoryLeft->scroll * itemsInRow >= inventoryLeft->sortedItems.size()) {
 
-                        int maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                        short maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                         if (maxScroll < 0)
                             maxScroll = 0;
 
@@ -953,7 +961,7 @@ void tradeEvents() {
 
                     if (cursor + inventoryRight->scroll * itemsInRow >= inventoryRight->sortedItems.size()) {
 
-                        int maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                        short maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                         if (maxScroll < 0)
                             maxScroll = 0;
 
@@ -979,101 +987,29 @@ void tradeEvents() {
 
 }
 
-void dialogueEvents() {
+void dialogueEvents(sf::Event& event) {
 
-    if (dialogueState == dialogueStates::dialogue) {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-
-            if ((page + 1) * 5 < countOfLines)
-                page += 1;
-            else {
-                if (currentDialogue->options.size() == 0) {
-                    currentDialogue = nullptr;
-                    gameState = gameStates::game;
-
-                }
-                else {
-                    dialogueState = dialogueStates::choose;
-                    chooseOption = 0;
-                    dialogScroll = 0;
-                }
-
-            }
-        }
-
-    }
-
-    else if (dialogueState == dialogueStates::choose) {
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-
-            if (availableOptions[chooseOption + dialogScroll].nextDialogueID != -1) {
-                dialogueState = dialogueStates::dialogue;
-                currentDialogue = getDialogue(availableOptions[chooseOption + dialogScroll].nextDialogueID);
-
-
-                page = 0;
-                dialogScroll = 0;
-            }
-            else {
-                // TO-DO
-                // add "delete Dialogue"
-                gameState = gameStates::game;
-            }
-                
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-
-            if (chooseOption == 0 && dialogScroll > 0)
-                dialogScroll -= 1;
-            else if (chooseOption > 0)
-                chooseOption -= 1;
-
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-
-            if (chooseOption + dialogScroll < availableOptions.size() - 1) {
-
-                int maxScroll = availableOptions.size() - 5;
-
-                if (maxScroll < 0)
-                    maxScroll = 0;
-
-                if (chooseOption >= 4 && dialogScroll < maxScroll)
-                    dialogScroll += 1;
-                else
-                    chooseOption += 1;
-
-            }
-        }
-
-    }
-
+    // TO-DO
+    dialogueBox->update(event);
 }
 
 void journalEvents() {
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-        delete journal;
         gameState = gameStates::game;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
-        delete journal;
         gameState = gameStates::game;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
-        delete journal;
         gameState = gameStates::inventory;
         inventory = new InventoryPanel(player->bag);
         cursor = 0;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
-        delete journal;
         gameState = gameStates::stats;
         stats = new StatsPanel();
         
@@ -1091,17 +1027,14 @@ void journalEvents() {
 void statsEvents() {
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-        delete stats;
         gameState = gameStates::game;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::H)) {
-        delete stats;
         gameState = gameStates::game;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-        delete stats;
         gameState = gameStates::inventory;
         cursor = 0;
         inventory = new InventoryPanel(player->bag);
@@ -1109,7 +1042,6 @@ void statsEvents() {
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
-        delete stats;
         gameState = gameStates::journal;
         cursor = 0;
         journal = new JournalPanel();

@@ -12,20 +12,29 @@ public:
 
 		name = "";
 		
-		int i = int(pathfile.size()) - 6;
+		short i = short(pathfile.size()) - 6;
 		while (i >= 0)
 			name = pathfile[i--] + name;
-
-		cout << name;
 
 		shader = new sf::Shader();
 		shader->loadFromFile("assets/" + pathfile, sf::Shader::Fragment);
 		//cout << "load shader: " << pathfile << " as: " << name << endl;
 	}
 
+	Shader(string name, string vertex_pathfile, string fragment_pathfile) {
+
+		this->name = name;
+		shader = new sf::Shader();
+		shader->loadFromFile("assets/" + vertex_pathfile, "assets/" + fragment_pathfile);
+		//cout << "load shader: " << vertex_pathfile << ", " << fragment_pathfile << " as: " << name << endl;
+	}
 };
 
 std::vector < Shader* > shaders;
+
+void loadShader(string name, string vertex_pathfile, string fragment_pathfile) {
+	shaders.push_back(new Shader(name, vertex_pathfile, fragment_pathfile));
+}
 
 void loadShader(string pathfile) {
 	shaders.push_back(new Shader(pathfile));
@@ -33,10 +42,15 @@ void loadShader(string pathfile) {
 
 void loadShaders() {
 
+	loadShader("shaders/empty.frag");
 	loadShader("shaders/water.frag");
+	loadShader("shaders/lake", "shaders/vertex.vert", "shaders/lake.frag");
+	loadShader("shaders/palette_lake", "shaders/vertex.vert", "shaders/palette_lake.frag");
+	loadShader("shaders/shadow", "shaders/vertex.vert", "shaders/shadow.frag");
 	loadShader("shaders/circle.frag");
 	loadShader("shaders/jagged_circle.frag");
 	loadShader("shaders/circles.frag");
+
 }
 
 Shader* getShader(string name) {
@@ -51,6 +65,22 @@ Shader* getShader(string name) {
 	return nullptr;
 }
 
+void updateShaders() {
+
+	sf::Vector2f resolution(screenWidth, screenHeight);
+
+	for(auto & s : shaders)
+		s->shader->setUniform("time", currentTime.asSeconds());
+
+	// lake shader
+	Shader* s = getShader("shaders/lake");
+	s->shader->setUniform("resolution", resolution);
+
+	// palette_lak
+	s = getShader("shaders/palette_lake");
+	s->shader->setUniform("resolution", resolution);
+	s->shader->setUniform("camPosition", cam->position);
+}
 
 
 #endif // !define Shaders_hpp

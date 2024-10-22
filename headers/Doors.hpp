@@ -5,29 +5,28 @@ enum class doorState { open, opening, close, closing };
 
 class Door : public GameObject {
 public:
-	Texture* textureOpen;
-	Texture* textureClose;
+	SingleTexture* textureOpen;
+	SingleTexture* textureClose;
 	sf::Sprite sprite;
 	sf::Time startActionTime;
 	doorState state;
-	Texture* takeItTexture;
+	SingleTexture* takeItTexture;
 	sf::Sprite takeItSprite;
 	bool showHand;
 
-	Door(string name) : GameObject(name, 0, 0, 64, 16, 64, true, true) {
+	Door(string name) : GameObject(name, 0, 0, 64, 16, 64, true, ColliderType::Rectangle) {
 		state = doorState::close;
-		type = gameObjectType::Door;
-		
-		
+		type = GameObjectType::Door;
 
-		this->textureOpen = getTexture("doors/door_open");
-		this->textureClose = getTexture("doors/door_close");
+		this->textureOpen = getSingleTexture("buildings/parts/door_open");
+		this->textureClose = getSingleTexture("buildings/parts/door_close");
+		this->texture = textureClose;
 		
 		sprite = sf::Sprite();
 		sprite.setTexture(*textureClose->texture);
 		sprite.setOrigin(textureClose->cx, textureClose->texture->getSize().y-1);
 
-		takeItTexture = getTexture("GUI/hand");
+		takeItTexture = getSingleTexture("GUI/hand");
 		takeItSprite = sf::Sprite();
 		takeItSprite.setTexture(*takeItTexture->texture);
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
@@ -40,24 +39,31 @@ public:
 	Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 		state = doorState::close;
 		
-		type = gameObjectType::Door;
+		type = GameObjectType::Door;
 		
 		this->textureClose = dynamic_cast<Door*>(object)->textureClose;
 		this->textureOpen = dynamic_cast<Door*>(object)->textureOpen;
-		
+		this->texture = textureClose;
+
 		sprite = sf::Sprite();
 		sprite.setTexture(*textureClose->texture);
 		sprite.setOrigin(dynamic_cast<Door*>(object)->sprite.getOrigin());
 		sprite.setPosition(position.x, position.y);
 
-		takeItTexture = getTexture("GUI/hand");
+		takeItTexture = getSingleTexture("GUI/hand");
 		takeItSprite = sf::Sprite();
 		takeItSprite.setTexture(*takeItTexture->texture);
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
 		collider->shape->setPosition(position.x, position.y-16);
+		textname.setPosition(position.x, position.y - collider->height);
+		takeItSprite.setPosition(position.x, position.y - 50);
 
+	}
+
+	virtual ~Door() {
+	
 	}
 
 	void open() {
@@ -101,10 +107,12 @@ public:
 			return false;
 	}
 
-	virtual void update(float dt) {
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
+	}
 
-		textname.setPosition(position.x, position.y - collider->height);
-		takeItSprite.setPosition(position.x, position.y - 50);
+	virtual void update(float dt) {
 
 		(playerNextTo()) ? showHand = true : showHand = false;
 
@@ -123,10 +131,11 @@ public:
 
 			} 
 		}
+
 	}
 
 	virtual void draw() {
-		if (mouseIsOver)
+		if (mouseIsHover)
 			GameObject::draw();
 
 		window->draw(sprite);

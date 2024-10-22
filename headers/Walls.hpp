@@ -3,32 +3,40 @@
 
 class Wall : public GameObject {
 public:
-	Texture* texture;
 	sf::Sprite sprite;
 
-	Wall(string name, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, true) {
-		type = gameObjectType::Wall;
-		this->texture = getTexture(name);
+	Wall(string name, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, ColliderType::Rectangle) {
+		type = GameObjectType::Wall;
+		this->texture = getSingleTexture(name);
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
 	}
 
 	Wall(GameObject* object, float x, float y) : GameObject(object, x, y) {
-		type = gameObjectType::Wall;
-		this->texture = getTexture(name);
+		type = GameObjectType::Wall;
+		this->texture = getSingleTexture(name);
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
-	}
-
-	virtual void update(float dt) {
-
 		sprite.setPosition(position);
 	}
 
+	virtual ~Wall() {
+
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
+	}
+
+	virtual void update(float dt) {
+		
+	}
+
 	virtual void draw() {
-		if (mouseIsOver)
+		if (mouseIsHover)
 			GameObject::draw();
 
 		window->draw(sprite);

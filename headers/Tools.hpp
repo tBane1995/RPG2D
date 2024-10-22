@@ -20,20 +20,28 @@ void generateBrush() {
                 int xx = baseX + (x - brushHalfWdt) * tileSide;
                 int yy = baseY + (y - brushHalfHgh) * tileSide;
 
-                if (prefabToPaint->type == gameObjectType::Terrain) {
-                    ter = new TerrainPrefab(prefabToPaint->name, static_cast<TerrainPrefab*>(prefabToPaint)->ttype);
+                if (prefabToPaint->type == GameObjectType::Terrain) {
+                    ter = new TerrainPrefab(prefabToPaint->name, static_cast<TerrainPrefab*>(prefabToPaint)->id);
                     ter->position = sf::Vector2f(xx + 8, yy + 8);
                     ter->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     ter->collider->shape->setPosition(sf::Vector2f(xx, yy));
                     prefabsToPaint.push_back(ter);
                 }
 
-                if (prefabToPaint->type == gameObjectType::Floor) {
-                    flo = new FloorPrefab(prefabToPaint->name, static_cast<FloorPrefab*>(prefabToPaint)->ftype);
+                if (prefabToPaint->type == GameObjectType::Floor) {
+                    flo = new FloorPrefab(prefabToPaint->name, static_cast<FloorPrefab*>(prefabToPaint)->id);
                     flo->position = sf::Vector2f(xx + 8, yy + 8);
                     flo->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     flo->collider->shape->setPosition(sf::Vector2f(xx, yy));
                     prefabsToPaint.push_back(flo);
+                }
+
+                if (prefabToPaint->type == GameObjectType::Water) {
+                    WaterPrefab* wat = new WaterPrefab(prefabToPaint->name, dynamic_cast<WaterPrefab*>(prefabToPaint)->id, dynamic_cast<WaterPrefab*>(prefabToPaint)->terrain);
+                    wat->position = sf::Vector2f(xx + 8, yy + 8);
+                    wat->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
+                    wat->collider->shape->setPosition(sf::Vector2f(xx, yy));
+                    prefabsToPaint.push_back(wat);
                 }
 
             }
@@ -54,21 +62,31 @@ void generateRectBrush() {
             int xx = baseX + (x - brushHalfWdt) * tileSide;
             int yy = baseY + (y - brushHalfHgh) * tileSide;
 
-            if (prefabToPaint->type == gameObjectType::Terrain) {
-                TerrainPrefab* ter = new TerrainPrefab(prefabToPaint->name, dynamic_cast<TerrainPrefab*>(prefabToPaint)->ttype);
+            if (prefabToPaint->type == GameObjectType::Terrain) {
+                TerrainPrefab* ter = new TerrainPrefab(prefabToPaint->name, dynamic_cast<TerrainPrefab*>(prefabToPaint)->id);
                 ter->position = sf::Vector2f(xx + 8, yy + 8);
                 ter->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 ter->collider->shape->setPosition(sf::Vector2f(xx, yy));
                 prefabsToPaint.push_back(ter);
             }
 
-            if (prefabToPaint->type == gameObjectType::Floor) {
-                FloorPrefab* flo = new FloorPrefab(prefabToPaint->name, dynamic_cast<FloorPrefab*>(prefabToPaint)->ftype);
+            if (prefabToPaint->type == GameObjectType::Floor) {
+                FloorPrefab* flo = new FloorPrefab(prefabToPaint->name, dynamic_cast<FloorPrefab*>(prefabToPaint)->id);
                 flo->position = sf::Vector2f(xx + 8, yy + 8);
                 flo->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 flo->collider->shape->setPosition(sf::Vector2f(xx, yy));
                 prefabsToPaint.push_back(flo);
             }
+
+            if (prefabToPaint->type == GameObjectType::Water) {
+                WaterPrefab* wat = new WaterPrefab(prefabToPaint->name, dynamic_cast<WaterPrefab*>(prefabToPaint)->id, dynamic_cast<WaterPrefab*>(prefabToPaint)->terrain);
+                wat->position = sf::Vector2f(xx + 8, yy + 8);
+                wat->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
+                wat->collider->shape->setPosition(sf::Vector2f(xx, yy));
+                prefabsToPaint.push_back(wat);
+            }
+
+            
 
         }
     }
@@ -89,20 +107,28 @@ void generateRectangle() {
             int xx = x * int(tileSide);
             int yy = y * int(tileSide);
 
-            if (prefabToPaint->type == gameObjectType::Terrain) {
-                TerrainPrefab* ter = new TerrainPrefab(prefabToPaint->name, dynamic_cast<TerrainPrefab*>(prefabToPaint)->ttype);
+            if (prefabToPaint->type == GameObjectType::Terrain) {
+                TerrainPrefab* ter = new TerrainPrefab(prefabToPaint->name, dynamic_cast<TerrainPrefab*>(prefabToPaint)->id);
                 ter->position = sf::Vector2f(xx + 8, yy + 8);
                 ter->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 ter->collider->shape->setPosition(sf::Vector2f(xx, yy));
                 prefabsToPaint.push_back(ter);
             }
 
-            if (prefabToPaint->type == gameObjectType::Floor) {
-                FloorPrefab* flo = new FloorPrefab(prefabToPaint->name, dynamic_cast<FloorPrefab*>(prefabToPaint)->ftype);
+            if (prefabToPaint->type == GameObjectType::Floor) {
+                FloorPrefab* flo = new FloorPrefab(prefabToPaint->name, dynamic_cast<FloorPrefab*>(prefabToPaint)->id);
                 flo->position = sf::Vector2f(xx + 8, yy + 8);
                 flo->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 flo->collider->shape->setPosition(sf::Vector2f(xx, yy));
                 prefabsToPaint.push_back(flo);
+            }
+
+            if (prefabToPaint->type == GameObjectType::Water) {
+                WaterPrefab* wat = new WaterPrefab(prefabToPaint->name, dynamic_cast<WaterPrefab*>(prefabToPaint)->id, dynamic_cast<WaterPrefab*>(prefabToPaint)->terrain);
+                wat->position = sf::Vector2f(xx + 8, yy + 8);
+                wat->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
+                wat->collider->shape->setPosition(sf::Vector2f(xx, yy));
+                prefabsToPaint.push_back(wat);
             }
 
         }
@@ -138,21 +164,30 @@ void generateElipse() {
                 int xx = x * int(tileSide);
                 int yy = y * int(tileSide);
 
-                if (prefabToPaint->type == gameObjectType::Terrain) {
-                    TerrainPrefab* ter = new TerrainPrefab(prefabToPaint->name, dynamic_cast<TerrainPrefab*>(prefabToPaint)->ttype);
+                if (prefabToPaint->type == GameObjectType::Terrain) {
+                    TerrainPrefab* ter = new TerrainPrefab(prefabToPaint->name, dynamic_cast<TerrainPrefab*>(prefabToPaint)->id);
                     ter->position = sf::Vector2f(xx + 8, yy + 8);
                     ter->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     ter->collider->shape->setPosition(sf::Vector2f(xx, yy));
                     prefabsToPaint.push_back(ter);
                 }
 
-                if (prefabToPaint->type == gameObjectType::Floor) {
-                    FloorPrefab* flo = new FloorPrefab(prefabToPaint->name, dynamic_cast<FloorPrefab*>(prefabToPaint)->ftype);
+                if (prefabToPaint->type == GameObjectType::Floor) {
+                    FloorPrefab* flo = new FloorPrefab(prefabToPaint->name, dynamic_cast<FloorPrefab*>(prefabToPaint)->id);
                     flo->position = sf::Vector2f(xx + 8, yy + 8);
                     flo->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     flo->collider->shape->setPosition(sf::Vector2f(xx, yy));
                     prefabsToPaint.push_back(flo);
                 }
+
+                if (prefabToPaint->type == GameObjectType::Water) {
+                    WaterPrefab* wat = new WaterPrefab(prefabToPaint->name, dynamic_cast<WaterPrefab*>(prefabToPaint)->id, dynamic_cast<WaterPrefab*>(prefabToPaint)->terrain);
+                    wat->position = sf::Vector2f(xx + 8, yy + 8);
+                    wat->collider->shape->setFillColor(sf::Color(129, 48, 48, 128));
+                    wat->collider->shape->setPosition(sf::Vector2f(xx, yy));
+                    prefabsToPaint.push_back(wat);
+                }
+
 
             }
         }

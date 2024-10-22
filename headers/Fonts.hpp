@@ -5,9 +5,6 @@
 sf::Font basicFont;
 sf::Font dialogBoxFont;
 
-sf::Color textColor = sf::Color(234, 224, 175);
-sf::Color textActiveColor = sf::Color(255, 201, 14);
-sf::Color titleColor = sf::Color::White;
 
 void loadFonts() {
 	basicFont = sf::Font();
@@ -21,7 +18,7 @@ void loadFonts() {
 
 std::wstring ConvertUtf8ToWide(const std::string& utf8Str) {
     // TO-DO
-    int wideCharCount = MultiByteToWideChar(CP_UTF8, 0, utf8Str.c_str(), utf8Str.size(), nullptr, 0);
+    short wideCharCount = MultiByteToWideChar(CP_UTF8, 0, utf8Str.c_str(), utf8Str.size(), nullptr, 0);
     if (wideCharCount == 0) {
         throw std::runtime_error("Error in MultiByteToWideChar");
     }
@@ -39,35 +36,56 @@ void replaceAll(std::string& str, const std::string& from, const std::string& to
     }
 }
 
-std::vector < std::wstring > wrapText(std::wstring text, int characterSize, int maxWidth) {
-    
+
+std::vector < std::wstring > wrapText(std::wstring text, const sf::Font& font, short characterSize, short maxWidth) {
+
     std::vector < std::wstring > wrappedText;
 
-    wrappedText.clear();
+    std::wistringstream wordsStream(text);
+    std::wstring word;
+    std::wstring currentLine;
 
-	std::wistringstream wordsStream(text);
-	std::wstring word;
-	std::wstring currentLine;
+    while (std::getline(wordsStream, word, L' ')) {
 
-	while (wordsStream >> word) {
-		
-		std::wstring testLine = currentLine.empty() ? word : currentLine + L" " + word;
-		sf::Text testText(testLine, dialogBoxFont, characterSize);
-		
-		if (testText.getLocalBounds().width > maxWidth) {
-			wrappedText.push_back(currentLine);
-			currentLine = word;
-		}
-		else {
-			currentLine = testLine;
-		}
-	}
+        // przetwarzanie enterów
+        std::size_t newLinePos;
+        while ((newLinePos = word.find(L'\n')) != std::wstring::npos) {
 
-	if (!currentLine.empty()) {
-		wrappedText.push_back(currentLine);
-	}
+            std::wstring beforeNewLine = word.substr(0, newLinePos);
+            std::wstring testLine = (currentLine.empty())? beforeNewLine : currentLine + L" " + beforeNewLine;
+            sf::Text testText(testLine, font, characterSize);
 
-	return wrappedText;
+            if (!testLine.empty() && testText.getLocalBounds().width >= maxWidth) {
+                wrappedText.push_back(currentLine);
+                currentLine = beforeNewLine;
+            }
+            else {
+                currentLine = testLine;
+            }
+
+            wrappedText.push_back(currentLine);
+            currentLine.clear();
+            word = word.substr(newLinePos + 1);
+        }
+
+        // przetwarzanie tekstu
+        std::wstring testLine = (currentLine.empty())? word : currentLine + L" " + word;
+        sf::Text testText(testLine, font, characterSize);
+
+        if ( maxWidth>0.0f && testText.getLocalBounds().width >= maxWidth) {
+            wrappedText.push_back(currentLine);
+            currentLine = word;
+        }
+        else {
+            currentLine = testLine;
+        }
+    }
+
+    if (!currentLine.empty()) {
+        wrappedText.push_back(currentLine);
+    }
+
+    return wrappedText;
 }
 
 std::string getShortName(std::string fullname) {
