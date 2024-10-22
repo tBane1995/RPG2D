@@ -28,7 +28,7 @@ public:
 			for (int x = 0; x < width; x++) {
 				waters[y][x] = false;
 			}
-		
+
 		noiseTexture = getTexture("noise");
 
 
@@ -38,17 +38,29 @@ public:
 		waters[y][x] = haveWater;
 	}
 
+	void edit(sf::Vector2f worldMousePosition, bool haveWater) {
+
+		short coord_x = (worldMousePosition.x - coords.x * 16) / 16;
+		short coord_y = (worldMousePosition.y - coords.y * 16) / 16;
+
+		if (coord_x < 0 || coord_x >= width || coord_y < 0 || coord_y >= height)
+			return;
+
+		waters[coord_y][coord_x] = haveWater;
+
+	}
+
 	void update() {
 
 		vertexes.clear();
 		vertexes.setPrimitiveType(sf::Triangles);
-		for(int y = 0;y < height; y++)
+		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++) {
 
 				if (waters[y][x] == true) {
-					
+
 					sf::Vertex tile[6];
-					
+
 					int coord_x = (coords.x + x);
 					int coord_y = (coords.y + y);
 
@@ -58,7 +70,7 @@ public:
 					tile[3].position = sf::Vector2f(coord_x * tileSide, (coord_y + 1) * tileSide);
 					tile[4].position = sf::Vector2f((coord_x + 1) * tileSide, coord_y * tileSide);
 					tile[5].position = sf::Vector2f((coord_x + 1) * tileSide, (coord_y + 1) * tileSide);
-					
+
 					int tu = (int(coord_x * tileSide) % noiseTexture->texture->getSize().x);
 					int tv = (int(coord_y * tileSide) % noiseTexture->texture->getSize().y);
 
@@ -71,10 +83,10 @@ public:
 
 					for (int i = 0; i < 6; i++)
 						vertexes.append(tile[i]);
-					
+
 				}
 
-				
+
 			}
 	}
 
@@ -82,9 +94,11 @@ private:
 
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-	
+
 		states.transform *= getTransform();
 		states.texture = &(*noiseTexture->texture);
+		states.shader = &(*getShader("shaders/water")->shader);
+
 		target.draw(vertexes, states);
 
 

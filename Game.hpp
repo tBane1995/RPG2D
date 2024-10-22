@@ -35,6 +35,8 @@ void statsEvents();
 
 void game() {
 
+    window->setTitle("GAME 2D RPG");
+
     // load the icon for windows
     sf::Image ico;
     ico.loadFromFile("assets/logo/GameLogo.png");
@@ -53,20 +55,24 @@ void game() {
     sf::Text title = sf::Text("welcome", basicFont, 32);
     title.setFillColor(titleColor);
     title.setOrigin(title.getLocalBounds().width / 2.f, title.getLocalBounds().height / 2.f);
+    title.setPosition(cam->position.x, cam->position.y - 50);
 
     sf::Text press = sf::Text("press Spacebar to continue", basicFont, 16);
     press.setFillColor(titleColor);
     press.setOrigin(press.getLocalBounds().width / 2.f, press.getLocalBounds().height / 2.f);
+    press.setPosition(cam->position.x, cam->position.y + 50);
 
-    sf::Event event;
-    while (window->waitEvent(event)) {
-        if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            break;
+    bool skip = false;
+
+    while(window->isOpen() && !skip){
+
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                skip = true;
+                break;
+            }
         }
-
-        window->setView(cam->view);
-        title.setPosition(cam->position.x, cam->position.y - 50);
-        press.setPosition(cam->position.x, cam->position.y + 50);
 
         window->clear(sf::Color::Black);
         window->draw(title);
@@ -76,10 +82,16 @@ void game() {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     controls = new ControlsPanel();
-    
-    while (window->waitEvent(event)) {
-        if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            break;
+    skip = false;
+
+    while (window->isOpen() && !skip) {
+
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                skip = true;
+                break;
+            }
         }
 
         controls->update();
@@ -106,15 +118,16 @@ void game() {
     gameState = gameStates::game;
 
     clearAllMainListsOfGameObjects();
-    world = new World();
-    world->mapVisiblings();
-    world->load();
+
+    mapa = new Mapa();
+    mapa->mapVisiblings();
+    mapa->load();
 
     createPlayer();
     cam->setPosition(player->position);
     cam->update();
 
-    setDialogue(0);
+    setDialogue(short(0));
 
     // TEST TRADE   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /*
@@ -129,12 +142,11 @@ void game() {
     */
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    
-
     while (window->isOpen()) {
 
         prevTime = currentTime;
         currentTime = timeClock.getElapsedTime();
+        dt = currentTime.asSeconds() - prevTime.asSeconds();
 
         sf::Event event;
         while (window->pollEvent(event)) {
@@ -224,10 +236,8 @@ void game() {
 
         deleteCollectedItems();
 
-        dt = currentTime.asSeconds() - prevTime.asSeconds();
-
-        world->mapVisiblings();
-        world->update(dt);
+        mapa->mapVisiblings();
+        mapa->update();
 
         if(gameState != gameStates::dialogue)
             checkQuests();
@@ -261,11 +271,11 @@ void game() {
         window->clear(sf::Color(64, 128, 64));
         window->setView(cam->view);
 
-        world->draw();
+        mapa->draw();
 
-        for (auto& m : world->maps)
-            for (auto& b : m->_buildings)
-                window->draw(*b->floors);
+        for (auto& chunk : mapa->chunks)
+            for (auto& building : chunk->_buildings)
+                window->draw(*building->floors);
 
         for (auto& path : paths)
             if(visiblings(path))
@@ -286,8 +296,8 @@ void game() {
         if (gameState == gameStates::dialogue) {
 
             if (dialogueState == dialogueStates::dialogue) {
-                setTextToDialogBox(currentDialogue->text);
-                drawDialogBox(window, page);
+                setTextToDialogueBox(currentDialogue->text);
+                drawDialogueBox(window, page);
             }
 
             if (dialogueState == dialogueStates::choose) {
@@ -317,8 +327,8 @@ void game() {
 
 
 void refreshLifeBar() {
-    int x = cam->position.x - screenWidth / 2.0f;
-    int y = cam->position.y - screenHeight / 2.0f;
+    short x = cam->position.x - screenWidth / 2.0f;
+    short y = cam->position.y - screenHeight / 2.0f;
 
     borderLifeBar = sf::RectangleShape(sf::Vector2f(200.0f, 30.0f));
     borderLifeBar.setPosition(x, y);
@@ -580,7 +590,7 @@ void coverOutsideIfPlayerInBuilding() {
     for (auto& b : buildings) {
         if (b->playerInside()) {
 
-            int x1, x2, y1, y2;
+            float x1, x2, y1, y2;
             x1 = b->position.x - b->size.x / 2 * 16;
             x2 = b->position.x + b->size.x / 2 * 16;
             y1 = b->position.y - b->size.y * 16;
@@ -677,7 +687,7 @@ void inventoryEvents() {
 
         if (cursor + inventory->scroll * itemsInRow >= inventory->sortedItems.size()) {
             
-            int maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+            short maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
             if (maxScroll < 0)
                 maxScroll = 0;
 
@@ -721,7 +731,7 @@ void inventoryEvents() {
             if ((cursor / itemsInRow * itemsInRow) + itemsInRow < inventory->sortedItems.size())
                 cursor += itemsInRow;
 
-            int maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+            short maxScroll = (inventory->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
             if (maxScroll < 0)
                 maxScroll = 0;
 
@@ -785,7 +795,7 @@ void tradeEvents() {
                 else {
                     cursor = cursor + itemsInRow - 1;
 
-                    int diff = cursor + inventoryLeft->scroll * itemsInRow - (inventoryLeft->sortedItems.size() - 1);
+                    short diff = cursor + inventoryLeft->scroll * itemsInRow - (inventoryLeft->sortedItems.size() - 1);
                     if (diff > 0)
                         cursor -= diff;
                 }
@@ -811,7 +821,7 @@ void tradeEvents() {
             else if ((cursor + inventoryLeft->scroll * itemsInRow >= inventoryLeft->sortedItems.size()-1) || cursor % itemsInRow == itemsInRow - 1) {
                 activePanel = activeInventoryPanel::Right;
 
-                int diff = cursor + inventoryRight->scroll * itemsInRow - (inventoryRight->sortedItems.size() - 1);
+                short diff = cursor + inventoryRight->scroll * itemsInRow - (inventoryRight->sortedItems.size() - 1);
                 if (diff > 0)
                     cursor -= diff;
                 cursor -= cursor % itemsInRow;
@@ -862,7 +872,7 @@ void tradeEvents() {
                 if ((cursor / itemsInRow * itemsInRow) + itemsInRow < inventoryRight->sortedItems.size())
                     cursor += itemsInRow;
 
-                int maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                short maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                 if (maxScroll < 0)
                     maxScroll = 0;
 
@@ -891,7 +901,7 @@ void tradeEvents() {
                 if ((cursor / itemsInRow * itemsInRow) + itemsInRow < inventoryLeft->sortedItems.size())
                     cursor += itemsInRow;
 
-                int maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                short maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                 if (maxScroll < 0)
                     maxScroll = 0;
 
@@ -927,7 +937,7 @@ void tradeEvents() {
 
                     if (cursor + inventoryLeft->scroll * itemsInRow >= inventoryLeft->sortedItems.size()) {
 
-                        int maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                        short maxScroll = (inventoryLeft->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                         if (maxScroll < 0)
                             maxScroll = 0;
 
@@ -953,7 +963,7 @@ void tradeEvents() {
 
                     if (cursor + inventoryRight->scroll * itemsInRow >= inventoryRight->sortedItems.size()) {
 
-                        int maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
+                        short maxScroll = (inventoryRight->sortedItems.size() + itemsInRow - 1) / itemsInRow - itemsInCol;
                         if (maxScroll < 0)
                             maxScroll = 0;
 
@@ -1036,7 +1046,7 @@ void dialogueEvents() {
 
             if (chooseOption + dialogScroll < availableOptions.size() - 1) {
 
-                int maxScroll = availableOptions.size() - 5;
+                short maxScroll = availableOptions.size() - 5;
 
                 if (maxScroll < 0)
                     maxScroll = 0;

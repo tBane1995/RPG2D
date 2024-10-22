@@ -8,15 +8,10 @@ std::vector < GameObject* > terrainGameObjects;
 std::vector < GameObject* > floorGameObjects;
 std::vector < GameObject* > buildingGameObjects;
 
-sf::Color idleColor = sf::Color(192.0f, 192.0f, 192.0f);
-sf::Color hoverColor = sf::Color(224.0f, 224.0f, 224.0f);
-sf::Color pressedColor = sf::Color::White;
+short paletteScroll;
+short paletteCols;
+short paletteRows;
 
-int paletteScroll;
-int paletteCols;
-int paletteRows;
-
-enum class buttonState { idle, hover, pressed};
 /*
     idle = normal state
     hover - button is hover by cursor
@@ -92,13 +87,13 @@ public:
     virtual void changeColor() {
 
         if (state == buttonState::pressed) {
-            sprite.setColor(pressedColor);
+            sprite.setColor(spritePressedColor);
         }
         else if (state == buttonState::hover) {
-            sprite.setColor(hoverColor);
+            sprite.setColor(spriteHoverColor);
         }
         else {
-            sprite.setColor(idleColor);
+            sprite.setColor(spriteIdleColor);
         }
             
     }
@@ -167,15 +162,15 @@ public:
 Button* buttonUp;
 Button* buttonDown;
 
-Button* btnMenuEmpty;
-Button* btnMenuTerrain;
-Button* btnMenuFloors;
-Button* btnMenuFurnitures;
-Button* btnMenuWalls;
-Button* btnMenuMonsters;
-Button* btnMenuPaths;
-Button* btnMenuItems;
-Button* btnMenuNatures;
+Button* btnGroupEmpty;
+Button* btnGroupTerrain;
+Button* btnGroupFloors;
+Button* btnGroupFurnitures;
+Button* btnGroupWalls;
+Button* btnGroupMonsters;
+Button* btnGroupPaths;
+Button* btnGroupItems;
+Button* btnGroupNatures;
 
 Button* btnToolsCursor;
 Button* btnToolsBrush;
@@ -187,12 +182,12 @@ Button* btnToolsElipse;
 Button* btnToolsFill;
 Button* btnToolsEraser;
 
-Button* selectedMenuButton;
+Button* selectedGroupButton;
 Button* selectedPaletteButton;
 Button* selectedTool;
 
 toolType tool;
-int brushSize;
+short brushSize;
 
 class PaletteButton : public Button {
 public:
@@ -213,16 +208,16 @@ public:
     virtual void changeColor() {
 
         if (state == buttonState::pressed) {
-            sprite.setColor(pressedColor);
-            objectSprite.setColor(pressedColor);
+            sprite.setColor(spritePressedColor);
+            objectSprite.setColor(spritePressedColor);
         }
         else if (state == buttonState::hover) {
-            sprite.setColor(hoverColor);
-            objectSprite.setColor(hoverColor);
+            sprite.setColor(spriteHoverColor);
+            objectSprite.setColor(spriteHoverColor);
         }
         else {
-            sprite.setColor(idleColor);
-            objectSprite.setColor(idleColor);
+            sprite.setColor(spriteIdleColor);
+            objectSprite.setColor(spriteIdleColor);
         }
 
     }
@@ -341,7 +336,7 @@ public:
 
 };
 
-std::vector < Button* > menuButtons;
+std::vector < Button* > groupButtons;
 std::vector < Button* > tools;
 std::vector < PaletteButton* > palette;
 
@@ -431,7 +426,7 @@ void scrollUp() {
 void scrollDown() {
     GUIwasClicked = true;
 
-    int maxValue = availableGameObjects.size() - paletteCols * paletteRows;
+    short maxValue = availableGameObjects.size() - paletteCols * paletteRows;
     if (maxValue < 0)
         maxValue = 0;
 
@@ -463,97 +458,97 @@ void createPalette() {
 
 
     // MENU BUTTONS 
-    btnMenuEmpty = new Button();
-    btnMenuEmpty->setTexture(getTexture("GUI/menuButton"));
+    btnGroupEmpty = new Button();
+    btnGroupEmpty->setTexture(getTexture("GUI/menuButtons/menuButton"));
 
-    btnMenuTerrain = new Button();
-    btnMenuTerrain->setTexture(getTexture("GUI/menuButton-terrain"));
-    btnMenuTerrain->func = []() {
-        selectedMenuButton = btnMenuTerrain;
+    btnGroupTerrain = new Button();
+    btnGroupTerrain->setTexture(getTexture("GUI/menuButtons/menuButton-terrain"));
+    btnGroupTerrain->func = []() {
+        selectedGroupButton = btnGroupTerrain;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setTerrainObjectsToPalette();
         };
 
-    btnMenuFloors = new Button();
-    btnMenuFloors->setTexture(getTexture("GUI/menuButton-floors"));
-    btnMenuFloors->func = []() {
-        selectedMenuButton = btnMenuFloors;
+    btnGroupFloors = new Button();
+    btnGroupFloors->setTexture(getTexture("GUI/menuButtons/menuButton-floors"));
+    btnGroupFloors->func = []() {
+        selectedGroupButton = btnGroupFloors;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setFloorsObjectsToPalette();
         };
 
-    btnMenuFurnitures = new Button();
-    btnMenuFurnitures->setTexture(getTexture("GUI/menuButton-furnitures"));
-    btnMenuFurnitures->func = []() {
-        selectedMenuButton = btnMenuFurnitures;
+    btnGroupFurnitures = new Button();
+    btnGroupFurnitures->setTexture(getTexture("GUI/menuButtons/menuButton-furnitures"));
+    btnGroupFurnitures->func = []() {
+        selectedGroupButton = btnGroupFurnitures;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setFurnituresObjectsToPalette();
         };
 
-    btnMenuWalls = new Button();
-    btnMenuWalls->setTexture(getTexture("GUI/menuButton-walls"));
-    btnMenuWalls->func = []() {
-        selectedMenuButton = btnMenuWalls;
+    btnGroupWalls = new Button();
+    btnGroupWalls->setTexture(getTexture("GUI/menuButtons/menuButton-walls"));
+    btnGroupWalls->func = []() {
+        selectedGroupButton = btnGroupWalls;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setWallsObjectsToPalette();
         };
 
-    btnMenuMonsters = new Button();
-    btnMenuMonsters->setTexture(getTexture("GUI/menuButton-monsters"));
-    btnMenuMonsters->func = []() {
-        selectedMenuButton = btnMenuMonsters;
+    btnGroupMonsters = new Button();
+    btnGroupMonsters->setTexture(getTexture("GUI/menuButtons/menuButton-monsters"));
+    btnGroupMonsters->func = []() {
+        selectedGroupButton = btnGroupMonsters;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setMonstersObjectsToPalette();
         };
 
-    btnMenuPaths = new Button();
-    btnMenuPaths->setTexture(getTexture("GUI/menuButton-paths"));
-    btnMenuPaths->func = []() {
-        selectedMenuButton = btnMenuPaths;
+    btnGroupPaths = new Button();
+    btnGroupPaths->setTexture(getTexture("GUI/menuButtons/menuButton-paths"));
+    btnGroupPaths->func = []() {
+        selectedGroupButton = btnGroupPaths;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setPathsObjectsToPalette();
         };
 
-    btnMenuItems = new Button();
-    btnMenuItems->setTexture(getTexture("GUI/menuButton-items"));
-    btnMenuItems->func = []() {
-        selectedMenuButton = btnMenuItems;
+    btnGroupItems = new Button();
+    btnGroupItems->setTexture(getTexture("GUI/menuButtons/menuButton-items"));
+    btnGroupItems->func = []() {
+        selectedGroupButton = btnGroupItems;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setItemsObjectsToPalette();
         };
 
-    btnMenuNatures = new Button();
-    btnMenuNatures->setTexture(getTexture("GUI/menuButton-natures"));
-    btnMenuNatures->func = []() {
+    btnGroupNatures = new Button();
+    btnGroupNatures->setTexture(getTexture("GUI/menuButtons/menuButton-natures"));
+    btnGroupNatures->func = []() {
         tool = toolType::Cursor;
-        selectedMenuButton = btnMenuNatures;
+        selectedGroupButton = btnGroupNatures;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
         setNaturesObjectsToPalette();
         };
 
     // CREATE EMPTY MENU 
-    menuButtons.clear();
+    groupButtons.clear();
 
-    for (int i = 0; i <8; i++) {
-        Texture* tex = getTexture("GUI/menuButton");
+    for (short i = 0; i <8; i++) {
+        Texture* tex = getTexture("GUI/menuButtons/menuButton");
         sf::Vector2f position;
         position.x = screenWidth/2 -(i%4 * 80) - 40;
         position.y = -screenHeight/2 + (i/4)*40 +20;
-        menuButtons.push_back(new Button(btnMenuEmpty, position));
+        groupButtons.push_back(new Button(btnGroupEmpty, position));
     }
 
     paletteScroll = 0;
@@ -577,7 +572,7 @@ void createPalette() {
     // CREATE TOOLS
     
     btnToolsCursor = new Button();
-    btnToolsCursor->setTexture(getTexture("GUI/smallbutton-cursor"));
+    btnToolsCursor->setTexture(getTexture("GUI/smallButtons/smallbutton-cursor"));
     btnToolsCursor->func = []() {
         selectedTool = btnToolsCursor;
         tool = toolType::Cursor;
@@ -587,7 +582,7 @@ void createPalette() {
     
 
     btnToolsBrush = new Button();
-    btnToolsBrush->setTexture(getTexture("GUI/smallbutton-brush"));
+    btnToolsBrush->setTexture(getTexture("GUI/smallButtons/smallbutton-brush"));
     btnToolsBrush->func = []() {
         selectedTool = btnToolsBrush;
         tool = toolType::Brush;
@@ -599,7 +594,7 @@ void createPalette() {
 
 
     btnToolsRectBrush = new Button();
-    btnToolsRectBrush->setTexture(getTexture("GUI/smallbutton-rect_brush"));
+    btnToolsRectBrush->setTexture(getTexture("GUI/smallButtons/smallbutton-rect_brush"));
     btnToolsRectBrush->func = []() {
         selectedTool = btnToolsRectBrush;
         tool = toolType::RectBrush;
@@ -611,15 +606,15 @@ void createPalette() {
     
 
     btnToolsIncrease = new Button();
-    btnToolsIncrease->setTexture(getTexture("GUI/smallbutton-increase"));
+    btnToolsIncrease->setTexture(getTexture("GUI/smallButtons/smallbutton-increase"));
     btnToolsIncrease->func = []() {
         if (selectedTool == btnToolsBrush || selectedTool == btnToolsRectBrush || selectedTool == btnToolsEraser) {
             if (brushSize < 5) {
                 brushSize++;
                 setBrushSize(brushSize);
 
-                coutBrush();
-                cout << "\n\n";
+                //coutBrush();
+                //cout << "\n\n";
             }
                 
         }
@@ -627,15 +622,15 @@ void createPalette() {
     
 
     btnToolsDecrease = new Button();
-    btnToolsDecrease->setTexture(getTexture("GUI/smallbutton-decrease"));
+    btnToolsDecrease->setTexture(getTexture("GUI/smallButtons/smallbutton-decrease"));
     btnToolsDecrease->func = []() {
         if (selectedTool == btnToolsBrush || selectedTool == btnToolsRectBrush || selectedTool == btnToolsEraser) {
             if (brushSize > 0) {
                 brushSize--;
                 setBrushSize(brushSize);
 
-                coutBrush();
-                cout << "\n\n";
+                //coutBrush();
+                //cout << "\n\n";
             }
                 
             
@@ -644,7 +639,7 @@ void createPalette() {
     
 
     btnToolsRectangle = new Button();
-    btnToolsRectangle->setTexture(getTexture("GUI/smallbutton-rectangle"));
+    btnToolsRectangle->setTexture(getTexture("GUI/smallButtons/smallbutton-rectangle"));
     btnToolsRectangle->func = []() {
         selectedTool = btnToolsRectangle;
         tool = toolType::Rectangle;
@@ -656,7 +651,7 @@ void createPalette() {
     
 
     btnToolsElipse = new Button();
-    btnToolsElipse->setTexture(getTexture("GUI/smallbutton-elipse"));
+    btnToolsElipse->setTexture(getTexture("GUI/smallButtons/smallbutton-elipse"));
     btnToolsElipse->func = []() {
         selectedTool = btnToolsElipse;
         tool = toolType::Elipse;
@@ -668,7 +663,7 @@ void createPalette() {
     
 
     btnToolsFill = new Button();
-    btnToolsFill->setTexture(getTexture("GUI/smallbutton-fill"));
+    btnToolsFill->setTexture(getTexture("GUI/smallButtons/smallbutton-fill"));
     btnToolsFill->func = []() {
         selectedTool = btnToolsFill;
         tool = toolType::Fill;
@@ -676,7 +671,7 @@ void createPalette() {
     
 
     btnToolsEraser = new Button();
-    btnToolsEraser->setTexture(getTexture("GUI/smallbutton-eraser"));
+    btnToolsEraser->setTexture(getTexture("GUI/smallButtons/smallbutton-eraser"));
     btnToolsEraser->func = []() {
         selectedTool = btnToolsEraser;
         selectedPaletteButton = nullptr;
@@ -691,7 +686,7 @@ void createPalette() {
 
     // EMPTY TOOLS
     Button* emptyButton = new Button();
-    emptyButton->setTexture(getTexture("GUI/smallbutton"));
+    emptyButton->setTexture(getTexture("GUI/smallButtons/smallbutton"));
     
     //tools.push_back(btnToolsCursor);
     //tools.push_back(btnToolsBrush);
@@ -733,7 +728,7 @@ void createPalette() {
 
     // SLOTS AND PREFABS
     palette.clear();
-    for (int i = 0; i < paletteCols * paletteRows; i++)
+    for (short i = 0; i < paletteCols * paletteRows; i++)
         palette.push_back(new PaletteButton());
 }
 
@@ -742,17 +737,17 @@ void createMapEditorPalette() {
     createPalette();
     setTerrainObjectsToPalette();
 
-    menuButtons[3] = btnMenuTerrain;
-    menuButtons[2] = btnMenuNatures;
-    menuButtons[1] = btnMenuPaths;
-    menuButtons[0] = btnMenuMonsters;
+    groupButtons[3] = btnGroupTerrain;
+    groupButtons[2] = btnGroupNatures;
+    groupButtons[1] = btnGroupPaths;
+    groupButtons[0] = btnGroupMonsters;
 
-    menuButtons[7] = btnMenuItems;
-    menuButtons[6] = new Button(btnMenuEmpty);
-    menuButtons[5] = new Button(btnMenuEmpty);
-    menuButtons[4] = new Button(btnMenuEmpty);
+    groupButtons[7] = btnGroupItems;
+    groupButtons[6] = new Button(btnGroupEmpty);
+    groupButtons[5] = new Button(btnGroupEmpty);
+    groupButtons[4] = new Button(btnGroupEmpty);
 
-    selectedMenuButton = btnMenuTerrain;
+    selectedGroupButton = btnGroupTerrain;
     selectedPaletteButton = nullptr;
     selectedTool = btnToolsCursor;
     tool = toolType::Cursor;
@@ -764,17 +759,17 @@ void createBuildingEditorPalette() {
     createPalette();
     setFloorsObjectsToPalette();
 
-    menuButtons[3] = btnMenuFloors;
-    menuButtons[2] = btnMenuFurnitures;
-    menuButtons[1] = btnMenuWalls;
-    menuButtons[0] = btnMenuItems;
+    groupButtons[3] = btnGroupFloors;
+    groupButtons[2] = btnGroupFurnitures;
+    groupButtons[1] = btnGroupWalls;
+    groupButtons[0] = btnGroupItems;
 
-    menuButtons[7] = new Button(btnMenuEmpty);
-    menuButtons[6] = new Button(btnMenuEmpty);
-    menuButtons[5] = new Button(btnMenuEmpty);
-    menuButtons[4] = new Button(btnMenuEmpty);
+    groupButtons[7] = new Button(btnGroupEmpty);
+    groupButtons[6] = new Button(btnGroupEmpty);
+    groupButtons[5] = new Button(btnGroupEmpty);
+    groupButtons[4] = new Button(btnGroupEmpty);
 
-    selectedMenuButton = btnMenuFloors;
+    selectedGroupButton = btnGroupFloors;
     selectedPaletteButton = nullptr;
     selectedTool = btnToolsCursor;
     tool = toolType::Cursor;
@@ -783,18 +778,18 @@ void createBuildingEditorPalette() {
 void updatePalette() {
 
     // MENU
-    for (int i = 0; i < 8; i++) {
+    for (short i = 0; i < 8; i++) {
         sf::Vector2f position;
         position.x = screenWidth / 2 - (i % 4 * 80) - 40;
         position.y = -screenHeight / 2 + (i / 4) * 40 + 20;
-        menuButtons[i]->setPosition(position);
+        groupButtons[i]->setPosition(position);
 
-        if (menuButtons[i] == selectedMenuButton) {
-            menuButtons[i]->state = buttonState::pressed;
-            menuButtons[i]->changeColor();
+        if (groupButtons[i] == selectedGroupButton) {
+            groupButtons[i]->state = buttonState::pressed;
+            groupButtons[i]->changeColor();
         }
 
-        menuButtons[i]->update(dt);
+        groupButtons[i]->update(dt);
     }
 
     // NAV BUTTONS
@@ -813,7 +808,7 @@ void updatePalette() {
     }
 
     // PALETTE SIZE
-    (selectedMenuButton == btnMenuTerrain || selectedMenuButton == btnMenuFloors) ? paletteRows = 6 : paletteRows = 7;
+    (selectedGroupButton == btnGroupTerrain || selectedGroupButton == btnGroupFloors) ? paletteRows = 6 : paletteRows = 7;
     paletteCols = 4;
 
     // SLOTS AND PREFABS
@@ -821,17 +816,17 @@ void updatePalette() {
     float scaleX, scaleY;
     float tw, th; // texture width, texture height
 
-    int dist_x = paletteCols * paletteButtonSize.x - paletteButtonSize.x / 2;
+    float dist_x = paletteCols * paletteButtonSize.x - paletteButtonSize.x / 2;
     palettePosition.x = cam->position.x + screenWidth / 2.0f - dist_x;
     palettePosition.y = cam->position.y - screenHeight / 2.0f + paletteButtonSize.y;
 
-    for (int i = 0; i < paletteCols * paletteRows; i++) {
+    for (short i = 0; i < paletteCols * paletteRows; i++) {
 
         sf::Vector2f position;
         position.x = palettePosition.x + (i % paletteCols) * paletteButtonSize.x;
         position.y = palettePosition.y + (i / paletteCols) * paletteButtonSize.y + paletteButtonSize.y;
         
-        if (selectedMenuButton == btnMenuTerrain || selectedMenuButton == btnMenuFloors)
+        if (selectedGroupButton == btnGroupTerrain || selectedGroupButton == btnGroupFloors)
             position.y += paletteButtonSize.y;
 
         palette[i]->objectSprite = sf::Sprite();
@@ -859,17 +854,17 @@ void updatePalette() {
 
 void drawPalette() {
 
-    for (int i = 0; i < paletteCols*paletteRows; i++) {
+    for (short i = 0; i < paletteCols*paletteRows; i++) {
         palette[i]->draw();
     }
 
     buttonUp->draw();
     buttonDown->draw();
 
-    for (auto& button : menuButtons)
+    for (auto& button : groupButtons)
         button->draw();
 
-    if (selectedMenuButton == btnMenuTerrain || selectedMenuButton == btnMenuFloors) {
+    if (selectedGroupButton == btnGroupTerrain || selectedGroupButton == btnGroupFloors) {
         for (auto& tool : tools)
             tool->draw();
     }

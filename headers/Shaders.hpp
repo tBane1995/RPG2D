@@ -12,7 +12,7 @@ public:
 
 		name = "";
 		
-		int i = int(pathfile.size()) - 6;
+		short i = short(pathfile.size()) - 6;
 		while (i >= 0)
 			name = pathfile[i--] + name;
 
@@ -51,6 +51,10 @@ Shader* getShader(string name) {
 	return nullptr;
 }
 
+void updateShaders() {
+	for(auto & s : shaders)
+		s->shader->setUniform("time", currentTime.asSeconds());
+}
 
 
 #endif // !define Shaders_hpp

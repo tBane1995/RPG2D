@@ -68,13 +68,14 @@ std::vector<std::vector<std::vector<bool>>> brushes = {
 std::vector<std::vector<bool>> brush;
 
 
-void setBrushSize(int size) {
+void setBrushSize(short size) {
     brush = brushes[size];  // Przypisanie odpowiedniego pędzla
 }
 
 
 
 void coutBrush() {
+
     for (auto& row : brush) {
         for (bool cell : row)
             cout << cell << " ";

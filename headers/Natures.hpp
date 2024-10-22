@@ -23,13 +23,17 @@ public:
 		sprite.setPosition(position);
 	}
 
-	~Nature() { }
+	virtual ~Nature() {
+	
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
+	}
 
 	virtual void update(float dt) { 
-		
-		
-		//mouseOvering();
-		sprite.setPosition(position);
+
 	}
 
 	virtual void draw() {

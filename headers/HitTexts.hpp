@@ -25,7 +25,7 @@ public:
 	~HitText() { }
 
 	void update() {
-		int deleter = (currentTime-startTime).asMilliseconds()*0.1;
+		short deleter = (currentTime-startTime).asMilliseconds()*0.1;
 		text.setPosition(position.x, position.y-deleter);
 	}
 

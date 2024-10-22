@@ -10,7 +10,7 @@ public:
 	string name;
 	Texture* texture;
 	itemType type;
-	std::map < attribute, int > attributes;		// TO-DO
+	std::map < attribute, short > attributes;		// TO-DO
 	wstring description;
 
 	Item(string name, itemType type, wstring description) {
@@ -72,10 +72,10 @@ public:
 	Item* item;
 	Texture* texture;
 	sf::Sprite sprite;
-	int count;
+	short count;
 	bool collected;
 
-	ItemOnMap(Item* item, float x, float y, int count = 1 ) : GameObject(item->name, x, y, 16, 8, 32, false, false) {
+	ItemOnMap(Item* item, float x, float y, short count = 1 ) : GameObject(item->name, x, y, 16, 8, 32, false, false) {
 		type = gameObjectType::ItemOnMap;
 		this->item = item;
 		this->count = count;
@@ -99,13 +99,22 @@ public:
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
-		sprite.setPosition(x, y);
+		sprite.setPosition(position);
 		sprite.setScale(0.5f, 0.5f);
+	}
+
+	virtual ~ItemOnMap() {
+
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
 	}
 
 	virtual void update(float dt) {
 
-		sprite.setPosition(position);
+		
 	}
 
 	virtual void draw() {
@@ -293,8 +302,8 @@ void loadItems() {
 class Inventory {
 public:
 	std::vector < Item* > items;
-	std::vector < int > counts;
-	int id;
+	std::vector < short > counts;
+	short id;
 
 	Inventory() {
 
@@ -304,7 +313,7 @@ public:
 		counts.clear();
 	}
 
-	Inventory(int id) {
+	Inventory(short id) {
 
 		this->id = id;
 
@@ -312,9 +321,9 @@ public:
 		counts.clear();
 	}
 
-	void addItem(string location, int count = 1) {
+	void addItem(string location, short count = 1) {
 
-		for (int i = 0; i < items.size(); i++)
+		for (short i = 0; i < items.size(); i++)
 			if (items[i]->name == location) {
 				counts[i] += count;
 				return;
@@ -324,11 +333,11 @@ public:
 		counts.push_back(count);
 	}
 
-	void addItem(Item* item, int count = 1) {
+	void addItem(Item* item, short count = 1) {
 
 		bool addedItem = false;
 
-		for (int i = 0; i < items.size(); i++)
+		for (short i = 0; i < items.size(); i++)
 			if (items[i] == item) {
 				counts[i] += count;
 				return;
@@ -338,9 +347,9 @@ public:
 		counts.push_back(count);
 	}
 
-	bool hasItemsInInventory(string location, int count=1) {
+	bool hasItemsInInventory(string location, short count=1) {
 		
-		for (int i = 0; i < items.size(); i++)
+		for (short i = 0; i < items.size(); i++)
 			if (items[i]->name == location) {
 				
 				if (counts[i] >= count)
@@ -352,17 +361,17 @@ public:
 		return false;
 	}
 
-	void removeItem(string name, int count = 1) {
-		for (int i = 0; i < items.size(); i++)
+	void removeItem(string name, short count = 1) {
+		for (short i = 0; i < items.size(); i++)
 			if (items[i]->name == name) {
 				counts[i] -= count;
 			}
 
 		// delete zeros (count)
 		std::vector < Item* > newItems;
-		std::vector < int > newCounts;
+		std::vector < short > newCounts;
 
-		for (int i = 0; i < items.size(); i++) {
+		for (short i = 0; i < items.size(); i++) {
 			if (counts[i] > 0) {
 				newItems.push_back(items[i]);
 				newCounts.push_back(counts[i]);
@@ -374,17 +383,17 @@ public:
 		counts = newCounts;
 	}
 
-	void removeItem(Item* item, int count = 1) {
-		for (int i = 0; i < items.size(); i++)
+	void removeItem(Item* item, short count = 1) {
+		for (short i = 0; i < items.size(); i++)
 			if (items[i] == item) {
 				counts[i] -= count;
 			}
 
 		// delete zeros (count)
 		std::vector < Item* > newItems;
-		std::vector < int > newCounts;
+		std::vector < short > newCounts;
 
-		for (int i = 0; i < items.size(); i++) {
+		for (short i = 0; i < items.size(); i++) {
 			if (counts[i] > 0) {
 				newItems.push_back(items[i]);
 				newCounts.push_back(counts[i]);
@@ -419,14 +428,14 @@ void loadInventories() {
 	
 }
 
-Inventory* getInventory(int id) {
+Inventory* getInventory(short id) {
 
 	for (auto& i : inventories)
 		if (i->id == id)
 			return i;
 
 
-	cout << "Inventory id=" << id << " not exists!";
+	cout << "Inventory id=" << id << " not exists!\n";
 	return nullptr;
 
 }
@@ -444,15 +453,23 @@ public:
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
-		sprite.setPosition(x, y);
+		sprite.setPosition(position);
 		sprite.setScale(0.5f, 0.5f);
 		collected = false;
 		this->inventory = inventory;
 	}
 	
-	virtual void update(float dt) {
-	
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
 		sprite.setPosition(position);
+	}
+
+	virtual ~InventoryOnMap() {
+
+	}
+
+	virtual void update(float dt) {
+
 	}
 
 	virtual void draw() {
@@ -464,8 +481,6 @@ public:
 
 	}
 
-
-	~InventoryOnMap() { }
 };
 
 std::vector < InventoryOnMap* > inventoriesOnMap;

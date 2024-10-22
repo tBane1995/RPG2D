@@ -1,21 +1,20 @@
 ﻿#ifndef InventoryPanel_hpp
 #define InventoryPanel_hpp
 
-int itemsInRow = 6;
-int itemsInCol = 4;
-int slotSide = 80;
-int cursor = 0;
+short itemsInRow = 6;
+short itemsInCol = 4;
+short slotSide = 80;
+short cursor = 0;
 
 class InventoryPanel {
 public:
 
 	Inventory* inventory;
-	int position_x;
-	int position_y;
-	int scroll;
+	sf::Vector2f position;
+	short scroll;
 
 	std::vector < Item* > sortedItems;
-	std::vector < int > sortedItemsCounts;
+	std::vector < short > sortedItemsCounts;
 
 	std::vector < sf::Sprite > slotsSprites;
 	std::vector <sf::Sprite > itemsSprites;
@@ -23,17 +22,17 @@ public:
 	bool drawSelector;
 	sf::Sprite selector;
 
-	InventoryPanel(Inventory* inventory, int position_x = 0, int position_y = 0) {
+	InventoryPanel(Inventory* inventory, float position_x = 0, float position_y = 0) {
 		this->inventory = inventory;
-		this->position_x = position_x;
-		this->position_y = position_y;
+		this->position.x = position_x;
+		this->position.y = position_y;
 		scroll = 0;
 
 		// SLOTS
 		for (int i = 0; i < itemsInRow * itemsInCol; i++) {
 			slotsSprites.emplace_back();
-			int x = cam->position.x + position_x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
-			int y = cam->position.y + position_y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
+			float x = cam->position.x + position.x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
+			float y = cam->position.y + position.y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
 			slotsSprites[i].setOrigin(slotSide / 2, slotSide / 2);
 			slotsSprites[i].setPosition(x, y);
 			slotsSprites[i].setTexture(*getTexture("GUI/slot1")->texture);
@@ -60,8 +59,8 @@ public:
 			sortedItemsCounts.push_back(0);
 		}
 
-		for (int i = 0; i < inventory->items.size(); i++)
-			for (int j = 0; j < sortedItems.size(); j++) {
+		for (short i = 0; i < inventory->items.size(); i++)
+			for (short j = 0; j < sortedItems.size(); j++) {
 				// adding items to sorted items list
 				if (inventory->items[i] == sortedItems[j])
 					sortedItemsCounts[j] += inventory->counts[i];
@@ -70,12 +69,12 @@ public:
 
 
 		std::vector < Item* > s;
-		std::vector < int > c;
+		std::vector < short > c;
 
 		s.clear();
 		c.clear();
 
-		for (int i = 0; i < sortedItems.size(); i++) {
+		for (short i = 0; i < sortedItems.size(); i++) {
 			// delete items who count is zero
 			if (sortedItemsCounts[i] > 0) {
 				s.push_back(sortedItems[i]);
@@ -87,9 +86,9 @@ public:
 		sortedItemsCounts = c;
 
 		// SLOTS SPRITES
-		for (int i = 0; i < itemsInRow * itemsInCol; i++) {
-			int x = cam->position.x + position_x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
-			int y = cam->position.y + position_y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
+		for (short i = 0; i < itemsInRow * itemsInCol; i++) {
+			float x = cam->position.x + position.x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
+			float y = cam->position.y + position.y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
 			slotsSprites[i].setPosition(x, y);
 			slotsSprites[i].setColor(sf::Color::White);
 		}
@@ -99,7 +98,7 @@ public:
 		counts.clear();
 
 		if (inventory != nullptr) {
-			for (int i = 0; i < itemsInRow * itemsInCol; i++) {
+			for (short i = 0; i < itemsInRow * itemsInCol; i++) {
 
 				if (i+scroll*itemsInRow < sortedItems.size()) {
 
@@ -111,11 +110,12 @@ public:
 
 					itemsSprites.emplace_back();
 
-					int x = cam->position.x + position_x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
-					int y = cam->position.y + position_y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
+					float x = cam->position.x + position.x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
+					float y = cam->position.y + position.y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
 
 					float twidth = item->texture->texture->getSize().x;
 					float theight = item->texture->texture->getSize().y;
+					
 					itemsSprites[i].setTexture(*item->texture->texture);
 					itemsSprites[i].setOrigin(twidth / 2, theight / 2);
 					itemsSprites[i].setPosition(x, y);
@@ -123,8 +123,10 @@ public:
 
 					counts.emplace_back(to_string(sortedItemsCounts[i+scroll*itemsInRow]), basicFont, 16);
 					counts[i].setPosition(x, y);
-					int width = counts[i].getLocalBounds().width;
-					int height = counts[i].getLocalBounds().height;
+					
+					short width = counts[i].getLocalBounds().width;
+					short height = counts[i].getLocalBounds().height;
+					
 					counts[i].setOrigin(width / 2, height / 2);
 					counts[i].setPosition(x - width / 2 + 24, y - height / 2 + 24);
 					counts[i].setFillColor(textColor);
@@ -138,8 +140,8 @@ public:
 
 			drawSelector = true;
 
-			int x = cam->position.x + position_x - (itemsInRow / 2 - cursor % itemsInRow) * slotSide + slotSide / 2;
-			int y = cam->position.y + position_y - (itemsInCol / 2 - cursor / itemsInRow) * slotSide + slotSide / 2;
+			float x = cam->position.x + position.x - (itemsInRow / 2 - cursor % itemsInRow) * slotSide + slotSide / 2;
+			float y = cam->position.y + position.y - (itemsInCol / 2 - cursor / itemsInRow) * slotSide + slotSide / 2;
 
 			selector.setPosition(x, y);
 		}
@@ -183,7 +185,7 @@ void updateInventoryPanel() {
 	background.setOrigin(300,75);
 
 	Item* item = nullptr;
-	int itemIndex = cursor + inventory->scroll * itemsInRow;
+	short itemIndex = cursor + inventory->scroll * itemsInRow;
 	if (itemIndex < inventory->sortedItems.size()) {
 		item = inventory->sortedItems[itemIndex];
 	}

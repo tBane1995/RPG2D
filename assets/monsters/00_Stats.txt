@@ -24,6 +24,7 @@ Szpon		| 12-15
 Kolcorożec	| 15-18
 Golem		| 18-20
 Troll		| 20-23
+<<<<<<< HEAD
 Bies		| 23-26
 
 Do zrobienia assety
@@ -34,3 +35,6 @@ Kolcorożec
 Golem
 Troll
 Bies
+=======
+Bies		| 23-26
+>>>>>>> 0d92efa (Main Updates:)

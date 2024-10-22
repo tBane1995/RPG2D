@@ -26,11 +26,17 @@ public:
 		
 	}
 
-	~Path() { }
+	virtual ~Path() {
+	
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
+	}
 
 	virtual void update(float dt) {
 
-		sprite.setPosition(position);
 	}
 
 	virtual void draw() {

@@ -20,11 +20,20 @@ public:
 		sprite = sf::Sprite();
 		sprite.setTexture(*texture->texture);
 		sprite.setOrigin(texture->cx, texture->cy);
+		sprite.setPosition(position);
+	}
+
+	virtual ~Wall() {
+
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
 	}
 
 	virtual void update(float dt) {
-
-		sprite.setPosition(position);
+		
 	}
 
 	virtual void draw() {

@@ -25,7 +25,7 @@ public:
 
 		if (isRectangular == true) {
 			shape = new sf::RectangleShape(sf::Vector2f(width, length));
-			shape->setFillColor(sf::Color(128, 64, 128, 128));
+			shape->setFillColor(sf::Color(128, 64, 128, 96));
 			shape->setOutlineColor(sf::Color(196, 64, 196, 128));
 			shape->setOutlineThickness(4.0f);
 			shape->setOrigin(width/2.0f, length /2.0f);
@@ -33,7 +33,7 @@ public:
 		}
 		else {
 			shape = new sf::CircleShape(width/2.0f);
-			shape->setFillColor(sf::Color(128, 64, 128, 128));
+			shape->setFillColor(sf::Color(128, 64, 128, 96));
 			shape->setOutlineColor(sf::Color(196, 64, 196, 128));
 			shape->setOutlineThickness(4.0f);
 			shape->setOrigin(width/2.0f, width/2.0f);
@@ -67,12 +67,11 @@ public:
 	}
 
 	~Collider() {
-
 		delete shape;	// sf::Shape* shape
 	}
 };
 
-class GameObject {
+class GameObject { 
 public:
 	string name;
 	gameObjectType type;
@@ -85,7 +84,9 @@ public:
 	sf::Text textname;
 	
 	bool isVisible;	// TO-DO
-	bool toDelete;
+	bool toDeleteFromMainLists;	// TO-DO
+	bool isSelected;
+
 
 	GameObject(string name, float x, float y, float width, float length, float height, bool collisioning, bool isRectangular) {
 		// CREATE PREFAB
@@ -102,8 +103,9 @@ public:
 		collider = new Collider(width, length, height, isRectangular);
 		createTextname();
 		
-		toDelete = false;
+		toDeleteFromMainLists = false;
 		isVisible = false;
+		isSelected = false;
 	}
 
 	GameObject(GameObject* go, float x, float y) {
@@ -120,8 +122,9 @@ public:
 
 		createTextname();
 
-		toDelete = false;
+		toDeleteFromMainLists = false;
 		isVisible = false;
+		isSelected = false;
 	}
 
 	GameObject(string name) {
@@ -138,11 +141,13 @@ public:
 		dynamic_cast<sf::RectangleShape*>(collider->shape)->setOrigin(sf::Vector2f(0, 0));
 		dynamic_cast<sf::RectangleShape*>(collider->shape)->setSize(sf::Vector2f(16, 16));
 		dynamic_cast<sf::RectangleShape*>(collider->shape)->setOutlineThickness(0);
+		dynamic_cast<sf::RectangleShape*>(collider->shape)->setPosition(position);
 
 		createTextname();
 
-		toDelete = false;
+		toDeleteFromMainLists = false;
 		isVisible = false;
+		isSelected = false;
 	}
 
 	GameObject(string name, float x, float y) {
@@ -157,15 +162,24 @@ public:
 		mouseIsOver = false;
 		createTextname();
 
-		toDelete = false;
+		toDeleteFromMainLists = false;
 		isVisible = false;
+		isSelected = false;
 	}
 
-	~GameObject() { 
+	virtual ~GameObject() { 
 
 		delete collider;
 	}
 
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+
+		if (collider != nullptr)
+			textname.setPosition(position.x, position.y - collider->height - 35);
+		else
+			textname.setPosition(position.x, position.y);
+	}
 
 	void createTextname() {
 		textname = sf::Text(getShortName(name), basicFont, 16);
@@ -207,17 +221,22 @@ public:
 	}
 
 	virtual void updateStatistic(float dt) {
+
 		collider->shape->setPosition(position);
 		
 	}
 
 	virtual void draw() {
-		
+
 		window->draw(textname);
 	}
 
-	virtual void drawStatistic() {
+	virtual void drawStatistics(){
+		if(renderColliders)
+			window->draw(*collider->shape);
+	}
 
+	virtual void drawAllStatistics() {
 		window->draw(*collider->shape);
 	}
 

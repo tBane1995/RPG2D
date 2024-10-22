@@ -21,7 +21,7 @@ void loadFonts() {
 
 std::wstring ConvertUtf8ToWide(const std::string& utf8Str) {
     // TO-DO
-    int wideCharCount = MultiByteToWideChar(CP_UTF8, 0, utf8Str.c_str(), utf8Str.size(), nullptr, 0);
+    short wideCharCount = MultiByteToWideChar(CP_UTF8, 0, utf8Str.c_str(), utf8Str.size(), nullptr, 0);
     if (wideCharCount == 0) {
         throw std::runtime_error("Error in MultiByteToWideChar");
     }
@@ -39,7 +39,7 @@ void replaceAll(std::string& str, const std::string& from, const std::string& to
     }
 }
 
-std::vector < std::wstring > wrapText(std::wstring text, int characterSize, int maxWidth) {
+std::vector < std::wstring > wrapText(std::wstring text, short characterSize, short maxWidth) {
     
     std::vector < std::wstring > wrappedText;
 

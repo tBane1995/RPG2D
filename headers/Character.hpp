@@ -81,7 +81,7 @@ public:
 		
 		type = gameObjectType::Character;
 				
-		helmet = dynamic_cast <Character*>(object)->helmet ;
+		helmet = dynamic_cast <Character*>(object)->helmet;
 		armor = dynamic_cast <Character*>(object)->armor;
 		pants = dynamic_cast <Character*>(object)->pants;
 		leftHand = dynamic_cast <Character*>(object)->leftHand;
@@ -103,15 +103,19 @@ public:
 		showHand = false;
 	}
 
+	virtual ~Character() {
+		
+	}
+
 	void loadBody() {
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			idleTextures[i] = nullptr;
 			runTextures[i] = nullptr;
 			attackTextures[i] = nullptr;
 
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
 			idleTextures[i] = getTexture(bodySet + "/idleTop" + to_string(i));
 			idleTextures[4 + i] = getTexture(bodySet + "/idleRight" + to_string(i));
@@ -138,7 +142,7 @@ public:
 
 	void loadHelmet() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			helmetIdleTextures[i] = nullptr;
 			helmetRunTextures[i] = nullptr;
 			helmetAttackTextures[i] = nullptr;
@@ -147,7 +151,7 @@ public:
 
 		if (helmet != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				helmetIdleTextures[i] = getTexture("sets/" + helmet->name + "/idleTop" + to_string(i));
 				helmetIdleTextures[4 + i] = getTexture("sets/" + helmet->name + "/idleRight" + to_string(i));
 				helmetIdleTextures[8 + i] = getTexture("sets/" + helmet->name + "/idleBottom" + to_string(i));
@@ -173,7 +177,7 @@ public:
 
 	void loadArmor() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			armorIdleTextures[i] = nullptr;
 			armorRunTextures[i] = nullptr;
 			armorAttackTextures[i] = nullptr;
@@ -182,7 +186,7 @@ public:
 
 		if (armor != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				armorIdleTextures[i] = getTexture("sets/" + armor->name + "/idleTop" + to_string(i));
 				armorIdleTextures[4 + i] = getTexture("sets/" + armor->name + "/idleRight" + to_string(i));
 				armorIdleTextures[8 + i] = getTexture("sets/" + armor->name + "/idleBottom" + to_string(i));
@@ -207,7 +211,7 @@ public:
 
 	void loadPants() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			pantsIdleTextures[i] = nullptr;
 			pantsRunTextures[i] = nullptr;
 			pantsAttackTextures[i] = nullptr;
@@ -216,7 +220,7 @@ public:
 
 		if (pants != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				pantsIdleTextures[i] = getTexture("sets/" + pants->name + "/idleTop" + to_string(i));
 				pantsIdleTextures[4 + i] = getTexture("sets/" + pants->name + "/idleRight" + to_string(i));
 				pantsIdleTextures[8 + i] = getTexture("sets/" + pants->name + "/idleBottom" + to_string(i));
@@ -242,7 +246,7 @@ public:
 
 	void loadLeftHand() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			leftHandIdleTextures[i] = nullptr;
 			leftHandRunTextures[i] = nullptr;
 			leftHandAttackTextures[i] = nullptr;
@@ -251,7 +255,7 @@ public:
 
 		if (leftHand != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				leftHandIdleTextures[i] = getTexture("sets/" + leftHand->name + "/idleTop" + to_string(i));
 				leftHandIdleTextures[4 + i] = getTexture("sets/" + leftHand->name + "/idleRight" + to_string(i));
 				leftHandIdleTextures[8 + i] = getTexture("sets/" + leftHand->name + "/idleBottom" + to_string(i));
@@ -277,7 +281,7 @@ public:
 
 	void loadRightHand() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			rightHandIdleTextures[i] = nullptr;
 			rightHandRunTextures[i] = nullptr;
 			rightHandAttackTextures[i] = nullptr;
@@ -286,7 +290,7 @@ public:
 
 		if (rightHand != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				rightHandIdleTextures[i] = getTexture("sets/" + rightHand->name + "/idleTop" + to_string(i));
 				rightHandIdleTextures[4 + i] = getTexture("sets/" + rightHand->name + "/idleRight" + to_string(i));
 				rightHandIdleTextures[8 + i] = getTexture("sets/" + rightHand->name + "/idleBottom" + to_string(i));

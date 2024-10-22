@@ -1,7 +1,12 @@
 name "testBuilding"
 texture "assets/buildings/testBuilding.png"
+<<<<<<< HEAD
 door "door_0"
 size 24 16
+=======
+size 24 16
+door "door_0"
+>>>>>>> 0d92efa (Main Updates:)
 
 // FLOORS
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -22,6 +27,7 @@ size 24 16
 0 0 0 0 0 0 0 0 0 0 3 3 3 3 0 0 0 0 0 0 0 0 0 0
 
 // FURNITURES
+<<<<<<< HEAD
 Furniture "furnitures/bookshelf" 64 80 -1
 Furniture "furnitures/wardrobe" 128 80 -1
 Furniture "furnitures/furnace" 192 80 -1
@@ -30,6 +36,16 @@ Furniture "furnitures/chair" 288 144 -1
 Furniture "furnitures/chair" 320 144 -1
 Furniture "furnitures/bed" 64 176 -1
 Furniture "furnitures/table" 304 176 0
+=======
+Furniture "furnitures/bookshelf" 64 80
+Furniture "furnitures/wardrobe" 128 80
+Furniture "furnitures/furnace" 192 80
+Furniture "furnitures/chest" 304 80
+Furniture "furnitures/chair" 288 144
+Furniture "furnitures/chair" 320 144
+Furniture "furnitures/bed" 64 176
+Furniture "furnitures/table" 304 176
+>>>>>>> 0d92efa (Main Updates:)
 
 // WALLS
 Wall "walls/wooden_wall_top_3" 336 16

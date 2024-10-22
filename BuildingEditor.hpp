@@ -3,17 +3,15 @@
 
 enum class buildingEditorStates { start, editor };
 buildingEditorStates buildingEditorState;
-Terrain* terrain;
-Floors* floors;
 
 void BuildingEditorUnclickButtons();
 void BuildingEditorHoverButtons();
 void BuildingEditorEventLeftClick();
 void BuildingEditorEventRightClick();
-void saveBuildingToFile();
-void addPrefabToLists();
 
 void BuildingEditor() {
+
+    window->setTitle("Building Editor");
 
     // load the icon for windows
     sf::Image ico;
@@ -37,34 +35,40 @@ void BuildingEditor() {
     pressText->setOrigin(pressText->getLocalBounds().width / 2.f, pressText->getLocalBounds().height / 2.f);
     pressText->setPosition(screenWidth / 2.0f, screenHeight / 2.0f + 50);
 
-    sf::Event event;
-    while (window->waitEvent(event)) {
-        if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            break;
+    bool skip = false;
+    while (window->isOpen() && skip == false) {
+
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                skip = true;
+                break;
+            }
         }
+            window->setView(cam->view);
+            welcomeText->setPosition(cam->position.x, cam->position.y - 50);
+            pressText->setPosition(cam->position.x, cam->position.y + 50);
 
-        window->setView(cam->view);
-        welcomeText->setPosition(cam->position.x, cam->position.y - 50);
-        pressText->setPosition(cam->position.x, cam->position.y + 50);
-
-        window->clear(sf::Color::Black);
-        window->draw(*welcomeText);
-        window->draw(*pressText);
-        window->display();
+            window->clear(sf::Color::Black);
+            window->draw(*welcomeText);
+            window->draw(*pressText);
+            window->display();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
     buildingEditorState = buildingEditorStates::editor;
 
-    terrain = new Terrain(0, 0, 24, 24);
-    floors = new Floors(0, 0, 24, 24);
+    loadBuildingFromFile();
+    cam->setPosition(building->size.x * 16 / 2 + 160, building->size.y * 16 / 2);
 
-    cam->setPosition(terrain->width/2*tileSide, terrain->height/2*tileSide);
+    loadDialogBox = nullptr;
 
     prefabToPaint = nullptr;
+    selectedGameObjects.clear();
     selection_state = false;
 
+    createBuildingEditorMenuBar();
     createBuildingEditorPalette();
 
     updateGameObjects();
@@ -80,8 +84,11 @@ void BuildingEditor() {
         GUIwasHover = false;
         GUIwasClicked = false;
 
-        BuildingEditorUnclickButtons();
-        BuildingEditorHoverButtons();
+        if (loadDialogBox == nullptr) {
+            BuildingEditorUnclickButtons();
+            BuildingEditorHoverButtons();
+        }
+        
 
         // events
         sf::Event event;
@@ -91,36 +98,49 @@ void BuildingEditor() {
                 window->close();
             }
 
-            if (event.type == sf::Event::KeyPressed) {
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                    window->close();
+            if (loadDialogBox) {
+                loadDialogBox->update(event, dt);
+
+                if (loadDialogBox->fileSelected) {
+                    
+                    loadBuildingFromFile(loadDialogBox->getPathfile()); // TO-DO
+                    delete loadDialogBox;
+                    loadDialogBox = nullptr;
+                    cam->setPosition(building->size.x * 16 / 2 + 160, building->size.y * 16 / 2);
                 }
             }
             
             if (event.type == sf::Event::MouseButtonReleased) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    BuildingEditorEventLeftClick();
+                    if (loadDialogBox == nullptr) {
+                        BuildingEditorEventLeftClick();
 
-                    if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                        selection_state = false;
+                        if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                            selection_state = false;
+                        }
                     }
                 }
 
                 if (event.mouseButton.button == sf::Mouse::Right) {
-                    BuildingEditorEventRightClick();
+                    if (loadDialogBox == nullptr) {
+                        BuildingEditorEventRightClick();
+                    }
                 }
             }
 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
+                    if (loadDialogBox == nullptr) {
+                        if (!GUIwasHover) {
+                            if (clickedMenuButton == nullptr) {
+                                startMousePosition = sf::Mouse::getPosition(*window);
+                                startWorldMousePosition = window->mapPixelToCoords(mousePosition);
 
-                    if (!GUIwasHover) {
+                                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                                    selection_state = true;
+                                }
+                            }
 
-                        startMousePosition = sf::Mouse::getPosition(*window);
-                        startWorldMousePosition = window->mapPixelToCoords(mousePosition);
-
-                        if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                            selection_state = true;
                         }
                     }
 
@@ -130,12 +150,26 @@ void BuildingEditor() {
             if (event.type == sf::Event::KeyPressed) {
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                    window->close();
-                    exit(0);
+                    if (loadDialogBox == nullptr) {
+                        window->close();
+                        exit(0);
+                    }
+                    else {
+                        delete loadDialogBox;
+                        loadDialogBox = nullptr;
+                    }
                 }
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-                    saveBuildingToFile();
+                    if (loadDialogBox == nullptr) {
+                        saveBuildingToFile();
+                    }
+                }
+
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::F6)) {
+                    if (loadDialogBox == nullptr) {
+                        loadDialogBox = new OpenDialogBox("Load Building");
+                    }
                 }
             }
         }
@@ -145,46 +179,59 @@ void BuildingEditor() {
         // calculate delta time
         dt = currentTime.asSeconds() - prevTime.asSeconds();
 
-        
-        for (auto& go : selectedGameObjects)
-            go->updateStatistic(dt);
-
-        updateGameObjects();
-        sortGameObjects();
-        updatePalette();
-        painterUpdate();
-
-        if (!GUIwasHover) {
-
-            if (prefabToPaint != nullptr) {
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    if (tool == toolType::Brush || tool == toolType::RectBrush) {
-                        if (prefabToPaint->type == gameObjectType::Floor) {
-                            for (auto& prefab : prefabsToPaint) {
-                                floors->edit(prefab->position, dynamic_cast<FloorPrefab*>(prefabToPaint));
+        if (loadDialogBox == nullptr) {
+            if (!GUIwasHover) {
+                if (prefabToPaint != nullptr) {
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        if (tool == toolType::Brush || tool == toolType::RectBrush) {
+                            if (prefabToPaint->type == gameObjectType::Floor) {
+                                for (auto& prefab : prefabsToPaint) {
+                                    building->floors->edit(prefab->position, dynamic_cast<FloorPrefab*>(prefabToPaint));  // TO-DP
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        
+        for (auto& go : gameObjects)
+            go->updateStatistic(dt);
 
         cam->update();
+        updateGameObjects();
+        sortGameObjects();
+        if (loadDialogBox == nullptr) {
+            updateMenuBar();
+            updatePalette();
+            painterUpdate();
+        }
 
         // RENDER ////////////////////////////////////////////////////////////////////////
 
         window->clear(sf::Color::Black);
         window->setView(cam->view);
         window->draw(*terrain);
-        window->draw(*floors);
+        
+        window->draw(*building->floors);
 
-        for (auto& go : selectedGameObjects)
-            go->drawStatistic();
+        for (auto& go : gameObjects) {
+            if (go->mouseIsOver || go->isSelected) {
+                // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
+                go->drawAllStatistics();
+            }
+            else {
+                // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
+                go->drawStatistics();
+            }
+        }
         
         drawGameObjects();
         painterDraw();
-
+        drawMenuBar();
         drawPalette();
+        if (loadDialogBox)
+            loadDialogBox->draw();
         window->display();
     }
 }
@@ -193,7 +240,7 @@ void BuildingEditorUnclickButtons() {
     buttonUp->unclick();
     buttonDown->unclick();
 
-    for (auto& mb : menuButtons)
+    for (auto& mb : groupButtons)
         mb->unclick();
     
     for (auto& p : palette)
@@ -201,6 +248,15 @@ void BuildingEditorUnclickButtons() {
 
     for (auto& t : tools)
         t->unclick();
+
+    for (auto& m : menu) {
+        m->unclick();
+
+        if (m->isOpen) {
+            for (auto& o : m->options)
+                o->unclick();
+        }
+    }
     
 }
 
@@ -208,7 +264,7 @@ void BuildingEditorHoverButtons() {
     buttonUp->hover();
     buttonDown->hover();
 
-    for (auto& mb : menuButtons)
+    for (auto& mb : groupButtons)
         mb->hover();
     
     for (auto& p : palette)
@@ -216,60 +272,104 @@ void BuildingEditorHoverButtons() {
     
     for (auto& t : tools)
         t->hover();
+
+    for (auto& m : menu) {
+        m->hover();
+
+        if (m->isOpen) {
+            for (auto& o : m->options)
+                o->hover();
+        }
+    }
 }
 
 void BuildingEditorEventLeftClick() {
 
-    buttonUp->click();
-    buttonDown->click();
+    
+    if (clickedMenuButton != nullptr) {
+        bool clickOnMenu = false;
+        
+        for (auto& m : menu) {
 
-    for (auto& mb : menuButtons)
-        mb->click();
+            if (m->click())
+                clickOnMenu = true;
 
-    for (int i = 0; i < paletteCols * paletteRows; i++) {
-        palette[i]->click();
-    }
-
-    if (selectedMenuButton == btnMenuFloors)
-        for (auto& tool : tools)
-            tool->click();
-
-    if (!GUIwasHover) {
-
-        if (tool == toolType::Cursor) {
-
-            int x = selectArea.getPosition().x;
-            int y = selectArea.getPosition().y;
-            int w = selectArea.getSize().x;
-            int h = selectArea.getSize().y;
-
-            if (w < 16) w = 16;
-            if (h < 16) h = 16;
-
-            selectGameObjects(x, y, w, h);
-
+            if (m->isOpen) {
+                for (auto& o : m->options)
+                    if (o->click())
+                        clickOnMenu = true;
+            }
         }
 
-        if (!prefabsToPaint.empty()) {
+        if (clickOnMenu == false) {
+            clickedMenuButton->isOpen = false;
+            clickedMenuButton = nullptr;
+        }
 
-            if (tool == toolType::AddGameObject) {
-                addPrefabToLists();
+    }
+    else {
+        buttonUp->click();
+        buttonDown->click();
+
+        for (auto& mb : groupButtons)
+            mb->click();
+
+        for (short i = 0; i < paletteCols * paletteRows; i++) {
+            palette[i]->click();
+        }
+
+        if (selectedGroupButton == btnGroupFloors)
+            for (auto& tool : tools)
+                tool->click();
+
+        for (auto& m : menu) {
+            if (m->click())
+                tool = toolType::Cursor;
+        }
+
+        if (!GUIwasHover) {
+
+            if (tool == toolType::Cursor) {
+
+                short x = selectArea.getPosition().x;
+                short y = selectArea.getPosition().y;
+                short w = selectArea.getSize().x;
+                short h = selectArea.getSize().y;
+
+                if (w < 16) w = 16;
+                if (h < 16) h = 16;
+
+                selectGameObjects(x, y, w, h);
+
             }
 
-            if (tool == toolType::Rectangle || tool == toolType::Elipse) {
-                for (auto& prefab : prefabsToPaint) {
-                    floors->edit(prefab->position, dynamic_cast<FloorPrefab*>(prefabToPaint));
+            if (!prefabsToPaint.empty()) {
+
+                if (tool == toolType::AddGameObject) {
+                    addPrefabToLists();
+                }
+
+                if (tool == toolType::Rectangle || tool == toolType::Elipse) {
+                    for (auto& prefab : prefabsToPaint) {
+                        //floors->edit(prefab->position, dynamic_cast<FloorPrefab*>(prefabToPaint));
+                    }
                 }
             }
-        }
 
+        }
     }
+
+    
 
 }
 
 void BuildingEditorEventRightClick() {
+    if (clickedMenuButton != nullptr) {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
 
-    if (prefabToPaint == nullptr) {
+    }
+    else if (prefabToPaint == nullptr) {
 
         if (!selectedGameObjects.empty()) {
             selectGameObjects(0, 0, 0, 0);
@@ -281,14 +381,14 @@ void BuildingEditorEventRightClick() {
         for (auto& go : gameObjects) {
             if (go->mouseIsOver == true) {
                 //cout << "delete: " << go->name << "\n";
-                go->toDelete = true;
+                deleteGameObjectFromMainLists(go);  // TO-DO
                 was_delete = true;
                 break;
             }
         }
 
         if (was_delete) {
-            deleteGameObjectsFromMainLists();
+            //deleteGameObjectsFromMainLists();
         }
 
     }
@@ -300,114 +400,6 @@ void BuildingEditorEventRightClick() {
         prefabToPaint = nullptr; 
     }
         
-}
-
-void saveBuildingToFile() {
-
-    string filename = "assets/buildings/testBuilding.txt";
-    std::ofstream file(filename);
-
-    if (!file.is_open()) {
-        cout << "cant open file to save building: " << filename << "\n";
-        return;
-    }
-
-    file << "name \"testBuilding\"\n";
-    file << "texture \"assets/buildings/testBuilding.png\"\n";
-    file << "size " << to_string(terrain->width) << " " << to_string(terrain->height) << "\n";
-    file << "\n";
-
-    // save floors
-    file << "// FLOORS\n";
-    for (int y = 0; y < floors->height; y++) {
-        for (int x = 0; x < floors->width; x++) {
-
-            file << floors->floors[y*floors->width+x];
-            if (x != floors->width-1)
-                file << " ";
-        }
-
-        file << "\n";
-    }
-
-    file << "\n";
-
-    if (natures.size() > 0)
-        file << "// NATURES\n";
-    for (auto& nature : natures)
-        file << "Nature " << char(34) << nature->name << char(34) << " " << int(nature->position.x) << " " << int(nature->position.y) << "\n";
-    if (natures.size() > 0)
-        file << "\n";
-
-
-    if (itemsOnMap.size() > 0)
-        file << "// ITEMS\n";
-    for (auto& item : itemsOnMap)
-        file << "Item " << char(34) << item->name << char(34) << " " << int(item->position.x) << " " << int(item->position.y) << "\n";
-    if (itemsOnMap.size() > 0)
-        file << "\n";
-
-
-    if (paths.size() > 0)
-        file << "// PATHS\n";
-    for (auto& path : paths)
-        file << "Path " << char(34) << path->name << char(34) << " " << int(path->position.x) << " " << int(path->position.y) << "\n";
-    if (paths.size() > 0)
-        file << "\n";
-
-
-    if (furnitures.size() > 0)
-        file << "// FURNITURES\n";
-    for (auto& furniture : furnitures)
-        file << "Furniture " << char(34) << furniture->name << char(34) << " " << int(furniture->position.x) << " " << int(furniture->position.y) << "\n";
-    if (furnitures.size() > 0)
-        file << "\n";
-
-
-    if (walls.size() > 0)
-        file << "// WALLS\n";
-    for (auto& wall : walls)
-        file << "Wall " << char(34) << wall->name << char(34) << " " << int(wall->position.x) << " " << int(wall->position.y) << "\n";
-    if (walls.size() > 0)
-        file << "\n";
-
-
-    if (monsters.size() > 0)
-        file << "// MONSTERS\n";
-    for (auto& monster : monsters)
-        file << "Monster " << char(34) << monster->name << char(34) << " " << int(monster->position.x) << " " << int(monster->position.y) << "\n";
-    if (monsters.size() > 0)
-        file << "\n";
-
-
-
-    if (buildings.size() > 0)
-        file << "// BUILDINGS\n";
-    for (auto& building : buildings)
-        file << "Building " << char(34) << building->name << char(34) << " " << int(building->position.x) << " " << int(building->position.y) << "\n";
-    if (buildings.size() > 0)
-        file << "\n";
-
-
-    if (characters.size() > 0)
-        file << "// CHARACTERS\n";
-    for (auto& character : characters)
-        file << "Character " << char(34) << character->name << char(34) << " " << int(character->position.x) << " " << int(character->position.y) << "\n";
-    if (characters.size() > 0)
-        file << "\n";
-
-
-    if (inventoriesOnMap.size() > 0)
-        file << "// INVENTORIES\n";
-    for (auto& inventory : inventoriesOnMap)
-        file << "Inventory " << char(34) << inventory->name << char(34) << " " << int(inventory->position.x) << " " << int(inventory->position.y) << "\n";
-    if (inventoriesOnMap.size() > 0)
-        file << "\n";
-
-
-
-    file.close();
-
 }
 
 #endif

@@ -16,9 +16,15 @@
 #include <algorithm>
 #include <numeric>
 #include <functional>
+<<<<<<< HEAD
 
 #include <string>
 #include <windows.h>
+=======
+#include <string>
+#include <regex>    // for std::smatch
+//#include <windows.h>
+>>>>>>> 0d92efa (Main Updates:)
 
 #include "headers/Window.hpp"
 #include "headers/Time.hpp"
@@ -31,14 +37,22 @@
 
 #include "headers/Collisions.hpp"
 
+<<<<<<< HEAD
+=======
+#include "headers/GameStates.hpp"           
+#include "headers/RenderParameters.hpp"     // bools of the render value for example renderCoords, renderBorders
+>>>>>>> 0d92efa (Main Updates:)
 
 #include "headers/GameObjects.hpp"
 #include "headers/TerrainAndFloors.hpp"     // Terrain and Floors
 #include "headers/Water.hpp"
 #include "headers/Pathfinding.hpp"
 
+<<<<<<< HEAD
 #include "headers/GameStates.hpp"           
 
+=======
+>>>>>>> 0d92efa (Main Updates:)
 #include "headers/HitTexts.hpp"             // Hit texts
 #include "headers/Items.hpp"                // manage of items, itemsOnMap, Inventory and InventoryOnMap
 #include "headers/UnitStates.hpp"           // states for Units
@@ -55,12 +69,25 @@
 #include "headers/Prefabs.hpp"              // all prefabs: itemsOnMap, InventoryOnMap, Characters, Monsters, Natures, Furnitures, Walls etc .. 
 #include "headers/BuildingsManager.hpp"            // manage of Buildings
 #include "headers/GameObjectsManager.hpp"   // manage of GameObjects - update/sort/render/
+<<<<<<< HEAD
 #include "headers/Maps.hpp"
+=======
+#include "headers/Map.hpp"
+>>>>>>> 0d92efa (Main Updates:)
 #include "headers/Quests.hpp"
 
 #include "headers/GUI.hpp"
 #include "headers/PrefabToPaint.hpp"
 #include "headers/BrushSizes.hpp"
+<<<<<<< HEAD
+=======
+#include "headers/TextArea.hpp"
+#include "headers/Buttons.hpp"
+#include "headers/Scrollbar.hpp"
+#include "headers/OpenDialogBox.hpp"
+#include "headers/CheckBox.hpp"
+#include "headers/MenuBar.hpp"
+>>>>>>> 0d92efa (Main Updates:)
 #include "headers/Tools.hpp"
 #include "headers/Palette.hpp"
 #include "headers/Painter.hpp"
@@ -517,26 +544,42 @@ void convertPNGsToSet() {
 }
 
 void testGLSL() {
+<<<<<<< HEAD
     // Tworzenie okna
     sf::RenderWindow window(sf::VideoMode(512, 512), "GLSL Shader Animation");
     
     // Wczytywanie tekstury
+=======
+
+    sf::RenderWindow window(sf::VideoMode(512, 512), "test GLSL");
+    
+>>>>>>> 0d92efa (Main Updates:)
     sf::Texture texture;
     if (!texture.loadFromFile("assets/noise.png"))
         return;
 
+<<<<<<< HEAD
     // Tworzenie sprite'a
     sf::Sprite sprite(texture);
 
     // Wczytywanie shadera
+=======
+    sf::Sprite sprite(texture);
+
+>>>>>>> 0d92efa (Main Updates:)
     sf::Shader shader;
     if (!shader.loadFromFile("assets/shaders/circles.frag", sf::Shader::Fragment))
         return;
 
+<<<<<<< HEAD
     // Zegar do animacji
     sf::Clock clock;
 
     // Główna pętla
+=======
+    sf::Clock clock;
+
+>>>>>>> 0d92efa (Main Updates:)
     while (window.isOpen())
     {
         sf::Event event;
@@ -547,6 +590,7 @@ void testGLSL() {
 
         }
 
+<<<<<<< HEAD
         window.clear();
 
         shader.setUniform("u_resolution", sf::Vector2f(1024,1024));
@@ -560,21 +604,84 @@ void testGLSL() {
         // Rysowanie sprite'a z shaderem
         window.draw(sprite, &shader);
 
+=======
+        float time = clock.getElapsedTime().asSeconds();
+        shader.setUniform("u_resolution", sf::Vector2f(1024,1024));
+        shader.setUniform("u_time", time);
+
+        window.clear();
+        window.draw(sprite, &shader);
+>>>>>>> 0d92efa (Main Updates:)
         window.display();
     }
 
 }
 
+<<<<<<< HEAD
+=======
+
+
+void testOpenDialogBox() {
+
+    //window->setFramerateLimit(4);
+    
+    cam = new Camera();
+    
+    OpenDialogBox* openDial = new OpenDialogBox("Load Map");
+    
+    while (window->isOpen())
+    {
+        prevTime = currentTime;
+        currentTime = timeClock.getElapsedTime();
+        dt = currentTime.asSeconds() - prevTime.asSeconds();
+
+        mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
+        worldMousePosition = window->mapPixelToCoords(mousePosition);
+
+        GUIwasHover = false;
+        GUIwasClicked = false;
+
+        sf::Event event;
+        while (window->pollEvent(event)) {
+
+            if (openDial) {
+                openDial->update(event, dt);
+
+                
+                if (openDial->fileSelected) {
+                    cout << openDial->getPathfile() << "\n";
+                    delete openDial;
+                    openDial = nullptr;
+                }
+                
+            }
+        }
+
+        // RENDER
+        window->clear();
+        if(openDial)
+            openDial->draw();
+        window->display();
+    }
+
+}
+
+>>>>>>> 0d92efa (Main Updates:)
 int main()
 {
 
     // TOOLS - be careful with that
     //createSetsFromIdle("assets/monsters/kolcorozec/");
     //createSetsFromRuns("assets/monsters/jaszczur/");
+<<<<<<< HEAD
     //editWhitePixelsToTransparent("assets/monsters/niedzwiedz/");
     //testSelectingFunction();
     //testElipseSelectingFunction();
     //convertPNGsToFramePNGs();
+=======
+    editWhitePixelsToTransparent("assets/monsters/troll/");
+    //convertPNGsToSet();
+>>>>>>> 0d92efa (Main Updates:)
     
     // LOADS
 	loadFonts();
@@ -586,6 +693,7 @@ int main()
     loadQuests();
 	loadPrefabs();		// TO-DO "FROM FILE"
 	
+<<<<<<< HEAD
 
 	//window->setKeyRepeatEnabled(false);	// TO-DO commentary
 	
@@ -597,5 +705,21 @@ int main()
     //testElipseSelectingFunction();
     //convertPNGsToSet();
     //testGLSL();
+=======
+    
+	window->setKeyRepeatEnabled(false);	// TO-DO commentary
+    
+    // TESTS
+    //testSelectingFunction();
+    //testElipseSelectingFunction();
+    //testGLSL();
+    //testOpenDialogBox();
+
+    // PROGRAMS
+	game();
+    //MapEditor();
+    //BuildingEditor();
+    
+>>>>>>> 0d92efa (Main Updates:)
     return 0;
 }

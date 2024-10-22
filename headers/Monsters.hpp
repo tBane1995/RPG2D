@@ -7,11 +7,11 @@ public:
 	bool isAlive;
 	sf::Vector2f base;
 	sf::Time deathTime;
-	int EXPERIENCE;
+	short EXPERIENCE;
 	std::vector < Point > path;
 	std::vector < sf::CircleShape > pathpoints;
 
-	Monster(string name, float width, float length, float height,  int EXP) : Unit(name, name, width, length, height) {
+	Monster(string name, float width, float length, float height, short EXP) : Unit(name, name, width, length, height) {
 		type = gameObjectType::Monster;
 		direction = 2;
 		isAlive = true;
@@ -39,9 +39,13 @@ public:
 		loadTextures();
 	}
 
+	virtual ~Monster() {
+
+	}
+
 	void loadTextures() {
 
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
 			attackTextures[i] = getTexture(name + "/attackTop" + to_string(i));
 			attackTextures[4 + i] = getTexture(name + "/attackRight" + to_string(i));
@@ -263,7 +267,6 @@ public:
 
 			setLifeBar();
 			createTextname();
-
 		}
 
 	}
@@ -275,7 +278,7 @@ public:
 		if (collisionPrediction(this, 0, 0))
 			collider->shape->setFillColor(sf::Color::Red);
 		else
-			collider->shape->setFillColor(sf::Color(128, 64, 128, 128));
+			collider->shape->setFillColor(sf::Color(128, 64, 128, 96));
 		
 		viewRangeArea.setPosition(position);
 		actionRangeArea.setPosition(position);
@@ -304,8 +307,31 @@ public:
 		}
 	}
 
-	virtual void drawStatistic() {
+	virtual void drawStatistics() {
+		
 
+		if(renderViewRange)
+			window->draw(viewRangeArea);
+		
+		if(renderActionRange)
+			window->draw(actionRangeArea);
+		
+		if (renderMonsterBases) {
+			for (auto& p : pathpoints)
+				window->draw(p);
+
+			sf::CircleShape meta(8);
+			meta.setFillColor(sf::Color::Blue);
+			meta.setOrigin(8, 8);
+			meta.setPosition(target.x, target.y);
+			window->draw(meta);
+		}
+
+		Unit::drawStatistics();
+	}
+
+	virtual void drawAllStatistics() {
+		
 		for (auto& p : pathpoints)
 			window->draw(p);
 
@@ -315,7 +341,7 @@ public:
 		meta.setPosition(target.x, target.y);
 		window->draw(meta);
 
-		Unit::drawStatistic();
+		Unit::drawAllStatistics();
 	}
 };
 

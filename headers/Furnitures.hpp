@@ -42,12 +42,23 @@ public:
 		takeItSprite.setTexture(*takeItTexture->texture);
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
+
+		sprite.setPosition(position);
+		takeItSprite.setPosition(position.x, position.y - 50);
+	}
+
+	virtual ~Furniture() {
+
+	}
+
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
 	}
 
 	virtual void update(float dt) {
 
-		sprite.setPosition(position);
-		takeItSprite.setPosition(position.x, position.y - 50);
+		
 		showHand = false;
 
 		if (player != nullptr) {

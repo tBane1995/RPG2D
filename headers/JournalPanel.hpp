@@ -31,7 +31,7 @@ public:
 				actualQuests.push_back(quest);
 
 		titles.clear();
-		for (int i = 0; i < 18; i++) {
+		for (short i = 0; i < 18; i++) {
 			titles.push_back(sf::Text());
 			titles[i].setFont(basicFont);
 			titles[i].setFillColor((i == cursor) ? textActiveColor : textColor);
@@ -47,7 +47,7 @@ public:
 		
 		std::wstring descriptionText = L"";
 
-		for (int i = 0; i < descriptionLines.size(); i++)
+		for (short i = 0; i < descriptionLines.size(); i++)
 			descriptionText += descriptionLines[i] + L"\n";
 
 		description.setString(descriptionText);

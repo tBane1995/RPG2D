@@ -13,7 +13,7 @@ public:
 		
 		name = "";
 
-		int i = int(pathfile.size()) - 5;
+		short i = int(pathfile.size()) - 5;
 		while ( i>=0)
 			name = pathfile[i--] + name;
 
@@ -57,36 +57,50 @@ void loadTextures() {
 	loadTexture("GUI/wideArrowDown2.png", 160, 20);
 
 	
-	loadTexture("GUI/menuButton.png", 40, 20);
-	loadTexture("GUI/menuButton-terrain.png", 40, 20);
-	loadTexture("GUI/menuButton-floors.png", 40, 20);
-	loadTexture("GUI/menuButton-furnitures.png", 40, 20);
-	loadTexture("GUI/menuButton-walls.png", 40, 20);
-	loadTexture("GUI/menuButton-monsters.png", 40, 20);
-	loadTexture("GUI/menuButton-paths.png", 40, 20);
-	loadTexture("GUI/menuButton-items.png", 40, 20);
-	loadTexture("GUI/menuButton-natures.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-terrain.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-floors.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-furnitures.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-walls.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-monsters.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-paths.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-items.png", 40, 20);
+	loadTexture("GUI/menuButtons/menuButton-natures.png", 40, 20);
 
-	loadTexture("GUI/smallbutton.png", 20, 20);
-	loadTexture("GUI/smallbutton-ArrowUp.png", 20, 20);
-	loadTexture("GUI/smallbutton-ArrowDown.png", 20, 20);
-	loadTexture("GUI/smallbutton-ArrowLeft.png", 20, 20);
-	loadTexture("GUI/smallbutton-ArrowRight.png", 20, 20);
-	loadTexture("GUI/smallbutton-cursor.png", 20, 20);
-	loadTexture("GUI/smallbutton-brush.png", 20, 20);
-	loadTexture("GUI/smallbutton-rect_brush.png", 20, 20);
-	loadTexture("GUI/smallbutton-increase.png", 20, 20);
-	loadTexture("GUI/smallbutton-decrease.png", 20, 20);
-	loadTexture("GUI/smallbutton-rectangle.png", 20, 20);
-	loadTexture("GUI/smallbutton-elipse.png", 20, 20);
-	loadTexture("GUI/smallbutton-fill.png", 20, 20);
-	loadTexture("GUI/smallbutton-eraser.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-ArrowUp.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-ArrowDown.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-ArrowLeft.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-ArrowRight.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-cursor.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-brush.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-rect_brush.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-increase.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-decrease.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-rectangle.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-elipse.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-fill.png", 20, 20);
+	loadTexture("GUI/smallButtons/smallbutton-eraser.png", 20, 20);
 
 	loadTexture("GUI/spacebutton.png", 80, 20);
+
+	loadTexture("GUI/scrollbar/button_bottom.png", 8, 8);
+	loadTexture("GUI/scrollbar/button_top.png", 8, 8);
+	loadTexture("GUI/scrollbar/bar_bottom.png", 8, 8);
+	loadTexture("GUI/scrollbar/bar_top.png", 8, 8);
+	loadTexture("GUI/scrollbar/bar_center.png", 8, 8);
+	loadTexture("GUI/scrollbar/scroll_bottom.png", 8, 8);
+	loadTexture("GUI/scrollbar/scroll_top.png", 8, 8);
+	loadTexture("GUI/scrollbar/scroll_center.png", 8, 8);
+
+	loadTexture("GUI/checkbox/check.png", 8, 8);
 
 	loadTexture("GUI/hand.png", 8, 8);
 	loadTexture("GUI/grey_hand.png", 8, 8);
 	loadTexture("GUI/talk.png", 8, 8);
+
+	loadTexture("GUI/icons/dictionary.png", 16, 16);
+	loadTexture("GUI/icons/file.png", 16, 16);
 
 	// TILES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	loadTexture("tiles/0_tileset.png", 0, 0);
@@ -206,7 +220,7 @@ void loadTextures() {
 	monsters.push_back("bies");
 
 	for (auto& m : monsters) {
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
 			loadTexture("monsters/" + m + ".png", 63, 87);
 
@@ -295,7 +309,7 @@ void loadTextures() {
 	
 	
 	for (auto& set : bodySets) {
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
 			loadTexture("sets/body/" + set + "/idleTop" + to_string(i) + ".png", 32, 58);
 			loadTexture("sets/body/" + set + "/idleRight" + to_string(i) + ".png", 32, 58);
@@ -348,7 +362,7 @@ void loadTextures() {
 
 	for (auto& set : itemSets) {
 
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 			
 			loadTexture("sets/items/" + set + "/idleTop" + to_string(i) + ".png", 32, 58);
 			loadTexture("sets/items/" + set + "/idleRight" + to_string(i) + ".png", 32, 58);

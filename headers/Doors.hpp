@@ -17,8 +17,6 @@ public:
 	Door(string name) : GameObject(name, 0, 0, 64, 16, 64, true, true) {
 		state = doorState::close;
 		type = gameObjectType::Door;
-		
-		
 
 		this->textureOpen = getTexture("doors/door_open");
 		this->textureClose = getTexture("doors/door_close");
@@ -57,7 +55,13 @@ public:
 		showHand = false;
 
 		collider->shape->setPosition(position.x, position.y-16);
+		textname.setPosition(position.x, position.y - collider->height);
+		takeItSprite.setPosition(position.x, position.y - 50);
 
+	}
+
+	virtual ~Door() {
+	
 	}
 
 	void open() {
@@ -101,10 +105,12 @@ public:
 			return false;
 	}
 
-	virtual void update(float dt) {
+	virtual void setPosition(sf::Vector2f position) {
+		this->position = position;
+		sprite.setPosition(position);
+	}
 
-		textname.setPosition(position.x, position.y - collider->height);
-		takeItSprite.setPosition(position.x, position.y - 50);
+	virtual void update(float dt) {
 
 		(playerNextTo()) ? showHand = true : showHand = false;
 
@@ -123,6 +129,7 @@ public:
 
 			} 
 		}
+
 	}
 
 	virtual void draw() {

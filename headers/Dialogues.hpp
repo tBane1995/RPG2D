@@ -4,7 +4,7 @@
 class DialogueOption {
 public:
 	std::wstring text;
-	int nextDialogueID;
+	short nextDialogueID;
 
 	DialogueOption(int nextDialogueID, std::wstring text) {
 		this->nextDialogueID = nextDialogueID;
@@ -14,11 +14,11 @@ public:
 
 class Dialogue {
 public:
-	int id;
+	short id;
 	std::wstring text;
 	std::vector < DialogueOption > options;
 
-	Dialogue(int id, std::wstring text) {
+	Dialogue(short id, std::wstring text) {
 		this->id = id;
 		this->text = text;
 	}
@@ -28,9 +28,9 @@ std::vector < Dialogue* > dialogues;
 Dialogue* currentDialogue;
 enum class dialogueStates { dialogue, choose };
 dialogueStates dialogueState;
-int chooseOption = 0;
+short chooseOption = 0;
 
-Dialogue* getDialogue(int id) {
+Dialogue* getDialogue(short id) {
 	for (auto& d : dialogues)
 		if (d->id == id)
 			return d;
@@ -47,15 +47,15 @@ float lineHeight = 24;
 float padding = 10.0f;
 sf::Vector2f dialogSize = sf::Vector2f(600, 160);
 sf::Vector2f textPosition;
-int countOfLines = 0;
-int page = 0;
+short countOfLines = 0;
+short page = 0;
 std::vector < wstring > lines;
 std::vector < wstring > wrappedText;
 std::vector < DialogueOption > availableOptions;
-int dialogScroll;
+short dialogScroll;
 
 
-void setTextToDialogBox(std::wstring text) {
+void setTextToDialogueBox(std::wstring text) {
 
 	float maxWidth = dialogSize.x - 2.0f * padding;
 
@@ -63,7 +63,7 @@ void setTextToDialogBox(std::wstring text) {
 	countOfLines = wrappedText.size();
 }
 
-void drawDialogBox(sf::RenderWindow* window, int currentPage = 0) {
+void drawDialogueBox(sf::RenderWindow* window, short currentPage = 0) {
 
 	page = currentPage;	// global variable "page"
 
@@ -78,7 +78,7 @@ void drawDialogBox(sf::RenderWindow* window, int currentPage = 0) {
 	background.setPosition(cam->position.x, cam->position.y + screenHeight / 2.0f - dialogSize.y / 2.0f);
 	window->draw(background);
 
-	for (int i = 0; i < 5; i++) {
+	for (short i = 0; i < 5; i++) {
 		if (i + 5 * page >= wrappedText.size())
 			break;
 
@@ -118,7 +118,7 @@ void drawChooseBox(sf::RenderWindow* window) {
 		availableOptions.push_back(o);
 	}
 
-	for (int i = 0; i < 5; i++) {
+	for (short i = 0; i < 5; i++) {
 
 		if (i + dialogScroll >= availableOptions.size())
 			return;
@@ -167,7 +167,7 @@ void loadDialogue(int dialogID) {
 	// stworzenie dialogu
 	Dialogue* dial = new Dialogue(dialogID, ConvertUtf8ToWide(textPart));
 
-	int id = -1;
+	short id = -1;
 	char comma;
 
 	// wczytanie odpowiedzi do dialogu
@@ -185,7 +185,7 @@ void loadDialogue(int dialogID) {
 	file.close();
 }
 
-void setDialogue(int id) {
+void setDialogue(short id) {
 
 	gameState = gameStates::dialogue;
 	dialogueState = dialogueStates::dialogue;

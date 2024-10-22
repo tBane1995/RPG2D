@@ -22,7 +22,7 @@ bool pointInEllipse(float px, float py, float cx, float cy, float rx, float ry) 
 bool intersectionTwoEllipses(float x1, float y1, float rx1, float ry1, float x2, float y2, float rx2, float ry2) {
 
     // Sprawdzenie punktów na pierwszej elipsie względem drugiej elipsy
-    for (int i = 0; i < numPoints; ++i) {
+    for (short i = 0; i < numPoints; ++i) {
 
         angle = 2 * M_PI * i / numPoints;
         px = x1 + rx1 * std::cos(angle);
@@ -34,7 +34,7 @@ bool intersectionTwoEllipses(float x1, float y1, float rx1, float ry1, float x2,
     }
 
     // Sprawdzenie punktów na drugiej elipsie względem pierwszej elipsy
-    for (int i = 0; i < numPoints; ++i) {
+    for (short i = 0; i < numPoints; ++i) {
 
         angle = 2 * M_PI * i / numPoints;
         px = x2 + rx2 * std::cos(angle);
@@ -61,7 +61,7 @@ bool intersectionTwoRectangles(float x1, float y1, float width1, float height1, 
 bool intersectionRectangleWithElipse(float r_x, float r_y, float r_width, float r_height, float e_x, float e_y, float e_radiusx, float e_radiusy) {
 
     // Sprawdzenie punktów na pierwszej elipsie względem drugiej elipsy
-    for (int i = 0; i < numPoints; ++i) {
+    for (short i = 0; i < numPoints; ++i) {
 
         angle = 2 * M_PI * i / numPoints;
         px = e_x + e_radiusx * std::cos(angle);

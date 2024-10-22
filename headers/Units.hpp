@@ -10,22 +10,23 @@ public:
 	string name;
 	string bodySet;
 
-	int LEVEL;
-	int EXPERIENCE;
-	int SKILL_POINTS;
+	short LEVEL;
+	short EXPERIENCE;
+	short SKILL_POINTS;
 
-	int HP, HP_FULL;
-	int MP, MP_FULL;
-	int STRENGTH;
-	int DEXTERITY;
-	int INTELLIGENCE;
+	short HP, HP_FULL;
+	short MP, MP_FULL;
+	short STRENGTH;
+	short DEXTERITY;
+	short INTELLIGENCE;
 
-	int ACTION_RANGE;	// range of action 
-	int VIEW_RANGE;	// range of view
+	short ACTION_RANGE;	// range of action 
+	short VIEW_RANGE;	// range of view
 	
 	unitStates state;		// idle, run or attack
-	int frame;			// current frame
-	int direction;		// direction 0 - Top, 1 - Right, 2 - Bottom, 3 - Left
+	short frame;			// current frame
+	short direction;		// direction 0 - Top, 1 - Right, 2 - Bottom, 3 - Left
+
 	float countdown;	// timer to calculate frame
 	float cooldown;		// timer past attack to freeze
 	float attackTime;	// attack time in seconds
@@ -63,8 +64,8 @@ public:
 		DEXTERITY = 5;
 		INTELLIGENCE = 5;
 
-		VIEW_RANGE = 256.0f;
-		ACTION_RANGE = 32.0f;
+		VIEW_RANGE = 256;
+		ACTION_RANGE = 32;
 
 		state = unitStates::idle;
 		frame = 0;
@@ -118,17 +119,19 @@ public:
 		createActionRangeArea();
 	}
 
-	~Unit() { }
+	virtual ~Unit() {
+	
+	}
 
 	void loadBody() {
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			idleTextures[i] = nullptr;
 			runTextures[i] = nullptr;
 			attackTextures[i] = nullptr;
 
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
 			idleTextures[i] = getTexture(bodySet + "/idleTop" + to_string(i));
 			idleTextures[4 + i] = getTexture(bodySet + "/idleRight" + to_string(i));
@@ -154,7 +157,7 @@ public:
 
 	void createViewRangeArea() {
 		viewRangeArea = sf::CircleShape(VIEW_RANGE + collider->width/2.0f);
-		viewRangeArea.setFillColor(sf::Color(64, 64, 128, 128));
+		viewRangeArea.setFillColor(sf::Color(64, 64, 128, 96));
 		viewRangeArea.setOutlineColor(sf::Color(64, 64, 196, 128));
 		viewRangeArea.setOutlineThickness(4.0f);
 		viewRangeArea.setOrigin(VIEW_RANGE + collider->width/2.0f, VIEW_RANGE + collider->length/2.0f);
@@ -163,7 +166,7 @@ public:
 
 	void createActionRangeArea() {
 		actionRangeArea = sf::CircleShape(ACTION_RANGE + collider->width/2.0f);
-		actionRangeArea.setFillColor(sf::Color(128, 64, 64, 128));
+		actionRangeArea.setFillColor(sf::Color(128, 64, 64, 96));
 		actionRangeArea.setOutlineColor(sf::Color(196, 64, 64, 128));
 		actionRangeArea.setOutlineThickness(4.0f);
 		actionRangeArea.setOrigin(ACTION_RANGE + collider->width / 2.0f, ACTION_RANGE + collider->width/2.0f);
@@ -182,7 +185,7 @@ public:
 		lifeBar.setPosition(position.x, position.y - collider->height - 10);
 	}
 
-	int takeDamage(int damage) {
+	short takeDamage(short damage) {
 
 		HP -= damage;
 
@@ -192,8 +195,8 @@ public:
 		return damage;
 	}
 
-	int getDamage() {
-		int damage = STRENGTH * 2;
+	short getDamage() {
+		short damage = STRENGTH * 2;
 		damage = damage * (rand() % 50 + 75) / 100;	// 75% - 125%
 		return damage;
 	}
@@ -319,7 +322,7 @@ public:
 			
 			if (rand() % (DEXTERITY + 10) - rand() % (player->DEXTERITY + 5) > 0) {
 				
-				int damage = player->takeDamage(getDamage());
+				short damage = player->takeDamage(getDamage());
 				hits->addHitText(hitposition, to_string(damage), sf::Color::Red);
 			}
 			else {
@@ -367,6 +370,8 @@ public:
 
 	virtual void draw() {
 
+		GameObject::draw();
+
 		window->draw(sprite);
 		window->draw(lifeBarBackground);
 		window->draw(lifeBar);
@@ -374,12 +379,11 @@ public:
 		GameObject::draw();
 	}
 
-	virtual void drawStatistic() {
-		
+	virtual void drawAllStatistics() {
 		window->draw(viewRangeArea);
 		window->draw(actionRangeArea);
 
-		GameObject::drawStatistic();
+		GameObject::drawAllStatistics();
 	}
 
 };

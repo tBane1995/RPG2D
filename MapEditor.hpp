@@ -10,14 +10,14 @@ void painterUpdate();
 void painterDraw();
 void addPrefabToLists();
 void editTiles();
-void editFloors();
 void MapEditorUnclickButtons();
 void MapEditorHoverButtons();
 void MapEditorEventLeftClick();
 void MapEditorEventRightClick();
 
-
 void MapEditor() {
+
+    window->setTitle("Map Editor");
 
     // load the icon for windows
     sf::Image ico;
@@ -41,35 +41,41 @@ void MapEditor() {
     pressText->setOrigin(pressText->getLocalBounds().width / 2.f, pressText->getLocalBounds().height / 2.f);
     pressText->setPosition(screenWidth / 2.0f, screenHeight / 2.0f + 50);
 
-
-    sf::Event event;
-    while (window->waitEvent(event)) {
-        if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            break;
+    bool skip = false;
+    while (window->isOpen() && skip == false) {
+        sf::Event event;
+        while (window->pollEvent(event)) {
+            if (event.type == sf::Event::KeyPressed && sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+                skip = true;
+                break;
+            }
         }
+            window->setView(cam->view);
+            welcomeText->setPosition(cam->position.x, cam->position.y - 50);
+            pressText->setPosition(cam->position.x, cam->position.y + 50);
 
-        window->setView(cam->view);
-        welcomeText->setPosition(cam->position.x, cam->position.y - 50);
-        pressText->setPosition(cam->position.x, cam->position.y + 50);
-
-        window->clear(sf::Color::Black);
-        window->draw(*welcomeText);
-        window->draw(*pressText);
-        window->display();
+            window->clear(sf::Color::Black);
+            window->draw(*welcomeText);
+            window->draw(*pressText);
+            window->display();
+        
     }
-
+    
     mapEditorState = mapEditorStates::editor;
+
+    loadDialogBox = nullptr;
 
     prefabToPaint = nullptr;
     selectedGameObjects.clear();
-
     selection_state = false;
 
+    createMapEditorMenuBar();
     createMapEditorPalette();
+    
+    mapa = new Mapa();
+    mapa->load();
 
-    world = new World();
-    world->load();
-    cam->setPosition(screenWidth/2.0f, screenHeight/2.0f);
+    //cam->setPosition(screenWidth/2.0f, screenHeight/2.0f);
 
     updateGameObjects();
 
@@ -77,6 +83,7 @@ void MapEditor() {
 
         prevTime = currentTime;
         currentTime = timeClock.getElapsedTime();
+        dt = currentTime.asSeconds() - prevTime.asSeconds();
 
         mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
         worldMousePosition = window->mapPixelToCoords(mousePosition);
@@ -84,8 +91,10 @@ void MapEditor() {
         GUIwasHover = false;
         GUIwasClicked = false;
 
-        MapEditorUnclickButtons();
-        MapEditorHoverButtons();
+        if (loadDialogBox == nullptr) {
+            MapEditorUnclickButtons();
+            MapEditorHoverButtons();
+        }
 
         // events
         sf::Event event;
@@ -95,32 +104,50 @@ void MapEditor() {
                 window->close();
             }
 
+            if (loadDialogBox) {
+                loadDialogBox->update(event, dt);
+
+                if (loadDialogBox->fileSelected) {
+                    mapa->load(loadDialogBox->getPathfile());
+                    delete loadDialogBox;
+                    loadDialogBox = nullptr;
+                }
+            }
+
             if (event.type == sf::Event::MouseButtonReleased) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     
-                    MapEditorEventLeftClick();
+                    if (loadDialogBox == nullptr) {
+                        
+                        MapEditorEventLeftClick();
 
-                    if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                        selection_state = false;
+                        if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                            selection_state = false;
+                        }
                     }
 
                 }
 
                 if (event.mouseButton.button == sf::Mouse::Right) {
-                    MapEditorEventRightClick();
+                    if (loadDialogBox == nullptr) {
+                        MapEditorEventRightClick();
+                    }
                 }
             }
                 
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
 
-                    if (GUIwasHover != true) {
+                    if (loadDialogBox == nullptr) {
+                        if (GUIwasHover != true) {
+                            if (clickedMenuButton == nullptr) {
+                                startMousePosition = sf::Mouse::getPosition(*window);
+                                startWorldMousePosition = window->mapPixelToCoords(mousePosition);
 
-                        startMousePosition = sf::Mouse::getPosition(*window);
-                        startWorldMousePosition = window->mapPixelToCoords(mousePosition);
-
-                        if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                            selection_state = true;
+                                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                                    selection_state = true;
+                                }
+                            }
                         }
                     }
                     
@@ -130,96 +157,127 @@ void MapEditor() {
             if (event.type == sf::Event::KeyPressed) {
                     
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
-                    window->close();
-                    exit(0);
+                    if (loadDialogBox == nullptr) {
+                        window->close();
+                        exit(0);
+                    }
+                    else {
+                        delete loadDialogBox;
+                        loadDialogBox = nullptr;
+                    }
                 }
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5)) {
-                    world->save();
+                    // TO-DO
+                    if (loadDialogBox == nullptr) {
+                        mapa->save();
+                    }
                 }
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::F6)) {
-                    world->load();
-                }
-
-            }
-
-
-
-        }
-
-        // calculate delta time
-        dt = currentTime.asSeconds() - prevTime.asSeconds();
-
-        float moveSpeed = 300.0f * dt;
-        // moving the view
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            cam->move(0.0f, -moveSpeed);
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            cam->move(0.0f, moveSpeed);
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-            cam->move(-moveSpeed, 0.0f);
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            cam->move(moveSpeed, 0.0f);
-
-        
-
-        if (!GUIwasHover) {
-
-            if (prefabToPaint != nullptr) {
-
-                if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                    if (tool == toolType::Brush || tool == toolType::RectBrush) {
-                        if (prefabToPaint->type == gameObjectType::Terrain)
-                            editTiles();
+                    mapa->load();
+                    /*
+                    if (loadDialogBox == nullptr) {
+                        loadDialogBox = new OpenDialogBox("Load Map");
                     }
-                    
+                    */
                 }
+
             }
+
+
 
         }
 
         
+
+        if (loadDialogBox == nullptr) {
+            float moveSpeed = 300.0f * dt;
+            // moving the view
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                cam->move(0.0f, -moveSpeed);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                cam->move(0.0f, moveSpeed);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                cam->move(-moveSpeed, 0.0f);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                cam->move(moveSpeed, 0.0f);
+
+            // drawing a terrain
+            if (!GUIwasHover) {
+                if (prefabToPaint != nullptr) {
+
+                    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                        if (clickedMenuButton == nullptr) {
+                            if (tool == toolType::Brush || tool == toolType::RectBrush) {
+                                if (prefabToPaint->type == gameObjectType::Terrain)
+                                    editTiles();
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+
 
         // UPDATE ////////////////////////////////////////////////////////////////////////
+        mapa->mapVisiblings();
 
-        world->mapVisiblings();     // render map or not render map
-        
-        world->update(dt);
-        for (auto& go : selectedGameObjects)
+        updateShaders();
+        mapa->update();
+
+        for (auto& go : gameObjects)
             go->updateStatistic(dt);
 
+
+        cam->update();
         updateGameObjects();
         sortGameObjects();
-        updatePalette();
-        cam->update();
-        painterUpdate();
-      
+
+        if (loadDialogBox == nullptr) {
+            updateMenuBar();
+            updatePalette();
+            painterUpdate();
+        }
+        
 
         // RENDER ////////////////////////////////////////////////////////////////////////////
 
         window->clear(sf::Color(64, 128, 64));
         window->setView(cam->view);
 
-        world->draw();
-        world->drawStatistic();
+        mapa->draw();
+        mapa->drawStatistics();
 
-        for (auto& m : world->maps)
-            for (auto& b : m->_buildings) {
-                window->draw(*b->floors);
-                b->draw();
-            }
+        for (auto& building : buildings) {
+            window->draw(*building->floors);
+            building->draw();
+        }
+
+
         
-        for (auto& go : selectedGameObjects)
-            go->drawStatistic();
+        for (auto& go : gameObjects) {
+            if (go->mouseIsOver || go->isSelected) {
+                // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
+                go->drawAllStatistics();
+            }
+            else {
+                // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
+                go->drawStatistics();
+            }
+        }
 
         drawGameObjects();
         painterDraw();
-    
+        drawMenuBar();
         drawPalette();
+        if (loadDialogBox != nullptr)
+            loadDialogBox->draw();
         window->display();
     }
 
@@ -230,7 +288,6 @@ void MapEditor() {
 
 void editTiles() {
 
-    
     for(auto& prefab : prefabsToPaint) {
 
         if (prefab->type == gameObjectType::Terrain) {
@@ -238,25 +295,35 @@ void editTiles() {
             TerrainPrefab* tp = dynamic_cast<TerrainPrefab*>(prefab);
             //cout << prefab->position.x << ", " << prefab->position.y << "\n";
 
-            Map* map = world->getMap(tp->position);
+            Chunk* chunk = mapa->getChunk(tp->position);
+            if (chunk != nullptr) {
 
-            if (map != nullptr) {
+                // TO-DO
+                if (tp->name == "tiles/tile_0_grass") {
+                    chunk->terrain->edit(tp->position, 0);
+                    chunk->water->edit(tp->position, false);
+                }
 
-                if (tp->name == "tiles/tile_0_grass")
-                    map->editTile(tp->position, 0);
+                if (tp->name == "tiles/tile_1_sands") {
+                    chunk->terrain->edit(tp->position, 1);
+                    chunk->water->edit(tp->position, false);
+                }
+                    
+                if (tp->name == "tiles/tile_2_water") {
+                    chunk->terrain->edit(tp->position, 2);
+                    chunk->water->edit(tp->position, true);
+                }
+                    
+                if (tp->name == "tiles/tile_3_gravel") {
+                    chunk->terrain->edit(tp->position, 3);
+                    chunk->water->edit(tp->position, false);
+                }
 
-                if (tp->name == "tiles/tile_1_sands")
-                    map->editTile(tp->position, 1);
-
-                if (tp->name == "tiles/tile_2_water")
-                    map->editTile(tp->position, 2);
-
-                if (tp->name == "tiles/tile_3_gravel")
-                    map->editTile(tp->position, 3);
-
+                //
             }
         }
     }
+    
 
     
 }
@@ -265,15 +332,24 @@ void MapEditorUnclickButtons() {
     buttonUp->unclick();
     buttonDown->unclick();
 
-    for (auto& mb : menuButtons)
-        mb->unclick();
+    for (auto& gb : groupButtons)
+        gb->unclick();
 
-    for (int i = 0; i < paletteCols * paletteRows; i++)
+    for (short i = 0; i < paletteCols * paletteRows; i++)
         palette[i]->unclick();
 
-    if (selectedMenuButton == btnMenuTerrain)
+    if (selectedGroupButton == btnGroupTerrain)
         for (auto& tool : tools)
             tool->unclick();
+
+    for (auto& m : menu) {
+        m->unclick();
+
+        if (m->isOpen) {
+            for (auto& o : m->options)
+                o->unclick();
+        }
+    }
 
 }
 
@@ -281,111 +357,168 @@ void MapEditorHoverButtons() {
     buttonUp->hover();
     buttonDown->hover();
 
-    for (auto& mb : menuButtons)
+    for (auto& mb : groupButtons)
         mb->hover();
     
-    for (int i = 0; i < paletteCols * paletteRows; i++)
+    for (short i = 0; i < paletteCols * paletteRows; i++)
         palette[i]->hover();
 
-    if (selectedMenuButton == btnMenuTerrain)
+    if (selectedGroupButton == btnGroupTerrain)
         for (auto& tool : tools)
             tool->hover();
+
+    for (auto& m : menu) {
+        m->hover();
+
+        if (m->isOpen) {
+            for (auto& o : m->options)
+                o->hover();
+        }
+    }
 
 }
 
 void MapEditorEventLeftClick() {
-    
-    cout << "\nclick";
 
-    buttonUp->click();
-    buttonDown->click();
+    if (clickedMenuButton != nullptr) {
+        bool clickOnMenu = false;
 
-    for (auto& mb : menuButtons)
-        mb->click();
+        for (auto& m : menu) {
 
-    for (int i = 0; i < paletteCols * paletteRows; i++) {
-        palette[i]->click();
-    }
+            if (m->click())
+                clickOnMenu = true;
 
-    if (selectedMenuButton == btnMenuTerrain)
-        for (auto& tool : tools)
-            tool->click();
+            if (m->isOpen) {
+                for (auto& o : m->options)
+                    if (o->click())
+                        clickOnMenu = true;
+            }
+        }
 
-    if (!GUIwasHover) {
-
-        (GUIwasHover) ? cout << "hover" : cout << "not hover";
-
-        if (tool == toolType::Cursor) {
+        if (clickOnMenu == false) {
+            clickedMenuButton->isOpen = false;
+            clickedMenuButton = nullptr;
+        }
             
-            int x = selectArea.getPosition().x;
-            int y = selectArea.getPosition().y;
-            int w = selectArea.getSize().x;
-            int h = selectArea.getSize().y;
-
-            if (w < 16) w = 16;
-            if (h < 16) h = 16;
-
-            selectGameObjects(x, y, w, h);
-
-        }
-
-        if (!prefabsToPaint.empty()) {
-
-            if (tool == toolType::AddGameObject) {
-                addPrefabsToMapAndLists();
-            }
-
-            if (tool == toolType::Rectangle || tool == toolType::Elipse) {
-                editTiles();
-            }
-        }
-
     }
+    else {
 
+        buttonUp->click();
+        buttonDown->click();
+
+        for (auto& mb : groupButtons)
+            mb->click();
+
+        for (short i = 0; i < paletteCols * paletteRows; i++) {
+            palette[i]->click();
+        }
+
+        if (selectedGroupButton == btnGroupTerrain)
+            for (auto& tool : tools)
+                tool->click();
+
+        for (auto& m : menu) {
+            if (m->click())
+                tool = toolType::Cursor;
+        }
+
+        if (!GUIwasHover) {
+
+            if (tool == toolType::Cursor) {
+
+                float x = selectArea.getPosition().x;
+                float y = selectArea.getPosition().y;
+                float w = selectArea.getSize().x;
+                float h = selectArea.getSize().y;
+
+                if (w < 16) w = 16;
+                if (h < 16) h = 16;
+
+                selectGameObjects(x, y, w, h);
+
+            }
+
+            if (!prefabsToPaint.empty()) {
+
+                if (tool == toolType::AddGameObject) {
+                    addPrefabsToMapAndLists();
+                }
+
+                if (tool == toolType::Rectangle || tool == toolType::Elipse) {
+                    editTiles();
+                }
+            }
+
+        }
+    }   // CLICKED MENU BUTTON
 }
 
 void MapEditorEventRightClick() {
     
-    
-    if (prefabToPaint == nullptr) {
+    if (clickedMenuButton != nullptr) {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
+
+    }else if (prefabToPaint == nullptr) {
 
         if (!selectedGameObjects.empty()) {
             selectGameObjects(0, 0, 0, 0);
             return;
         }
-            
 
         bool was_delete = false;
 
-        // TO-DO //////////////////////////////////////////////////
-        for (auto& m : world->maps)
-            for (auto& building : m->_buildings) {
-                if (building->mouseIsOver) {
-                    building->deleteBuilding();
-                    deleteGameObjectsFromMainLists();
+        ////////////////////////////////////////////////////////
+        
+        for (auto it = buildings.begin(); it != buildings.end(); ) {
+            Building* b = *it;
+
+            if (b->mouseIsOver == true) {
+
+                sf::Vector2f pos;
+                pos.x = b->position.x;
+                pos.y = b->position.y;
+
+                Chunk* chunk = mapa->getChunk(pos);  // erase
+                if (chunk != nullptr) {
+                    cout << "chunk selected\n";
+                    deleteGameObjectFromMainLists(b);
+                    chunk->removeGameObject(b);
+                    delete b;
                     was_delete = true;
                     break;
                 }
+                    
 
+
+                
             }
+            else
+                ++it;
+        }
+       
+        if (was_delete == false) {
+            for (auto it = gameObjects.begin(); it != gameObjects.end(); ) {
+                GameObject* go = *it;
 
-        ////////////////////////////////////////////////////////
+                if (go->type != gameObjectType::Building && go->mouseIsOver == true) {
 
-        for (auto& go : gameObjects) {
-            if (go->mouseIsOver == true) {
-                //cout << "delete: " << go->name << "\n";
-                go->toDelete = true;
-                was_delete = true;
-                break;
+                    Chunk* chunk = mapa->getChunk(go->position);  
+                    if (chunk != nullptr) {
+                        deleteGameObjectFromMainLists(go);  // erase
+                        chunk->removeGameObject(go);    // erase
+                        delete go;      // delete
+                        was_delete = true;
+                        break;
+                    }
+                }
+                else
+                    ++it;
             }
         }
 
-        if (was_delete) {
-            world->mapVisiblings();
-            deleteGameObjectsFromMainLists();
-            for (auto& map : world->maps)
-                map->deleteGameObjects();
-        }
+
+        
 
     } else {
   

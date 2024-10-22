@@ -49,8 +49,8 @@ public:
 	sf::Sprite rightHandSprite;
 	sf::Sprite leftHandSprite;
 
-	int direction;
-	int frame;	// current frame number
+	short direction;
+	short frame;	// current frame number
 	float stepSize;
 	unitStates state;
 	float actionRange;
@@ -63,15 +63,15 @@ public:
 
 	Inventory* bag;
 
-	int HP, HP_FULL;
-	int MP, MP_FULL;
-	int STRENGTH;
-	int DEXTERITY;
-	int INTELLIGENCE;
-	int LEVEL;
-	int EXPERIENCE;	
-	int EXPERIENCE_TO_NEXT_LEVEL;
-	int SKILL_POINTS;
+	short HP, HP_FULL;
+	short MP, MP_FULL;
+	short STRENGTH;
+	short DEXTERITY;
+	short INTELLIGENCE;
+	short LEVEL;
+	short EXPERIENCE;
+	short EXPERIENCE_TO_NEXT_LEVEL;
+	short SKILL_POINTS;
 
 	Player() : GameObject("hero", 0, 0, 24, 12, 64, true, false) {
 		type = gameObjectType::Player;
@@ -84,8 +84,8 @@ public:
 		cooldown = 0.0f;
 		attackTime = 0.7f;
 
-		position.x = 1000;
-		position.y = 324;
+		position.x = 950;
+		position.y = 685;
 
 		isVisible = true;
 
@@ -158,11 +158,13 @@ public:
 
 		setActionRangeArea();
 		
-		toDelete = false;
+		toDeleteFromMainLists = false;
 		isVisible = false;
 	}
 
-	~Player() { }
+	virtual ~Player() {
+	
+	}
 	
 	void setDirection(int direction) {
 		this->direction = direction;
@@ -185,14 +187,14 @@ public:
 	}
 
 	void loadBody() {
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			bodyIdleTextures[i] = nullptr;
 			bodyRunTextures[i] = nullptr;
 			bodyAttackTextures[i] = nullptr;
 
 		}
 
-		for (int i = 0; i < 4; i++) {
+		for (short i = 0; i < 4; i++) {
 
 			bodyIdleTextures[i] = getTexture(body + "/idleTop" + to_string(i));
 			bodyIdleTextures[4 + i] = getTexture(body + "/idleRight" + to_string(i));
@@ -218,7 +220,7 @@ public:
 
 	void loadHelmet() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			helmetIdleTextures[i] = nullptr;
 			helmetRunTextures[i] = nullptr;
 			helmetAttackTextures[i] = nullptr;
@@ -227,7 +229,7 @@ public:
 
 		if (helmet != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				helmetIdleTextures[i] = getTexture("sets/" + helmet->name + "/idleTop" + to_string(i));
 				helmetIdleTextures[4 + i] = getTexture("sets/" + helmet->name + "/idleRight" + to_string(i));
 				helmetIdleTextures[8 + i] = getTexture("sets/" + helmet->name + "/idleBottom" + to_string(i));
@@ -253,7 +255,7 @@ public:
 
 	void loadArmor() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			armorIdleTextures[i] = nullptr;
 			armorRunTextures[i] = nullptr;
 			armorAttackTextures[i] = nullptr;
@@ -262,7 +264,7 @@ public:
 
 		if (armor != nullptr) {
 		
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				armorIdleTextures[i] = getTexture("sets/" + armor->name + "/idleTop" + to_string(i));
 				armorIdleTextures[4 + i] = getTexture("sets/" + armor->name + "/idleRight" + to_string(i));
 				armorIdleTextures[8 + i] = getTexture("sets/" + armor->name + "/idleBottom" + to_string(i));
@@ -287,7 +289,7 @@ public:
 
 	void loadPants() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			pantsIdleTextures[i] = nullptr;
 			pantsRunTextures[i] = nullptr;
 			pantsAttackTextures[i] = nullptr;
@@ -296,7 +298,7 @@ public:
 
 		if (pants != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				pantsIdleTextures[i] = getTexture("sets/" + pants->name + "/idleTop" + to_string(i));
 				pantsIdleTextures[4 + i] = getTexture("sets/" + pants->name + "/idleRight" + to_string(i));
 				pantsIdleTextures[8 + i] = getTexture("sets/" + pants->name + "/idleBottom" + to_string(i));
@@ -322,7 +324,7 @@ public:
 
 	void loadRightHand() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			rightHandIdleTextures[i] = nullptr;
 			rightHandRunTextures[i] = nullptr;
 			rightHandAttackTextures[i] = nullptr;
@@ -331,7 +333,7 @@ public:
 
 		if (rightHand != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				rightHandIdleTextures[i] = getTexture("sets/" + rightHand->name + "/idleTop" + to_string(i));
 				rightHandIdleTextures[4 + i] = getTexture("sets/" + rightHand->name + "/idleRight" + to_string(i));
 				rightHandIdleTextures[8 + i] = getTexture("sets/" + rightHand->name + "/idleBottom" + to_string(i));
@@ -357,7 +359,7 @@ public:
 
 	void loadLeftHand() {
 
-		for (int i = 0; i < 16; i++) {
+		for (short i = 0; i < 16; i++) {
 			leftHandIdleTextures[i] = nullptr;
 			leftHandRunTextures[i] = nullptr;
 			leftHandAttackTextures[i] = nullptr;
@@ -366,7 +368,7 @@ public:
 
 		if (leftHand != nullptr) {
 
-			for (int i = 0; i < 4; i++) {
+			for (short i = 0; i < 4; i++) {
 				leftHandIdleTextures[i] = getTexture("sets/" + leftHand->name + "/idleTop" + to_string(i));
 				leftHandIdleTextures[4 + i] = getTexture("sets/" + leftHand->name + "/idleRight" + to_string(i));
 				leftHandIdleTextures[8 + i] = getTexture("sets/" + leftHand->name + "/idleBottom" + to_string(i));
@@ -411,9 +413,9 @@ public:
 			frame = frame % 4;
 	}
 
-	int takeDamage(int damage) {
+	int takeDamage(short damage) {
 
-		int defend = 0;
+		short defend = 0;
 
 		if (armor != nullptr)
 			defend += armor->attributes[attribute::DEFEND];
@@ -427,7 +429,7 @@ public:
 		if (leftHand != nullptr)
 			defend += leftHand->attributes[attribute::DEFEND];
 
-		int dam = damage - defend;
+		short dam = damage - defend;
 
 		if (dam > 0) {
 			HP = HP - dam;
@@ -450,26 +452,26 @@ public:
 		return int(damage);
 	}
 
-	void heal(int HP) {
+	void heal(short HP) {
 		this->HP += HP;
 
 		if (this->HP > HP_FULL)
 			this->HP = HP_FULL;
 	}
 
-	void collectItem(Item* item, int count = 1) {
+	void collectItem(Item* item, short count = 1) {
 
 		bag->addItem(item,count);
 	}
 
-	void gainEXP(int EXP) {
+	void gainEXP(short EXP) {
 		EXPERIENCE += EXP;
 		while (levelUp());
 	}
 
 	bool levelUp() {
 		
-		int LEVEL_SCALAR = 2;
+		short LEVEL_SCALAR = 2;
 
 		if (EXPERIENCE >= EXPERIENCE_TO_NEXT_LEVEL) {
 			LEVEL++;

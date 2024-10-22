@@ -15,11 +15,11 @@ public:
 		type = gameObjectType::Terrain;
 		texture = getTexture(name);
 		this->ttype = ttype;
+
+		collider->shape->setPosition(position);
 	}
 
-	~TerrainPrefab() { 
-		delete collider->shape;
-		delete collider;
+	virtual ~TerrainPrefab() { 
 		
 	}
 
@@ -27,11 +27,6 @@ public:
 		sf::Vector2f position;
 		position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
 		position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
-
-		collider->shape->setFillColor(sf::Color::Transparent);
-		collider->shape->setPosition(position);
-		collider->shape->setOutlineThickness(2.0f);
-		collider->shape->setOutlineColor(sf::Color::Red);
 	}
 
 	virtual void draw() {
@@ -51,9 +46,7 @@ public:
 		this->ftype = ftype;
 	}
 
-	~FloorPrefab() { 
-		delete collider->shape;
-		delete collider;
+	virtual ~FloorPrefab() { 
 		
 	}
 
@@ -62,10 +55,8 @@ public:
 		position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
 		position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
 
-		collider->shape->setFillColor(sf::Color::Transparent);
 		collider->shape->setPosition(position);
-		collider->shape->setOutlineThickness(2.0f);
-		collider->shape->setOutlineColor(sf::Color::Red);
+
 	}
 
 	virtual void draw() {
@@ -76,15 +67,15 @@ public:
 
 class Terrain : public sf::Drawable, public sf::Transformable {
 public:
-	int width, height;
+	short width, height;
 	sf::Vector2i coords;
 
 	sf::VertexArray vertexes;
 	sf::Texture tileset;
 
-	std::vector < int > tiles;
+	std::vector < short > tiles;
 
-	Terrain(int x, int y, int width, int height ) {
+	Terrain(short x, short y, short width, short height ) {
 
 		coords.x = x;
 		coords.y = y;
@@ -102,11 +93,11 @@ public:
 
 		tiles.resize(width * height);
 
-		int coord_x, coord_y;
+		short coord_x, coord_y;
 
 		// TERRAIN - GRASS
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++) {
+		for (short y = 0; y < height; y++)
+			for (short x = 0; x < width; x++) {
 
 				sf::Vertex* triangles = &vertexes[(y * width + x) * 6];
 
@@ -126,7 +117,7 @@ public:
 		
 	}
 
-	void edit(int x, int y, int value) {
+	void edit(short x, short y, short value) {
 
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return;
@@ -136,13 +127,13 @@ public:
 
 		tiles[y * width + x] = value;
 
-		int global_x = coords.x + x;
-		int global_y = coords.y + y;
+		short global_x = coords.x + x;
+		short global_y = coords.y + y;
 
 		sf::Vertex* triangles = &vertexes[(y * width + x) * 6];
 
-		int tu = (int(global_x * tileSide) % 64) + (value * 64);
-		int tv = (int(global_y * tileSide) % 64);
+		short tu = (short(global_x * tileSide) % 64) + (value * 64);
+		short tv = (short(global_y * tileSide) % 64);
 
 		//cout << "tu: " << tu << ", tv: " << tv << "\n";
 
@@ -156,8 +147,8 @@ public:
 
 	void edit(sf::Vector2f worldMousePosition, int value) {
 
-		int coord_x = (worldMousePosition.x - coords.x * 16) / 16;
-		int coord_y = (worldMousePosition.y - coords.y * 16) / 16;
+		short coord_x = (worldMousePosition.x - coords.x * 16) / 16;
+		short coord_y = (worldMousePosition.y - coords.y * 16) / 16;
 
 		if (coord_x < 0 || coord_x >= width || coord_y < 0 || coord_y >= height)
 			return;
@@ -169,8 +160,8 @@ public:
 
 		sf::Vertex* triangles = &vertexes[(coord_y * width + coord_x) * 6];
 
-		int tu = (int(coord_x * tileSide) % 64) + (value * 64);
-		int tv = (int(coord_y * tileSide) % 64);
+		short tu = (short(coord_x * tileSide) % 64) + (value * 64);
+		short tv = (short(coord_y * tileSide) % 64);
 
 		//cout << "tu: " << tu << ", tv: " << tv << "\n";
 		
@@ -211,15 +202,15 @@ private:
 
 class Floors : public sf::Drawable, public sf::Transformable {
 public:
-	int width, height;
+	short width, height;
 	sf::Vector2i coords;
 
 	sf::VertexArray vertexes;
 	sf::Texture floorset;
 
-	std::vector < int > floors;
+	std::vector < short > floors;
 
-	Floors(int x, int y, int width, int height) {
+	Floors(short x, short y, short width, short height) {
 		
 		coords.x = x;
 		coords.y = y;
@@ -235,10 +226,10 @@ public:
 
 		floors.resize(width * height);
 
-		int coord_x, coord_y;
+		short coord_x, coord_y;
 
-		for (int y = 0; y < height; y++)
-			for (int x = 0; x < width; x++) {
+		for (short y = 0; y < height; y++)
+			for (short x = 0; x < width; x++) {
 
 				sf::Vertex* triangles = &vertexes[(y * width + x) * 6];
 
@@ -258,7 +249,7 @@ public:
 
 	}
 
-	void edit(int x, int y, int value) {
+	void edit(short x, short y, short value) {
 
 		if (x < 0 || x >= width || y < 0 || y >= height)
 			return;
@@ -268,13 +259,13 @@ public:
 
 		floors[y * width + x] = value;
 
-		int global_x = coords.x + x;
-		int global_y = coords.y + y;
+		short global_x = coords.x + x;
+		short global_y = coords.y + y;
 
 		sf::Vertex* triangles = &vertexes[(y * width + x) * 6];
 
-		int tu = (int(global_x * tileSide) % 64) + (value * 64);
-		int tv = (int(global_y * tileSide) % 64);
+		short tu = (short(global_x * tileSide) % 64) + (value * 64);
+		short tv = (short(global_y * tileSide) % 64);
 
 		//cout << "tu: " << tu << ", tv: " << tv << "\n";
 
@@ -288,8 +279,8 @@ public:
 
 	void edit(sf::Vector2f worldMousePosition, int value) {
 
-		int coord_x = (worldMousePosition.x - coords.x * 16) / 16;
-		int coord_y = (worldMousePosition.y - coords.y * 16) / 16;
+		short coord_x = (worldMousePosition.x - coords.x * width) / 16;
+		short coord_y = (worldMousePosition.y - coords.y * height) / 16;
 
 		if (coord_x < 0 || coord_x >= width || coord_y < 0 || coord_y >= height)
 			return;
@@ -301,8 +292,8 @@ public:
 
 		sf::Vertex* triangles = &vertexes[(coord_y * width + coord_x) * 6];
 
-		int tu = (int(coord_x * tileSide) % 64) + (value * 64);
-		int tv = (int(coord_y * tileSide) % 64);
+		short tu = (short(coord_x * tileSide) % 64) + (value * 64);
+		short tv = (short(coord_y * tileSide) % 64);
 
 		//cout << "tu: " << tu << ", tv: " << tv << "\n";
 
@@ -342,4 +333,6 @@ private:
 
 	}
 };
+
+Terrain* terrain = nullptr;
 #endif
