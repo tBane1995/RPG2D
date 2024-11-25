@@ -1,0 +1,9 @@
+Tutaj należy rozpakować najnowszą wersję SMFL 2.6.2 - tylko jej zawartość a więc:
+bin
+doc
+examples
+include
+lib
+changelog.md
+license.md
+readme.md
