@@ -5,9 +5,19 @@ cmake ..
 REM cmake --build . --config Debug --verbose
 REM cmake --build . --config Release --verbose
 cd ..
+
 mkdir Build\Debug
-xcopy assets Build\Debug\ /E/H
-xcopy basic_locations Build\Debug\ /E/H
-xcopy dialogues Build\Debug\ /E/H
-xcopy world Build\Debug\ /E/H
+
+mkdir Build\Debug\assets
+xcopy assets Build\Debug\assets /S /E
+
+mkdir Build\Debug\basic_locations
+xcopy basic_locations Build\Debug\basic_locations /S /E
+
+mkdir Build\Debug\dialogues
+xcopy dialogues Build\Debug\dialogues /S /E
+
+mkdir Build\Debug\world
+xcopy world Build\Debug\world /S /E
+
 copy *.dll Build\Debug\
