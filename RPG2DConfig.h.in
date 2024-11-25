@@ -1,0 +1,3 @@
+// the configured options and settings for DemonSlayer
+#define RPG2D_VERSION_MAJOR @RPG2D_VERSION_MAJOR@
+#define RPG2D_VERSION_MINOR @RPG2D_VERSION_MINOR@
