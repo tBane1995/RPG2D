@@ -1,5 +1,6 @@
 @echo off
 
+SET SFML_DIR=.\dependencies\SFML
 SET FILE_TO_COMPILE="src\Game\MainGame.cpp"
 
 
