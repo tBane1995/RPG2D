@@ -263,6 +263,9 @@ void loadTextures() {
 	loadSingleTexture("objects/great_gate.png", 32, 112);
 	loadSingleTexture("objects/great_stone_gate.png", 64, 112);
 	loadSingleTexture("objects/well.png", 64, 96);
+	loadSingleTexture("objects/hunter_tent.png", 128, 160);
+	loadSingleTexture("objects/log_with_saw.png", 64, 70);
+	loadSingleTexture("objects/pile_of_wood.png", 64, 80);
 
 	loadTextureSets("objects/brazier", 64, 64);
 	

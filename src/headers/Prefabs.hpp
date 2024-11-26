@@ -39,6 +39,9 @@ void loadPrefabs() {
     prefabs.push_back(new Object("objects/great_gate", 64, 32, 128, false));
     prefabs.push_back(new Object("objects/brazier", 64, 64, 64, true));
     prefabs.push_back(new Object("objects/well", 72, 38, 60, true));
+    prefabs.push_back(new Object("objects/hunter_tent", 200, 60, 130, true));
+    prefabs.push_back(new Object("objects/log_with_saw", 70, 20, 40, true));
+    prefabs.push_back(new Object("objects/pile_of_wood", 114, 56, 64, true));
 
     // FLAT OBJECTS
     prefabs.push_back(new FlatObject("flatObjects/stonepath1", 64, 32, 32));
