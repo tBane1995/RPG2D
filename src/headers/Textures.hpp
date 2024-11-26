@@ -257,13 +257,14 @@ void loadTextures() {
 	// OBJECTS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	loadSingleTexture("objects/palisade.png", 16, 112);
+	loadSingleTexture("objects/palisade.png", 16, 112);
 	loadSingleTexture("objects/wooden_gate.png", 64, 112);
 	loadSingleTexture("objects/stone_wall.png", 8, 56);
 	loadSingleTexture("objects/great_stone_wall.png", 16, 112);
 	loadSingleTexture("objects/great_gate.png", 32, 112);
 	loadSingleTexture("objects/great_stone_gate.png", 64, 112);
 	loadSingleTexture("objects/well.png", 64, 96);
-	loadSingleTexture("objects/hunter_tent.png", 128, 160);
+	loadSingleTexture("objects/hunter_tent.png", 128, 175);
 	loadSingleTexture("objects/log_with_saw.png", 64, 70);
 	loadSingleTexture("objects/pile_of_wood.png", 64, 80);
 
