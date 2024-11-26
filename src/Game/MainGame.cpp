@@ -683,7 +683,8 @@ int main()
     //createSetsFromRuns("assets/monsters/jaszczur/");
     //editWhitePixelsToTransparent("assets/monsters/dziobak/");
     //convertPNGsToSet();
-    
+    cout << "hello world\n";    // TO-DO - test / to delete
+
     // LOADS
 	loadFonts();
 	loadTextures();	// TO-DO "FROM FILE"
