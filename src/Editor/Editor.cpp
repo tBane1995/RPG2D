@@ -686,7 +686,7 @@ int main()
     
     // LOADS
 	loadFonts();
-	loadSingleTextures();	// TO-DO "FROM FILE"
+	loadTextures();	// TO-DO "FROM FILE"
 	loadShaders();		    // TO-DO "FROM FILE"
 	loadItems();		    // TO-DO "FROM FILE"
     loadInventories();

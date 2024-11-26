@@ -128,7 +128,7 @@ void loadTextureSets(string pathfile, int tile_width, int tile_height) {
 
 }
 
-void loadSingleTextures() {
+void loadTextures() {
 
 	singleTextures.clear();
 
