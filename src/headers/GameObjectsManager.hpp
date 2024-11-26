@@ -29,7 +29,7 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
     for (auto& go : gameObjects) {
 
         if (go->type == GameObjectType::Furniture || isPartOfBuilding(go)==nullptr) {
-            if (intersectionRectangleWithElipse(rect_x, rect_y, rect_w, rect_h, go->position.x, go->position.y, go->collider->width / 2, go->collider->length / 2)) {
+            if (intersectionRectangleWithElipse(rect_x, rect_y, rect_w, rect_h, go->position.x, go->position.y, go->colliders[0]->width / 2, go->colliders[0]->length / 2)) {
                 go->isSelected = true;
                 selectedGameObjects.push_back(go);
             }
@@ -232,15 +232,15 @@ bool visiblings(GameObject* object) {
 
     if (object != nullptr) {
 
-        if (object->collider != nullptr) {
-            if (object->collider->type == ColliderType::Elipse) {
-                if (intersectionRectangleWithElipse(cam->position.x, cam->position.y, screenWidth * 2.0f, screenHeight * 2.0f, object->position.x, object->position.y, object->collider->width / 2.0f, object->collider->length / 2.0f)) {
+        if (object->colliders[0] != nullptr) {
+            if (object->colliders[0]->type == ColliderType::Elipse) {
+                if (intersectionRectangleWithElipse(cam->position.x, cam->position.y, screenWidth * 2.0f, screenHeight * 2.0f, object->position.x, object->position.y, object->colliders[0]->width / 2.0f, object->colliders[0]->length / 2.0f)) {
                     return true;
                 }
             }
 
-            else if (object->collider->type == ColliderType::Rectangle) {
-                if (intersectionTwoRectangles(cam->position.x, cam->position.y, screenWidth * 2.0f, screenHeight * 2.0f, object->position.x, object->position.y, object->collider->width, object->collider->length))
+            else if (object->colliders[0]->type == ColliderType::Rectangle) {
+                if (intersectionTwoRectangles(cam->position.x, cam->position.y, screenWidth * 2.0f, screenHeight * 2.0f, object->position.x, object->position.y, object->colliders[0]->width, object->colliders[0]->length))
                     return true;
             }
         }

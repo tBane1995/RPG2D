@@ -17,14 +17,12 @@ class Collider {
 public:
 	float width;
 	float length;
-	float height;
 	ColliderType type;
 	sf::Shape* shape;
 
-	Collider(float width, float length, float height, ColliderType type) {
+	Collider(float width, float length, ColliderType type) {
 		this->width = width;
 		this->length = length;
-		this->height = height;
 		this->type = type;
 
 		if (type == ColliderType::Rectangle) {
@@ -49,7 +47,6 @@ public:
 	Collider(Collider* col) {
 		this->width = col->width;
 		this->length = col->length;
-		this->height = col->height;
 		this->type = col->type;
 
 		if (type == ColliderType::Rectangle) {
@@ -81,9 +78,10 @@ public:
 	string name;
 	GameObjectType type;
 	sf::Vector2f position;
+	float height;
 	SingleTexture* texture;
 	
-	Collider* collider;
+	std::vector < Collider* > colliders;
 	sf::Text textname;
 
 	bool collisioning;	// check the collision
@@ -100,10 +98,12 @@ public:
 		type = GameObjectType::GameObject;
 		position.x = x;
 		position.y = y;
+		this->height = height;
 
 		this->collisioning = collisioning;
-		collider = new Collider(width, length, height, col_type);
-
+		colliders.clear();
+		colliders.push_back(new Collider(width, length, col_type));
+		
 		mouseIsHover = false;
 
 		createTextname();
@@ -119,9 +119,11 @@ public:
 		type = GameObjectType::GameObject;
 		position.x = x;
 		position.y = y;
+		this->height = go->height;
 
 		this->collisioning = go->collisioning;
-		collider = new Collider(go->collider);
+		colliders.clear();
+		colliders.push_back(new Collider(go->colliders[0]));
 
 		mouseIsHover = false;
 		
@@ -138,13 +140,16 @@ public:
 		this->name = name;
 		position.x = 0;
 		position.y = 0;
+		this->height = 16;
 
 		collisioning = true;
-		collider = new Collider(16, 16, 16, ColliderType::Rectangle);
-		dynamic_cast<sf::RectangleShape*>(collider->shape)->setOrigin(sf::Vector2f(0, 0));
-		dynamic_cast<sf::RectangleShape*>(collider->shape)->setSize(sf::Vector2f(16, 16));
-		dynamic_cast<sf::RectangleShape*>(collider->shape)->setOutlineThickness(0);
-		dynamic_cast<sf::RectangleShape*>(collider->shape)->setPosition(position);
+		colliders.clear();
+		colliders.push_back(new Collider(16, 16, ColliderType::Rectangle));
+
+		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setOrigin(sf::Vector2f(0, 0));
+		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setSize(sf::Vector2f(16, 16));
+		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setOutlineThickness(0);
+		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setPosition(position);
 
 		mouseIsHover = false;
 
@@ -161,9 +166,10 @@ public:
 		this->name = name;
 		position.x = x;
 		position.y = y;
+		this->height = 0;
 
 		collisioning = false;
-		collider = nullptr;
+		colliders.clear();
 
 		mouseIsHover = false;
 		createTextname();
@@ -174,20 +180,22 @@ public:
 	}
 
 	virtual ~GameObject() { 
-		if(collider!=nullptr)
-			delete collider;
+		// TO-DO
+		if (!colliders.empty()) {
+			for (auto& col : colliders) {
+				delete col;
+			}
+
+			colliders.clear();
+		}
+			
 
 	}
 
 	virtual void setPosition(sf::Vector2f position) {
 		this->position = position;
 
-		if (collider != nullptr) {
-			textname.setPosition(position.x, position.y - collider->height - 35);
-		}
-		else {
-			textname.setPosition(position.x, position.y);
-		}
+		textname.setPosition(position.x, position.y - height - 35);
 			
 	}
 
@@ -197,31 +205,28 @@ public:
 		textname.setFillColor(dialoguesColor);
 		textname.setOutlineColor(sf::Color::Black);
 		textname.setOutlineThickness(2.0f);
-		
-		if (collider != nullptr)
-			textname.setPosition(position.x, position.y - collider->height - 35);
-		else
-			textname.setPosition(position.x, position.y);
+
+		textname.setPosition(position.x, position.y);
 	}
 
 	virtual void mouseHovering() {
 
-		if (collider->type == ColliderType::Elipse) {
+		mouseIsHover = false;
 
-			if (pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x, position.y, collider->width/2.0f, collider->length / 2.0f))
-				mouseIsHover = true;
-			else
-				mouseIsHover = false;
+		for (int i = 0; i < colliders.size() && mouseIsHover == false; i++) {
+			if (colliders[i]->type == ColliderType::Elipse) {
+
+				if (pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x, position.y, colliders[i]->width / 2.0f, colliders[i]->length / 2.0f))
+					mouseIsHover = true;
+					
+			}
+
+			if (colliders[i]->type == ColliderType::Rectangle) {
+
+				if (pointInRectangle(worldMousePosition.x, worldMousePosition.y, position.x, position.y, colliders[i]->width, colliders[i]->length))
+					mouseIsHover = true;
+			}
 		}
-
-		if (collider->type == ColliderType::Rectangle) {
-
-			if (pointInRectangle(worldMousePosition.x, worldMousePosition.y, position.x, position.y, collider->width, collider->length))
-				mouseIsHover = true;
-			else
-				mouseIsHover = false;
-		}
-
 		
 	}
 
@@ -232,7 +237,9 @@ public:
 
 	virtual void updateStatistic(float dt) {
 
-		collider->shape->setPosition(position);
+		for (auto& col : colliders) {
+			col->shape->setPosition(position);
+		}
 		
 	}
 
@@ -242,12 +249,18 @@ public:
 	}
 
 	virtual void drawStatistics(){
-		if(renderColliders)
-			window->draw(*collider->shape);
+		if (renderColliders) {
+			for (auto& col : colliders) {
+				window->draw(*col->shape);
+			}
+		}
+			
 	}
 
 	virtual void drawAllStatistics() {
-		window->draw(*collider->shape);
+		for (auto& col : colliders) {
+			window->draw(*col->shape);
+		}
 	}
 
 };
@@ -261,53 +274,57 @@ bool collisionPrediction(GameObject* object, float dx, float dy)
 {
 	if (object->collisioning == false)
 		return false;
-
-	if (object->collider->type == ColliderType::Elipse) {
-		
-		// object is elipse
-		for (auto& go : gameObjects) {
-
-			if (go != object && go->collisioning != false) {
-
-				if (go->collider->type == ColliderType::Elipse) {
-					// elipse with elipse
-					if ( intersectionTwoEllipses(object->position.x + dx, object->position.y + dy, object->collider->width/2.0f, object->collider->length / 2.f, go->position.x, go->position.y, go->collider->width/2.0f, go->collider->length / 2.f))
-						return true;
-				}
-
-				if (go->collider->type == ColliderType::Rectangle) {
-					// elipse with rectangle
-					if ( intersectionRectangleWithElipse(go->position.x, go->position.y, go->collider->width, go->collider->length, object->position.x+dx, object->position.y+dy, object->collider->width/2.0f, object->collider->length / 2.0f))
-						return true;
-
-				}
-			}
-		}
-	}
-
-	if (object->collider->type == ColliderType::Rectangle) {
-		
-		// object is rectangle
-		for (auto& go : gameObjects) {
-
-			if (go != object && go->collisioning != false) {
-
-				if (go->collider->type == ColliderType::Elipse) {
-					// rectangle with elipse
-					if (intersectionRectangleWithElipse(object->position.x+dx, object->position.y+dy, object->collider->width, object->collider->length, go->position.x, go->position.y, go->collider->width/2.0f, go->collider->length/2.0f))
-						return true;
-				}
-
-				if (go->collider->type == ColliderType::Rectangle) {
-					// rectangle with rectangle
-					if (intersectionTwoRectangles(object->position.x+dx, object->position.y+dy, object->collider->width, object->collider->length, go->position.x, go->position.y, go->collider->width, go->collider->length))
-						return true;
-
-				}
-			}
-		}
-	}
 	
+	for (auto& collider_1 : object->colliders) {
+
+		if (collider_1->type == ColliderType::Elipse) {
+
+			for (auto& go : gameObjects) {
+				if (go != object && go->collisioning != false) {
+
+					for (auto& collider_2 : go->colliders) {
+						if (collider_2->type == ColliderType::Elipse) {
+							// elipse with elipse
+							if (intersectionTwoEllipses(object->position.x + dx, object->position.y + dy, collider_1->width / 2.0f, collider_1->length / 2.f, go->position.x, go->position.y, collider_2->width / 2.0f, collider_2->length / 2.f))
+								return true;
+						}
+
+						if (collider_2->type == ColliderType::Rectangle) {
+							// elipse with rectangle
+							if (intersectionRectangleWithElipse(go->position.x, go->position.y, collider_2->width, collider_2->length, object->position.x + dx, object->position.y + dy, collider_1->width / 2.0f, collider_1->length / 2.0f))
+								return true;
+
+						}
+					}
+
+				}
+			}
+		}
+		else if (collider_1->type == ColliderType::Rectangle) {
+
+			for (auto& go : gameObjects) {
+				if (go != object && go->collisioning != false) {
+
+					for (auto& collider_2 : go->colliders) {
+						if (collider_2->type == ColliderType::Elipse) {
+							// rectangle with elipse
+							if (intersectionRectangleWithElipse(object->position.x + dx, object->position.y + dy, collider_1->width, collider_1->length, go->position.x, go->position.y, collider_2->width / 2.0f, collider_2->length / 2.0f))
+								return true;
+						}
+
+						if (collider_2->type == ColliderType::Rectangle) {
+							// rectangle with rectangle
+							if (intersectionTwoRectangles(object->position.x + dx, object->position.y + dy, collider_1->width, collider_1->length, go->position.x, go->position.y, collider_2->width, collider_2->length))
+								return true;
+
+						}
+					}
+
+				}
+			}
+		}
+
+	}
 
 	return false;
 }
@@ -317,52 +334,52 @@ bool collisionPrediction(GameObject* object, Point p, float dx, float dy)
 	if (object->collisioning == false)
 		return false;
 
-	if (object->collider->type == ColliderType::Elipse) {
+	for (auto& collider_1 : object->colliders) {
+		
+		if (collider_1->type == ColliderType::Elipse) {
 
-		// object is elipse
-		for (auto& go : gameObjects) {
+			for (auto& go : gameObjects) {
+				if (go != object && go->collisioning != false) {
+					for (auto& collider_2 : go->colliders) {
+						if (collider_2->type == ColliderType::Elipse) {
+							// elipse with elipse
+							if (intersectionTwoEllipses(p.x + dx, p.y + dy, collider_1->width / 2.0f, collider_1->length / 2.f, go->position.x, go->position.y, collider_2->width / 2.0f, collider_2->length / 2.f))
+								return true;
+						}
 
-			if (go != object && go->collisioning != false) {
+						if (collider_2->type == ColliderType::Rectangle) {
+							// elipse with rectangle
+							if (intersectionRectangleWithElipse(go->position.x, go->position.y, collider_2->width, collider_2->length, p.x + dx, p.y + dy, collider_1->width / 2.0f, collider_1->length / 2.0f))
+								return true;
 
-				if (go->collider->type == ColliderType::Elipse) {
-					// elipse with elipse
-					if (intersectionTwoEllipses(p.x+dx, p.y+dy, object->collider->width / 2.0f, object->collider->length / 2.f, go->position.x, go->position.y, go->collider->width / 2.0f, go->collider->length / 2.f))
-						return true;
-				}
-
-				if (go->collider->type == ColliderType::Rectangle) {
-					// elipse with rectangle
-					if (intersectionRectangleWithElipse(go->position.x, go->position.y, go->collider->width, go->collider->length, p.x+dx, p.y+dy, object->collider->width / 2.0f, object->collider->length / 2.0f))
-						return true;
-
-				}
-			}
-		}
-	}
-
-	if (object->collider->type == ColliderType::Rectangle) {
-
-		// object is rectangle
-		for (auto& go : gameObjects) {
-
-			if (go != object && go->collisioning != false) {
-
-				if (go->collider->type == ColliderType::Elipse) {
-					// rectangle with elipse
-					if (intersectionRectangleWithElipse(p.x+dx, p.y+dy, object->collider->width, object->collider->length, go->position.x, go->position.y, go->collider->width / 2.0f, go->collider->length / 2.0f))
-						return true;
-				}
-
-				if (go->collider->type == ColliderType::Rectangle) {
-					// rectangle with rectangle
-					if (intersectionTwoRectangles(p.x+dx, p.y+dy, object->collider->width, object->collider->length, go->position.x, go->position.y, go->collider->width, go->collider->length))
-						return true;
-
+						}
+					}
 				}
 			}
 		}
-	}
+		else if (collider_1->type == ColliderType::Rectangle) {
+			for (auto& go : gameObjects) {
+				if (go != object && go->collisioning != false) {
+					for (auto& collider_2 : go->colliders) {
 
+						if (collider_2->type == ColliderType::Elipse) {
+							// rectangle with elipse
+							if (intersectionRectangleWithElipse(p.x + dx, p.y + dy, collider_1->width, collider_1->length, go->position.x, go->position.y, collider_2->width / 2.0f, collider_2->length / 2.0f))
+								return true;
+						}
+
+						if (collider_2->type == ColliderType::Rectangle) {
+							// rectangle with rectangle
+							if (intersectionTwoRectangles(p.x + dx, p.y + dy, collider_1->width, collider_1->length, go->position.x, go->position.y, collider_2->width, collider_2->length))
+								return true;
+
+						}
+					}
+				}
+			}
+		}
+
+	}
 
 	return false;
 }

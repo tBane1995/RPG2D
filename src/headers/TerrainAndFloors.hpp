@@ -12,7 +12,7 @@ public:
 		texture = getSingleTexture(name);
 		this->id = id;
 
-		collider->shape->setPosition(position);
+		colliders[0]->shape->setPosition(position);
 	}
 
 	virtual ~TerrainPrefab() { 
@@ -26,7 +26,7 @@ public:
 	}
 
 	virtual void draw() {
-		window->draw(*collider->shape);
+		window->draw(*colliders[0]->shape);
 	}
 	
 };
@@ -50,12 +50,12 @@ public:
 		position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
 		position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
 
-		collider->shape->setPosition(position);
+		colliders[0]->shape->setPosition(position);
 
 	}
 
 	virtual void draw() {
-		window->draw(*collider->shape);
+		window->draw(*colliders[0]->shape);
 	}
 
 };

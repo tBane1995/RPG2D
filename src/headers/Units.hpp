@@ -158,33 +158,33 @@ public:
 	}
 
 	void createViewRangeArea() {
-		viewRangeArea = sf::CircleShape(VIEW_RANGE + collider->width/2.0f);
+		viewRangeArea = sf::CircleShape(VIEW_RANGE + colliders[0]->width / 2.0f);
 		viewRangeArea.setFillColor(sf::Color(64, 64, 128, 96));
 		viewRangeArea.setOutlineColor(sf::Color(64, 64, 196, 128));
 		viewRangeArea.setOutlineThickness(4.0f);
-		viewRangeArea.setOrigin(VIEW_RANGE + collider->width/2.0f, VIEW_RANGE + collider->length/2.0f);
-		viewRangeArea.setScale(1.0f, collider->length /collider->width);
+		viewRangeArea.setOrigin(VIEW_RANGE + colliders[0]->width / 2.0f, VIEW_RANGE + colliders[0]->length / 2.0f);
+		viewRangeArea.setScale(1.0f, colliders[0]->length / colliders[0]->width);
 	}
 
 	void createActionRangeArea() {
-		actionRangeArea = sf::CircleShape(ACTION_RANGE + collider->width/2.0f);
+		actionRangeArea = sf::CircleShape(ACTION_RANGE + colliders[0]->width/2.0f);
 		actionRangeArea.setFillColor(sf::Color(128, 64, 64, 96));
 		actionRangeArea.setOutlineColor(sf::Color(196, 64, 64, 128));
 		actionRangeArea.setOutlineThickness(4.0f);
-		actionRangeArea.setOrigin(ACTION_RANGE + collider->width / 2.0f, ACTION_RANGE + collider->width/2.0f);
-		actionRangeArea.setScale(1.0f, collider->length /collider->width);
+		actionRangeArea.setOrigin(ACTION_RANGE + colliders[0]->width / 2.0f, ACTION_RANGE + colliders[0]->width/2.0f);
+		actionRangeArea.setScale(1.0f, colliders[0]->length / colliders[0]->width);
 	}
 
 	void setLifeBar() {
 		lifeBarBackground = sf::RectangleShape(sf::Vector2f(50.0f, 6.0f));
 		lifeBarBackground.setOrigin(25, 3);
 		lifeBarBackground.setFillColor(sf::Color::Black);
-		lifeBarBackground.setPosition(position.x, position.y - collider->height - 10);
+		lifeBarBackground.setPosition(position.x, position.y - height - 10);
 
 		lifeBar = sf::RectangleShape(sf::Vector2f(48.0f * HP / HP_FULL, 4.0f));
 		lifeBar.setOrigin(24, 2);
 		lifeBar.setFillColor(sf::Color(128, 64, 64));
-		lifeBar.setPosition(position.x, position.y - collider->height - 10);
+		lifeBar.setPosition(position.x, position.y - height - 10);
 	}
 
 	short takeDamage(short damage) {
@@ -224,7 +224,7 @@ public:
 		if (player == nullptr)
 			return false;
 
-		return intersectionTwoEllipses(position.x, position.y, collider->width/2.0f + ACTION_RANGE, (collider->length + ACTION_RANGE) / 2.0f, player->position.x, player->position.y, player->collider->width/2.0f, player->collider->length / 2.0f);
+		return intersectionTwoEllipses(position.x, position.y, colliders[0]->width / 2.0f + ACTION_RANGE, (colliders[0]->length + ACTION_RANGE) / 2.0f, player->position.x, player->position.y, player->colliders[0]->width / 2.0f, player->colliders[0]->length / 2.0f);
 
 	}
 
@@ -232,7 +232,7 @@ public:
 		if (player == nullptr)
 			return false;
 
-		return intersectionTwoEllipses(position.x, position.y, collider->width/2.0f + VIEW_RANGE, (collider->length + VIEW_RANGE) / 2.0f, player->position.x, player->position.y, player->collider->width/2.0f, player->collider->length / 2.0f);
+		return intersectionTwoEllipses(position.x, position.y, colliders[0]->width/2.0f + VIEW_RANGE, (colliders[0]->length + VIEW_RANGE) / 2.0f, player->position.x, player->position.y, player->colliders[0]->width/2.0f, player->colliders[0]->length / 2.0f);
 	}
 
 	void goToTarget(float dt) {
@@ -322,7 +322,7 @@ public:
 
 		if (cooldown <= 0.0f) {
 
-			sf::Vector2f hitposition = sf::Vector2f(player->position.x, player->position.y - player->collider->height);
+			sf::Vector2f hitposition = sf::Vector2f(player->position.x, player->position.y - player->height);
 			
 			if (rand() % (DEXTERITY + 10) - rand() % (player->DEXTERITY + 5) > 0) {
 				

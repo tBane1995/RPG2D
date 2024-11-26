@@ -276,9 +276,9 @@ public:
 		Unit::updateStatistic(dt);
 
 		if (collisionPrediction(this, 0, 0))
-			collider->shape->setFillColor(sf::Color::Red);
+			colliders[0]->shape->setFillColor(sf::Color::Red);
 		else
-			collider->shape->setFillColor(sf::Color(128, 64, 128, 96));
+			colliders[0]->shape->setFillColor(sf::Color(128, 64, 128, 96));
 		
 		viewRangeArea.setPosition(position);
 		actionRangeArea.setPosition(position);

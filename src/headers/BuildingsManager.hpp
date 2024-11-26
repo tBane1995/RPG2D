@@ -123,8 +123,8 @@ public:
         short x3, y3, rx3, ry3;
         x3 = player->position.x;
         y3 = player->position.y;
-        rx3 = (player->collider->width / 2.0f);
-        ry3 = (player->collider->length) / 2.0f;
+        rx3 = (player->colliders[0]->width / 2.0f);
+        ry3 = (player->colliders[0]->length) / 2.0f;
 
         if (intersectionRectangleWithElipse((x1 + x2) / 2, (y1 + y2) / 2, x2 - x1, y2 - y1, x3, y3, rx3, ry3))
             return true;
@@ -593,11 +593,15 @@ public:
     }
 
     void loadCollider() {
-        if (collider != nullptr)
-            delete collider;
 
-        collider = new Collider(size.x * 16, size.y * 16, size.y * 16, ColliderType::Rectangle);
-        collider->shape->setPosition(position.x, position.y - size.y / 2 * 16);
+        if (!colliders.empty()) {
+            delete colliders[0];
+            colliders.clear();
+        }
+            
+
+        colliders.push_back(new Collider(size.x * 16, size.y * 16, ColliderType::Rectangle));
+        colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
     }
 
     void loadDoor(std::ifstream& file) {
@@ -922,7 +926,7 @@ public:
 
 
         if (isSelected == true) {
-            window->draw(*collider->shape);
+            window->draw(*colliders[0]->shape);
         }
 
         if (player != nullptr && !playerInside()) {

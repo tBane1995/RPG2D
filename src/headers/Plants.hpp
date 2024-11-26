@@ -69,7 +69,7 @@ public:
 		}
 		*/
 
-		if (state == animState::stop && pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x, position.y, collider->width / 2.0f, collider->height / 2.0f)) {
+		if (state == animState::stop && pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x, position.y, colliders[0]->width / 2.0f, height / 2.0f)) {
 			
 			state = animState::anim;
 			start_anim = currentTime;
@@ -78,7 +78,7 @@ public:
 			rotate = 0;
 		}
 		
-		if (state == animState::end && !pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x, position.y, collider->width / 2.0f, collider->height / 2.0f)) {
+		if (state == animState::end && !pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x, position.y, colliders[0]->width / 2.0f, height / 2.0f)) {
 			state = animState::stop;
 		}
 		else if ((currentTime - start_anim).asSeconds() > 0.3f) {

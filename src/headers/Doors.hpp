@@ -32,7 +32,7 @@ public:
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
-		collider->shape->setPosition(position.x, position.y-16);
+		colliders[0]->shape->setPosition(position.x, position.y-16);
 
 	}
 
@@ -56,8 +56,8 @@ public:
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
-		collider->shape->setPosition(position.x, position.y-16);
-		textname.setPosition(position.x, position.y - collider->height);
+		colliders[0]->shape->setPosition(position.x, position.y-16);
+		textname.setPosition(position.x, position.y - height);
 		takeItSprite.setPosition(position.x, position.y - 50);
 
 	}
@@ -88,18 +88,18 @@ public:
 
 		x1 = player->position.x;
 		y1 = player->position.y;
-		rx1 = (player->collider->width / 2.0f + player->actionRange);
-		ry1 = (player->collider->length + player->actionRange) / 2.0f;
+		rx1 = (player->colliders[0]->width / 2.0f + player->actionRange);
+		ry1 = (player->colliders[0]->length + player->actionRange) / 2.0f;
 
 		x3 = player->position.x;
 		y3 = player->position.y;
-		rx3 = (player->collider->width / 2.0f);
-		ry3 = (player->collider->length / 2.0f);
+		rx3 = (player->colliders[0]->width / 2.0f);
+		ry3 = (player->colliders[0]->length / 2.0f);
 
 		x2 = position.x;
 		y2 = position.y;
-		rx2 = collider->width;
-		ry2 = collider->length;
+		rx2 = colliders[0]->width;
+		ry2 = colliders[0]->length;
 
 		if (intersectionRectangleWithElipse(x2, y2, rx2, ry2, x1, y1, rx1, ry1) && !intersectionRectangleWithElipse(x2, y2, rx2, ry2, x3, y3, rx3, ry3))
 			return true;

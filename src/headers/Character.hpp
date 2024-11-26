@@ -318,7 +318,7 @@ public:
 	virtual void update(float dt) {
 		calculateCurrentFrame(dt);
 		GameObject::update(dt);
-		textname.setPosition(position.x, position.y - collider->height - 10);
+		textname.setPosition(position.x, position.y - height - 10);
 
 		sprite.setTexture(*idleTextures[direction * 4 + frame]->texture);
 		sprite.setPosition(position);
@@ -365,13 +365,13 @@ public:
 
 				x1 = player->position.x;
 				y1 = player->position.y;
-				rx1 = (player->collider->width / 2.0f + player->actionRange);
-				ry1 = (player->collider->length + player->actionRange) / 2.0f;
+				rx1 = (player->colliders[0]->width / 2.0f + player->actionRange);
+				ry1 = (player->colliders[0]->length + player->actionRange) / 2.0f;
 
 				x2 = position.x;
 				y2 = position.y;
-				rx2 = (collider->width / 2.0f + ACTION_RANGE);
-				ry2 = (collider->length + ACTION_RANGE) / 2.0f;
+				rx2 = (colliders[0]->width / 2.0f + ACTION_RANGE);
+				ry2 = (colliders[0]->length + ACTION_RANGE) / 2.0f;
 
 				if (intersectionTwoEllipses(x1, y1, rx1, ry1, x2, y2, rx2, ry2)) {
 					showHand = true;

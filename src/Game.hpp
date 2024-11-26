@@ -370,16 +370,16 @@ bool playerAttack() {
     float x, y, rx, ry;
     x = player->position.x;
     y = player->position.y;
-    rx = player->collider->width/2.0f + player->actionRange;
-    ry = (player->collider->length + player->actionRange) / 2.0f;
+    rx = player->colliders[0]->width/2.0f + player->actionRange;
+    ry = (player->colliders[0]->length + player->actionRange) / 2.0f;
 
     for (auto& m : monsters)
     {
         if(m->isAlive == true)
-            if (intersectionTwoEllipses(x, y, rx, ry, m->position.x, m->position.y, m->collider->width/2.0f, m->collider->length / 2.0f)) {
+            if (intersectionTwoEllipses(x, y, rx, ry, m->position.x, m->position.y, m->colliders[0]->width/2.0f, m->colliders[0]->length / 2.0f)) {
                 
                 //attack(player, m); // TO-DO
-                sf::Vector2f hitPosition = sf::Vector2f(m->position.x, m->position.y - m->collider->height);
+                sf::Vector2f hitPosition = sf::Vector2f(m->position.x, m->position.y - m->height);
                 if (rand() % (player->DEXTERITY + 10) - rand() % (m->DEXTERITY + 5) > 0) {
 
                     // TO-DO - must be dependent on the monster's height
@@ -409,8 +409,8 @@ bool talkWithCharacter() {
 
     x1 = player->position.x;
     y1 = player->position.y;
-    rx1 = (player->collider->width/2.0f + player->actionRange);
-    ry1 = (player->collider->length + player->actionRange) / 2.0f;
+    rx1 = (player->colliders[0]->width/2.0f + player->actionRange);
+    ry1 = (player->colliders[0]->length + player->actionRange) / 2.0f;
 
     for (auto& character : characters) {
 
@@ -418,8 +418,8 @@ bool talkWithCharacter() {
 
             x2 = character->position.x;
             y2 = character->position.y;
-            rx2 = (character->collider->width/2.0f + character->ACTION_RANGE);
-            ry2 = (character->collider->length + character->ACTION_RANGE) / 2.0f;
+            rx2 = (character->colliders[0]->width/2.0f + character->ACTION_RANGE);
+            ry2 = (character->colliders[0]->length + character->ACTION_RANGE) / 2.0f;
 
             if (intersectionTwoEllipses(x1, y1, rx1, ry1, x2, y2, rx2, ry2)) {
 
@@ -443,15 +443,15 @@ bool collectItems() {
 
     x1 = player->position.x;
     y1 = player->position.y;
-    rx1 = (player->collider->width/2.0f + player->actionRange);
-    ry1 = (player->collider->length + player->actionRange) / 2.0f;
+    rx1 = (player->colliders[0]->width/2.0f + player->actionRange);
+    ry1 = (player->colliders[0]->length + player->actionRange) / 2.0f;
 
 
     for (auto& item : itemsOnMap) {
         x2 = item->position.x;
         y2 = item->position.y;
-        rx2 = item->collider->width / 2.0f;
-        ry2 = item->collider->length / 2.0f;
+        rx2 = item->colliders[0]->width / 2.0f;
+        ry2 = item->colliders[0]->length / 2.0f;
 
         if (intersectionTwoEllipses(x1, y1, rx1, ry1, x2, y2, rx2, ry2)) {
 
@@ -465,8 +465,8 @@ bool collectItems() {
     for (auto& bag : inventoriesOnMap) {
         x2 = bag->position.x;
         y2 = bag->position.y;
-        rx2 = bag->collider->width / 2.0f;
-        ry2 = bag->collider->length / 2.0f;
+        rx2 = bag->colliders[0]->width / 2.0f;
+        ry2 = bag->colliders[0]->length / 2.0f;
 
         if (intersectionTwoEllipses(x1, y1, rx1, ry1, x2, y2, rx2, ry2)) {
 
@@ -491,16 +491,16 @@ bool openFurnitures() {
 
     x1 = player->position.x;
     y1 = player->position.y;
-    rx1 = (player->collider->width / 2.0f + player->actionRange);
-    ry1 = (player->collider->length + player->actionRange) / 2.0f;
+    rx1 = (player->colliders[0]->width / 2.0f + player->actionRange);
+    ry1 = (player->colliders[0]->length + player->actionRange) / 2.0f;
 
     for (auto& furniture : furnitures) {
 
         if (furniture->inventory != nullptr) {
             x2 = furniture->position.x;
             y2 = furniture->position.y;
-            rx2 = furniture->collider->width;
-            ry2 = furniture->collider->length;
+            rx2 = furniture->colliders[0]->width;
+            ry2 = furniture->colliders[0]->length;
 
             if (intersectionRectangleWithElipse(x2, y2, rx2, ry2, x1, y1, rx1, ry1)) {
                 inventoryLeft = new InventoryPanel(furniture->inventory, -300);

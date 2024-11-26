@@ -391,12 +391,12 @@ public:
 	}
 
 	void setActionRangeArea() {
-		actionRangeArea = sf::CircleShape(actionRange + collider->width/2.0f);
+		actionRangeArea = sf::CircleShape(actionRange + colliders[0]->width / 2.0f);
 		actionRangeArea.setFillColor(sf::Color(128, 64, 64, 128));
 		actionRangeArea.setOutlineColor(sf::Color(196, 64, 64, 128));
 		actionRangeArea.setOutlineThickness(4.0f);
-		actionRangeArea.setOrigin(actionRange + collider->width / 2.0f, actionRange + collider->width/2.0f);
-		actionRangeArea.setScale(1.0f, collider->length/collider->width);
+		actionRangeArea.setOrigin(actionRange + colliders[0]->width / 2.0f, actionRange + colliders[0]->width / 2.0f);
+		actionRangeArea.setScale(1.0f, colliders[0]->length / colliders[0]->width);
 	}
 
 
@@ -478,7 +478,7 @@ public:
 			EXPERIENCE_TO_NEXT_LEVEL *= LEVEL_SCALAR;
 			SKILL_POINTS += 5;
 		
-			hits->addHitText(sf::Vector2f(position.x, position.y-collider->height), "lvl up!");
+			hits->addHitText(sf::Vector2f(position.x, position.y-height), "lvl up!");
 			return true;
 		}
 

@@ -18,7 +18,7 @@ public:
 
 		shader = getShader("shaders/" + name);
 
-		collider->shape->setPosition(position);
+		colliders[0]->shape->setPosition(position);
 	}
 
 	virtual ~WaterPrefab() {
@@ -32,7 +32,7 @@ public:
 	}
 
 	virtual void draw() {
-		window->draw(*collider->shape);
+		window->draw(*colliders[0]->shape);
 	}
 
 };
