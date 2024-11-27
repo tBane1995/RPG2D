@@ -142,6 +142,7 @@ public:
 		colliders.clear();
 		colliders.push_back(new Collider(width_left, length, sf::Vector2f(position.x-width/2+width_left/2, position.y), ColliderType::Rectangle));
 		colliders.push_back(new Collider(width_right, length, sf::Vector2f(position.x+width/2-width_right/2, position.y), ColliderType::Rectangle));
+		colliders.push_back(new Collider(width, length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
 
 		mouseIsHover = false;
 
@@ -320,11 +321,11 @@ bool collisionPrediction(GameObject* object, float dx, float dy)
 {
 	if (object->collisioning == false)
 		return false;
-	
+
 	for (auto& collider_1 : object->colliders) {
 
 		if (collider_1->type == ColliderType::Elipse) {
-
+		
 			for (auto& go : gameObjects) {
 				if (go != object && go->collisioning != false) {
 

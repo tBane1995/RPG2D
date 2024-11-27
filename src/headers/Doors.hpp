@@ -15,8 +15,10 @@ public:
 	bool showHand;
 
 	Door(string name) : GameObject(name, 0, 0, 64, 16, 64, 12, 12) {
-		state = doorState::close;
+		
 		type = GameObjectType::Door;
+
+		state = doorState::close;
 
 		this->textureOpen = getSingleTexture("buildings/parts/door_open");
 		this->textureClose = getSingleTexture("buildings/parts/door_close");
@@ -34,14 +36,16 @@ public:
 
 		colliders[0]->shape->setPosition(colliders[0]->position.x, colliders[0]->position.y-8);
 		colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y-8);
+		colliders[2]->shape->setPosition(colliders[2]->position.x, colliders[2]->position.y-8);
 
 	}
 
 	Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
-		state = doorState::close;
-		
+
 		type = GameObjectType::Door;
 		
+		state = doorState::close;
+
 		this->textureClose = dynamic_cast<Door*>(object)->textureClose;
 		this->textureOpen = dynamic_cast<Door*>(object)->textureOpen;
 		this->texture = textureClose;
@@ -57,12 +61,12 @@ public:
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
-		colliders[0]->shape->setPosition(colliders[0]->position.x, colliders[0]->position.y-8);
-		colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y-8);
+		colliders[0]->shape->setPosition(colliders[0]->position.x, colliders[0]->position.y - 8);
+		colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y - 8);
+		colliders[2]->shape->setPosition(colliders[2]->position.x, colliders[2]->position.y - 8);
 
 		textname.setPosition(position.x, position.y - height);
 		takeItSprite.setPosition(position.x, position.y - 50);
-
 	}
 
 	virtual ~Door() {
@@ -72,12 +76,14 @@ public:
 	void open() {
 		startActionTime = currentTime;
 		state = doorState::opening;
+		delete colliders.back();
+		colliders.pop_back();
 	}
 
 	void close() {
 		startActionTime = currentTime;
 		state = doorState::closing;
-		collisioning = true;
+		colliders.push_back(new Collider(sprite.getGlobalBounds().getSize().x, colliders[0]->length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
 	}
 
 	bool playerNextTo() {
