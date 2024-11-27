@@ -65,7 +65,7 @@ public:
 		colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y - 8);
 		colliders[2]->shape->setPosition(colliders[2]->position.x, colliders[2]->position.y - 8);
 
-		textname.setPosition(position.x, position.y - height);
+		textname.setPosition(position.x, position.y - height - 3);
 		takeItSprite.setPosition(position.x, position.y - 50);
 	}
 

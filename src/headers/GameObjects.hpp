@@ -75,6 +75,32 @@ public:
 		}
 	}
 
+	Collider(Collider* col, sf::Vector2f position) {
+		this->width = col->width;
+		this->length = col->length;
+		this->type = col->type;
+		this->position = position;
+
+		if (type == ColliderType::Rectangle) {
+			shape = new sf::RectangleShape(sf::Vector2f(width, length));
+			shape->setFillColor(col->shape->getFillColor());
+			shape->setOutlineColor(col->shape->getOutlineColor());
+			shape->setOutlineThickness(col->shape->getOutlineThickness());
+			shape->setOrigin(col->shape->getOrigin());
+			shape->setScale(col->shape->getScale());
+			shape->setPosition(this->position);
+		}
+		else if (type == ColliderType::Elipse) {
+			shape = new sf::CircleShape(width / 2.0f);
+			shape->setFillColor(col->shape->getFillColor());
+			shape->setOutlineColor(col->shape->getOutlineColor());
+			shape->setOutlineThickness(col->shape->getOutlineThickness());
+			shape->setOrigin(col->shape->getOrigin());
+			shape->setScale(col->shape->getScale());
+			shape->setPosition(this->position);
+		}
+	}
+
 	~Collider() {
 		delete shape;	// sf::Shape* shape
 	}
@@ -163,8 +189,22 @@ public:
 
 		this->collisioning = go->collisioning;
 		colliders.clear();
-		for (auto& col : go->colliders)
-			colliders.push_back(new Collider(col));
+		if (go->type != GameObjectType::Door) {
+			colliders.push_back(new Collider(go->colliders[0], position));
+		}
+		else {
+
+			
+			float width_left = go->colliders[0]->width;
+			float width_right = go->colliders[1]->width;
+			float width = go->colliders[2]->width;
+			float length = go->colliders[0]->length;
+
+			colliders.clear();
+			colliders.push_back(new Collider(width_left, length, sf::Vector2f(position.x - width / 2 + width_left / 2, position.y), ColliderType::Rectangle));
+			colliders.push_back(new Collider(width_right, length, sf::Vector2f(position.x + width / 2 - width_right / 2, position.y), ColliderType::Rectangle));
+			colliders.push_back(new Collider(width, length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
+		}
 
 		mouseIsHover = false;
 		
@@ -252,7 +292,7 @@ public:
 		textname.setOutlineColor(sf::Color::Black);
 		textname.setOutlineThickness(2.0f);
 
-		textname.setPosition(position.x, position.y);
+		textname.setPosition(position.x, position.y - height - 35);
 	}
 
 	virtual void mouseHovering() {
