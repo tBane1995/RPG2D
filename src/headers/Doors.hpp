@@ -14,7 +14,7 @@ public:
 	sf::Sprite takeItSprite;
 	bool showHand;
 
-	Door(string name) : GameObject(name, 0, 0, 64, 16, 64, true, ColliderType::Rectangle) {
+	Door(string name) : GameObject(name, 0, 0, 64, 16, 64, 12, 12) {
 		state = doorState::close;
 		type = GameObjectType::Door;
 
@@ -32,7 +32,8 @@ public:
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
-		colliders[0]->shape->setPosition(position.x, position.y-16);
+		colliders[0]->shape->setPosition(colliders[0]->position.x, colliders[0]->position.y-8);
+		colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y-8);
 
 	}
 
@@ -56,7 +57,9 @@ public:
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
-		colliders[0]->shape->setPosition(position.x, position.y-16);
+		colliders[0]->shape->setPosition(colliders[0]->position.x, colliders[0]->position.y-8);
+		colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y-8);
+
 		textname.setPosition(position.x, position.y - height);
 		takeItSprite.setPosition(position.x, position.y - 50);
 

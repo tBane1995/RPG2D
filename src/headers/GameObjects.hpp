@@ -17,12 +17,15 @@ class Collider {
 public:
 	float width;
 	float length;
+	sf::Vector2f position;
 	ColliderType type;
 	sf::Shape* shape;
+	
 
-	Collider(float width, float length, ColliderType type) {
+	Collider(float width, float length, sf::Vector2f position, ColliderType type) {
 		this->width = width;
 		this->length = length;
+		this->position = position;
 		this->type = type;
 
 		if (type == ColliderType::Rectangle) {
@@ -32,6 +35,7 @@ public:
 			shape->setOutlineThickness(4.0f);
 			shape->setOrigin(width/2.0f, length /2.0f);
 			shape->setScale(1, 1);
+			shape->setPosition(this->position);
 		}
 		
 		else if(type == ColliderType::Elipse) {
@@ -41,6 +45,7 @@ public:
 			shape->setOutlineThickness(4.0f);
 			shape->setOrigin(width/2.0f, width/2.0f);
 			shape->setScale(1, length/width);
+			shape->setPosition(this->position);
 		}
 	}
 
@@ -48,6 +53,7 @@ public:
 		this->width = col->width;
 		this->length = col->length;
 		this->type = col->type;
+		this->position = col->position;
 
 		if (type == ColliderType::Rectangle) {
 			shape = new sf::RectangleShape(sf::Vector2f(width, length));
@@ -56,7 +62,7 @@ public:
 			shape->setOutlineThickness(col->shape->getOutlineThickness());
 			shape->setOrigin(col->shape->getOrigin());
 			shape->setScale(col->shape->getScale());
-
+			shape->setPosition(this->position);
 		}
 		else if(type == ColliderType::Elipse) {
 			shape = new sf::CircleShape(width/2.0f);
@@ -65,11 +71,21 @@ public:
 			shape->setOutlineThickness(col->shape->getOutlineThickness());
 			shape->setOrigin(col->shape->getOrigin());
 			shape->setScale(col->shape->getScale());
+			shape->setPosition(this->position);
 		}
 	}
 
 	~Collider() {
 		delete shape;	// sf::Shape* shape
+	}
+
+	void setPosition(sf::Vector2f position) {
+		this->position = position;
+		shape->setPosition(this->position);
+	}
+
+	void draw() {
+		window->draw(*shape);
 	}
 };
 
@@ -102,12 +118,35 @@ public:
 
 		this->collisioning = collisioning;
 		colliders.clear();
-		colliders.push_back(new Collider(width, length, col_type));
+		colliders.push_back(new Collider(width, length, position, col_type));
 		
 		mouseIsHover = false;
 
 		createTextname();
 		
+		isInTheMainList = false;
+		isVisible = false;
+		isSelected = false;
+	}
+
+	GameObject(string name, float x, float y, float width, float length, float height, float width_left, float width_right) {
+		// FOR DOORS/GATES
+		this->name = name;
+
+		type = GameObjectType::GameObject;
+		position.x = x;
+		position.y = y;
+		this->height = height;
+
+		this->collisioning = true;
+		colliders.clear();
+		colliders.push_back(new Collider(width_left, length, sf::Vector2f(position.x-width/2+width_left/2, position.y), ColliderType::Rectangle));
+		colliders.push_back(new Collider(width_right, length, sf::Vector2f(position.x+width/2-width_right/2, position.y), ColliderType::Rectangle));
+
+		mouseIsHover = false;
+
+		createTextname();
+
 		isInTheMainList = false;
 		isVisible = false;
 		isSelected = false;
@@ -123,7 +162,8 @@ public:
 
 		this->collisioning = go->collisioning;
 		colliders.clear();
-		colliders.push_back(new Collider(go->colliders[0]));
+		for (auto& col : go->colliders)
+			colliders.push_back(new Collider(col));
 
 		mouseIsHover = false;
 		
@@ -144,12 +184,14 @@ public:
 
 		collisioning = true;
 		colliders.clear();
-		colliders.push_back(new Collider(16, 16, ColliderType::Rectangle));
+		colliders.push_back(new Collider(16, 16, position, ColliderType::Rectangle));
 
+		// TO-DO -
 		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setOrigin(sf::Vector2f(0, 0));
 		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setSize(sf::Vector2f(16, 16));
 		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setOutlineThickness(0);
 		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setPosition(position);
+		//
 
 		mouseIsHover = false;
 
@@ -194,6 +236,9 @@ public:
 
 	virtual void setPosition(sf::Vector2f position) {
 		this->position = position;
+		
+		for (auto& col : colliders)
+			col->setPosition(position);
 
 		textname.setPosition(position.x, position.y - height - 35);
 			
@@ -237,9 +282,10 @@ public:
 
 	virtual void updateStatistic(float dt) {
 
-		for (auto& col : colliders) {
-			col->shape->setPosition(position);
-		}
+		if(type != GameObjectType::Door)
+			for (auto& col : colliders) {
+				col->setPosition(position);
+			}
 		
 	}
 

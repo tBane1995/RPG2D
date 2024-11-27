@@ -142,7 +142,7 @@ public:
     void loadTexture2(std::ifstream& file) {
 
         // check the size
-        cout << size.x << " " << size.y << "\n";
+        //cout << size.x << " " << size.y << "\n";
 
         short walls_height = 3;
 
@@ -600,7 +600,7 @@ public:
         }
             
 
-        colliders.push_back(new Collider(size.x * 16, size.y * 16, ColliderType::Rectangle));
+        colliders.push_back(new Collider(size.x * 16, size.y * 16, position, ColliderType::Rectangle));
         colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
     }
 
