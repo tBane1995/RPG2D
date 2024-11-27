@@ -32,7 +32,6 @@ void loadPrefabs() {
 
     // OBJECTS
     prefabs.push_back(new Object("objects/palisade", 32, 32, 128, true));
-    prefabs.push_back(new Object("objects/wooden_gate", 128, 32, 128, false));  // TO-DO
     prefabs.push_back(new Object("objects/great_stone_gate", 128, 32, 128, false));  // TO-DO
     prefabs.push_back(new Object("objects/stone_wall", 16, 16, 64, true));
     prefabs.push_back(new Object("objects/great_stone_wall", 32, 32, 128, true));
@@ -112,7 +111,8 @@ void loadPrefabs() {
     
 
     // DOORS
-    prefabs.push_back(new Door("doors/door_0"));
+    prefabs.push_back(new Door("doors/door_0", 64, 16, 64, 12, 12));
+    prefabs.push_back(new Door("doors/wooden_gate", 128, 32, 128, 16, 16));  // TO-DO
 
     // ITEMS
     for (auto& i : items) {

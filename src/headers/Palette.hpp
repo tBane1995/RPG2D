@@ -806,6 +806,8 @@ public:
                 availableGameObjects.push_back(p);
             }
         }
+
+        availableGameObjects.push_back(getPrefab("doors/wooden_gate"));
     }
 
     void setSmallObjectsToPalette() {

@@ -231,6 +231,14 @@ void addPrefabsToMapAndLists() {
             chunk->_smallObjects.push_back(object);
         }
 
+        if (prefab->type == GameObjectType::Door) {
+            Door* door = new Door(prefab, x, y);
+            door->isInTheMainList = true;
+            gameObjects.push_back(door);
+            doors.push_back(door);
+            chunk->_doors.push_back(door);
+        }
+
     }
 }
 

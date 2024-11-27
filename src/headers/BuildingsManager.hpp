@@ -600,7 +600,7 @@ public:
         }
             
 
-        colliders.push_back(new Collider(size.x * 16, size.y * 16, position, ColliderType::Rectangle));
+        colliders.push_back(new Collider(size.x * 16, size.y * 16, position, 0, 0, ColliderType::Rectangle));
         colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
     }
 

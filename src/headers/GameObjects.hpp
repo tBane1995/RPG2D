@@ -18,14 +18,17 @@ public:
 	float width;
 	float length;
 	sf::Vector2f position;
+	float dx, dy;
 	ColliderType type;
 	sf::Shape* shape;
 	
 
-	Collider(float width, float length, sf::Vector2f position, ColliderType type) {
+	Collider(float width, float length, sf::Vector2f position, float dx, float dy, ColliderType type) {
 		this->width = width;
 		this->length = length;
 		this->position = position;
+		this->dx = dx;
+		this->dy = dy;
 		this->type = type;
 
 		if (type == ColliderType::Rectangle) {
@@ -35,7 +38,7 @@ public:
 			shape->setOutlineThickness(4.0f);
 			shape->setOrigin(width/2.0f, length /2.0f);
 			shape->setScale(1, 1);
-			shape->setPosition(this->position);
+			shape->setPosition(this->position.x + this->dx, this->position.y + this->dy);
 		}
 		
 		else if(type == ColliderType::Elipse) {
@@ -45,7 +48,7 @@ public:
 			shape->setOutlineThickness(4.0f);
 			shape->setOrigin(width/2.0f, width/2.0f);
 			shape->setScale(1, length/width);
-			shape->setPosition(this->position);
+			shape->setPosition(this->position.x + this->dx, this->position.y + this->dy);
 		}
 	}
 
@@ -54,6 +57,8 @@ public:
 		this->length = col->length;
 		this->type = col->type;
 		this->position = col->position;
+		this->dx = col->dx;
+		this->dy = col->dy;
 
 		if (type == ColliderType::Rectangle) {
 			shape = new sf::RectangleShape(sf::Vector2f(width, length));
@@ -62,7 +67,7 @@ public:
 			shape->setOutlineThickness(col->shape->getOutlineThickness());
 			shape->setOrigin(col->shape->getOrigin());
 			shape->setScale(col->shape->getScale());
-			shape->setPosition(this->position);
+			shape->setPosition(this->position.x + this->dx, this->position.y + this->dy);
 		}
 		else if(type == ColliderType::Elipse) {
 			shape = new sf::CircleShape(width/2.0f);
@@ -71,7 +76,7 @@ public:
 			shape->setOutlineThickness(col->shape->getOutlineThickness());
 			shape->setOrigin(col->shape->getOrigin());
 			shape->setScale(col->shape->getScale());
-			shape->setPosition(this->position);
+			shape->setPosition(this->position.x + this->dx, this->position.y + this->dy);
 		}
 	}
 
@@ -80,6 +85,8 @@ public:
 		this->length = col->length;
 		this->type = col->type;
 		this->position = position;
+		this->dx = col->dx;
+		this->dy = col->dy;
 
 		if (type == ColliderType::Rectangle) {
 			shape = new sf::RectangleShape(sf::Vector2f(width, length));
@@ -88,7 +95,7 @@ public:
 			shape->setOutlineThickness(col->shape->getOutlineThickness());
 			shape->setOrigin(col->shape->getOrigin());
 			shape->setScale(col->shape->getScale());
-			shape->setPosition(this->position);
+			shape->setPosition(this->position.x + this->dx, this->position.y + this->dy);
 		}
 		else if (type == ColliderType::Elipse) {
 			shape = new sf::CircleShape(width / 2.0f);
@@ -97,7 +104,7 @@ public:
 			shape->setOutlineThickness(col->shape->getOutlineThickness());
 			shape->setOrigin(col->shape->getOrigin());
 			shape->setScale(col->shape->getScale());
-			shape->setPosition(this->position);
+			shape->setPosition(this->position.x + this->dx, this->position.y + this->dy);
 		}
 	}
 
@@ -107,7 +114,7 @@ public:
 
 	void setPosition(sf::Vector2f position) {
 		this->position = position;
-		shape->setPosition(this->position);
+		shape->setPosition(this->position.x+this->dx, this->position.y + this->dy);
 	}
 
 	void draw() {
@@ -144,7 +151,7 @@ public:
 
 		this->collisioning = collisioning;
 		colliders.clear();
-		colliders.push_back(new Collider(width, length, position, col_type));
+		colliders.push_back(new Collider(width, length, position, 0, 0, col_type));
 		
 		mouseIsHover = false;
 
@@ -166,9 +173,9 @@ public:
 
 		this->collisioning = true;
 		colliders.clear();
-		colliders.push_back(new Collider(width_left, length, sf::Vector2f(position.x-width/2+width_left/2, position.y), ColliderType::Rectangle));
-		colliders.push_back(new Collider(width_right, length, sf::Vector2f(position.x+width/2-width_right/2, position.y), ColliderType::Rectangle));
-		colliders.push_back(new Collider(width, length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
+		colliders.push_back(new Collider(width_left, length, position, -width / 2 + width_left / 2, -8, ColliderType::Rectangle));
+		colliders.push_back(new Collider(width_right, length, position, +width / 2 - width_right / 2, -8, ColliderType::Rectangle));
+		colliders.push_back(new Collider(width-width_left-width_right, length, position, 0, -8, ColliderType::Rectangle));
 
 		mouseIsHover = false;
 
@@ -189,22 +196,8 @@ public:
 
 		this->collisioning = go->collisioning;
 		colliders.clear();
-		if (go->type != GameObjectType::Door) {
-			colliders.push_back(new Collider(go->colliders[0], position));
-		}
-		else {
-
-			
-			float width_left = go->colliders[0]->width;
-			float width_right = go->colliders[1]->width;
-			float width = go->colliders[2]->width;
-			float length = go->colliders[0]->length;
-
-			colliders.clear();
-			colliders.push_back(new Collider(width_left, length, sf::Vector2f(position.x - width / 2 + width_left / 2, position.y), ColliderType::Rectangle));
-			colliders.push_back(new Collider(width_right, length, sf::Vector2f(position.x + width / 2 - width_right / 2, position.y), ColliderType::Rectangle));
-			colliders.push_back(new Collider(width, length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
-		}
+		for (auto& col : go->colliders)
+			colliders.push_back(new Collider(col, position));
 
 		mouseIsHover = false;
 		
@@ -225,7 +218,7 @@ public:
 
 		collisioning = true;
 		colliders.clear();
-		colliders.push_back(new Collider(16, 16, position, ColliderType::Rectangle));
+		colliders.push_back(new Collider(16, 16, position, 0, 0, ColliderType::Rectangle));
 
 		// TO-DO -
 		dynamic_cast<sf::RectangleShape*>(colliders[0]->shape)->setOrigin(sf::Vector2f(0, 0));
@@ -317,6 +310,7 @@ public:
 	}
 
 	virtual void update(float dt) { 
+		// TO-DO
 		createTextname();
 		
 	}

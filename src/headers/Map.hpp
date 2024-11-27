@@ -18,8 +18,10 @@ public:
     std::vector < FlatObject* > _flatObjects;
     std::vector < Monster* > _monsters;
     std::vector < SmallObject* > _smallObjects;
+    std::vector < Door* > _doors;
     std::vector < Character* > _characters;
     std::vector < Building* > _buildings;
+    
 
     bool visible;
 
@@ -79,6 +81,10 @@ public:
             delete smallObject;
         _smallObjects.clear();
 
+        for (auto& door : _doors)
+            delete door;
+        _doors.clear();
+
         for (auto& character : _characters) 
             delete character;
         _characters.clear();
@@ -86,6 +92,8 @@ public:
         for (auto& building : _buildings)
             delete building;
         _buildings.clear();
+
+
 
         delete terrain;
         delete water;
@@ -134,6 +142,12 @@ public:
             smallObject->isInTheMainList = true;
             gameObjects.push_back(smallObject);
             smallObjects.push_back(smallObject);
+        }
+
+        for (auto& door : _doors) {
+            door->isInTheMainList = true;
+            gameObjects.push_back(door);
+            doors.push_back(door);
         }
 
         for (auto& character : _characters) {
@@ -218,6 +232,12 @@ public:
             object->isInTheMainList = false;
 
         std::erase_if(smallObjects, [](const auto& object) { return !object->isInTheMainList; });
+
+        // delete doors ////////////////////////////////////////////////////////////
+        for (auto& door : _doors)
+            door->isInTheMainList = false;
+
+        std::erase_if(doors, [](const auto& door) { return !door->isInTheMainList; });
 
         // delete characters ////////////////////////////////////////////////////////////
         for (auto& character : _characters)
@@ -308,6 +328,12 @@ public:
             auto it = std::find(_smallObjects.begin(), _smallObjects.end(), object);
             if (it != _smallObjects.end())
                 _smallObjects.erase(it);
+        }
+
+        if (object->type == GameObjectType::Door) {
+            auto it = std::find(_doors.begin(), _doors.end(), object);
+            if (it != _doors.end())
+                _doors.erase(it);
         }
 
         if (object->type == GameObjectType::Character) {
