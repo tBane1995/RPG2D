@@ -111,7 +111,7 @@ void loadPrefabs() {
     
 
     // DOORS
-    prefabs.push_back(new Door("doors/door_0", 64, 16, 64, 12, 12));
+    prefabs.push_back(new Door("doors/wooden_door", 64, 16, 64, 12, 12));
     prefabs.push_back(new Door("doors/wooden_gate", 128, 32, 128, 16, 16));  // TO-DO
 
     // ITEMS

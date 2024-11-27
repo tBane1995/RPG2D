@@ -348,8 +348,10 @@ void loadTextures() {
 
 	// DOORS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	loadSingleTexture("doors/door_0_close.png", 32, 32);
-	loadSingleTexture("doors/door_0_open.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_0.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_1.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_2.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_3.png", 32, 32);
 
 	loadSingleTexture("doors/wooden_gate_close.png", 64, 112);
 	loadSingleTexture("doors/wooden_gate_open.png", 64, 112);

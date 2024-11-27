@@ -5,10 +5,10 @@ enum class doorState { open, opening, close, closing };
 
 class Door : public GameObject {
 public:
-	SingleTexture* textureOpen;
-	SingleTexture* textureClose;
+	std::vector < SingleTexture* > textures;
 	sf::Sprite sprite;
-	sf::Time startActionTime;
+	sf::Time last_action_time;
+	short current_frame;
 	doorState state;
 	SingleTexture* takeItTexture;
 	sf::Sprite takeItSprite;
@@ -19,16 +19,13 @@ public:
 		type = GameObjectType::Door;
 
 		state = doorState::close;
+		textures = getTexturesSet(name);
+		this->texture = textures[0];
+		current_frame = 0;
 
-		//this->textureOpen = getSingleTexture("buildings/parts/door_open");
-		//this->textureClose = getSingleTexture("buildings/parts/door_close");
-		this->textureOpen = getSingleTexture(name+"_open");
-		this->textureClose = getSingleTexture(name+"_close");
-		this->texture = textureClose;
-		
 		sprite = sf::Sprite();
-		sprite.setTexture(*textureClose->texture);
-		sprite.setOrigin(textureClose->cx, textureClose->texture->getSize().y-1);
+		sprite.setTexture(*textures[0]->texture);
+		sprite.setOrigin(textures[0]->cx, textures[0]->texture->getSize().y - 1);
 
 		takeItTexture = getSingleTexture("GUI/hand");
 		takeItSprite = sf::Sprite();
@@ -36,6 +33,7 @@ public:
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
+		open();
 	}
 
 	Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
@@ -43,13 +41,12 @@ public:
 		type = GameObjectType::Door;
 		
 		state = doorState::close;
-
-		this->textureClose = dynamic_cast<Door*>(object)->textureClose;
-		this->textureOpen = dynamic_cast<Door*>(object)->textureOpen;
-		this->texture = textureClose;
+		textures = getTexturesSet(name);
+		this->texture = textures[0];
+		current_frame = 0;
 
 		sprite = sf::Sprite();
-		sprite.setTexture(*textureClose->texture);
+		sprite.setTexture(*textures[0]->texture);
 		sprite.setOrigin(dynamic_cast<Door*>(object)->sprite.getOrigin());
 		sprite.setPosition(position.x, position.y);
 
@@ -69,13 +66,14 @@ public:
 
 	void open() {
 		state = doorState::opening;
-		
+		last_action_time = currentTime;
 	}
 
 	void close() {
 		state = doorState::closing;
 		float width = sprite.getGlobalBounds().getSize().x - colliders[0]->width - colliders[1]->width;
 		colliders.push_back(new Collider(width, colliders[0]->length, position, 0, -8, ColliderType::Rectangle));
+		last_action_time = currentTime;
 	}
 
 	bool playerNextTo() {
@@ -119,22 +117,38 @@ public:
 
 		(playerNextTo()) ? showHand = true : showHand = false;
 
+		if (state == doorState::open)
+			close();
+
+		if (state == doorState::close)
+			open();
+
 		if (state == doorState::opening) {
-			if ((currentTime - startActionTime).asSeconds() > 0.5f) {
-				state = doorState::open;
-				delete colliders.back();
-				colliders.pop_back();
-				texture = textureOpen;
-				sprite.setTexture(*texture->texture);
+
+			if ((currentTime - last_action_time).asSeconds() > 0.5f) {
+				current_frame += 1;
+				last_action_time = currentTime;
+				sprite.setTexture(*textures[current_frame]->texture);
+
+				if (current_frame == textures.size() - 1) {
+					state = doorState::open;
+					delete colliders.back();
+					colliders.pop_back();
+				}
 			}
+
 		}
 
 		if (state == doorState::closing) {
-			if ((currentTime - startActionTime).asSeconds() > 0.5f) {
-				state = doorState::close;
-				texture = textureClose;
-				sprite.setTexture(*texture->texture);
-			} 
+			if ((currentTime - last_action_time).asSeconds() > 0.5f) {
+				current_frame -= 1;
+				last_action_time = currentTime;
+				sprite.setTexture(*textures[current_frame]->texture);
+
+				if (current_frame == 0) {
+					state = doorState::close;
+				}
+			}
 		}
 
 	}

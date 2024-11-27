@@ -613,7 +613,7 @@ public:
         if (_door != nullptr)
             delete _door;
 
-        _door = new Door(getPrefab("doors/door_0"), position.x, position.y);
+        _door = new Door(getPrefab("doors/wooden_door"), position.x, position.y);
     }
 
     void loadWalls(std::ifstream& file) {
