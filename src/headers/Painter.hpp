@@ -92,77 +92,15 @@ void painterDraw() {
     if (tool == toolType::Cursor && selection_state == true) {
         window->draw(selectArea);
 
-    } else {
+    }
+    else {
         for (auto& p : prefabsToPaint) {
             p->draw();
         }
     }
-    
+
 
 }
-
-void addPrefabToLists() {
-
-    short x = short(worldMousePosition.x) / short(tileSide) * short(tileSide);
-    short y = short(worldMousePosition.y) / short(tileSide) * short(tileSide);
-    // cout << "cursor at position: " << xx << " " << yy << "\n"
-
-    if (prefabToPaint->type == GameObjectType::Nature) {
-
-        Nature* nature = new Nature(prefabToPaint, x, y);
-        gameObjects.push_back(nature);
-        natures.push_back(nature);
-    }
-
-    if (prefabToPaint->type == GameObjectType::Object) {
-
-        Object* object = new Object(prefabToPaint, x, y);
-        gameObjects.push_back(object);
-        objects.push_back(object);
-    }
-
-    if (prefabToPaint->type == GameObjectType::Monster) {
-
-        Monster* monster = new Monster(prefabToPaint, x, y);
-        gameObjects.push_back(monster);
-        monsters.push_back(monster);
-    }
-
-    if (prefabToPaint->type == GameObjectType::ItemOnMap) {
-
-        ItemOnMap* item = new ItemOnMap(prefabToPaint, x, y);
-        gameObjects.push_back(item);
-        itemsOnMap.push_back(item);
-    }
-
-    if (prefabToPaint->type == GameObjectType::FlatObject) {
-
-        FlatObject* flat = new FlatObject(prefabToPaint, x, y);
-        gameObjects.push_back(flat);
-        flatObjects.push_back(flat);
-    }
-
-    if (prefabToPaint->type == GameObjectType::SmallObject) {
-
-        SmallObject* object= new SmallObject(prefabToPaint, x, y);
-        gameObjects.push_back(object);
-        smallObjects.push_back(object);
-    }
-
-    if (prefabToPaint->type == GameObjectType::Furniture) {
-
-        Furniture* furniture = new Furniture(prefabToPaint, x, y);
-        gameObjects.push_back(furniture);
-        furnitures.push_back(furniture);
-    }
-
-    if (prefabToPaint->type == GameObjectType::Wall) {
-        Wall* wall = new Wall(prefabToPaint, x, y);
-        gameObjects.push_back(wall);
-        walls.push_back(wall);
-    }
-}
-
 
 void addPrefabsToMapAndLists() {
 
@@ -237,6 +175,42 @@ void addPrefabsToMapAndLists() {
             gameObjects.push_back(door);
             doors.push_back(door);
             chunk->_doors.push_back(door);
+        }
+
+    }
+}
+
+void addPrefabsToBuildingAndLists() {
+    if (building == nullptr)
+        return;
+
+    for (auto& prefab : prefabsToPaint) {
+
+        float x = prefab->position.x;
+        float y = prefab->position.y;
+
+        if (prefab->type == GameObjectType::Wall) {
+            Wall* wall = new Wall(prefab, x, y);
+            wall->isInTheMainList = true;
+            gameObjects.push_back(wall);
+            walls.push_back(wall);
+            building->_walls.push_back(wall);
+        }
+
+        if (prefab->type == GameObjectType::ItemOnMap) {
+            ItemOnMap* item = new ItemOnMap(prefab, x, y);
+            item->isInTheMainList = true;
+            gameObjects.push_back(item);
+            itemsOnMap.push_back(item);
+            building->_items.push_back(item);
+        }
+
+        if (prefab->type == GameObjectType::Furniture) {
+            Furniture* furniture = new Furniture(prefab, x, y);
+            furniture->isInTheMainList = true;
+            gameObjects.push_back(furniture);
+            furnitures.push_back(furniture);
+            building->_furnitures.push_back(furniture);
         }
 
     }

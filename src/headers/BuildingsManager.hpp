@@ -79,24 +79,10 @@ public:
             mouseIsHover = false;
     }
 
-    void addGameObject(GameObject* object) {
-        if (object->type == GameObjectType::Wall) {
-            Wall* wall = new Wall(object, object->position.x, object->position.y);
-            _walls.push_back(wall);
-        }
-
-        if (object->type == GameObjectType::ItemOnMap) {
-            ItemOnMap* item = new ItemOnMap(object, object->position.x, object->position.y);
-            _items.push_back(item);
-        }
-
-        if (object->type == GameObjectType::Furniture) {
-            Furniture* furniture = new Furniture(object, object->position.x, object->position.y);
-            _furnitures.push_back(furniture);
-        }
-    }
-
     void deleteGameObject(GameObject* object) {
+
+        if (object == nullptr)
+            return;
 
         if (object->type == GameObjectType::Wall) {
             auto it = std::find(_walls.begin(), _walls.end(), object);
@@ -971,7 +957,7 @@ void addGameObjectsToMainLists() {
     }
 }
 
-void removeGameObjectsFromMainLists() {
+void deleteGameObjectsFromMainLists() {
     // delete door
     auto itd = std::find(doors.begin(), doors.end(), building->_door);
     if (itd != doors.end())
@@ -1002,7 +988,7 @@ void removeGameObjectsFromMainLists() {
         if (go != gameObjects.end())
             gameObjects.erase(go);
     }
-
+  
     // delete building _walls
     for (auto& wall : building->_walls) {
         auto it = std::find(walls.begin(), walls.end(), wall);
@@ -1017,13 +1003,13 @@ void removeGameObjectsFromMainLists() {
 
 void createNewBuilding() {
     if (building) {
-        removeGameObjectsFromMainLists();   // TO-DO
+        // TO-DO - chyba jeszcze powinno byc czyszczenie głównych list - zrobić test pamięci
         delete building;
         building = nullptr;
     }
 
     clearAllMainListsOfGameObjects();
-    building = new Building(16, 16);
+    building = new Building(36, 40);
     terrain = new Terrain(0, 0, building->size.x, building->size.y);
     cam->setPosition(building->size.x * 16 / 2 + 160, building->size.y * 16 / 2);
 
@@ -1031,7 +1017,7 @@ void createNewBuilding() {
 
 void loadBuildingFromFile(string filename = "assets/buildings/test_building.building") {
     if (building) {
-        removeGameObjectsFromMainLists();   // TO-DO
+        deleteGameObjectsFromMainLists();   // TO-DO
         delete building;
         building = nullptr;
     }

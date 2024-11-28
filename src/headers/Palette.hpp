@@ -99,6 +99,10 @@ public:
                 prefabToPaint = this->object;
                 };
         }
+        else {
+            hover_func = { };
+            onclick_func = { };
+        }
         
         sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
         
@@ -627,10 +631,10 @@ public:
         availableGameObjects.push_back(getPrefab("walls/set_stone_wall_8"));
 
         availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
-        availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown2"));
+        availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
         availableGameObjects.push_back(getPrefab("walls/empty_wall"));
         availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
-        availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown2"));
+        availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
 
         availableGameObjects.push_back(nullptr);
         availableGameObjects.push_back(nullptr);
