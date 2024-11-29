@@ -33,7 +33,6 @@ public:
 		takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 		showHand = false;
 
-		open();
 	}
 
 	Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
@@ -117,12 +116,6 @@ public:
 
 		(playerNextTo()) ? showHand = true : showHand = false;
 
-		if (state == doorState::open)
-			close();
-
-		if (state == doorState::close)
-			open();
-
 		if (state == doorState::opening) {
 
 			if ((currentTime - last_action_time).asSeconds() > 0.5f) {
@@ -156,6 +149,9 @@ public:
 	virtual void draw() {
 		if (mouseIsHover)
 			GameObject::draw();
+
+		for(auto& col :colliders)
+			window->draw(*col->shape);
 
 		window->draw(sprite);
 

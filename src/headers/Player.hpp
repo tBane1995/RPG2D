@@ -84,8 +84,13 @@ public:
 		cooldown = 0.0f;
 		attackTime = 0.7f;
 
-		position.x = 950;
-		position.y = 1200 - 512;
+		//position.x = 950;
+		//position.y = 1200 - 512;
+
+		// TO-DO - to delete
+		position.x = 1543;
+		position.y = 666;
+		//
 
 		isVisible = true;
 		isInTheMainList = true;
@@ -587,6 +592,8 @@ public:
 			GameObject::draw();
 		}
 		
+		window->draw(*colliders[0]->shape);	// TO-DO - to delete
+
 		if (direction == 0) {
 			// TOP
 			window->draw(rightHandSprite);
