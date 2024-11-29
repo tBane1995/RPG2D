@@ -89,7 +89,7 @@ public:
 
 		// TO-DO - to delete
 		position.x = 1543;
-		position.y = 666;
+		position.y = 800;
 		//
 
 		isVisible = true;

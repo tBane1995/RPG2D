@@ -646,15 +646,48 @@ void coverOutsideIfPlayerInBuilding() {
 
             for (int y = 0; y < tex_hgh; y++) {
                 for (int x = 0; x < tex_wdt; x++) {
-                    // TO-DO
-                    xx = building->size.x/2*16 + building->position.x - wall->position.x - tex_wdt/2 + x;
+                    
+                    xx = building->size.x/2*16 - building->position.x + wall->position.x - tex_wdt/2 + x;
                     yy = building->position.y - wall->position.y - tex_hgh/2 + y;
 
-                    if(xx >= 0 && xx < x2-x1 && yy>=0 && yy < y2-y1)
-                        center_mask_image.setPixel(xx,(y2-y1)-1-yy, sf::Color(0, 0, 0, 0));
+                    center_mask_image.setPixel(xx,(y2-y1)-1-yy, sf::Color(0, 0, 0, 0));
                 }
             }
         }
+
+        for (auto& fur : building->_furnitures) {
+
+            tex_hgh = fur->texture->texture->getSize().y;
+            tex_wdt = fur->texture->texture->getSize().x;
+
+            for (int y = 0; y < tex_hgh; y++) {
+                for (int x = 0; x < tex_wdt; x++) {
+
+                    xx = building->size.x/2*16 - building->position.x + fur->position.x - tex_wdt/2 + x;
+                    yy = building->position.y - fur->position.y - tex_hgh / 2 + y;
+                    
+
+                    center_mask_image.setPixel(xx, (y2 - y1) - 1 - yy, sf::Color(0, 0, 0, 0));
+                }
+            }
+        }
+
+        for (short i = 0; i < building->floors->floors.size();i++) {
+
+            tex_hgh = 16;
+            tex_wdt = 16;
+
+            for (int y = 0; y < tex_hgh; y++) {
+                for (int x = 0; x < tex_wdt; x++) {
+
+                    xx = (i%16)*tex_wdt + x;
+                    yy = (i/16)*tex_hgh + y;
+
+                    //center_mask_image.setPixel(xx, (y2 - y1) - 1 - yy, sf::Color(0, 0, 0, 0));
+                }
+            }
+        }
+
 
         sf::Texture center_mask_texture;
         center_mask_texture.loadFromImage(center_mask_image);
@@ -666,8 +699,11 @@ void coverOutsideIfPlayerInBuilding() {
         outside_mask.display();
 
         sf::Sprite spr(outside_mask.getTexture());
-        //spr.setPosition(cam->position);
-        spr.setPosition(cam->position.x-screenWidth/2.0f, cam->position.y-screenHeight/2.0f);
+
+        sf::Vector2f pos;
+        pos.x = building->position.x - building->size.x/2 * 16;
+        pos.y = building->position.y - building->size.y*16;
+        spr.setPosition(pos);
         window->draw(spr);
     }
 
