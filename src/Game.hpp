@@ -615,26 +615,26 @@ void coverOutsideIfPlayerInBuilding() {
         sf::RectangleShape rectTop(sf::Vector2f(screenWidth, screenHeight/2-(cam->position.y-y1)));
         rectTop.setFillColor(sf::Color::Black);
         rectTop.setPosition(0,0);
-        //outside_mask.draw(rectTop);
+        outside_mask.draw(rectTop);
 
         sf::RectangleShape rectBottom(sf::Vector2f(screenWidth, screenHeight/2-(y2-cam->position.y)));
         rectBottom.setFillColor(sf::Color::Black);
         rectBottom.setPosition(0, y2-cam->position.y+screenHeight/2.0f);
-        //outside_mask.draw(rectBottom);
+        outside_mask.draw(rectBottom);
         
         sf::RectangleShape rectLeft(sf::Vector2f(screenWidth/2-(cam->position.x-x1), y2 - y1));
         rectLeft.setFillColor(sf::Color::Black);
         rectLeft.setPosition(0, y1-cam->position.y+screenHeight/2.0f);
-        //outside_mask.draw(rectLeft);
+        outside_mask.draw(rectLeft);
 
         sf::RectangleShape rectRight(sf::Vector2f(screenWidth/2-(x2-cam->position.x), y2 - y1));
         rectRight.setFillColor(sf::Color::Black);
         rectRight.setPosition(x2-cam->position.x+screenWidth/2.0f, y1-cam->position.y+screenHeight/2.0f);
-        //outside_mask.draw(rectRight);
+        outside_mask.draw(rectRight);
 
         // CENTER MASK
         sf::Image center_mask_image;
-        center_mask_image.create(x2 - x1, y2 - y1, sf::Color::Black);
+        center_mask_image.create(building->size.x*16, building->size.y*16, sf::Color::Black);
 
         float xx, yy;
         int tex_wdt, tex_hgh;
@@ -649,8 +649,9 @@ void coverOutsideIfPlayerInBuilding() {
                     
                     xx = building->size.x/2*16 - building->position.x + wall->position.x - tex_wdt/2 + x;
                     yy = building->position.y - wall->position.y - tex_hgh/2 + y;
-
-                    center_mask_image.setPixel(xx,(y2-y1)-1-yy, sf::Color(0, 0, 0, 0));
+                    
+                    if (xx >= 0 && xx < center_mask_image.getSize().x && yy >= 0 && yy < center_mask_image.getSize().y)
+                        center_mask_image.setPixel(xx, center_mask_image.getSize().y -1-yy, sf::Color(0, 0, 0, 0));
                 }
             }
         }
@@ -666,24 +667,27 @@ void coverOutsideIfPlayerInBuilding() {
                     xx = building->size.x/2*16 - building->position.x + fur->position.x - tex_wdt/2 + x;
                     yy = building->position.y - fur->position.y - tex_hgh / 2 + y;
                     
-
-                    center_mask_image.setPixel(xx, (y2 - y1) - 1 - yy, sf::Color(0, 0, 0, 0));
+                    if(xx >= 0 && xx < center_mask_image.getSize().x && yy >= 0 && yy < center_mask_image.getSize().y)
+                        center_mask_image.setPixel(xx, center_mask_image.getSize().y - 1 - yy, sf::Color(0, 0, 0, 0));
                 }
             }
         }
 
         for (short i = 0; i < building->floors->floors.size();i++) {
 
-            tex_hgh = 16;
-            tex_wdt = 16;
+            if (building->floors->floors[i] > 0) {
+                tex_hgh = 16;
+                tex_wdt = 16;
 
-            for (int y = 0; y < tex_hgh; y++) {
-                for (int x = 0; x < tex_wdt; x++) {
+                for (int y = 0; y < tex_hgh; y++) {
+                    for (int x = 0; x < tex_wdt; x++) {
 
-                    xx = (i%16)*tex_wdt + x;
-                    yy = (i/16)*tex_hgh + y;
+                        xx = (i % building->floors->width) * tex_wdt + x;
+                        yy = (i / building->floors->width) * tex_hgh + y;
 
-                    //center_mask_image.setPixel(xx, (y2 - y1) - 1 - yy, sf::Color(0, 0, 0, 0));
+                        if (xx >= 0 && xx < center_mask_image.getSize().x && yy >= 0 && yy < center_mask_image.getSize().y)
+                            center_mask_image.setPixel(xx, center_mask_image.getSize().y - 1 - yy, sf::Color(0, 0, 0, 0));
+                    }
                 }
             }
         }
@@ -693,6 +697,10 @@ void coverOutsideIfPlayerInBuilding() {
         center_mask_texture.loadFromImage(center_mask_image);
         
         sf::Sprite center_mask_sprite(center_mask_texture);
+        sf::Vector2f pos;
+        pos.x = building->position.x - cam->position.x + screenWidth/2.0f - building->size.x/2*16;
+        pos.y = building->position.y - cam->position.y + screenHeight/2.0f - building->size.y*16;
+        center_mask_sprite.setPosition(pos);
 
         outside_mask.draw(center_mask_sprite);
 
@@ -700,9 +708,9 @@ void coverOutsideIfPlayerInBuilding() {
 
         sf::Sprite spr(outside_mask.getTexture());
 
-        sf::Vector2f pos;
-        pos.x = building->position.x - building->size.x/2 * 16;
-        pos.y = building->position.y - building->size.y*16;
+        
+        pos.x = cam->position.x - screenWidth/2.0f;
+        pos.y = cam->position.y - screenHeight/2.0f;
         spr.setPosition(pos);
         window->draw(spr);
     }
