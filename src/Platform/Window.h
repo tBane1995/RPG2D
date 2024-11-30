@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 extern float screenWidth;
 extern float screenHeight;
 

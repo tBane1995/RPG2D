@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include <map>
-
 #include "GameObjects.h"
 
 
@@ -22,17 +21,12 @@ public:
 	std::map < attribute, short > attributes;		// TO-DO
 	std::wstring description;
 
-	Item(string name, itemType type, wstring description) {
-		this->name = name;
-		this->type = type;
-		this->description = description;
-		this->texture = getSingleTexture(name);
-	}
+	Item(std::string name, itemType type, std::wstring description);
 };
 
 extern std::vector < Item* > items;
 
-Item* getItem(string location);
+Item* getItem(std::string location);
 std::wstring getItemDescription(Item* item);
 
 class ItemOnMap : public GameObject {
@@ -42,8 +36,8 @@ public:
 	short count;
 	bool collected;
 
-	ItemOnMap(Item* item, float x, float y, short count = 1) : GameObject(item->name, x, y, 16, 8, 32, true, ColliderType::Elipse);
-	ItemOnMap(GameObject* object, float x, float y) : GameObject(object, x, y);
+	ItemOnMap(Item* item, float x, float y, short count = 1);
+	ItemOnMap(GameObject* object, float x, float y);
 
 	virtual ~ItemOnMap() {
 	}
@@ -58,16 +52,7 @@ public:
 		
 	}
 
-	virtual void draw() override {
-
-		window->draw(sprite);
-		
-		if (mouseIsHover) {
-
-			GameObject::draw();
-			window->draw(textname);
-		}
-	}
+	virtual void draw() override;
 
 };
 
@@ -100,7 +85,7 @@ public:
 
 	void addItem(std::string location, short count = 1);
 	void addItem(Item* item, short count = 1);
-	bool hasItemsInInventory(std::string location, short count = 1)
+	bool hasItemsInInventory(std::string location, short count = 1);
 	void removeItem(std::string name, short count = 1);
 	void removeItem(Item* item, short count = 1);
 };
@@ -116,7 +101,7 @@ public:
 	bool collected;
 	Inventory* inventory;
 
-	InventoryOnMap(Inventory* inventory, float x, float y) : GameObject("inventory", x, y, 16, 8, 16, true, ColliderType::Elipse);
+	InventoryOnMap(Inventory* inventory, float x, float y);
 	
 	virtual void setPosition(sf::Vector2f position) override {
 		this->position = position;
@@ -131,16 +116,10 @@ public:
 
 	}
 
-	virtual void draw() override {
-
-		if (mouseIsHover)
-		{
-			GameObject::draw();
-		}
-		window->draw(sprite);
-
-	}
+	virtual void draw() override;
 
 };
 
 extern std::vector < InventoryOnMap* > inventoriesOnMap;
+
+void transferItem(Item* item, Inventory*& from, Inventory*& to);

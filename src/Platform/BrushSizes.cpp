@@ -1,4 +1,5 @@
 ﻿#include "BrushSizes.h"
+#include <iostream>
 
 std::vector<std::vector<std::vector<bool>>> brushes = {
 
@@ -72,9 +73,9 @@ void coutBrush()
     {
         for (bool cell : row)
         {
-            cout << cell << " ";
+            std::cout << cell << " ";
         }
-        cout << "\n";
+        std::cout << "\n";
     }
         
 

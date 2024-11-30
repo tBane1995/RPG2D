@@ -33,36 +33,14 @@ public:
     Btn(SingleTexture* texture, sf::Vector2f position);
 
     virtual void setTexture(SingleTexture* texture);
-
-    virtual void setPosition(sf::Vector2f position) {
-        this->position = position;
-        rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
-        sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
-    }
-
+    virtual void setPosition(sf::Vector2f position);
     virtual void changeColor();
-
-    virtual void unclick() {
-        if ((currentTime - clickTime).asSeconds() > 0.1f) {
-            state = ButtonState::Idle;
-            changeColor();
-        }
-
-    }
-
+    virtual void unclick();
     virtual bool hover();
     virtual bool click();
 
-    virtual void update(float dt) {
-        rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
-        sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
-    }
-
-    virtual void draw() {
-        window->draw(rect);
-        if (sprite.getTexture() != nullptr)
-            window->draw(sprite);
-    }
+    virtual void update(float dt);
+    virtual void draw();
 };
 
 class ButtonWithText {
@@ -77,38 +55,17 @@ public:
     short margin;
 
     ButtonWithText(std::string s, sf::Vector2f position = sf::Vector2f(0, 0), short characterSize = 17);
-    ButtonWithText(string s, short characterSize);
+    ButtonWithText(std::string s, short characterSize);
 
-    virtual void setPosition(sf::Vector2f position) {
-        this->position = position;
-        text.setPosition(position.x + cam->position.x + margin, position.y + cam->position.y + float(margin) * 0.6f);
-        rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
-
-    }
-
+    virtual void setPosition(sf::Vector2f position);
     virtual void changeColor();
 
-    virtual void unclick() {
-        if ((currentTime - clickTime).asSeconds() > 0.1f) {
-            state = ButtonState::Idle;
-            changeColor();
-        }
-
-    }
-
+    virtual void unclick();
     virtual bool hover();
     virtual bool click();
 
-    virtual void update(float dt) {
-        rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
-        text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
-    }
-
-    virtual void draw() {
-
-        window->draw(rect);
-        window->draw(text);
-    }
+    virtual void update(float dt);
+    virtual void draw();
 
 };
 
@@ -127,11 +84,7 @@ public:
     ButtonWithImage(ButtonWithImage* btn, sf::Vector2f position);
     ButtonWithImage(SingleTexture* texture, sf::Vector2f position);
 
-    virtual void setTexture(SingleTexture* texture) {
-        sprite = sf::Sprite();
-        sprite.setTexture(*texture->texture);
-        sprite.setOrigin(texture->texture->getSize().x / 2, texture->texture->getSize().y / 2);
-    }
+    virtual void setTexture(SingleTexture* texture);
 
     virtual void setPosition(sf::Vector2f position) {
         this->position = position;
@@ -140,23 +93,10 @@ public:
 
     virtual void changeColor();
 
-    virtual void unclick()
-    {
-        if ((currentTime - clickTime).asSeconds() > 0.1f) {
-            state = ButtonState::Idle;
-            changeColor();
-        }
-    }
-
+    virtual void unclick();
     virtual void hover();
     virtual void click();
 
-    virtual void update(float dt) {
-        sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
-    }
-
-    virtual void draw() {
-
-        window->draw(sprite);
-    }
+    virtual void update(float dt);
+    virtual void draw();
 };

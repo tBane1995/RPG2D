@@ -1,4 +1,6 @@
 ﻿#include "Fonts.h"
+#include <Windows.h>
+#include <sstream>
 
 sf::Font basicFont;
 sf::Font dialogBoxFont;

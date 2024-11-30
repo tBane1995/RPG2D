@@ -19,16 +19,10 @@ public:
 	}
 };
 
-std::vector < Shader* > shaders;
+extern std::vector < Shader* > shaders;
 
-void loadShader(std::string name, std::string vertex_pathfile, std::string fragment_pathfile) {
-	shaders.push_back(new Shader(name, vertex_pathfile, fragment_pathfile));
-}
-
-void loadShader(std::string pathfile) {
-	shaders.push_back(new Shader(pathfile));
-}
-
+void loadShader(std::string name, std::string vertex_pathfile, std::string fragment_pathfile);
+void loadShader(std::string pathfile);
 void loadShaders();
 Shader* getShader(std::string name);
 void updateShaders();

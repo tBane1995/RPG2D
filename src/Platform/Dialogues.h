@@ -62,7 +62,7 @@ public:
 	void draw();
 };
 
-extern DialogueBox* dialogueBox = nullptr;
+extern DialogueBox* dialogueBox;
 
 
 void loadDialogue(int dialogID);

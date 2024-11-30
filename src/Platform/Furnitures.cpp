@@ -1,4 +1,10 @@
 #include "Furnitures.h"
+#include "Mouse.h"
+#include "Player.h"
+#include "Textures.h"
+#include "Items.h"
+#include "Collisions.h"
+#include "Window.h"
 
 Furniture::Furniture(std::string name, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, ColliderType::Rectangle) {
 	type = GameObjectType::Furniture;
@@ -36,7 +42,7 @@ Furniture::Furniture(GameObject* object, float x, float y) : GameObject(object, 
 	takeItSprite.setPosition(position.x, position.y - 50);
 }
 
-virtual void Furniture::update(float dt) {
+void Furniture::update(float dt) {
 
 		
 	showHand = false;
@@ -82,6 +88,16 @@ virtual void Furniture::update(float dt) {
 	}
 	//
 
+}
+
+void Furniture:: draw() {
+	if (mouseIsHover)
+		GameObject::draw();
+
+	window->draw(sprite);
+
+	if (showHand)
+		window->draw(takeItSprite);
 }
 
 std::vector < Furniture* > furnitures;

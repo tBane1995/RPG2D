@@ -10,23 +10,8 @@ public:
 
 	sf::Sprite sprite;
 	
-	FlatObject(std::string name, float width, float length, float height ) : GameObject(name, 0, 0, width, length, height, false, ColliderType::Elipse) {
-		type = GameObjectType::FlatObject;
-		this->texture = getSingleTexture(name);
-		sprite = sf::Sprite();
-		sprite.setTexture(*texture->texture);
-		sprite.setOrigin(texture->cx, texture->cy);
-	}
-
-	FlatObject(GameObject* object, float x, float y) : GameObject(object, x, y) {
-		type = GameObjectType::FlatObject;
-		this->texture = getSingleTexture(name);
-		sprite = sf::Sprite();
-		sprite.setTexture(*getSingleTexture(name)->texture);
-		sprite.setOrigin(texture->cx, texture->cy);
-		sprite.setPosition(position);
-		
-	}
+	FlatObject(std::string name, float width, float length, float height);
+	FlatObject(GameObject* object, float x, float y);
 
 	virtual ~FlatObject() {
 	
@@ -41,13 +26,7 @@ public:
 
 	}
 
-	virtual void draw() override {
-		
-		if(mouseIsHover)
-			GameObject::draw();
-	
-		window->draw(sprite);
-	}
+	virtual void draw() override;
 };
 
 extern std::vector < FlatObject* > flatObjects;

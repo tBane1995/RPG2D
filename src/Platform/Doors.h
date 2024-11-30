@@ -21,25 +21,14 @@ public:
 	bool showHand;
 
 	Door(std::string name);
-	Door(GameObject* object, float x, float y) : GameObject(object, x, y);
+	Door(GameObject* object, float x, float y);
 
 	virtual ~Door() {
 	
 	}
 
-	void open() {
-		startActionTime = currentTime;
-		state = doorState::opening;
-		delete colliders.back();
-		colliders.pop_back();
-	}
-
-	void close() {
-		startActionTime = currentTime;
-		state = doorState::closing;
-		colliders.push_back(new Collider(sprite.getGlobalBounds().getSize().x, colliders[0]->length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
-	}
-
+	void open();
+	void close();
 	bool playerNextTo();
 
 	virtual void setPosition(sf::Vector2f position) override {
@@ -49,16 +38,7 @@ public:
 
 	virtual void update(float dt) override;
 
-	virtual void draw() override {
-		if (mouseIsHover)
-			GameObject::draw();
-
-		window->draw(sprite);
-
-		if (showHand)
-			window->draw(takeItSprite);
-		
-	}
+	virtual void draw() override;
 };
 
 extern std::vector < Door* > doors;

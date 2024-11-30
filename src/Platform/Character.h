@@ -57,8 +57,8 @@ public:
 	bool showHand;
 
 
-	Character(std::string name, std::string bodySet = "sets/body/hero") : Unit(name, bodySet, 36, 18, 64);
-	Character(GameObject* object, float x, float y) : Unit(object, x, y);
+	Character(std::string name, std::string bodySet = "sets/body/hero");
+	Character(GameObject* object, float x, float y);
 
 	virtual ~Character() {
 		

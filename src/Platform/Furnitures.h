@@ -17,9 +17,8 @@ public:
 	sf::Sprite takeItSprite;
 	bool showHand;
 
-	Furniture(std::string name, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, ColliderType::Rectangle);
-	
-	Furniture(GameObject* object, float x, float y) : GameObject(object, x, y);
+	Furniture(std::string name, float width, float length, float height);
+	Furniture(GameObject* object, float x, float y);
 
 	virtual ~Furniture() {
 
@@ -31,16 +30,7 @@ public:
 	}
 
 	virtual void update(float dt) override;
-
-	virtual void draw() override {
-		if (mouseIsHover)
-			GameObject::draw();
-
-		window->draw(sprite);
-
-		if(showHand)
-			window->draw(takeItSprite);
-	}
+	virtual void draw() override;
 };
 
 extern std::vector < Furniture* > furnitures;

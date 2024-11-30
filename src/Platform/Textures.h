@@ -53,10 +53,7 @@ public:
 
 extern std::vector < SingleTexture* > singleTextures;
 
-void loadSingleTexture(std::string pathfile, float cx, float cy) {
-	singleTextures.push_back(new SingleTexture(pathfile, cx, cy));
-}
-
+void loadSingleTexture(std::string pathfile, float cx, float cy);
 void loadTextureSets(std::string pathfile, int tile_width, int tile_height);
 void loadTextures();
 SingleTexture* getSingleTexture(std::string name);

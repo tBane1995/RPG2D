@@ -1,5 +1,19 @@
 #include "GameObjectsManager.h"
 #include "GameObjects.h"
+#include "Items.h"
+#include "BuildingsManager.h"
+#include "Furnitures.h"
+#include "Walls.h"
+#include "Doors.h"
+#include "Natures.h"
+#include "Objects.h"
+#include "FlatObjects.h"
+#include "SmallObjects.h"
+#include "Collisions.h"
+#include "Character.h"
+#include "Monsters.h"
+#include "Camera.h"
+#include "Time.h"
 
 std::vector < GameObject* > selectedGameObjects;
 
@@ -264,6 +278,11 @@ void updateGameObjects() {
         else
             go->isVisible = false;
 	}
+}
+
+void sortGameObjects()
+{
+    std::sort(gameObjects.begin(), gameObjects.end(), [](const auto& a, const auto& b) { return a->position.y < b->position.y; });
 }
 
 void drawGameObjects() {

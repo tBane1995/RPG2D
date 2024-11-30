@@ -3,8 +3,9 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include "Point.h"
 
-class Collider;
+class SingleTexture;
 
 enum class GameObjectType { 
 	GameObject, 
@@ -40,9 +41,7 @@ public:
 		shape->setPosition(this->position);
 	}
 
-	void draw() {
-		window->draw(*shape);
-	}
+	void draw();
 };
 
 class GameObject { 
@@ -78,10 +77,7 @@ public:
 		createTextname();
 	}
 	virtual void updateStatistic(float dt);
-	virtual void draw()
-	{
-		window->draw(textname);
-	}
+	virtual void draw();
 	virtual void drawStatistics();
 	virtual void drawAllStatistics();
 };

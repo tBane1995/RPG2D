@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+class Terrain;
+
 class Borders : public sf::Drawable, public sf::Transformable
 {
 public:

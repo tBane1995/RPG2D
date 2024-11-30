@@ -1,5 +1,6 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
 #include <vector>
 
 enum class DialogType { Message, ScrollableText, OpenFile };

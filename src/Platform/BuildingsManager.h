@@ -8,7 +8,10 @@
 class Building;
 class Door;
 class Floors;
+class Furniture;
+class ItemOnMap;
 class SingleTexture;
+class Wall;
 
 class Building : public GameObject {
 public:
@@ -18,18 +21,18 @@ public:
     std::vector < Furniture* > _furnitures; // from furniture Manager
     std::vector < Wall* > _walls;           // from wall Manager
     
-    SingleTexture* top_walls;
-    SingleTexture* walls;
-    SingleTexture* bottom_walls;
-    SingleTexture* windows;
-    Door* _door;
-    Floors* floors;
+    SingleTexture* top_walls = nullptr;
+    SingleTexture* walls = nullptr;
+    SingleTexture* bottom_walls = nullptr;
+    SingleTexture* windows = nullptr;
+    Door* _door = nullptr;
+    Floors* floors = nullptr;
 
     sf::Sprite sprite;
 
     short x1, x2, y1, y2; // corners of building
 
-    Building(int width, int height) : GameObject("empty", 0, 0);
+    Building(int width, int height);
 
     // FOR BUILDING EDITOR
     Building(std::string name) : GameObject(name, 0, 0)
@@ -55,23 +58,12 @@ public:
         y2 = position.y;
     }
 
-    virtual void mouseHovering() override
-    {
-        if (worldMousePosition.x > x1 && worldMousePosition.x < x2 && worldMousePosition.y > y1 && worldMousePosition.y < y2)
-            mouseIsHover = true;
-        else
-            mouseIsHover = false;
-    }
-
+    virtual void mouseHovering() override;
     void addGameObject(GameObject* object);
     void deleteGameObject(GameObject* object);
     bool playerInside();
 
-    void loadName(std::ifstream& file) {
-        std::string line;
-        std::getline(file, line);
-    }
-
+    void loadName(std::ifstream& file);
     void loadTexture2(std::ifstream& file);
     void loadSize(std::ifstream& file);
     void loadCollider();
@@ -108,6 +100,4 @@ void addGameObjectsToMainLists();
 void removeGameObjectsFromMainLists();
 void createNewBuilding();
 void loadBuildingFromFile(std::string filename = "assets/buildings/test_building.building");
-void saveBuildingToFile(std::string filename = "assets/buildings/test_building.building") {
-    building->save(filename);
-}
+void saveBuildingToFile(std::string filename = "assets/buildings/test_building.building");

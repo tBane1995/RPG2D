@@ -51,8 +51,8 @@ public:
 	sf::Vector2f target;
 
 
-	Unit(std::string name, std::string bodySet, float width, float length, float height) : GameObject(name, 0, 0, width, length, height, true, ColliderType::Elipse);
-	Unit(GameObject* object, float x, float y) : GameObject(object, x, y);
+	Unit(std::string name, std::string bodySet, float width, float length, float height);
+	Unit(GameObject* object, float x, float y);
 
 	virtual ~Unit() {
 	
@@ -86,43 +86,14 @@ public:
 			cooldown -= dt;
 	}
 
-	bool playerInActionRange() {
-
-		if (player == nullptr)
-			return false;
-
-		return intersectionTwoEllipses(position.x, position.y, colliders[0]->width / 2.0f + ACTION_RANGE, (colliders[0]->length + ACTION_RANGE) / 2.0f, player->position.x, player->position.y, player->colliders[0]->width / 2.0f, player->colliders[0]->length / 2.0f);
-
-	}
-
-	bool playerInViewRange() {
-		if (player == nullptr)
-			return false;
-
-		return intersectionTwoEllipses(position.x, position.y, colliders[0]->width/2.0f + VIEW_RANGE, (colliders[0]->length + VIEW_RANGE) / 2.0f, player->position.x, player->position.y, player->colliders[0]->width/2.0f, player->colliders[0]->length / 2.0f);
-	}
+	bool playerInActionRange();
+	bool playerInViewRange();
 
 	void goToTarget(float dt);
 	void idle(float dt);
-
-	void run(float dt) {
-		
-		goToTarget(dt);
-
-		calculateCurrentFrame(dt);
-		texture = runTextures[direction * 4 + frame];
-		sprite.setTexture(*texture->texture);
-	}
-
+	void run(float dt);
 	void attack(float dt);
-
-	void idling(float dt) {
-
-		calculateCurrentFrame(dt);
-		texture = idleTextures[direction * 4 + frame];
-		sprite.setTexture(*texture->texture);
-		sprite.setPosition(position);
-	}
+	void idling(float dt);
 
 	virtual void update(float dt) override {
 
@@ -141,22 +112,7 @@ public:
 		actionRangeArea.setPosition(position);
 	}
 
-	virtual void draw() override {
-
-		GameObject::draw();
-
-		window->draw(sprite);
-		window->draw(lifeBarBackground);
-		window->draw(lifeBar);
-
-		GameObject::draw();
-	}
-
-	virtual void drawAllStatistics() override {
-		window->draw(viewRangeArea);
-		window->draw(actionRangeArea);
-
-		GameObject::drawAllStatistics();
-	}
+	virtual void draw() override;
+	virtual void drawAllStatistics() override;
 
 };

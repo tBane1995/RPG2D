@@ -5,8 +5,9 @@
 #include <vector>
 
 class GameObject;
+class Building;
 
-std::vector < GameObject* > selectedGameObjects;
+extern std::vector < GameObject* > selectedGameObjects;
 
 Building* isPartOfBuilding(GameObject* object);
 void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h);
@@ -14,10 +15,5 @@ void deleteGameObjectFromMainLists(GameObject* object);
 void clearAllMainListsOfGameObjects();
 bool visiblings(GameObject* object);
 void updateGameObjects();
-
-void sortGameObjects()
-{
-    std::sort(gameObjects.begin(), gameObjects.end(), [](const auto& a, const auto& b) { return a->position.y < b->position.y; });
-}
-
+void sortGameObjects();
 void drawGameObjects();

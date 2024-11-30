@@ -17,7 +17,7 @@ Plant* grass;
 
 void MapEditor() {
 
-    cout << "hello world\n";    // TO-DO - to delete
+    std::cout << "hello world\n";    // TO-DO - to delete
 
     window->setTitle("Map Editor");
 
@@ -132,7 +132,7 @@ void MapEditor() {
         sf::Event event;
         while (window->pollEvent(event)) {
 
-            cout << "cursor on " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
+            std::cout << "cursor on " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
 
             if (event.type == sf::Event::Closed) {
                 window->close();
@@ -349,7 +349,7 @@ void editTiles() {
         if (prefab->type == GameObjectType::Terrain) {
             
             TerrainPrefab* tp = dynamic_cast<TerrainPrefab*>(prefab);
-            //cout << prefab->position.x << ", " << prefab->position.y << "\n";
+            //std::cout << prefab->position.x << ", " << prefab->position.y << "\n";
 
             Chunk* chunk = mapa->getChunk(tp->position);
             if (chunk != nullptr) {
@@ -366,7 +366,7 @@ void editTiles() {
         if (prefab->type == GameObjectType::Water) {
 
             WaterPrefab* wp = dynamic_cast<WaterPrefab*>(prefab);
-            //cout << prefab->position.x << ", " << prefab->position.y << "\n";
+            //std::cout << prefab->position.x << ", " << prefab->position.y << "\n";
 
             Chunk* chunk = mapa->getChunk(wp->position);
             if (chunk != nullptr) {

@@ -192,7 +192,7 @@ void game() {
 
                     mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
                     worldMousePosition = window->mapPixelToCoords(mousePosition);	// Zamień na współrzędne świata, uwzględniając aktualny widok
-                    cout << "cursor at " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
+                    std::cout << "cursor at " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
 
                     Point start(player->position.x, player->position.y);
                     Point goal(worldMousePosition.x, worldMousePosition.y);
@@ -203,7 +203,7 @@ void game() {
                     for (const Point& p : path)
                         std::cout << "(" << p.x << ", " << p.y << ") ";
 
-                    cout << "\n\n";
+                    std::cout << "\n\n";
 
                 }
             }
@@ -223,7 +223,7 @@ void game() {
         } // events
 
         // UPDATES
-        //cout << "cursor at: " << sf::Mouse::getPosition(*window).x << "," << sf::Mouse::getPosition(*window).y << endl;
+        //std::cout << "cursor at: " << sf::Mouse::getPosition(*window).x << "," << sf::Mouse::getPosition(*window).y << endl;
 
 
         if (gameState == gameStates::game) {
@@ -385,7 +385,7 @@ bool playerAttack() {
                     // TO-DO - must be dependent on the monster's height
                     int damage = m->takeDamage(player->getDamage());
                     
-                    hits->addHitText(hitPosition, to_string(damage));
+                    hits->addHitText(hitPosition, std::to_string(damage));
                 }
                 else {
                     // TO-DO - hits->addHitText(m->position, 0);

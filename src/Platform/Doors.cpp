@@ -1,6 +1,12 @@
 #include "Doors.h"
+#include "Textures.h"
+#include "Time.h"
+#include "GameObjects.h"
+#include "Window.h"
+#include "Player.h"
+#include "Collisions.h"
 
-Door::Door(string name) : GameObject(name, 0, 0, 64, 16, 64, 12, 12) {
+Door::Door(std::string name) : GameObject(name, 0, 0, 64, 16, 64, 12, 12) {
 		
 	type = GameObjectType::Door;
 
@@ -55,7 +61,21 @@ Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	takeItSprite.setPosition(position.x, position.y - 50);
 }
 
-bool Doors::playerNextTo() {
+void Door::open() {
+	startActionTime = currentTime;
+	state = doorState::opening;
+	delete colliders.back();
+	colliders.pop_back();
+}
+
+
+void Door::close() {
+	startActionTime = currentTime;
+	state = doorState::closing;
+	colliders.push_back(new Collider(sprite.getGlobalBounds().getSize().x, colliders[0]->length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
+}
+
+bool Door::playerNextTo() {
 
 	if (player == nullptr)
 		return false;
@@ -85,7 +105,7 @@ bool Doors::playerNextTo() {
 		return false;
 }
 
-virtual void Doors::update(float dt) {
+void Door::update(float dt) {
 
 	(playerNextTo()) ? showHand = true : showHand = false;
 
@@ -104,6 +124,17 @@ virtual void Doors::update(float dt) {
 
 		} 
 	}
+
+}
+
+void Door::draw() {
+	if (mouseIsHover)
+		GameObject::draw();
+
+	window->draw(sprite);
+
+	if (showHand)
+		window->draw(takeItSprite);
 
 }
 

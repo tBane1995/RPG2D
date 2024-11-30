@@ -1,4 +1,9 @@
 ﻿#include "Units.h"
+#include "Window.h"
+#include "Player.h"
+#include "Collisions.h"
+#include "HitTexts.h"
+#include "Textures.h"
 
 float diff_x, diff_y;
 float dist;
@@ -88,20 +93,20 @@ void Unit::loadBody() {
 
 	for (short i = 0; i < 4; i++) {
 
-		idleTextures[i] = getSingleTexture(bodySet + "/idleTop" + to_string(i));
-		idleTextures[4 + i] = getSingleTexture(bodySet + "/idleRight" + to_string(i));
-		idleTextures[8 + i] = getSingleTexture(bodySet + "/idleBottom" + to_string(i));
-		idleTextures[12 + i] = getSingleTexture(bodySet + "/idleLeft" + to_string(i));
+		idleTextures[i] = getSingleTexture(bodySet + "/idleTop" + std::to_string(i));
+		idleTextures[4 + i] = getSingleTexture(bodySet + "/idleRight" + std::to_string(i));
+		idleTextures[8 + i] = getSingleTexture(bodySet + "/idleBottom" + std::to_string(i));
+		idleTextures[12 + i] = getSingleTexture(bodySet + "/idleLeft" + std::to_string(i));
 
-		runTextures[i] = getSingleTexture(bodySet + "/runTop" + to_string(i));
-		runTextures[4 + i] = getSingleTexture(bodySet + "/runRight" + to_string(i));
-		runTextures[8 + i] = getSingleTexture(bodySet + "/runBottom" + to_string(i));
-		runTextures[12 + i] = getSingleTexture(bodySet + "/runLeft" + to_string(i));
+		runTextures[i] = getSingleTexture(bodySet + "/runTop" + std::to_string(i));
+		runTextures[4 + i] = getSingleTexture(bodySet + "/runRight" + std::to_string(i));
+		runTextures[8 + i] = getSingleTexture(bodySet + "/runBottom" + std::to_string(i));
+		runTextures[12 + i] = getSingleTexture(bodySet + "/runLeft" + std::to_string(i));
 
-		attackTextures[i] = getSingleTexture(bodySet + "/attackTop" + to_string(i));
-		attackTextures[4 + i] = getSingleTexture(bodySet + "/attackRight" + to_string(i));
-		attackTextures[8 + i] = getSingleTexture(bodySet + "/attackBottom" + to_string(i));
-		attackTextures[12 + i] = getSingleTexture(bodySet + "/attackLeft" + to_string(i));
+		attackTextures[i] = getSingleTexture(bodySet + "/attackTop" + std::to_string(i));
+		attackTextures[4 + i] = getSingleTexture(bodySet + "/attackRight" + std::to_string(i));
+		attackTextures[8 + i] = getSingleTexture(bodySet + "/attackBottom" + std::to_string(i));
+		attackTextures[12 + i] = getSingleTexture(bodySet + "/attackLeft" + std::to_string(i));
 
 	}
 
@@ -151,6 +156,22 @@ void Unit::calculateCurrentFrame(float dt) {
 
 	if (frame > 3)
 		frame = frame % 4;
+}
+
+bool Unit::playerInActionRange() {
+
+	if (player == nullptr)
+		return false;
+
+	return intersectionTwoEllipses(position.x, position.y, colliders[0]->width / 2.0f + ACTION_RANGE, (colliders[0]->length + ACTION_RANGE) / 2.0f, player->position.x, player->position.y, player->colliders[0]->width / 2.0f, player->colliders[0]->length / 2.0f);
+
+}
+
+bool Unit::playerInViewRange() {
+	if (player == nullptr)
+		return false;
+
+	return intersectionTwoEllipses(position.x, position.y, colliders[0]->width / 2.0f + VIEW_RANGE, (colliders[0]->length + VIEW_RANGE) / 2.0f, player->position.x, player->position.y, player->colliders[0]->width / 2.0f, player->colliders[0]->length / 2.0f);
 }
 
 void Unit::goToTarget(float dt) {
@@ -227,6 +248,15 @@ void Unit::idle(float dt) {
 	sprite.setTexture(*texture->texture);
 }
 
+void Unit::run(float dt) {
+
+	goToTarget(dt);
+
+	calculateCurrentFrame(dt);
+	texture = runTextures[direction * 4 + frame];
+	sprite.setTexture(*texture->texture);
+}
+
 void Unit::attack(float dt) {
 
 	if (cooldown <= 0.0f) {
@@ -236,7 +266,7 @@ void Unit::attack(float dt) {
 		if (rand() % (DEXTERITY + 10) - rand() % (player->DEXTERITY + 5) > 0) {
 				
 			short damage = player->takeDamage(getDamage());
-			hits->addHitText(hitposition, to_string(damage), sf::Color::Red);
+			hits->addHitText(hitposition, std::to_string(damage), sf::Color::Red);
 		}
 		else {
 			hits->addHitText(hitposition, "miss", sf::Color::Red);
@@ -256,4 +286,30 @@ void Unit::attack(float dt) {
 
 	texture = attackTextures[direction * 4 + frame];
 	sprite.setTexture(*texture->texture);
+}
+
+void Unit::idling(float dt) {
+
+	calculateCurrentFrame(dt);
+	texture = idleTextures[direction * 4 + frame];
+	sprite.setTexture(*texture->texture);
+	sprite.setPosition(position);
+}
+
+void Unit::draw() {
+
+	GameObject::draw();
+
+	window->draw(sprite);
+	window->draw(lifeBarBackground);
+	window->draw(lifeBar);
+
+	GameObject::draw();
+}
+
+void Unit::drawAllStatistics() {
+	window->draw(viewRangeArea);
+	window->draw(actionRangeArea);
+
+	GameObject::drawAllStatistics();
 }

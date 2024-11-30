@@ -1,4 +1,11 @@
 #include "Buttons.h"
+#include "Mouse.h"
+#include "GUI.h"
+#include "Camera.h"
+#include "Time.h"
+#include "Textures.h"
+#include "Fonts.h"
+#include "Window.h"
 
 sf::Color idleColor = sf::Color(32.0f, 32.0f, 32.0f);
 sf::Color hoverColor = sf::Color(48.0f, 48.0f, 48.0f);
@@ -8,7 +15,7 @@ sf::Color spriteIdleColor = sf::Color(192.0f, 192.0f, 192.0f);
 sf::Color spriteHoverColor = sf::Color(224.0f, 224.0f, 224.0f);
 sf::Color spritePressedColor = sf::Color::White;
 
-Btn::Btn(float width = 64, float height = 64, sf::Vector2f position = sf::Vector2f(0, 0))
+Btn::Btn(float width, float height, sf::Vector2f position)
 {
     this->position = position;
 
@@ -87,7 +94,7 @@ Btn::Btn(SingleTexture* texture, sf::Vector2f position)
     changeColor();
 }
 
-virtual void Btn::setTexture(SingleTexture* texture) {
+void Btn::setTexture(SingleTexture* texture) {
     sf::Vector2f size = sf::Vector2f(texture->texture->getSize().x, texture->texture->getSize().y);
     rect = sf::RectangleShape(size);
     rect.setOrigin(size.x / 2, size.y / 2);
@@ -103,7 +110,13 @@ virtual void Btn::setTexture(SingleTexture* texture) {
     changeColor();
 }
 
-virtual void Btn::changeColor() {
+void Btn::setPosition(sf::Vector2f position) {
+    this->position = position;
+    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+}
+
+void Btn::changeColor() {
 
     if (state == ButtonState::Pressed) {
         rect.setFillColor(pressedColor);
@@ -120,7 +133,15 @@ virtual void Btn::changeColor() {
 
 }
 
-virtual bool Btn::hover() {
+void Btn::unclick() {
+    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+        state = ButtonState::Idle;
+        changeColor();
+    }
+
+}
+
+bool Btn::hover() {
     if (state != ButtonState::Pressed) {
 
         float w = rect.getSize().x;
@@ -146,7 +167,7 @@ virtual bool Btn::hover() {
     return false;
 }
 
-virtual bool Btn::click() {
+bool Btn::click() {
     float w = rect.getSize().x;
     float h = rect.getSize().y;
     float x = rect.getPosition().x;
@@ -169,9 +190,20 @@ virtual bool Btn::click() {
     return false;
 }
 
+void Btn::update(float dt) {
+    rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+}
+
+void Btn::draw() {
+    window->draw(rect);
+    if (sprite.getTexture() != nullptr)
+        window->draw(sprite);
+}
 
 
-ButtonWithText::ButtonWithText(string s, sf::Vector2f position = sf::Vector2f(0, 0), short characterSize = 17)
+
+ButtonWithText::ButtonWithText(std::string s, sf::Vector2f position, short characterSize)
 {
     this->position = position;
     margin = float(characterSize) * 0.4f;
@@ -198,7 +230,7 @@ ButtonWithText::ButtonWithText(string s, sf::Vector2f position = sf::Vector2f(0,
     clickTime = currentTime;
 }
 
-ButtonWithText::ButtonWithText(string s, short characterSize) {
+ButtonWithText::ButtonWithText(std::string s, short characterSize) {
 
     this->position = sf::Vector2f(0,0);
     margin = float(characterSize) * 0.4f;
@@ -225,7 +257,14 @@ ButtonWithText::ButtonWithText(string s, short characterSize) {
     clickTime = currentTime;
 }
 
-virtual void ButtonWithText::changeColor() {
+void ButtonWithText::setPosition(sf::Vector2f position) {
+    this->position = position;
+    text.setPosition(position.x + cam->position.x + margin, position.y + cam->position.y + float(margin) * 0.6f);
+    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+}
+
+void ButtonWithText::changeColor() {
 
     if (state == ButtonState::Pressed) {
         rect.setFillColor(pressedColor);
@@ -239,7 +278,15 @@ virtual void ButtonWithText::changeColor() {
 
 }
 
-virtual bool ButtonWithText::hover() {
+void ButtonWithText::unclick() {
+    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+        state = ButtonState::Idle;
+        changeColor();
+    }
+
+}
+
+bool ButtonWithText::hover() {
     if (state != ButtonState::Pressed) {
 
         float x1 = rect.getPosition().x;
@@ -265,7 +312,7 @@ virtual bool ButtonWithText::hover() {
     return false;
 }
 
-virtual bool ButtonWithText::click() {
+bool ButtonWithText::click() {
 
     float x1 = rect.getPosition().x;
     float x2 = x1 + rect.getSize().x;
@@ -289,6 +336,16 @@ virtual bool ButtonWithText::click() {
     return false;
 }
 
+void ButtonWithText::update(float dt) {
+    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
+}
+
+void ButtonWithText::draw() {
+
+    window->draw(rect);
+    window->draw(text);
+}
 
 ButtonWithImage::ButtonWithImage() {
     sprite = sf::Sprite();
@@ -344,7 +401,13 @@ ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
     changeColor();
 }
 
-virtual void ButtonWithImage::changeColor()
+void ButtonWithImage::setTexture(SingleTexture* texture) {
+    sprite = sf::Sprite();
+    sprite.setTexture(*texture->texture);
+    sprite.setOrigin(texture->texture->getSize().x / 2, texture->texture->getSize().y / 2);
+}
+
+void ButtonWithImage::changeColor()
 {
     if (state == ButtonState::Pressed) {
         sprite.setColor(spritePressedColor);
@@ -358,7 +421,15 @@ virtual void ButtonWithImage::changeColor()
 
 }
 
-virtual void ButtonWithImage::hover() {
+void ButtonWithImage::unclick()
+{
+    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+        state = ButtonState::Idle;
+        changeColor();
+    }
+}
+
+void ButtonWithImage::hover() {
     if (state != ButtonState::Pressed) {
 
         float w = sprite.getTexture()->getSize().x;
@@ -383,7 +454,7 @@ virtual void ButtonWithImage::hover() {
     }
 }
 
-virtual void ButtonWithImage::click() {
+void ButtonWithImage::click() {
     float w = sprite.getTexture()->getSize().x;
     float h = sprite.getTexture()->getSize().y;
     float x = sprite.getPosition().x;
@@ -403,4 +474,13 @@ virtual void ButtonWithImage::click() {
 
 
     }
+}
+
+void ButtonWithImage::update(float dt) {
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+}
+
+void ButtonWithImage::draw() {
+
+    window->draw(sprite);
 }

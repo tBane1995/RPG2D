@@ -1,5 +1,21 @@
 ﻿#include "BuildingsManager.h"
-
+#include "Mouse.h"
+#include "Doors.h"
+#include "TerrainAndFloors.h"
+#include "Furnitures.h"
+#include "Items.h"
+#include "Textures.h"
+#include "Walls.h"
+#include "Player.h"
+#include "Collisions.h"
+#include "Prefabs.h"
+#include "PrefabToPaint.h"
+#include "Windows.h"
+#include "Camera.h"
+#include "GameObjectsManager.h"
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 Building::Building(int width, int height) : GameObject("empty", 0, 0)
 {
@@ -15,7 +31,7 @@ Building::Building(int width, int height) : GameObject("empty", 0, 0)
     loadCollider();
 }
 
-virtual Building::~Building()
+Building::~Building()
 {
     delete _door;
     delete floors;
@@ -28,6 +44,14 @@ virtual Building::~Building()
 
     for (auto& wall : _walls)
         delete wall;
+}
+
+void Building::mouseHovering()
+{
+    if (worldMousePosition.x > x1 && worldMousePosition.x < x2 && worldMousePosition.y > y1 && worldMousePosition.y < y2)
+        mouseIsHover = true;
+    else
+        mouseIsHover = false;
 }
 
 void Building::addGameObject(GameObject* object)
@@ -82,6 +106,11 @@ bool Building::playerInside() {
         return true;
     else
         return false;
+}
+
+void Building::loadName(std::ifstream& file) {
+    std::string line;
+    std::getline(file, line);
 }
 
 void Building::loadTexture2(std::ifstream& file) {
@@ -675,7 +704,7 @@ void Building::loadGameObjects(std::ifstream& file) {
         }
 
         if (objectType == "Furniture") {
-            string name;
+            std::string name;
             short x, y, id;
 
             getline(lineStream, objectName, '"');
@@ -697,7 +726,7 @@ void Building::loadGameObjects(std::ifstream& file) {
         }
 
         if (objectType == "Wall") {
-            string name;
+            std::string name;
             short x, y;
 
             getline(lineStream, objectName, '"');
@@ -724,7 +753,7 @@ void Building::load() {
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        cout << "cant open building script: " << filename << "\n";
+        std::cout << "cant open building script: " << filename << "\n";
         return;
     }
 
@@ -753,7 +782,7 @@ void Building::loadWithPositioning()
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        cout << "cant open building script: " << filename << "\n";
+        std::cout << "cant open building script: " << filename << "\n";
         return;
     }
 
@@ -787,12 +816,12 @@ void Building::save(std::string filename)
     std::ofstream file(filename);
 
     if (!file.is_open()) {
-        cout << "cant open file to save building: " << filename << "\n";
+        std::cout << "cant open file to save building: " << filename << "\n";
         return;
     }
 
     file << "name \"testBuilding\"\n";
-    file << "size " << to_string(floors->width) << " " << to_string(floors->height) << "\n";
+    file << "size " << std::to_string(floors->width) << " " << std::to_string(floors->height) << "\n";
     file << "door \"door_0\"\n";
 
     file << "\n";
@@ -857,7 +886,7 @@ bool Building::isPart(GameObject* object) {
     return false;
 }
 
-virtual void Building::draw()
+void Building::draw()
 {
     if (isSelected == true) {
         window->draw(*colliders[0]->shape);
@@ -958,7 +987,7 @@ void createNewBuilding() {
 
 }
 
-void loadBuildingFromFile(string filename) {
+void loadBuildingFromFile(std::string filename) {
     if (building) {
         removeGameObjectsFromMainLists();   // TO-DO
         delete building;
@@ -970,4 +999,8 @@ void loadBuildingFromFile(string filename) {
     terrain = new Terrain(0, 0, building->size.x, building->size.y);
     addGameObjectsToMainLists();    // TO-DO
 
+}
+
+void saveBuildingToFile(std::string filename) {
+    building->save(filename);
 }

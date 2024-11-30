@@ -1,12 +1,18 @@
 ﻿#include "Items.h"
-
-// TO-DO
-enum class attribute { ATTACK, DEFEND, HP, MP, HP_max, MP_max, STRENGTH, DEXTERITY, INTELLIGENCE };
-enum class itemType { herb, potion, food, weapon, helmet, armor, pants, shield, other };
+#include "Window.h"
+#include "Textures.h"
+#include <iostream>
 
 std::vector < Item* > items;
 
-Item* getItem(string location) {
+Item::Item(std::string name, itemType type, std::wstring description) {
+	this->name = name;
+	this->type = type;
+	this->description = description;
+	this->texture = getSingleTexture(name);
+}
+
+Item* getItem(std::string location) {
 	for (auto& item : items) {
 		if (item->name == location)
 			return item;
@@ -17,41 +23,41 @@ Item* getItem(string location) {
 
 std::wstring getItemDescription(Item* item) {
 	
-	wstring description = item->description + L"\n\n";
+	std::wstring description = item->description + L"\n\n";
 
 	if (item->attributes[attribute::ATTACK])
-		description += L"ATTACK " + to_wstring(item->attributes[attribute::ATTACK]) + L"\n";
+		description += L"ATTACK " + std::to_wstring(item->attributes[attribute::ATTACK]) + L"\n";
 
 	if (item->attributes[attribute::DEFEND])
-		description += L"DEFEND " + to_wstring(item->attributes[attribute::DEFEND]) + L"\n";
+		description += L"DEFEND " + std::to_wstring(item->attributes[attribute::DEFEND]) + L"\n";
 
 	if (item->attributes[attribute::STRENGTH])
-		description += L"STRENGTH " + to_wstring(item->attributes[attribute::STRENGTH]) + L"\n";
+		description += L"STRENGTH " + std::to_wstring(item->attributes[attribute::STRENGTH]) + L"\n";
 
 	if (item->attributes[attribute::DEXTERITY])
-		description += L"DEXTERITY " + to_wstring(item->attributes[attribute::DEXTERITY]) + L"\n";
+		description += L"DEXTERITY " + std::to_wstring(item->attributes[attribute::DEXTERITY]) + L"\n";
 
 	if (item->attributes[attribute::INTELLIGENCE])
-		description += L"INTELLIGENCE " + to_wstring(item->attributes[attribute::INTELLIGENCE]) + L"\n";
+		description += L"INTELLIGENCE " + std::to_wstring(item->attributes[attribute::INTELLIGENCE]) + L"\n";
 
 	if (item->attributes[attribute::HP])
-		description += L"HP " + to_wstring(item->attributes[attribute::HP]) + L"\n";
+		description += L"HP " + std::to_wstring(item->attributes[attribute::HP]) + L"\n";
 
 	if (item->attributes[attribute::HP_max])
-		description += L"HP_max " + to_wstring(item->attributes[attribute::HP_max]) + L"\n";
+		description += L"HP_max " + std::to_wstring(item->attributes[attribute::HP_max]) + L"\n";
 
 	if (item->attributes[attribute::MP])
-		description += L"MP " + to_wstring(item->attributes[attribute::MP]) + L"\n";
+		description += L"MP " + std::to_wstring(item->attributes[attribute::MP]) + L"\n";
 
 	if (item->attributes[attribute::MP_max])
-		description += L"MP_max " + to_wstring(item->attributes[attribute::MP_max]) + L"\n";
+		description += L"MP_max " + std::to_wstring(item->attributes[attribute::MP_max]) + L"\n";
 
 	return description;
 }
 
 
 
-ItemOnMap::ItemOnMap(Item* item, float x, float y, short count = 1 ) : GameObject(item->name, x, y, 16, 8, 32, true, ColliderType::Elipse) {
+ItemOnMap::ItemOnMap(Item* item, float x, float y, short count) : GameObject(item->name, x, y, 16, 8, 32, true, ColliderType::Elipse) {
 	type = GameObjectType::ItemOnMap;
 	this->item = item;
 	this->count = count;
@@ -77,6 +83,17 @@ ItemOnMap::ItemOnMap(GameObject* object, float x, float y) : GameObject(object, 
 	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(position);
 	sprite.setScale(0.75f, 0.75f);
+}
+
+void ItemOnMap::draw() {
+
+	window->draw(sprite);
+
+	if (mouseIsHover) {
+
+		GameObject::draw();
+		window->draw(textname);
+	}
 }
 
 std::vector < ItemOnMap* > itemsOnMap;
@@ -248,7 +265,7 @@ void loadItems() {
 }
 
 
-void Inventory::addItem(std::string location, short count = 1) {
+void Inventory::addItem(std::string location, short count) {
 
 	for (short i = 0; i < items.size(); i++)
 		if (items[i]->name == location) {
@@ -260,7 +277,7 @@ void Inventory::addItem(std::string location, short count = 1) {
 	counts.push_back(count);
 }
 
-void Inventory::addItem(Item* item, short count = 1) {
+void Inventory::addItem(Item* item, short count) {
 
 	bool addedItem = false;
 
@@ -274,7 +291,7 @@ void Inventory::addItem(Item* item, short count = 1) {
 	counts.push_back(count);
 }
 
-bool Inventory::hasItemsInInventory(std::string location, short count=1) {
+bool Inventory::hasItemsInInventory(std::string location, short count) {
 	for (short i = 0; i < items.size(); i++)
 		if (items[i]->name == location) {
 				
@@ -287,7 +304,7 @@ bool Inventory::hasItemsInInventory(std::string location, short count=1) {
 	return false;
 }
 
-void Inventory::removeItem(string name, short count = 1) {
+void Inventory::removeItem(std::string name, short count) {
 	for (short i = 0; i < items.size(); i++)
 		if (items[i]->name == name) {
 			counts[i] -= count;
@@ -309,7 +326,7 @@ void Inventory::removeItem(string name, short count = 1) {
 	counts = newCounts;
 }
 
-void Inventory::removeItem(Item* item, short count = 1) {
+void Inventory::removeItem(Item* item, short count) {
 	for (short i = 0; i < items.size(); i++)
 	{
 		if (items[i] == item) {
@@ -360,7 +377,7 @@ Inventory* getInventory(short id) {
 		}
 	}
 
-	cout << "Inventory id=" << id << " not exists!\n";
+	std::cout << "Inventory id=" << id << " not exists!\n";
 	return nullptr;
 
 }
@@ -378,4 +395,20 @@ InventoryOnMap::InventoryOnMap(Inventory* inventory, float x, float y) : GameObj
 	this->inventory = inventory;
 }
 
+void InventoryOnMap::draw() {
+
+	if (mouseIsHover)
+	{
+		GameObject::draw();
+	}
+	window->draw(sprite);
+
+}
+
 std::vector < InventoryOnMap* > inventoriesOnMap;
+
+void transferItem(Item* item, Inventory*& from, Inventory*& to) {
+
+	from->removeItem(item);
+	to->addItem(item);
+}

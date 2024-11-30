@@ -1,4 +1,7 @@
 #include "HitTexts.h"
+#include "Fonts.h"
+#include "Window.h"
+#include "Time.h"
 
 HitText::HitText(sf::Vector2f position, std::string value, sf::Color color) {
 	this->position = position;
@@ -15,18 +18,15 @@ HitText::HitText(sf::Vector2f position, std::string value, sf::Color color) {
 		
 }
 
-	~HitText() { }
+void HitText::update() {
+	short deleter = (currentTime-startTime).asMilliseconds()*0.1;
+	text.setPosition(position.x, position.y-deleter);
+}
 
-	void update() {
-		short deleter = (currentTime-startTime).asMilliseconds()*0.1;
-		text.setPosition(position.x, position.y-deleter);
-	}
+void HitText::draw() {
+	window->draw(text);
+}
 
-	void draw() {
-		window->draw(text);
-	}
-
-};
 
 
 void HitTextsManager::deleteOldHits() {

@@ -14,22 +14,14 @@ public:
 	TerrainPrefab* terrain;
 	Shader* shader;
 
-	WaterPrefab(string name, short id, TerrainPrefab* terrain);
+	WaterPrefab(std::string name, short id, TerrainPrefab* terrain);
 
 	virtual ~WaterPrefab() {
 
 	}
 
-	virtual void update(float dt) override {
-		sf::Vector2f position;
-		position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
-		position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
-	}
-
-	virtual void draw() override {
-		window->draw(*colliders[0]->shape);
-	}
-
+	virtual void update(float dt) override;
+	virtual void draw() override;
 };
 
 class Water : public sf::Drawable, public sf::Transformable {
@@ -51,13 +43,7 @@ public:
 
 private:
 
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		states.transform *= getTransform();
-		states.texture = &(*getSingleTexture("tiles/0_tileset")->texture);
-		states.shader = &(*getShader("shaders/lake")->shader);
-		target.draw(vertexes, states);
-	}
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 extern std::vector < WaterPrefab* > waterGameObjects;

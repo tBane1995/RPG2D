@@ -1,4 +1,10 @@
 #include "JournalPanel.h"
+#include "Theme.h"
+#include "Fonts.h"
+#include "Camera.h"
+#include "Quests.h"
+#include "Textures.h"
+#include "InventoryPanel.h"
 
 JournalPanel::JournalPanel() {
 	panel = sf::Sprite();

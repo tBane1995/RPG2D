@@ -1,4 +1,9 @@
 #include "ControlsPanel.h"
+#include "Theme.h"
+#include "Fonts.h"
+#include "Textures.h"
+#include "Camera.h"
+#include "Window.h"
 
 ControlsPanel::ControlsPanel() {
     title = sf::Text("controls", basicFont, 32);

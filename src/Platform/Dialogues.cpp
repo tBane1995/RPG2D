@@ -1,4 +1,13 @@
 ﻿#include "Dialogues.h"
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
+#include "Textures.h"
+#include "Camera.h"
+#include "Theme.h"
+#include "Time.h"
+#include "Fonts.h"
 
 std::vector < Dialogue* > dialogues;
 
@@ -10,7 +19,7 @@ Dialogue* getDialogue(short id) {
 			return d;
 		}
 	}
-	cout << "incorrect dialog id\n";
+	std::cout << "incorrect dialog id\n";
 	return nullptr;
 }
 
@@ -225,7 +234,7 @@ DialogueBox* dialogueBox = nullptr;
 
 void loadDialogue(int dialogID) {
 
-	std::string textID = to_string(dialogID);
+	std::string textID = std::to_string(dialogID);
 
 	while (textID.size() < 3)
 	{

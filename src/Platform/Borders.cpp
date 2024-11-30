@@ -1,4 +1,5 @@
 #include "Borders.h"
+#include "TerrainAndFloors.h"
 
 void Borders::generate(Terrain* terrain, Terrain* topTerrain, Terrain* bottomTerrain, Terrain* leftTerrain, Terrain* rightTerrain)
 {

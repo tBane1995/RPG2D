@@ -3,7 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
-#include "Window.h"
 
 class CheckBox {
 public:
@@ -21,16 +20,6 @@ public:
 
 	void edit(sf::Vector2f size, sf::Vector2f position);
 
-	void update(float dt) {
-		rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
-		checkSprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
-	}
-
-	void draw() {
-		//window->draw(rect);
-		if (value)
-		{
-			window->draw(checkSprite);
-		}
-	}
+	void update(float dt);
+	void draw();
 };

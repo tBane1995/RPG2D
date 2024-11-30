@@ -1,4 +1,10 @@
 ﻿#include "GameObjects.h"
+#include "Window.h"
+#include "Fonts.h"
+#include "Mouse.h"
+#include "Collisions.h"
+#include "Theme.h"
+#include "RenderParameters.h"
 
 Collider::Collider(float width, float length, sf::Vector2f position, ColliderType type)
 {
@@ -54,9 +60,12 @@ Collider::Collider(Collider* col)
 		shape->setPosition(this->position);
 	}
 }
+void Collider::draw() {
+	window->draw(*shape);
+}
 
 
-GameObject::GameObject(string name, float x, float y, float width, float length, float height, bool collisioning, ColliderType col_type)
+GameObject::GameObject(std::string name, float x, float y, float width, float length, float height, bool collisioning, ColliderType col_type)
 {
 	// CREATE PREFAB
 	this->name = name;
@@ -79,7 +88,7 @@ GameObject::GameObject(string name, float x, float y, float width, float length,
 	isSelected = false;
 }
 
-GameObject::GameObject(string name, float x, float y, float width, float length, float height, float width_left, float width_right)
+GameObject::GameObject(std::string name, float x, float y, float width, float length, float height, float width_left, float width_right)
 {
 	// FOR DOORS/GATES
 	this->name = name;
@@ -128,7 +137,7 @@ GameObject::GameObject(GameObject* go, float x, float y)
 	isSelected = false;
 }
 
-GameObject::GameObject(string name)
+GameObject::GameObject(std::string name)
 {
 	// FOR TILES PALETTE (TERRAIN OR FLOOR) 
 	this->name = name;
@@ -156,7 +165,7 @@ GameObject::GameObject(string name)
 	isSelected = false;
 }
 
-GameObject::GameObject(string name, float x, float y)
+GameObject::GameObject(std::string name, float x, float y)
 {
 	// FOR BUILDINGS
 
@@ -176,7 +185,7 @@ GameObject::GameObject(string name, float x, float y)
 	isSelected = false;
 }
 
-virtual GameObject::~GameObject()
+GameObject::~GameObject()
 {
 	// TO-DO
 	if (!colliders.empty()) {
@@ -188,7 +197,7 @@ virtual GameObject::~GameObject()
 	}
 }
 
-virtual void GameObject::setPosition(sf::Vector2f position)
+void GameObject::setPosition(sf::Vector2f position)
 {
 	this->position = position;
 		
@@ -208,7 +217,7 @@ void GameObject::createTextname() {
 	textname.setPosition(position.x, position.y);
 }
 
-virtual void GameObject::mouseHovering()
+void GameObject::mouseHovering()
 {
 
 	mouseIsHover = false;
@@ -230,7 +239,7 @@ virtual void GameObject::mouseHovering()
 		
 }
 
-virtual void GameObject::updateStatistic(float dt)
+void GameObject::updateStatistic(float dt)
 {
 	if (type != GameObjectType::Door)
 	{
@@ -240,7 +249,12 @@ virtual void GameObject::updateStatistic(float dt)
 	}
 }
 
-virtual void GameObject::drawStatistics()
+void GameObject::draw()
+{
+	window->draw(textname);
+}
+
+void GameObject::drawStatistics()
 {
 	if (renderColliders)
 	{
@@ -251,7 +265,7 @@ virtual void GameObject::drawStatistics()
 	}
 }
 
-virtual void GameObject::drawAllStatistics()
+void GameObject::drawAllStatistics()
 {
 	for (auto& col : colliders)
 	{

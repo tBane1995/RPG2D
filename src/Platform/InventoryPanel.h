@@ -10,6 +10,7 @@ extern short slotSide;
 extern short cursor;
 
 class Inventory;
+class Item;
 
 class InventoryPanel {
 public:

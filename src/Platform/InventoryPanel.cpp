@@ -1,12 +1,18 @@
 ﻿#include "InventoryPanel.h"
 #include "Items.h"
+#include "Camera.h"
+#include "Window.h"
+#include "Player.h"
+#include "Textures.h"
+#include "Theme.h"
+#include "Fonts.h"
 
 short itemsInRow = 6;
 short itemsInCol = 4;
 short slotSide = 80;
 short cursor = 0;
 
-InventoryPanel::InventoryPanel(Inventory* inventory, float position_x = 0, float position_y = 0) {
+InventoryPanel::InventoryPanel(Inventory* inventory, float position_x, float position_y) {
 	this->inventory = inventory;
 	this->position.x = position_x;
 	this->position.y = position_y;
@@ -105,7 +111,7 @@ void InventoryPanel::update(int cursor) {
 				itemsSprites[i].setPosition(x, y);
 				itemsSprites[i].setScale(64.0f / twidth, 64.0f / theight);
 
-				counts.emplace_back(to_string(sortedItemsCounts[i+scroll*itemsInRow]), basicFont, 16);
+				counts.emplace_back(std::to_string(sortedItemsCounts[i+scroll*itemsInRow]), basicFont, 16);
 				counts[i].setPosition(x, y);
 					
 				short width = counts[i].getLocalBounds().width;

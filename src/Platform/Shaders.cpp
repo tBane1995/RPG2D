@@ -1,4 +1,8 @@
 #include "Shaders.h"
+#include "Window.h"
+#include "Time.h"
+#include "Camera.h"
+#include <iostream>
 
 Shader::Shader(std::string pathfile) {
 	name = "";
@@ -15,6 +19,14 @@ Shader::Shader(std::string pathfile) {
 }
 
 std::vector < Shader* > shaders;
+
+void loadShader(std::string name, std::string vertex_pathfile, std::string fragment_pathfile) {
+	shaders.push_back(new Shader(name, vertex_pathfile, fragment_pathfile));
+}
+
+void loadShader(std::string pathfile) {
+	shaders.push_back(new Shader(pathfile));
+}
 
 void loadShaders() {
 	loadShader("shaders/empty.frag");
