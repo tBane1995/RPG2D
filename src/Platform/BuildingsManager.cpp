@@ -687,7 +687,7 @@ void Building::loadGameObjects(std::ifstream& file) {
         }
 
         if (objectType == "Furniture") {
-            string name;
+            std::string name;
             short x, y, id;
 
             getline(lineStream, objectName, '"');
@@ -736,7 +736,7 @@ void Building::load() {
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        cout << "cant open building script: " << filename << "\n";
+        std::cout << "cant open building script: " << filename << "\n";
         return;
     }
 
@@ -765,7 +765,7 @@ void Building::loadWithPositioning()
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        cout << "cant open building script: " << filename << "\n";
+        std::cout << "cant open building script: " << filename << "\n";
         return;
     }
 
@@ -799,12 +799,12 @@ void Building::save(std::string filename)
     std::ofstream file(filename);
 
     if (!file.is_open()) {
-        cout << "cant open file to save building: " << filename << "\n";
+        std::cout << "cant open file to save building: " << filename << "\n";
         return;
     }
 
     file << "name \"testBuilding\"\n";
-    file << "size " << to_string(floors->width) << " " << to_string(floors->height) << "\n";
+    file << "size " << std::to_string(floors->width) << " " << std::to_string(floors->height) << "\n";
     file << "door \"door_0\"\n";
 
     file << "\n";

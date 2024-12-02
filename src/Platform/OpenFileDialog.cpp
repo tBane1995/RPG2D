@@ -261,12 +261,12 @@ void OpenFileDialog::update(sf::Event& event) {
             else {
                 for (short i = 0; i < 7; i++) {
                     if (filenames[i]->rect.getGlobalBounds().contains(worldMousePosition)) {
-                        cout << "click";
+                        std::cout << "click";
                         // LOAD THE DIRECTORY
                         if (i + short(scrollbar->scrollValue) < paths.size()) {
 
                             if (!paths[i + short(scrollbar->scrollValue)].is_directory()) {
-                                cout << "is file";
+                                std::cout << "is file";
                                 selectedFilenameText->setWstring(filenames[i]->s);
                             }
                             else {

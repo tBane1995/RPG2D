@@ -20,73 +20,7 @@
 #include <regex>    // for std::smatch
 //#include <windows.h>
 
-#include "headers/Window.hpp"
-#include "headers/Time.hpp"
-#include "headers/Camera.hpp"
-#include "headers/Mouse.hpp"
-#include "headers/Theme.hpp"
-
-#include "headers/Fonts.hpp"
-#include "headers/Textures.hpp"
-#include "headers/Shaders.hpp"
-#include "headers/Point.hpp"
-#include "headers/Collisions.hpp"
-
-#include "headers/GameStates.hpp"           
-#include "headers/RenderParameters.hpp"     // bools of the render value for example renderCoords, renderBorders
-
-#include "headers/GameObjects.hpp"
-#include "headers/TerrainAndFloors.hpp"     // Terrain and Floors
-#include "headers/Water.hpp"
-#include "headers/Borders.hpp"
-#include "headers/Pathfinding.hpp"
-
-#include "headers/HitTexts.hpp"             // Hit texts
-#include "headers/Items.hpp"                // manage of items, itemsOnMap, Inventory and InventoryOnMap
-#include "headers/UnitStates.hpp"           // states for Units
-#include "headers/Player.hpp"               // manage of Player
-#include "headers/Units.hpp"                // manage of Units 
-#include "headers/Monsters.hpp"             // manage of Monster (dziobak, kolcorozec, bies, etc.)
-#include "headers/Natures.hpp"              // manage of Natures (tree, rock, boulder, etc.)
-#include "headers/Objects.hpp"              // manage of Objects (palisade, etc.)
-#include "headers/Furnitures.hpp"           // manage of Furnitures (barel, table, chest, etc.)
-#include "headers/FlatObjects.hpp"          // manage of Flat Objects (flat plants, flat rocks, etc.)
-#include "headers/Walls.hpp"                // manage of Walls 
-#include "headers/Doors.hpp"                // manage of Doors
-#include "headers/Plants.hpp"               // manage of Plants ( TO-DO - TEST )
-#include "headers/SmallObjects.hpp"         // manage of small objects (grass, etc.)
-#include "headers/Dialogues.hpp"            
-#include "headers/Character.hpp"            // manage of Characters
-#include "headers/Prefabs.hpp"              // manage of all prefabs
-#include "headers/BuildingsManager.hpp"     // manage of Buildings
-#include "headers/GameObjectsManager.hpp"   // manage of GameObjects - update/sort/render/
-#include "headers/Map.hpp"
-#include "headers/Quests.hpp"
-
-#include "headers/GUI.hpp"
-#include "headers/PrefabToPaint.hpp"
-#include "headers/BrushSizes.hpp"
-
-#include "headers/TextArea.hpp"
-#include "headers/Buttons.hpp"
-#include "headers/Scrollbar.hpp"
-#include "headers/Dialog.hpp"
-#include "headers/Message.hpp"
-#include "headers/ScrollableText.hpp"
-#include "headers/OpenFileDialog.hpp"
-#include "headers/CheckBox.hpp"
-
-#include "headers/Tips.hpp"
-#include "headers/MenuBar.hpp"
-#include "headers/Tools.hpp"
-#include "headers/Palette.hpp"
-#include "headers/Painter.hpp"
-
-#include "headers/ControlsPanel.hpp"
-#include "headers/InventoryPanel.hpp"
-#include "headers/TradePanel.hpp"
-#include "headers/JournalPanel.hpp"
-#include "headers/StatsPanel.hpp"
+#include "Platform/Platform.h"
 
 #include "Game.hpp"
 #include "MapEditor.hpp"
@@ -95,9 +29,9 @@
 
 
 
-void createSetsFromIdle(string idlePath) {
+void createSetsFromIdle(std::string idlePath) {
 
-    cout << "creating set from idles for monster: " << idlePath;
+    std::cout << "creating set from idles for monster: " << idlePath;
 
     sf::Image idle_0;
     sf::Image idle_1;
@@ -170,9 +104,9 @@ void createSetsFromIdle(string idlePath) {
 
 }
 
-void createSetsFromRuns(string path) {
+void createSetsFromRuns(std::string path) {
 
-    cout << "creating set from runs for monster: " << path;
+    std::cout << "creating set from runs for monster: " << path;
 
     sf::Image run_0;
     sf::Image run_1;
@@ -250,9 +184,9 @@ void createSetsFromRuns(string path) {
 }
 
 
-void editWhitePixelsToTransparent(string monster_path) {
+void editWhitePixelsToTransparent(std::string monster_path) {
 
-    cout << "editing white pixels to transparent: " << monster_path << "\n";
+    std::cout << "editing white pixels to transparent: " << monster_path << "\n";
 
     sf::Color whiteColor = sf::Color(255, 255, 255);
     //sf::Color whiteColor = sf::Color(64, 54, 42);
@@ -261,7 +195,7 @@ void editWhitePixelsToTransparent(string monster_path) {
 
     std::vector < std::string > png_files;
 
-    for (const auto& entry : filesystem::directory_iterator(monster_path)) {
+    for (const auto& entry : std::filesystem::directory_iterator(monster_path)) {
         if (entry.is_regular_file() && entry.path().extension() == ".png") {
             png_files.push_back(entry.path().string());
         }
@@ -370,10 +304,10 @@ void testSelectingFunction() {
             int end_x = std::max(ceil(startWorldMousePosition.x / tileSide), ceil(worldMousePosition.x / tileSide));
             int end_y = std::max(ceil(startWorldMousePosition.y / tileSide), ceil(worldMousePosition.y / tileSide));
 
-            cout << "selected area: \n";
-            cout << "start: " << start_x << ", " << start_y << "\n";
-            cout << "end: " << end_x << ", " << end_y << "\n";
-            cout << "\n\n";
+            std::cout << "selected area: \n";
+            std::cout << "start: " << start_x << ", " << start_y << "\n";
+            std::cout << "end: " << end_x << ", " << end_y << "\n";
+            std::cout << "\n\n";
 
             rect = sf::RectangleShape(sf::Vector2f((end_x - start_x)*tileSide, (end_y - start_y)*tileSide));
             rect.setPosition(start_x*tileSide, start_y*tileSide);
@@ -444,10 +378,10 @@ void testElipseSelectingFunction() {
             int end_x = std::max(ceil(startWorldMousePosition.x / tileSide), ceil(worldMousePosition.x / tileSide));
             int end_y = std::max(ceil(startWorldMousePosition.y / tileSide), ceil(worldMousePosition.y / tileSide));
 
-            cout << "selected area: \n";
-            cout << "start: " << start_x << ", " << start_y << "\n";
-            cout << "end: " << end_x << ", " << end_y << "\n";
-            cout << "\n\n";
+            std::cout << "selected area: \n";
+            std::cout << "start: " << start_x << ", " << start_y << "\n";
+            std::cout << "end: " << end_x << ", " << end_y << "\n";
+            std::cout << "\n\n";
 
             int width = end_x - start_x;
             int height = end_y - start_y;
@@ -496,7 +430,7 @@ void convertPNGsToSet() {
 
     int frameWidth = 128;
     int frameHeight = 128;
-    std::vector < string > PNGS;
+    std::vector < std::string > PNGS;
     
     PNGS.clear();
     PNGS.push_back("assets/sets/water/frame_00.png");
@@ -601,7 +535,7 @@ void testOpenDialogBox() {
 
                 
                 if (openDial->fileSelected) {
-                    cout << openDial->getPathfile() << "\n";
+                    std::cout << openDial->getPathfile() << "\n";
                     delete openDial;
                     openDial = nullptr;
                 }

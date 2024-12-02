@@ -855,7 +855,7 @@ void Palette::createToolsButtons() {
     // delete old Tools Buttons
     deleteToolsButtons();
 
-    cout << "create Tools Buttons\n";
+    std::cout << "create Tools Buttons\n";
     btnToolsEmpty = new ButtonWithImage();
     btnToolsEmpty->setTexture(getSingleTexture("GUI/toolButtons/toolbutton"));
 

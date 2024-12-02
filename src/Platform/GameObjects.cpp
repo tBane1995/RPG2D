@@ -5,6 +5,7 @@
 #include "Collisions.h"
 #include "Theme.h"
 #include "RenderParameters.h"
+#include <iostream>
 
 Collider::Collider(float width, float length, sf::Vector2f position, float dx, float dy, ColliderType type) {
 	this->width = width;
@@ -316,7 +317,7 @@ bool collisionPrediction(GameObject* object, float dx, float dy)
 						if (collider_2->type == ColliderType::Elipse) {
 							// elipse with elipse
 							if (intersectionTwoEllipses(object->position.x + dx + collider_1->dx, object->position.y + dy + collider_1->dy, collider_1->width / 2.0f, collider_1->length / 2.f, go->position.x + collider_2->dx, go->position.y + collider_2->dy, collider_2->width / 2.0f, collider_2->length / 2.f)) {
-								cout << "collision " << object->name << " - " << go->name << "\n";
+								std::cout << "collision " << object->name << " - " << go->name << "\n";
 								return true;
 							}
 
@@ -325,7 +326,7 @@ bool collisionPrediction(GameObject* object, float dx, float dy)
 						if (collider_2->type == ColliderType::Rectangle) {
 							// elipse with rectangle
 							if (intersectionRectangleWithElipse(go->position.x + collider_2->dx, go->position.y + collider_2->dy, collider_2->width, collider_2->length, object->position.x + dx + collider_1->dx, object->position.y + dy + collider_1->dy, collider_1->width / 2.0f, collider_1->length / 2.0f)) {
-								cout << "collision " << object->name << " - " << go->name << "\n";
+								std::cout << "collision " << object->name << " - " << go->name << "\n";
 								return true;
 							}
 

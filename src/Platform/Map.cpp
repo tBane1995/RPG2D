@@ -501,17 +501,17 @@ void Mapa::load(std::string filename) {
     }
 
     // open file map
-    ifstream file(filename);
+    std::ifstream file(filename);
 
     if (!file.is_open()) {
-        cout << "cant open map: " << filename << "\n";
+        std::cout << "cant open map: " << filename << "\n";
         return;
     }
 
-    cout << "open map: " << filename << "\n";
+    std::cout << "open map: " << filename << "\n";
 
-    string line;
-    string objectType;
+    std::string line;
+    std::string objectType;
     Chunk* chunk = nullptr;
 
     // loading
@@ -546,7 +546,7 @@ void Mapa::load(std::string filename) {
                 // check the correct of datas
                 std::streampos pos = file.tellg(); // Zapisanie pozycji linii
                 bool correct_data = true;
-                string _line;
+                std::string _line;
                 int y = 0;
                 int x;
 
@@ -618,14 +618,14 @@ void Mapa::load(std::string filename) {
         else {
 
             short x, y;
-            string temp;
-            string objectName;
+            std::string temp;
+            std::string objectName;
 
-            getline(lineStream, temp, '"');         // get string to temp to sign "
-            getline(lineStream, objectName, '"');   // get string to objectName to sign "
-            getline(lineStream, temp, '=');         // get string to temp to sign =
+            std::getline(lineStream, temp, '"');         // get string to temp to sign "
+            std::getline(lineStream, objectName, '"');   // get string to objectName to sign "
+            std::getline(lineStream, temp, '=');         // get string to temp to sign =
             lineStream >> y;                        // string to y
-            getline(lineStream, temp, '=');         // get string to temp to sign =
+            std::getline(lineStream, temp, '=');         // get string to temp to sign =
             lineStream >> x;                        // string to x
             //cout << objectType << " \"" << objectName << "\" " << x << " " << y << "\n";
 
