@@ -88,7 +88,7 @@ void PaletteButton::setGameObject(GameObject* object) {
             sprite.setOrigin(28, 28);
             sprite.setTextureRect(sf::IntRect(4, 4, 56, 56));
 
-                
+
         }
 
         hover_func = [this]() {
@@ -96,9 +96,9 @@ void PaletteButton::setGameObject(GameObject* object) {
                 sf::Vector2f pos;
                 pos.x = this->position.x - sprite.getTexture()->getSize().x / 2.0f;
                 pos.y = this->position.y + sprite.getTexture()->getSize().y / 4.0f;
-                tip = new Tip(ConvertUtf8ToWide(this->object->name),pos, this);       // TO-DO delete convert and use std::wstring
+                tip = new Tip(ConvertUtf8ToWide(this->object->name), pos, this);       // TO-DO delete convert and use std::wstring
             }
-                   
+
             };
 
         onclick_func = [this]() {
@@ -106,11 +106,14 @@ void PaletteButton::setGameObject(GameObject* object) {
             prefabToPaint = this->object;
             };
     }
-        
-    sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
-        
-}
+    else {
+        hover_func = { };
+        onclick_func = { };
+    }
 
+    sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+}
 void PaletteButton::update(float dt) {
     ButtonWithImage::update(dt);
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
@@ -133,21 +136,21 @@ void PaletteButton::draw() {
 
 Palette::Palette(PaletteType type) {
     this->type = type;
-        
-    createPaletteButtons(5,7);
+
+    createPaletteButtons(5, 7);
     createToolsButtons();
     createNavButtons();
     createGroupButtons();
 
 
-    if(type == PaletteType::MapEditor)        selectedGroupButton = btnGroupTerrain;
-    if(type == PaletteType::BuildingEditor)   selectedGroupButton = btnGroupFloors;
-        
+    if (type == PaletteType::MapEditor)        selectedGroupButton = btnGroupTerrain;
+    if (type == PaletteType::BuildingEditor)   selectedGroupButton = btnGroupFloors;
+
     selectedToolButton = btnToolsCursor;
     selectedPaletteButton = nullptr;
 
-    if(type == PaletteType::MapEditor)       setTerrainObjectsToPalette();
-    if(type == PaletteType::BuildingEditor)  setFloorsObjectsToPalette();
+    if (type == PaletteType::MapEditor)       setTerrainObjectsToPalette();
+    if (type == PaletteType::BuildingEditor)  setFloorsObjectsToPalette();
 
     loadPalette();
 
@@ -204,27 +207,27 @@ void Palette::deleteGroupButtons() {
 void Palette::createPaletteButtons(short size_x, short size_y) {
 
     deletePaletteButtons();
-        
+
     size.x = size_x;
     size.y = size_y;
 
     sf::Vector2f start_pos; // left bottom 
     start_pos.x = 0;
-    start_pos.x = screenWidth/2.0f - size.x*64 + 32;
-    start_pos.y = screenHeight/2.0f - 37 - 32;
+    start_pos.x = screenWidth / 2.0f - size.x * 64 + 32;
+    start_pos.y = screenHeight / 2.0f - 37 - 32;
 
     for (short y = 0; y < size.y; y++) {
         for (short x = 0; x < size.x; x++) {
 
             sf::Vector2f pos;
             pos.x = start_pos.x + x * 64;
-            pos.y = start_pos.y - (size.y -1 - y) * 64;
+            pos.y = start_pos.y - (size.y - 1 - y) * 64;
 
             PaletteButton* btn = new PaletteButton(pos);
             paletteButtons.push_back(btn);
         }
     }
-        
+
 
 
 }
@@ -253,12 +256,12 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
 
-        
-    short id  = countOfBasicTerrain;
+
+    short id = countOfBasicTerrain;
     // SET - SANDS_WATER
     id += 8;    // skip the SET - SANDS_WATER
     id += 8;    // skip the SET - WATER_SANDS
-        
+
     // SET - SANDS_GRASS
     availableGameObjects.push_back(terrainGameObjects[id + 0]);
     availableGameObjects.push_back(terrainGameObjects[id + 1]);
@@ -295,7 +298,7 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
-        
+
     // SET - GRASS_SANDS
     id += 8;
     availableGameObjects.push_back(terrainGameObjects[id + 0]);
@@ -403,8 +406,8 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 7]);
-        
-        
+
+
 }
 
 void Palette::setFloorsObjectsToPalette() {
@@ -417,10 +420,10 @@ void Palette::setFloorsObjectsToPalette() {
 }
 
 void Palette::setWaterObjectsToPalette() {
-        
+
     availableGameObjects.clear();
 
-    for (int i = 0; i < countOfBasicWater-1; i++) {
+    for (int i = 0; i < countOfBasicWater - 1; i++) {
 
         // WATER_TERRAIN
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 0]);
@@ -430,21 +433,21 @@ void Palette::setWaterObjectsToPalette() {
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 2]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 3]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 4]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 3]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 4]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 3]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
-        availableGameObjects.push_back(terrainGameObjects[i+1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
+        availableGameObjects.push_back(terrainGameObjects[i + 1]);
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 4]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 5]);
@@ -467,21 +470,21 @@ void Palette::setWaterObjectsToPalette() {
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 10]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 11]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 12]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 11]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 12]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 11]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
-        availableGameObjects.push_back(waterGameObjects[i+1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
+        availableGameObjects.push_back(waterGameObjects[i + 1]);
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 12]);
 
         availableGameObjects.push_back(waterGameObjects[countOfBasicWater + i * 16 + 13]);
@@ -498,17 +501,17 @@ void Palette::setWaterObjectsToPalette() {
             availableGameObjects.push_back(nullptr);
         }
     }
-        
 
-      
+
+
 
 }
 
 void Palette::setFurnituresObjectsToPalette() {
     availableGameObjects.clear();
 
-    for(auto& p : prefabs)
-        if(p->type == GameObjectType::Furniture)
+    for (auto& p : prefabs)
+        if (p->type == GameObjectType::Furniture)
             availableGameObjects.push_back(p);
 }
 
@@ -588,10 +591,10 @@ void Palette::setWallsObjectsToPalette() {
     availableGameObjects.push_back(getPrefab("walls/set_stone_wall_8"));
 
     availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
-    availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown2"));
+    availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
     availableGameObjects.push_back(getPrefab("walls/empty_wall"));
     availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
-    availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown2"));
+    availableGameObjects.push_back(getPrefab("walls/stone_wall_overgrown"));
 
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
@@ -767,6 +770,8 @@ void Palette::setObjectsToPalette() {
             availableGameObjects.push_back(p);
         }
     }
+
+    availableGameObjects.push_back(getPrefab("doors/wooden_gate"));
 }
 
 void Palette::setSmallObjectsToPalette() {
@@ -785,10 +790,10 @@ void Palette::loadPalette() {
         int index = i + scroll * size.x;
 
         GameObject* object;
-        (index < availableGameObjects.size())? object = availableGameObjects[index] : object = nullptr;
+        (index < availableGameObjects.size()) ? object = availableGameObjects[index] : object = nullptr;
         paletteButtons[i]->setGameObject(object);
 
-        if(object!=nullptr)
+        if (object != nullptr)
             if (object->type == GameObjectType::Terrain || object->type == GameObjectType::Floor || object->type == GameObjectType::Water) {
                 // object is a Terrain or Floor
                 auto button = paletteButtons[i];
@@ -800,7 +805,7 @@ void Palette::loadPalette() {
                         tool = toolType::Brush;
                         selectedToolButton = btnToolsBrush;
                     }
-                            
+
                     };
             }
             else {
@@ -815,9 +820,9 @@ void Palette::loadPalette() {
                     };
             }
 
-                
 
-                
+
+
     }
 }
 
@@ -830,14 +835,14 @@ void Palette::createNavButtons() {
     sf::Vector2f pos;
     pos.x = screenWidth / 2.0f - 160;
 
-    pos.y = screenHeight / 2.0f - 37.0f - float(size.y) * 64.0f - 37.0f/2.0f;
+    pos.y = screenHeight / 2.0f - 37.0f - float(size.y) * 64.0f - 37.0f / 2.0f;
     buttonUp = new ButtonWithImage(getSingleTexture("GUI/wideArrowUp2"), pos);
     buttonUp->onclick_func = [this]() {
         scrollUp();
         loadPalette();
         };
 
-    pos.y = screenHeight / 2.0f - 37.0f/2.0f;
+    pos.y = screenHeight / 2.0f - 37.0f / 2.0f;
     buttonDown = new ButtonWithImage(getSingleTexture("GUI/wideArrowDown2"), pos);
     buttonDown->onclick_func = [this]() {
         scrollDown();
@@ -850,7 +855,7 @@ void Palette::createToolsButtons() {
     // delete old Tools Buttons
     deleteToolsButtons();
 
-    std::cout << "create Tools Buttons\n";
+    cout << "create Tools Buttons\n";
     btnToolsEmpty = new ButtonWithImage();
     btnToolsEmpty->setTexture(getSingleTexture("GUI/toolButtons/toolbutton"));
 
@@ -867,7 +872,7 @@ void Palette::createToolsButtons() {
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-    };
+        };
 
 
     btnToolsBrush = new ButtonWithImage();
@@ -885,7 +890,7 @@ void Palette::createToolsButtons() {
             prefabToPaint = availableGameObjects[1];
             selectedPaletteButton = paletteButtons[1];
         }
-    };
+        };
 
 
     btnToolsRectBrush = new ButtonWithImage();
@@ -903,7 +908,7 @@ void Palette::createToolsButtons() {
             prefabToPaint = availableGameObjects[1];
             selectedPaletteButton = paletteButtons[1];
         }
-    };
+        };
 
 
     btnToolsIncrease = new ButtonWithImage();
@@ -925,7 +930,7 @@ void Palette::createToolsButtons() {
             }
 
         }
-    };
+        };
 
 
     btnToolsDecrease = new ButtonWithImage();
@@ -948,7 +953,7 @@ void Palette::createToolsButtons() {
 
 
         }
-    };
+        };
 
 
     btnToolsRectangle = new ButtonWithImage();
@@ -966,7 +971,7 @@ void Palette::createToolsButtons() {
             prefabToPaint = availableGameObjects[1];
             selectedPaletteButton = paletteButtons[1];
         }
-    };
+        };
 
 
     btnToolsElipse = new ButtonWithImage();
@@ -984,7 +989,7 @@ void Palette::createToolsButtons() {
             prefabToPaint = availableGameObjects[1];
             selectedPaletteButton = paletteButtons[1];
         }
-    };
+        };
 
 
     btnToolsFill = new ButtonWithImage();
@@ -998,7 +1003,7 @@ void Palette::createToolsButtons() {
     btnToolsFill->onclick_func = [this]() {
         selectedToolButton = btnToolsFill;
         tool = toolType::Fill;
-    };
+        };
 
 
     btnToolsEraser = new ButtonWithImage();
@@ -1018,13 +1023,13 @@ void Palette::createToolsButtons() {
             prefabToPaint = availableGameObjects[1];
             selectedPaletteButton = paletteButtons[1];
         }
-    };
+        };
 
     ////////////////////////////////////////////////////////////////////////////////////
 
     sf::Vector2f sp;    // start position
-    sp.x = screenWidth / 2.0f - 10*32 + 16;
-    sp.y = -screenHeight/2.0f + 2*52 + 16 + 30;
+    sp.x = screenWidth / 2.0f - 10 * 32 + 16;
+    sp.y = -screenHeight / 2.0f + 2 * 52 + 16 + 30;
 
     btnToolsCursor->setPosition(sf::Vector2f(sp.x, sp.y));
     btnToolsBrush->setPosition(sf::Vector2f(sp.x + 32, sp.y));
@@ -1036,7 +1041,7 @@ void Palette::createToolsButtons() {
     btnToolsFill->setPosition(sf::Vector2f(sp.x + 224, sp.y));
     //btnToolsEmpty->setPosition(sf::Vector2f(sp.x + 256, sp.y));
     //btnToolsEmpty->setPosition(sf::Vector2f(sp.x + 288, sp.y));
-        
+
     //btnToolsEmpty->setPosition(sf::Vector2f(sp.x, sp.y + 32));
     //btnToolsEmpty->setPosition(sf::Vector2f(sp.x + 32, sp.y + 32));
     //btnToolsEmpty->setPosition(sf::Vector2f(sp.x + 64, sp.y + 32));
@@ -1090,17 +1095,17 @@ void Palette::createGroupButtons() {
     btnGroupTerrain = new ButtonWithImage();
     btnGroupTerrain->setTexture(getSingleTexture("GUI/menuButtons/menuButton-terrain"));
     btnGroupTerrain->hover_func = [this]() {
-        if (tip == nullptr || tip->btn!=btnGroupTerrain)
+        if (tip == nullptr || tip->btn != btnGroupTerrain)
             tip = new Tip(L"Terrains", btnGroupTerrain);
 
-            
+
         };
     btnGroupTerrain->onclick_func = [this]() {
         selectedGroupButton = btnGroupTerrain;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,7);
+        createPaletteButtons(5, 7);
         createNavButtons();
         createToolsButtons();
         setTerrainObjectsToPalette();
@@ -1117,7 +1122,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupFloors;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,7);
+        createPaletteButtons(5, 7);
         createNavButtons();
         createToolsButtons();
         setFloorsObjectsToPalette();
@@ -1152,7 +1157,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,8);
+        createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
         setFurnituresObjectsToPalette();
@@ -1170,7 +1175,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,8);
+        createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
         setWallsObjectsToPalette();
@@ -1188,7 +1193,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,8);
+        createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
         setMonstersObjectsToPalette();
@@ -1206,7 +1211,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,8);
+        createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
         setFlatObjectsToPalette();
@@ -1224,7 +1229,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,8);
+        createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
         setItemsObjectsToPalette();
@@ -1242,7 +1247,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupNatures;
         selectedPaletteButton = nullptr;
         prefabToPaint = nullptr;
-        createPaletteButtons(5,8);
+        createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
         setNaturesObjectsToPalette();
@@ -1372,9 +1377,9 @@ void Palette::update(float dt) {
     for (auto& btn : groupButtons)
         btn->update(dt);
 
-    for (auto& btn : paletteButtons) 
+    for (auto& btn : paletteButtons)
         btn->update(dt);
-            
+
     buttonUp->update(dt);
     buttonDown->update(dt);
 }

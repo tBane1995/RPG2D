@@ -351,9 +351,7 @@ void BuildingEditorEventLeftClick() {
             if (!prefabsToPaint.empty()) {
 
                 if (tool == toolType::AddGameObject) {
-                    addPrefabToLists(); // TO-DO
-                    building->addGameObject(prefabsToPaint[0]);
-
+                    addPrefabsToBuildingAndLists();
                 }
 
                 if (tool == toolType::Rectangle || tool == toolType::Elipse) {
@@ -389,7 +387,7 @@ void BuildingEditorEventRightClick() {
             GameObject* go = *it;
 
             if (go->mouseIsHover == true) {
-                deleteGameObjectFromMainLists(go);  // TO-DO
+                deleteGameObjectFromMainLists(go);
                 building->deleteGameObject(go);
                 delete go;
                 was_delete = true;

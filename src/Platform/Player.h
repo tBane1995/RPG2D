@@ -65,7 +65,7 @@ public:
 	float actionRange;
 	float viewRange;
 	sf::CircleShape actionRangeArea;
-	
+
 	float countdown;	 // timer to determine current frame
 	float attackTime;
 	float cooldown;

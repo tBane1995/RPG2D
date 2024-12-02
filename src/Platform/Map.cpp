@@ -50,13 +50,12 @@ Chunk::Chunk(short x, short y)
     coordsText.setPosition(coords.x * 256, coords.y * 256);
 
     visible = false;
-
 }
 
 Chunk::~Chunk()
 {
     // Usuń i zwolnij pamięć dla wszystkich elementów w wektorach
-    for (auto& nature : _natures) 
+    for (auto& nature : _natures)
         delete nature;
     _natures.clear();
 
@@ -64,19 +63,19 @@ Chunk::~Chunk()
         delete object;
     _objects.clear();
 
-    for (auto& item : _items) 
+    for (auto& item : _items)
         delete item;
     _items.clear();
 
-    for (auto& inventory : _inventories) 
+    for (auto& inventory : _inventories)
         delete inventory;
     _inventories.clear();
 
-    for (auto& flat : _flatObjects) 
+    for (auto& flat : _flatObjects)
         delete flat;
     _flatObjects.clear();
 
-    for (auto& monster : _monsters) 
+    for (auto& monster : _monsters)
         delete monster;
     _monsters.clear();
 
@@ -84,13 +83,19 @@ Chunk::~Chunk()
         delete smallObject;
     _smallObjects.clear();
 
-    for (auto& character : _characters) 
+    for (auto& door : _doors)
+        delete door;
+    _doors.clear();
+
+    for (auto& character : _characters)
         delete character;
     _characters.clear();
-        
+
     for (auto& building : _buildings)
         delete building;
     _buildings.clear();
+
+
 
     delete terrain;
     delete water;
@@ -104,7 +109,7 @@ void Chunk::addGameObjectsToMainLists() {
         gameObjects.push_back(nature);
         natures.push_back(nature);
     }
-        
+
     for (auto& object : _objects) {
         object->isInTheMainList = true;
         gameObjects.push_back(object);
@@ -141,6 +146,12 @@ void Chunk::addGameObjectsToMainLists() {
         smallObjects.push_back(smallObject);
     }
 
+    for (auto& door : _doors) {
+        door->isInTheMainList = true;
+        gameObjects.push_back(door);
+        doors.push_back(door);
+    }
+
     for (auto& character : _characters) {
         character->isInTheMainList = true;
         gameObjects.push_back(character);
@@ -161,23 +172,22 @@ void Chunk::addGameObjectsToMainLists() {
             itemsOnMap.push_back(item);
             gameObjects.push_back(item);
         }
-                
+
 
         for (auto& furniture : building->_furnitures) {
             furniture->isInTheMainList = true;
             furnitures.push_back(furniture);
             gameObjects.push_back(furniture);
         }
-                
+
 
         for (auto& wall : building->_walls) {
             wall->isInTheMainList = true;
             walls.push_back(wall);
             gameObjects.push_back(wall);
         }
-                
-    }
 
+    }
 }
 
 void Chunk::removeGameObjectsFromMainLists()
@@ -225,6 +235,12 @@ void Chunk::removeGameObjectsFromMainLists()
 
     std::erase_if(smallObjects, [](const auto& object) { return !object->isInTheMainList; });
 
+    // delete doors ////////////////////////////////////////////////////////////
+    for (auto& door : _doors)
+        door->isInTheMainList = false;
+
+    std::erase_if(doors, [](const auto& door) { return !door->isInTheMainList; });
+
     // delete characters ////////////////////////////////////////////////////////////
     for (auto& character : _characters)
         character->isInTheMainList = false;
@@ -248,13 +264,13 @@ void Chunk::removeGameObjectsFromMainLists()
         // delete building - furnitures
         for (auto& furniture : building->_furnitures)
             furniture->isInTheMainList = false;
-            
+
         std::erase_if(furnitures, [](const auto& furniture) { return !furniture->isInTheMainList; });
 
         // delete building - walls
         for (auto& wall : building->_walls)
             wall->isInTheMainList = false;
-            
+
         std::erase_if(walls, [](const auto& wall) { return !wall->isInTheMainList; });
 
     }
@@ -264,9 +280,6 @@ void Chunk::removeGameObjectsFromMainLists()
 
     // delete GameObjects  /////////////////////////////////////////////////////////////////////
     std::erase_if(gameObjects, [](const auto& go) { return !go->isInTheMainList; });
-
-
-
 }
 
 void Chunk::deleteGameObject(GameObject* object)
@@ -317,13 +330,19 @@ void Chunk::deleteGameObject(GameObject* object)
             _smallObjects.erase(it);
     }
 
+    if (object->type == GameObjectType::Door) {
+        auto it = std::find(_doors.begin(), _doors.end(), object);
+        if (it != _doors.end())
+            _doors.erase(it);
+    }
+
     if (object->type == GameObjectType::Character) {
         auto it = std::find(_characters.begin(), _characters.end(), object);
         if (it != _characters.end()) {
             std::cout << "delete character\n";
             _characters.erase(it);
         }
-                
+
     }
 
     if (object->type == GameObjectType::Building) {
@@ -331,7 +350,6 @@ void Chunk::deleteGameObject(GameObject* object)
         if (it != _buildings.end())
             _buildings.erase(it);
     }
-
 }
 
 void Chunk::draw()
@@ -358,7 +376,7 @@ void Chunk::drawAllStatistics() {
 Mapa::Mapa()
 {
     chunks.clear();
-        
+
     width = 32;
     height = 32;
 
@@ -377,7 +395,7 @@ Chunk* Mapa::getChunk(short x, short y)
             //cout << chunk->coords.x << " " << chunk->coords.y << "\n";
             return chunk;
         }
-                
+
     }
 
     return nullptr;
@@ -387,8 +405,8 @@ Chunk* Mapa::getChunk(sf::Vector2f position)
 {
     float left, right, top, bottom;
 
-    for (auto& chunk : chunks)
-    {
+    for (auto& chunk : chunks) {
+
         left = chunk->coords.x * 16 * tileSide;
         right = left + chunk->terrain->width * tileSide;
         top = chunk->coords.y * 16 * tileSide;
@@ -418,7 +436,7 @@ void Mapa::save(std::string filename) {
             for (short x = 0; x < 16; x++) {
 
                 file << chunk->terrain->tiles[y * 16 + x];
-                    
+
                 if (x != 15)
                     file << " ";
             }
@@ -462,7 +480,6 @@ void Mapa::save(std::string filename) {
 }
 
 void Mapa::load(std::string filename) {
-
     // clearing chunks
     for (auto& chunk : chunks) {
         delete chunk;
@@ -471,30 +488,30 @@ void Mapa::load(std::string filename) {
     chunks.clear();
 
     clearAllMainListsOfGameObjects();
-        
+
     // create chunks
     short width = 32;
     short height = 32;
-        
+
     for (short y = 0; y < height; y++) {
         for (short x = 0; x < width; x++) {
             Chunk* ch = new Chunk(x, y);
             chunks.push_back(ch);
         }
     }
-        
+
     // open file map
-    std::ifstream file(filename);
+    ifstream file(filename);
 
     if (!file.is_open()) {
-        std::cout << "cant open map: " << filename << "\n";
+        cout << "cant open map: " << filename << "\n";
         return;
     }
 
-    std::cout << "open map: " << filename << "\n";
+    cout << "open map: " << filename << "\n";
 
-    std::string line;
-    std::string objectType;
+    string line;
+    string objectType;
     Chunk* chunk = nullptr;
 
     // loading
@@ -517,7 +534,7 @@ void Mapa::load(std::string filename) {
             if (std::regex_search(line, chunk_match, chunk_regex)) {
                 int chunk_y = std::stoi(chunk_match[1]);
                 int chunk_x = std::stoi(chunk_match[2]);
-                    
+
                 // get chunk
                 chunk = getChunk(chunk_x, chunk_y);
 
@@ -529,11 +546,11 @@ void Mapa::load(std::string filename) {
                 // check the correct of datas
                 std::streampos pos = file.tellg(); // Zapisanie pozycji linii
                 bool correct_data = true;
-                std::string _line;
+                string _line;
                 int y = 0;
                 int x;
 
-                while (std::getline(file, _line) && _line[0]>='0' && _line[0]<='9') {
+                while (std::getline(file, _line) && _line[0] >= '0' && _line[0] <= '9') {
 
                     std::istringstream iss(_line);
                     int val;
@@ -564,7 +581,7 @@ void Mapa::load(std::string filename) {
                     // load tiles
                     short y = 0;
                     while (y < 16 && std::getline(file, line)) {
- 
+
                         std::istringstream tileStream(line);
                         short value;
                         short x = 0;
@@ -579,40 +596,42 @@ void Mapa::load(std::string filename) {
 
                     // set the tiles
                     for (short i = 0; i < tiles.size(); i++) {
-                            
+
                         chunk->terrain->edit(i % 16, i / 16, tiles[i]);
-                           
+
                         // TO-DO
-                        if (tiles[i] == 0 || (tiles[i]>=countOfBasicTerrain && tiles[i]<countOfBasicTerrain+16)) {
+                        if (tiles[i] == 0 || (tiles[i] >= countOfBasicTerrain && tiles[i] < countOfBasicTerrain + 16)) {
                             chunk->water->edit(i % 16, i / 16, tiles[i]);
-                        }else
-                            chunk->water->edit(i%16, i/16, -1);
-                                
+                        }
+                        else
+                            chunk->water->edit(i % 16, i / 16, -1);
+
                     }
-                            
-                           
+
+
                 }
 
-                    
+
             }
 
-        } else {
-                
-            short x, y;
-            std::string temp;
-            std::string objectName;
+        }
+        else {
 
-            std::getline(lineStream, temp, '"');         // get string to temp to sign "
-            std::getline(lineStream, objectName, '"');   // get string to objectName to sign "
-            std::getline(lineStream, temp, '=');         // get string to temp to sign =
+            short x, y;
+            string temp;
+            string objectName;
+
+            getline(lineStream, temp, '"');         // get string to temp to sign "
+            getline(lineStream, objectName, '"');   // get string to objectName to sign "
+            getline(lineStream, temp, '=');         // get string to temp to sign =
             lineStream >> y;                        // string to y
-            std::getline(lineStream, temp, '=');         // get string to temp to sign =
+            getline(lineStream, temp, '=');         // get string to temp to sign =
             lineStream >> x;                        // string to x
             //cout << objectType << " \"" << objectName << "\" " << x << " " << y << "\n";
 
-            chunk = getChunk(sf::Vector2f(x,y));
+            chunk = getChunk(sf::Vector2f(x, y));
             if (chunk == nullptr) {
-                chunk = new Chunk(x/256, y/256);
+                chunk = new Chunk(x / 256, y / 256);
                 chunks.push_back(chunk);
             }
 
@@ -639,7 +658,7 @@ void Mapa::load(std::string filename) {
                     chunk->_items.push_back(itemOnMap);
                 }
             }
-                
+
             if (objectType == "Inventory") {
                 // TO-DO - get Inventory(id)
                 Inventory* inventory = getInventory(0);
@@ -687,17 +706,16 @@ void Mapa::load(std::string filename) {
                 Building* building = new Building(objectName, x, y);
                 chunk->_buildings.push_back(building);
             }
-                
+
         }
 
-            
+
     }
 
     file.close();
 
     mapVisiblings();
     generateBorders();
-
 }
 
 void Mapa::mapVisiblings()
@@ -724,7 +742,6 @@ void Mapa::mapVisiblings()
         }
 
     }
-
 }
 
 void Mapa::generateBorders(Chunk* chunk) {
@@ -740,15 +757,15 @@ void Mapa::generateBorders(Chunk* chunk) {
     Terrain* leftTerrain;
     Terrain* rightTerrain;
 
-    for(short y=-1; y <=1; y++)
+    for (short y = -1; y <= 1; y++)
         for (short x = -1; x <= 1; x++) {
             centerChunk = getChunk(chunk->coords.x + x, chunk->coords.y + y);
-                
+
             if (centerChunk != nullptr) {
-                topChunk = getChunk(chunk->coords.x+x, chunk->coords.y+y - 1);
-                bottomChunk = getChunk(chunk->coords.x+x, chunk->coords.y +y+ 1);
-                leftChunk = getChunk(chunk->coords.x+x - 1, chunk->coords.y+y);
-                rightChunk = getChunk(chunk->coords.x+x + 1, chunk->coords.y+y);
+                topChunk = getChunk(chunk->coords.x + x, chunk->coords.y + y - 1);
+                bottomChunk = getChunk(chunk->coords.x + x, chunk->coords.y + y + 1);
+                leftChunk = getChunk(chunk->coords.x + x - 1, chunk->coords.y + y);
+                rightChunk = getChunk(chunk->coords.x + x + 1, chunk->coords.y + y);
 
                 centerTerrain = centerChunk->terrain;
                 (topChunk != nullptr) ? topTerrain = topChunk->terrain : topTerrain = nullptr;
@@ -760,12 +777,6 @@ void Mapa::generateBorders(Chunk* chunk) {
             }
 
         }
-
-        
-            
-        
-                
-
 }
 
 void Mapa::generateBorders() {
@@ -795,9 +806,9 @@ void Mapa::generateBorders() {
         bottomChunk = getChunk(x, y + 1);
         leftChunk = getChunk(x - 1, y);
         rightChunk = getChunk(x + 1, y);
-            
+
         terrain = chunk->terrain;
-        (topChunk != nullptr)? topTerrain = topChunk->terrain : topTerrain = nullptr;
+        (topChunk != nullptr) ? topTerrain = topChunk->terrain : topTerrain = nullptr;
         (bottomChunk != nullptr) ? bottomTerrain = bottomChunk->terrain : bottomTerrain = nullptr;
         (leftChunk != nullptr) ? leftTerrain = leftChunk->terrain : leftTerrain = nullptr;
         (rightChunk != nullptr) ? rightTerrain = rightChunk->terrain : rightTerrain = nullptr;
@@ -810,7 +821,6 @@ void Mapa::draw() {
     for (auto& chunk : chunks) {
         chunk->draw();
     }
-            
 }
 
 void Mapa::drawStatistics() {

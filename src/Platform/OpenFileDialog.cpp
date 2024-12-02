@@ -43,99 +43,141 @@ bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_
         else
             return false;
     }
-
 }
 
 
 OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile) {
-    rect = sf::RectangleShape(sf::Vector2f(512, 256 + 32));
-    rect.setFillColor(panelColor);
-    rect.setPosition(position.x + cam->position.x - 256, position.y + cam->position.y - 128 - 16);
+    rect_height = 0;
+    rect_width = 512;
+    margin_vert = 4;
+    margin_hor = 4;
+    line_height = 30;
 
-    titlebar = sf::RectangleShape(sf::Vector2f(512, 32));
+    // TITLE BAR
+    titlebar = sf::RectangleShape(sf::Vector2f(512, line_height));
     titlebar.setFillColor(sf::Color(48, 48, 48));
-    titlebar.setPosition(position.x + cam->position.x- 256, position.y + cam->position.y - 128 - 32);
-         
+    rect_height += titlebar.getSize().y;
+
     titleText = new TextArea(title);
-    titleText->setCharacterSize(24);
+    titleText->setCharacterSize(17);
     titleText->generateRect();
     titleText->setRectColor(sf::Color::Transparent);
     titleText->setTextColor(dialoguesColor);
-    titleText->setPosition(sf::Vector2f(position.x - 256, position.y - 128 - 32));
 
-    clearTexts();
+    ////////////////////////////////////
+    // FILENAMES AND SCROLLBAR
     current_path = std::filesystem::current_path();
     loadDirectory();
+
     loadScrollbar();
+    createFilenamesTexts();
+    setFilenamesTexts();
 
-    sf::Vector2f pos;
+    filenamesRect = sf::RectangleShape(sf::Vector2f(titlebar.getSize().x, 7 * line_height));
+    filenamesRect.setFillColor(sf::Color::Transparent);
 
-    filenameText = new TextArea(L"File name: ");
-    filenameText->setCharacterSize(24);
-    filenameText->generateRect();
-    filenameText->setRectColor(sf::Color::Transparent);
-    filenameText->setTextColor(dialoguesColor);
-    pos.x = position.x - 256;
-    pos.y = position.y + 256 - 128 - filenameText->rect.getSize().y + 4;
-    filenameText->setPosition(pos);
+    rect_height += filenamesRect.getSize().y;
+
+    ///////////////////////////////////////
+    // SUBMIT BAR
+
+    filenameInfo = new TextArea(L"File name: ");
+    filenameInfo->setCharacterSize(17);
+    filenameInfo->setTextColor(dialoguesColor);
+    filenameInfo->setRectColor(sf::Color::Transparent);
+    filenameInfo->generateRect();
+
+    sf::Vector2f size;
+    size.x = rect_width - filenameInfo->getSize().x - 3 * margin_vert;
+    size.y = line_height;
+    selectedFilenameRect = sf::RectangleShape(size);
+    selectedFilenameRect.setFillColor(sf::Color(32, 32, 32));
 
     selectedFilenameText = new TextArea(L"");
-    selectedFilenameText->setCharacterSize(24);
-    selectedFilenameText->setRectColor(sf::Color(32, 32, 32));
+    selectedFilenameText->setCharacterSize(17);
     selectedFilenameText->setTextColor(dialoguesColor);
-    selectedFilenameText->setRectSize(sf::Vector2f(256 + 48 - 4, filenameText->rect.getSize().y));
-    pos.x = position.x - 256 + filenameText->getSize().x;
-    pos.y = position.y + 256 - 128 - selectedFilenameText->rect.getSize().y + 4;
-    selectedFilenameText->setPosition(pos);
+    selectedFilenameText->setRectColor(sf::Color::Transparent);
+    selectedFilenameText->generateRect();
 
-    submitButton = new ButtonWithText("submit", 23);
-    std::cout << submitButton->rect.getSize().y << "\n";
-    pos.x = position.x + 256 - submitButton->rect.getSize().x - 4;
-    pos.y = position.y + 256 - 128 - submitButton->rect.getSize().y + 4;
-    submitButton->setPosition(pos);
+    selectButton = new ButtonWithText("select", 17);
+    cancelButton = new ButtonWithText("cancel", 17);
 
-    submitbar = sf::RectangleShape(sf::Vector2f(512, selectedFilenameText->rect.getSize().y + 8));
-    submitbar.setFillColor(sf::Color(48, 48, 48));
-    submitbar.setPosition(position.x +cam->position.x - 256, position.y + cam->position.y + 256 - 128 - 32 + 1);
+    submitbar = sf::RectangleShape(sf::Vector2f(rect_width, selectedFilenameRect.getSize().y + 3 * margin_vert + selectButton->rect.getSize().y));
+    submitbar.setFillColor(sf::Color::Transparent);
+
+    rect_height += submitbar.getSize().y;
+
+    /////////////////
+
+    rect = sf::RectangleShape(sf::Vector2f(512, rect_height));
+    rect.setFillColor(panelColor);
+
+    // POSITIONING /////////////
+    sf::Vector2f pos;
+
+    // title bar
+    sf::Vector2f p = sf::Vector2f(position.x - rect_width / 2.0f, +position.y - rect_height / 2.0f);
+    rect.setPosition(p.x + cam->position.x, p.y + cam->position.y);
+
+    titlebar.setPosition(p.x + cam->position.x, p.y + cam->position.y);
+    titleText->setPosition(sf::Vector2f(p.x + margin_vert, p.y + titleText->getLineHeight() / 4.0f));
+
+    // filenames and scrollbar
+    pos.x = cam->position.x + position.x - rect_width / 2.0f;
+    pos.y = cam->position.y + position.y - rect_height / 2.0f + titlebar.getSize().y;
+    filenamesRect.setPosition(pos);
+
+    pos.x = position.x - rect_width / 2.0f + (titleText->texts[0].getPosition().x - titleText->rect.getPosition().x);
+    for (short i = 0; i < 7; i++) {
+
+        pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + i * line_height;
+
+        icons[i].setPosition(pos.x + cam->position.x, pos.y + cam->position.y);
+        filenamesRects[i].setPosition(pos.x + cam->position.x + 30, pos.y + cam->position.y);
+        filenames[i]->setPosition(sf::Vector2f(pos.x + 30, pos.y + filenames[i]->getLineHeight() / 4.0f));
+    }
+
+    pos.x = position.x + rect_width / 2.0f - scrollbar->bar.getSize().x;
+    pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y;
+    scrollbar->setPosition(pos);
+
+    // submit bar
+    pos.x = position.x - rect_width / 2.0f + cam->position.x;
+    pos.y = position.y - rect_height / 2.0f + cam->position.y + titlebar.getSize().y + 7 * line_height;
+    submitbar.setPosition(pos);
+
+    pos.x = position.x - rect_width / 2.0f + margin_vert;
+    pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + 7.0f * line_height + filenameInfo->getLineHeight() / 4.0f + margin_vert;
+    filenameInfo->setPosition(pos);
+
+    pos.x = position.x - rect_width / 2.0f + filenameInfo->getSize().x + 2.0f * margin_hor;
+    pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + 7.0f * line_height + margin_vert;
+
+    selectedFilenameRect.setPosition(pos.x + cam->position.x, pos.y + cam->position.y);
+    selectedFilenameText->setPosition(sf::Vector2f(pos.x, pos.y + selectedFilenameText->getLineHeight() / 4.0f));
+
+    pos.x = position.x + rect_width / 2.0f - cancelButton->rect.getSize().x - margin_hor;
+    pos.y = position.y + rect_height / 2.0f - cancelButton->rect.getSize().y - margin_vert;
+    cancelButton->setPosition(pos);
+
+    pos.x = pos.x - selectButton->rect.getSize().x - margin_hor;
+    selectButton->setPosition(pos);
+    ///////////////////////////
 
     fileSelected = false;
 }
 
 OpenFileDialog::~OpenFileDialog() {
-
     delete titleText;
-    delete filenameText;
+    delete filenameInfo;
     delete selectedFilenameText;
-    delete submitButton;
+    delete selectButton;
+    delete cancelButton;
 
-    for (auto& t : texts)
+    for (auto& t : filenames)
         delete t;
 
     delete scrollbar;
-
-}
-
-void OpenFileDialog::clearTexts() {
-    for (int i = 0; i < 7; i++) {
-
-        textField[i] = sf::RectangleShape(sf::Vector2f(512, 32));
-        textField[i].setFillColor(sf::Color::Transparent);
-        textField[i].setPosition(position.x + cam->position.x -256, position.y +cam->position.y - 128 + i * 32);
-
-        texts[i] = new TextArea(L"");
-        texts[i]->setCharacterSize(20);
-        texts[i]->setRectColor(sf::Color::Transparent);
-        texts[i]->setTextColor(dialoguesColor);
-        texts[i]->setPosition(sf::Vector2f(position.x - 256 + 32 + 4, position.y - 128 + i * 32 + 4));
-
-        icons[i] = sf::Sprite();
-    }
-}
-
-void OpenFileDialog::loadScrollbar() {
-    sf::Vector2f scrollbarSize = sf::Vector2f(16, 256 - 32 + 1);
-    sf::Vector2f scrollbarPosition = sf::Vector2f(position.x + 256 - scrollbarSize.x, position.y - 128);
-    scrollbar = new Scrollbar(scrollbarSize, scrollbarPosition, 0, paths.size() - 1, 0, 7);
 }
 
 void OpenFileDialog::loadDirectory() {
@@ -149,7 +191,53 @@ void OpenFileDialog::loadDirectory() {
     std::sort(paths.begin(), paths.end(), sortkey);
 
     paths.emplace(paths.begin(), current_path.parent_path());
+}
 
+void OpenFileDialog::loadScrollbar() {
+    sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * line_height + 1);
+    scrollbar = new Scrollbar(scrollbarSize, 0, paths.size() - 1, 0, 7);
+}
+
+void OpenFileDialog::createFilenamesTexts() {
+
+    float filename_rect_width = rect_width - scrollbar->bar.getSize().x - 30 - 2 * margin_vert;
+
+    for (int i = 0; i < 7; i++) {
+        filenamesRects[i] = sf::RectangleShape(sf::Vector2f(filename_rect_width, line_height));
+        filenamesRects[i].setFillColor(sf::Color::Transparent);
+
+        filenames[i] = new TextArea(L"");
+        filenames[i]->setCharacterSize(17);
+        filenames[i]->generateRect();
+        filenames[i]->setRectColor(sf::Color::Transparent);
+        filenames[i]->setTextColor(dialoguesColor);
+
+        icons[i] = sf::Sprite();
+    }
+
+}
+
+void OpenFileDialog::setFilenamesTexts() {
+    for (short i = 0; i < 7; i++) {
+
+        if (i + short(scrollbar->scrollValue) < paths.size()) {
+            if (i + short(scrollbar->scrollValue) == 0) {
+                filenames[i]->setWstring(L"..");
+            }
+            else {
+                filenames[i]->setWstring(paths[i + short(scrollbar->scrollValue)].path().filename().wstring());
+            }
+            filenames[i]->generateRect();
+
+            std::string extension = paths[i + short(scrollbar->scrollValue)].path().extension().string();
+            if (extension == "")
+                icons[i].setTexture(*getSingleTexture("GUI/icons/dictionary")->texture);
+            else
+                icons[i].setTexture(*getSingleTexture("GUI/icons/file")->texture);
+        }
+        else
+            filenames[i]->setWstring(L"");
+    }
 }
 
 std::string OpenFileDialog::getPathfile() {
@@ -164,29 +252,30 @@ void OpenFileDialog::update(sf::Event& event) {
     if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
 
-            submitButton->click();
+            selectButton->click();
+            cancelButton->click();
 
-            if (submitButton->state == ButtonState::Pressed) {
+            if (selectButton->state == ButtonState::Pressed) {
                 fileSelected = true;
             }
             else {
                 for (short i = 0; i < 7; i++) {
-                    if (texts[i]->rect.getGlobalBounds().contains(worldMousePosition)) {
-                        std::cout << "click";
+                    if (filenames[i]->rect.getGlobalBounds().contains(worldMousePosition)) {
+                        cout << "click";
                         // LOAD THE DIRECTORY
                         if (i + short(scrollbar->scrollValue) < paths.size()) {
 
                             if (!paths[i + short(scrollbar->scrollValue)].is_directory()) {
-                                std::cout << "is file";
-                                selectedFilenameText->setWstring(texts[i]->s);
+                                cout << "is file";
+                                selectedFilenameText->setWstring(filenames[i]->s);
                             }
                             else {
                                 current_path = std::filesystem::path(paths[i + short(scrollbar->scrollValue)].path().wstring());
                                 selectedFilenameText->setWstring(L"");
-                                clearTexts();
                                 loadDirectory();
-                                loadScrollbar();
-
+                                scrollbar->setValue(0);
+                                scrollbar->maxValue = paths.size() - 1;
+                                scrollbar->update();
                             }
 
                         }
@@ -195,49 +284,41 @@ void OpenFileDialog::update(sf::Event& event) {
                 }
             }
 
-                
 
-                
+
+
         }
     }
 
-    for (short i = 0; i < 7; i++) {
+    setFilenamesTexts();
 
-        if (i + short(scrollbar->scrollValue) < paths.size()) {
-            if (i + short(scrollbar->scrollValue) == 0) {
-                texts[i]->setWstring(L"..");
-            }
-            else {
-                texts[i]->setWstring(paths[i + short(scrollbar->scrollValue)].path().filename().wstring());
-            }
-            texts[i]->generateRect();
-            icons[i] = sf::Sprite();
-            std::string extension = paths[i + short(scrollbar->scrollValue)].path().extension().string();
-            if (extension == "")
-                icons[i].setTexture(*getSingleTexture("GUI/icons/dictionary")->texture);
-            else
-                icons[i].setTexture(*getSingleTexture("GUI/icons/file")->texture);
-            icons[i].setPosition(position.x +cam->position.x- 256, position.y + cam->position.y - 128 + i * 32);
-        }
-    }
-
-    submitButton->update(dt);
+    selectButton->update(dt);
+    cancelButton->update(dt);
 }
 
 void OpenFileDialog::draw() {
+    //main rect
     window->draw(rect);
+
+    // tile bar
     window->draw(titlebar);
     titleText->draw();
-    window->draw(submitbar);
-    filenameText->draw();
-    selectedFilenameText->draw();
-    submitButton->draw();
-    scrollbar->draw();
 
+    // filenames and scrollbar
+    window->draw(filenamesRect);
     for (short i = 0; i < 7; i++) {
-        window->draw(textField[i]);
-        texts[i]->draw();
+        window->draw(filenamesRects[i]);
+        filenames[i]->draw();
         window->draw(icons[i]);
     }
 
+    scrollbar->draw();
+
+    // submit bar
+    window->draw(submitbar);
+    window->draw(selectedFilenameRect);
+    filenameInfo->draw();
+    selectedFilenameText->draw();
+    selectButton->draw();
+    cancelButton->draw();
 }

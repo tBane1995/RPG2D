@@ -29,7 +29,7 @@ GameObject* getPrefab(std::string name) {
 void loadPrefabs() {
 
     prefabs.clear();
-    
+
     // NATURES
     // name, radius, width, height
     prefabs.push_back(new Nature("natures/tree9", 50, 25, 185));
@@ -45,7 +45,6 @@ void loadPrefabs() {
 
     // OBJECTS
     prefabs.push_back(new Object("objects/palisade", 32, 32, 128, true));
-    prefabs.push_back(new Object("objects/wooden_gate", 128, 32, 128, false));  // TO-DO
     prefabs.push_back(new Object("objects/great_stone_gate", 128, 32, 128, false));  // TO-DO
     prefabs.push_back(new Object("objects/stone_wall", 16, 16, 64, true));
     prefabs.push_back(new Object("objects/great_stone_wall", 32, 32, 128, true));
@@ -105,7 +104,7 @@ void loadPrefabs() {
     prefabs.push_back(new Wall("walls/brick_wall", 32, 32, 32));
     prefabs.push_back(new Wall("walls/mulch_wall", 32, 32, 32));
 
-    std::vector < std::string > walls_names;
+    std::vector < string > walls_names;
     walls_names.push_back("walls/set_mud_wall");
     walls_names.push_back("walls/set_stone_wall");
     walls_names.push_back("walls/set_wooden_wall");
@@ -122,10 +121,11 @@ void loadPrefabs() {
         }
     }
 
-    
+
 
     // DOORS
-    prefabs.push_back(new Door("doors/door_0"));
+    prefabs.push_back(new Door("doors/wooden_door", 64, 16, 64, 12, 12));
+    prefabs.push_back(new Door("doors/wooden_gate", 128, 32, 128, 16, 16));  // TO-DO
 
     // ITEMS
     for (auto& i : items) {

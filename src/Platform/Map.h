@@ -17,10 +17,11 @@ class SmallObject;
 class Terrain;
 class Water;
 class GameObject;
+class Door;
 
 class Chunk {
 public:
-	sf::Vector2i coords;
+    sf::Vector2i coords;
     Terrain* terrain;
     Water* water;
     Borders* borders;
@@ -35,8 +36,10 @@ public:
     std::vector < FlatObject* > _flatObjects;
     std::vector < Monster* > _monsters;
     std::vector < SmallObject* > _smallObjects;
+    std::vector < Door* > _doors;
     std::vector < Character* > _characters;
     std::vector < Building* > _buildings;
+
 
     bool visible;
 

@@ -17,8 +17,8 @@
 #include <sstream>
 #include <fstream>
 
-Building::Building(int width, int height) : GameObject("empty", 0, 0)
-{
+Building::Building(int width, int height) : GameObject("empty", 0, 0) {
+
     type = GameObjectType::Building;
     size.x = width;
     size.y = height;
@@ -54,25 +54,10 @@ void Building::mouseHovering()
         mouseIsHover = false;
 }
 
-void Building::addGameObject(GameObject* object)
-{
-    if (object->type == GameObjectType::Wall) {
-        Wall* wall = new Wall(object, object->position.x, object->position.y);
-        _walls.push_back(wall);
-    }
-
-    if (object->type == GameObjectType::ItemOnMap) {
-        ItemOnMap* item = new ItemOnMap(object, object->position.x, object->position.y);
-        _items.push_back(item);
-    }
-
-    if (object->type == GameObjectType::Furniture) {
-        Furniture* furniture = new Furniture(object, object->position.x, object->position.y);
-        _furnitures.push_back(furniture);
-    }
-}
-
 void Building::deleteGameObject(GameObject* object) {
+
+    if (object == nullptr)
+        return;
 
     if (object->type == GameObjectType::Wall) {
         auto it = std::find(_walls.begin(), _walls.end(), object);
@@ -162,13 +147,13 @@ void Building::loadTexture2(std::ifstream& file) {
     short start_x;
     short end_x;
 
-    for (int y = 0; y <= size.x/4; y+=2) {
+    for (int y = 0; y <= size.x / 4; y += 2) {
         start_x = y;
         end_x = width - y - 1;
 
         for (int x = 0; x < width; x++) {
             if (x >= start_x && x <= end_x) {
-                house_image.copy(top_walls_image, x * 2 * 16 + tile_width / 2.0f, house_image.getSize().y - (y/2 + walls_height + 1) * 2 * 16);
+                house_image.copy(top_walls_image, x * 2 * 16 + tile_width / 2.0f, house_image.getSize().y - (y / 2 + walls_height + 1) * 2 * 16);
             }
         }
     }
@@ -176,12 +161,12 @@ void Building::loadTexture2(std::ifstream& file) {
     // DRAWING A SHAPE OF ROOF
     sf::Color color = sf::Color::Black;
 
-    sf::Vector2f p1(0, walls_height*32.0f - tile_height/4.0f);
-    sf::Vector2f p2(tile_width/2.0f + size.x/4.0f * 32.0f, (walls_height + size.x/8.0f) * 32.0f); //
-    sf::Vector2f p3(tile_width + size.x/2.0f * 32.0f, walls_height * 32.0f - tile_height/4.0f);
-    sf::Vector2f p4(tile_width + size.x/2.0f * 32.0f, walls_height * 32.0f + tiles_rows * tile_height - tile_height/4.0f);
-    sf::Vector2f p5(tile_width/2.0f + size.x/4.0f * 32.0f, (walls_height + size.x/8.0f) * 32.0f + tiles_rows * tile_height); //
-    sf::Vector2f p6(0, walls_height * 32.0f + tiles_rows * tile_height - tile_height/4.0f);
+    sf::Vector2f p1(0, walls_height * 32.0f - tile_height / 4.0f);
+    sf::Vector2f p2(tile_width / 2.0f + size.x / 4.0f * 32.0f, (walls_height + size.x / 8.0f) * 32.0f); //
+    sf::Vector2f p3(tile_width + size.x / 2.0f * 32.0f, walls_height * 32.0f - tile_height / 4.0f);
+    sf::Vector2f p4(tile_width + size.x / 2.0f * 32.0f, walls_height * 32.0f + tiles_rows * tile_height - tile_height / 4.0f);
+    sf::Vector2f p5(tile_width / 2.0f + size.x / 4.0f * 32.0f, (walls_height + size.x / 8.0f) * 32.0f + tiles_rows * tile_height); //
+    sf::Vector2f p6(0, walls_height * 32.0f + tiles_rows * tile_height - tile_height / 4.0f);
 
     sf::VertexArray left_quad(sf::Quads, 4);
     left_quad[0].position = p1;
@@ -214,12 +199,12 @@ void Building::loadTexture2(std::ifstream& file) {
     // even tiles
     for (float x = 0; x < tiles_columns; x += 2) {
         // bottom tiles
-        sf::Vector2f bottom_pos(x * tile_width, walls_height * 32.0f + x * tile_width/2);
+        sf::Vector2f bottom_pos(x * tile_width, walls_height * 32.0f + x * tile_width / 2);
         sf::VertexArray bottom_tile(sf::Quads, 4);
-        bottom_tile[0].position = sf::Vector2f(bottom_pos.x + tile_border, bottom_pos.y + tile_border - tile_height/4.0f);
-        bottom_tile[1].position = sf::Vector2f(bottom_pos.x + tile_width - tile_border, bottom_pos.y + tile_border + tile_height/8.0f);
-        bottom_tile[2].position = sf::Vector2f(bottom_pos.x + tile_width - tile_border, bottom_pos.y - tile_border + tile_height/2.0f + tile_height/8.0f);
-        bottom_tile[3].position = sf::Vector2f(bottom_pos.x + tile_border, bottom_pos.y - tile_border + tile_height/2.0f - tile_height/4.0f);
+        bottom_tile[0].position = sf::Vector2f(bottom_pos.x + tile_border, bottom_pos.y + tile_border - tile_height / 4.0f);
+        bottom_tile[1].position = sf::Vector2f(bottom_pos.x + tile_width - tile_border, bottom_pos.y + tile_border + tile_height / 8.0f);
+        bottom_tile[2].position = sf::Vector2f(bottom_pos.x + tile_width - tile_border, bottom_pos.y - tile_border + tile_height / 2.0f + tile_height / 8.0f);
+        bottom_tile[3].position = sf::Vector2f(bottom_pos.x + tile_border, bottom_pos.y - tile_border + tile_height / 2.0f - tile_height / 4.0f);
 
         bottom_tile[0].color = sf::Color(255, 255, 255, 196);
         bottom_tile[1].color = sf::Color(255, 255, 255, 196);
@@ -230,17 +215,17 @@ void Building::loadTexture2(std::ifstream& file) {
         bottom_tile[1].texCoords = sf::Vector2f(tile_width, 0);
         bottom_tile[2].texCoords = sf::Vector2f(tile_width, tile_height);
         bottom_tile[3].texCoords = sf::Vector2f(0, tile_height);
-            
+
         rtex.draw(bottom_tile, rstate);
 
         // center tiles
         for (float y = 1; y < tiles_rows; y += 1) {
-            sf::Vector2f quad_pos(x * tile_width, walls_height * 32.0f + y * tile_height - tile_height/2.0f + x * tile_width/2);
+            sf::Vector2f quad_pos(x * tile_width, walls_height * 32.0f + y * tile_height - tile_height / 2.0f + x * tile_width / 2);
             sf::VertexArray tile(sf::Quads, 4);
-            tile[0].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y + tile_border - tile_height/4.0f);
-            tile[1].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y + tile_border + tile_height/8.0f);
-            tile[2].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y - tile_border + tile_height + tile_height/8.0f);
-            tile[3].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y - tile_border + tile_height - tile_height/4.0f);
+            tile[0].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y + tile_border - tile_height / 4.0f);
+            tile[1].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y + tile_border + tile_height / 8.0f);
+            tile[2].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y - tile_border + tile_height + tile_height / 8.0f);
+            tile[3].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y - tile_border + tile_height - tile_height / 4.0f);
 
             tile[0].color = sf::Color(255, 255, 255, 196);
             tile[1].color = sf::Color(255, 255, 255, 196);
@@ -256,7 +241,7 @@ void Building::loadTexture2(std::ifstream& file) {
         }
 
         // top tiles
-        sf::Vector2f top_pos(x* tile_width, walls_height * 32.0f + tiles_rows * tile_height + x * tile_width / 2 - tile_height / 2.0f);
+        sf::Vector2f top_pos(x * tile_width, walls_height * 32.0f + tiles_rows * tile_height + x * tile_width / 2 - tile_height / 2.0f);
         sf::VertexArray top_tile(sf::Quads, 4);
 
         top_tile[0].position = sf::Vector2f(top_pos.x + tile_border, top_pos.y + tile_border - tile_height / 4.0f);
@@ -280,12 +265,12 @@ void Building::loadTexture2(std::ifstream& file) {
     // odd tiles
     for (float x = 1; x < tiles_columns; x += 2) {
         for (float y = 0; y < tiles_rows; y += 1) {
-            sf::Vector2f quad_pos(x * tile_width, walls_height * 32.0f + y * tile_height + x * tile_width/2.0f);
+            sf::Vector2f quad_pos(x * tile_width, walls_height * 32.0f + y * tile_height + x * tile_width / 2.0f);
 
             sf::VertexArray tile(sf::Quads, 4);
             tile[0].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y + tile_border - tile_height / 4.0f);
-            tile[1].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y + tile_border + tile_height/8.0f);
-            tile[2].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y - tile_border + tile_height + tile_height/8.0f);
+            tile[1].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y + tile_border + tile_height / 8.0f);
+            tile[2].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y - tile_border + tile_height + tile_height / 8.0f);
             tile[3].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y - tile_border + tile_height - tile_height / 4.0f);
 
             tile[0].color = sf::Color(255, 255, 255, 196);
@@ -305,14 +290,14 @@ void Building::loadTexture2(std::ifstream& file) {
     // RIGHT SIDE OF ROOF - ODD TILES
     for (float x = 0; x < tiles_columns; x += 2) {
         for (float y = 0; y < tiles_rows; y += 1) {
-            sf::Vector2f quad_pos(size.x/4.0f*32.0f + tile_width + x*tile_width, walls_height*32.0f + size.x/4.0f*16.0f + y*tile_height - x*tile_width/2.0f - tile_width/2.0f);
+            sf::Vector2f quad_pos(size.x / 4.0f * 32.0f + tile_width + x * tile_width, walls_height * 32.0f + size.x / 4.0f * 16.0f + y * tile_height - x * tile_width / 2.0f - tile_width / 2.0f);
             sf::VertexArray tile(sf::Quads, 4);
 
             tile[0].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y + tile_border + tile_height / 8.0f);
             tile[1].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y + tile_border - tile_height / 4.0f);
             tile[2].position = sf::Vector2f(quad_pos.x + tile_width - tile_border, quad_pos.y - tile_border + tile_height - tile_height / 4.0f);
             tile[3].position = sf::Vector2f(quad_pos.x + tile_border, quad_pos.y - tile_border + tile_height + tile_height / 8.0f);
-                
+
             tile[0].texCoords = sf::Vector2f(0, 0);
             tile[1].texCoords = sf::Vector2f(tile_width, 0);
             tile[2].texCoords = sf::Vector2f(tile_width, tile_height);
@@ -379,13 +364,13 @@ void Building::loadTexture2(std::ifstream& file) {
     sf::VertexArray beam(sf::Quads, 4);
     sf::Vector2f pos;
 
-    pos.x = size.x/2.f*16.0f + tile_width/2.0f;
-    pos.y = (walls_height + size.x/8.0f)*32.0f - tile_height/8.0f;
+    pos.x = size.x / 2.f * 16.0f + tile_width / 2.0f;
+    pos.y = (walls_height + size.x / 8.0f) * 32.0f - tile_height / 8.0f;
 
-    beam[0].position = sf::Vector2f(pos.x - tile_width/2.0f, pos.y);
-    beam[1].position = sf::Vector2f(pos.x + tile_width/2.0f, pos.y);
-    beam[2].position = sf::Vector2f(pos.x + tile_width/2.0f, pos.y + tiles_rows * tile_height);
-    beam[3].position = sf::Vector2f(pos.x - tile_width/2.0f, pos.y + tiles_rows * tile_height);
+    beam[0].position = sf::Vector2f(pos.x - tile_width / 2.0f, pos.y);
+    beam[1].position = sf::Vector2f(pos.x + tile_width / 2.0f, pos.y);
+    beam[2].position = sf::Vector2f(pos.x + tile_width / 2.0f, pos.y + tiles_rows * tile_height);
+    beam[3].position = sf::Vector2f(pos.x - tile_width / 2.0f, pos.y + tiles_rows * tile_height);
 
     for (short i = 0; i < 4; i++)
         beam[i].color = sf::Color::Black;
@@ -395,28 +380,28 @@ void Building::loadTexture2(std::ifstream& file) {
     // bottom tile
     sf::VertexArray tile(sf::Quads, 4);
     pos.x = size.x / 2.0f * 16.0f;
-    pos.y = (walls_height + size.x/8.0f)*32.0f;
-    tile[0].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_border - tile_height/8.0f);
-    tile[1].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_border - tile_height/8.0f);
-    tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height/2.0f - tile_border - tile_height/8.0f);
-    tile[3].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_height/2.0f - tile_border - tile_height/8.0f);
+    pos.y = (walls_height + size.x / 8.0f) * 32.0f;
+    tile[0].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_border - tile_height / 8.0f);
+    tile[1].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_border - tile_height / 8.0f);
+    tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height / 2.0f - tile_border - tile_height / 8.0f);
+    tile[3].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_height / 2.0f - tile_border - tile_height / 8.0f);
 
     for (short i = 0; i < 4; i++)
-        beam[i].color = sf::Color(128,128,128);
+        beam[i].color = sf::Color(128, 128, 128);
 
     for (short i = 0; i < 4; i++)
         tile[i].texCoords = beam[i].position;
-        
+
     rtex.draw(tile, rstate);
 
     // center tiles
-    for (float y = 0; y < tiles_rows-1; y += 1) {
-        pos.x = size.x/2.0f*16.0f;
-        pos.y = (walls_height+ size.x/8.0f)*32.0f + y*tile_height + tile_height/2.0f;
-        tile[0].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_border - tile_height/8.0f);
-        tile[1].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_border - tile_height/8.0f);
-        tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height - tile_border - tile_height/8.0f);
-        tile[3].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_height - tile_border - tile_height/8.0f);
+    for (float y = 0; y < tiles_rows - 1; y += 1) {
+        pos.x = size.x / 2.0f * 16.0f;
+        pos.y = (walls_height + size.x / 8.0f) * 32.0f + y * tile_height + tile_height / 2.0f;
+        tile[0].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_border - tile_height / 8.0f);
+        tile[1].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_border - tile_height / 8.0f);
+        tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height - tile_border - tile_height / 8.0f);
+        tile[3].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_height - tile_border - tile_height / 8.0f);
 
         for (short i = 0; i < 4; i++)
             tile[i].texCoords = beam[i].position;
@@ -426,7 +411,7 @@ void Building::loadTexture2(std::ifstream& file) {
 
     // top tile
     pos.x = size.x / 2.0f * 16.0f;
-    pos.y = (walls_height + size.x / 8.0f) * 32.0f + tiles_rows*tile_height - tile_height/2.0f;
+    pos.y = (walls_height + size.x / 8.0f) * 32.0f + tiles_rows * tile_height - tile_height / 2.0f;
     tile[0].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_border - tile_height / 8.0f);
     tile[1].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_border - tile_height / 8.0f);
     tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height / 2.0f - tile_border - tile_height / 8.0f);
@@ -438,15 +423,15 @@ void Building::loadTexture2(std::ifstream& file) {
     rtex.draw(tile, rstate);
 
     // BEAM UNDER ROOF
-       
-    // top-center quad
-    pos.x = size.x/2.f * 16.0f + tile_width/2.0f;
-    pos.y = (walls_height + size.x/8.0f)*32.0f - tile_height/8.0f;
 
-    beam[0].position = sf::Vector2f(pos.x - tile_width/2.0f, pos.y - tile_height/4.0f);
-    beam[1].position = sf::Vector2f(pos.x + tile_width/2.0f, pos.y - tile_height/4.0f);
-    beam[2].position = sf::Vector2f(pos.x + tile_width/2.0f, pos.y);
-    beam[3].position = sf::Vector2f(pos.x - tile_width/2.0f, pos.y);
+    // top-center quad
+    pos.x = size.x / 2.f * 16.0f + tile_width / 2.0f;
+    pos.y = (walls_height + size.x / 8.0f) * 32.0f - tile_height / 8.0f;
+
+    beam[0].position = sf::Vector2f(pos.x - tile_width / 2.0f, pos.y - tile_height / 4.0f);
+    beam[1].position = sf::Vector2f(pos.x + tile_width / 2.0f, pos.y - tile_height / 4.0f);
+    beam[2].position = sf::Vector2f(pos.x + tile_width / 2.0f, pos.y);
+    beam[3].position = sf::Vector2f(pos.x - tile_width / 2.0f, pos.y);
 
     for (short i = 0; i < 4; i++)
         beam[i].texCoords = beam[i].position;
@@ -454,10 +439,10 @@ void Building::loadTexture2(std::ifstream& file) {
     rtex.draw(beam, rstate);
 
     // top-left quad
-    beam[0].position = sf::Vector2f(pos.x - tiles_columns*tile_width - tile_width/2.0f, pos.y - size.x/4.0f*16.0f);
-    beam[1].position = sf::Vector2f(pos.x - tiles_columns*tile_width - tile_width/2.0f, pos.y - size.x/4.0f*16.0f-tile_height/4.0f);
-    beam[2].position = sf::Vector2f(pos.x-tile_width/2.0f, pos.y-tile_height/4.0f);
-    beam[3].position = sf::Vector2f(pos.x-tile_width/2.0f, pos.y);
+    beam[0].position = sf::Vector2f(pos.x - tiles_columns * tile_width - tile_width / 2.0f, pos.y - size.x / 4.0f * 16.0f);
+    beam[1].position = sf::Vector2f(pos.x - tiles_columns * tile_width - tile_width / 2.0f, pos.y - size.x / 4.0f * 16.0f - tile_height / 4.0f);
+    beam[2].position = sf::Vector2f(pos.x - tile_width / 2.0f, pos.y - tile_height / 4.0f);
+    beam[3].position = sf::Vector2f(pos.x - tile_width / 2.0f, pos.y);
 
     for (short i = 0; i < 4; i++)
         beam[i].texCoords = beam[i].position;
@@ -465,10 +450,10 @@ void Building::loadTexture2(std::ifstream& file) {
     rtex.draw(beam, rstate);
 
     // top-right quad
-    beam[0].position = sf::Vector2f(pos.x + tiles_columns*tile_width + tile_width/2.0f, pos.y - size.x/4.0f*16.0f - tile_height/4.0f);
-    beam[1].position = sf::Vector2f(pos.x + tiles_columns*tile_width + tile_width/2.0f, pos.y - size.x/4.0f*16.0f);
-    beam[2].position = sf::Vector2f(pos.x + tile_width/2.0f, pos.y);
-    beam[3].position = sf::Vector2f(pos.x + tile_width/2.0f, pos.y-tile_height/4.0f);
+    beam[0].position = sf::Vector2f(pos.x + tiles_columns * tile_width + tile_width / 2.0f, pos.y - size.x / 4.0f * 16.0f - tile_height / 4.0f);
+    beam[1].position = sf::Vector2f(pos.x + tiles_columns * tile_width + tile_width / 2.0f, pos.y - size.x / 4.0f * 16.0f);
+    beam[2].position = sf::Vector2f(pos.x + tile_width / 2.0f, pos.y);
+    beam[3].position = sf::Vector2f(pos.x + tile_width / 2.0f, pos.y - tile_height / 4.0f);
 
     for (short i = 0; i < 4; i++)
         beam[i].texCoords = beam[i].position;
@@ -479,16 +464,16 @@ void Building::loadTexture2(std::ifstream& file) {
     // SHADOWS UNDER THE ROOF
     // left shadow
     sf::VertexArray shadow(sf::Quads, 4);
-    shadow[0].position = sf::Vector2f(pos.x-size.x/4.0f*32.0f, pos.y - size.x/4.0f*16.0f);
-    shadow[1].position = sf::Vector2f(pos.x-size.x/4.0f*32.0f, pos.y - size.x/4.0f*16.0f - tile_height);
+    shadow[0].position = sf::Vector2f(pos.x - size.x / 4.0f * 32.0f, pos.y - size.x / 4.0f * 16.0f);
+    shadow[1].position = sf::Vector2f(pos.x - size.x / 4.0f * 32.0f, pos.y - size.x / 4.0f * 16.0f - tile_height);
     shadow[2].position = sf::Vector2f(pos.x, pos.y - tile_height);
     shadow[3].position = sf::Vector2f(pos.x, pos.y);
 
     for (short i = 0; i < 4; i++) {
-        shadow[i].color = sf::Color(0,0,0,64);
+        shadow[i].color = sf::Color(0, 0, 0, 64);
         shadow[i].texCoords = shadow[i].position;
     }
-            
+
     rtex.draw(shadow, rstate);
 
     // right shadow
@@ -548,13 +533,14 @@ void Building::loadTexture2(std::ifstream& file) {
     // create the sprite
     sprite = sf::Sprite();
     sprite.setTexture(*tex);
-    sprite.setOrigin(tex->getSize().x/2, tex->getSize().y);
+    sprite.setOrigin(tex->getSize().x / 2, tex->getSize().y);
     sprite.setPosition(position);
+
 }
 
 
-void Building::loadSize(std::ifstream& file)
-{
+void Building::loadSize(std::ifstream& file) {
+
     std::string line;
     std::string objectType;
 
@@ -562,6 +548,7 @@ void Building::loadSize(std::ifstream& file)
     std::istringstream lineStream(line);
     lineStream >> objectType;
     lineStream >> size.x >> size.y;
+
 }
 
 void Building::loadCollider()
@@ -570,32 +557,28 @@ void Building::loadCollider()
         delete colliders[0];
         colliders.clear();
     }
-            
-    colliders.push_back(new Collider(size.x * 16, size.y * 16, position, ColliderType::Rectangle));
+
+
+    colliders.push_back(new Collider(size.x * 16, size.y * 16, position, 0, 0, ColliderType::Rectangle));
     colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
 }
 
 void Building::loadDoor(std::ifstream& file) {
-
     std::string line;
-
     std::getline(file, line);
-
     if (_door != nullptr)
-    {
         delete _door;
-    }
-    _door = new Door(getPrefab("doors/door_0"), position.x, position.y);
+    _door = new Door(getPrefab("doors/wooden_door"), position.x, position.y);
 }
 
 void Building::loadWalls(std::ifstream& file) {
-        
+
     std::string line;
     std::string fragment;
 
     // top_walls
     std::getline(file, line);
-        
+
     size_t  start = line.find("\"");
     size_t end = line.find_last_of("\"");
     if (start != std::string::npos && end != std::string::npos && start < end)
@@ -704,7 +687,7 @@ void Building::loadGameObjects(std::ifstream& file) {
         }
 
         if (objectType == "Furniture") {
-            std::string name;
+            string name;
             short x, y, id;
 
             getline(lineStream, objectName, '"');
@@ -753,7 +736,7 @@ void Building::load() {
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        std::cout << "cant open building script: " << filename << "\n";
+        cout << "cant open building script: " << filename << "\n";
         return;
     }
 
@@ -782,12 +765,12 @@ void Building::loadWithPositioning()
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        std::cout << "cant open building script: " << filename << "\n";
+        cout << "cant open building script: " << filename << "\n";
         return;
     }
 
     loadName(file);
-        
+
     loadSize(file);
 
     position.x = size.x * 16 / 2;
@@ -816,12 +799,12 @@ void Building::save(std::string filename)
     std::ofstream file(filename);
 
     if (!file.is_open()) {
-        std::cout << "cant open file to save building: " << filename << "\n";
+        cout << "cant open file to save building: " << filename << "\n";
         return;
     }
 
     file << "name \"testBuilding\"\n";
-    file << "size " << std::to_string(floors->width) << " " << std::to_string(floors->height) << "\n";
+    file << "size " << to_string(floors->width) << " " << to_string(floors->height) << "\n";
     file << "door \"door_0\"\n";
 
     file << "\n";
@@ -864,7 +847,6 @@ void Building::save(std::string filename)
 
 
     file.close();
-
 }
 
 bool Building::isPart(GameObject* object) {
@@ -903,7 +885,6 @@ void Building::draw()
             window->draw(sprite);
         }
     }
-
 }
 
 std::vector < Building* > buildings;
@@ -929,7 +910,7 @@ void addGameObjectsToMainLists() {
     }
 }
 
-void removeGameObjectsFromMainLists() {
+void deleteGameObjectsFromMainLists() {
     // delete door
     auto itd = std::find(doors.begin(), doors.end(), building->_door);
     if (itd != doors.end())
@@ -975,13 +956,13 @@ void removeGameObjectsFromMainLists() {
 
 void createNewBuilding() {
     if (building) {
-        removeGameObjectsFromMainLists();   // TO-DO
+        // TO-DO - chyba jeszcze powinno byc czyszczenie głównych list - zrobić test pamięci
         delete building;
         building = nullptr;
     }
 
     clearAllMainListsOfGameObjects();
-    building = new Building(16, 16);
+    building = new Building(36, 40);
     terrain = new Terrain(0, 0, building->size.x, building->size.y);
     cam->setPosition(building->size.x * 16 / 2 + 160, building->size.y * 16 / 2);
 
@@ -989,7 +970,7 @@ void createNewBuilding() {
 
 void loadBuildingFromFile(std::string filename) {
     if (building) {
-        removeGameObjectsFromMainLists();   // TO-DO
+        deleteGameObjectsFromMainLists();   // TO-DO
         delete building;
         building = nullptr;
     }

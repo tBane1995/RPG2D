@@ -13,6 +13,8 @@ class ItemOnMap;
 class SingleTexture;
 class Wall;
 
+void clearAllMainListsOfGameObjects();
+
 class Building : public GameObject {
 public:
     sf::Vector2i size;
@@ -59,7 +61,6 @@ public:
     }
 
     virtual void mouseHovering() override;
-    void addGameObject(GameObject* object);
     void deleteGameObject(GameObject* object);
     bool playerInside();
 
@@ -97,7 +98,7 @@ extern std::vector < Building* > buildings;
 extern Building* building;
 
 void addGameObjectsToMainLists();
-void removeGameObjectsFromMainLists();
+void deleteGameObjectsFromMainLists();
 void createNewBuilding();
 void loadBuildingFromFile(std::string filename = "assets/buildings/test_building.building");
 void saveBuildingToFile(std::string filename = "assets/buildings/test_building.building");

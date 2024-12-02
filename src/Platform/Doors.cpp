@@ -6,19 +6,18 @@
 #include "Player.h"
 #include "Collisions.h"
 
-Door::Door(std::string name) : GameObject(name, 0, 0, 64, 16, 64, 12, 12) {
-		
+Door::Door(std::string name, float width, float length, float height, float width_left, float width_right) : GameObject(name, 0, 0, width, length, height, width_left, width_right) {
+
 	type = GameObjectType::Door;
 
 	state = doorState::close;
+	textures = getTexturesSet(name);
+	this->texture = textures[0];
+	current_frame = 0;
 
-	this->textureOpen = getSingleTexture("buildings/parts/door_open");
-	this->textureClose = getSingleTexture("buildings/parts/door_close");
-	this->texture = textureClose;
-		
 	sprite = sf::Sprite();
-	sprite.setTexture(*textureClose->texture);
-	sprite.setOrigin(textureClose->cx, textureClose->texture->getSize().y-1);
+	sprite.setTexture(*textures[0]->texture);
+	sprite.setOrigin(textures[0]->cx, textures[0]->texture->getSize().y - 1);
 
 	takeItTexture = getSingleTexture("GUI/hand");
 	takeItSprite = sf::Sprite();
@@ -26,24 +25,19 @@ Door::Door(std::string name) : GameObject(name, 0, 0, 64, 16, 64, 12, 12) {
 	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 	showHand = false;
 
-	colliders[0]->shape->setPosition(colliders[0]->position.x, colliders[0]->position.y-8);
-	colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y-8);
-	colliders[2]->shape->setPosition(colliders[2]->position.x, colliders[2]->position.y-8);
-
 }
 
 Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 
 	type = GameObjectType::Door;
-		
-	state = doorState::close;
 
-	this->textureClose = dynamic_cast<Door*>(object)->textureClose;
-	this->textureOpen = dynamic_cast<Door*>(object)->textureOpen;
-	this->texture = textureClose;
+	state = doorState::close;
+	textures = getTexturesSet(name);
+	this->texture = textures[0];
+	current_frame = 0;
 
 	sprite = sf::Sprite();
-	sprite.setTexture(*textureClose->texture);
+	sprite.setTexture(*textures[0]->texture);
 	sprite.setOrigin(dynamic_cast<Door*>(object)->sprite.getOrigin());
 	sprite.setPosition(position.x, position.y);
 
@@ -53,26 +47,21 @@ Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 	showHand = false;
 
-	colliders[0]->shape->setPosition(colliders[0]->position.x, colliders[0]->position.y - 8);
-	colliders[1]->shape->setPosition(colliders[1]->position.x, colliders[1]->position.y - 8);
-	colliders[2]->shape->setPosition(colliders[2]->position.x, colliders[2]->position.y - 8);
-
-	textname.setPosition(position.x, position.y - height);
+	textname.setPosition(position.x, position.y - height - 3);
 	takeItSprite.setPosition(position.x, position.y - 50);
 }
 
 void Door::open() {
-	startActionTime = currentTime;
 	state = doorState::opening;
-	delete colliders.back();
-	colliders.pop_back();
+	last_action_time = currentTime;
 }
 
 
 void Door::close() {
-	startActionTime = currentTime;
 	state = doorState::closing;
-	colliders.push_back(new Collider(sprite.getGlobalBounds().getSize().x, colliders[0]->length, sf::Vector2f(position.x, position.y), ColliderType::Rectangle));
+	float width = sprite.getGlobalBounds().getSize().x - colliders[0]->width - colliders[1]->width;
+	colliders.push_back(new Collider(width, colliders[0]->length, position, 0, -8, ColliderType::Rectangle));
+	last_action_time = currentTime;
 }
 
 bool Door::playerNextTo() {
@@ -107,22 +96,36 @@ bool Door::playerNextTo() {
 
 void Door::update(float dt) {
 
+	GameObject::update(dt);
+
 	(playerNextTo()) ? showHand = true : showHand = false;
 
 	if (state == doorState::opening) {
-		if ((currentTime - startActionTime).asSeconds() > 0.5f) {
-			state = doorState::open;
-			sprite.setTexture(*textureOpen->texture);
-			collisioning = false;
+
+		if ((currentTime - last_action_time).asSeconds() > 0.5f) {
+			current_frame += 1;
+			last_action_time = currentTime;
+			sprite.setTexture(*textures[current_frame]->texture);
+
+			if (current_frame == textures.size() - 1) {
+				state = doorState::open;
+				delete colliders.back();
+				colliders.pop_back();
+			}
 		}
+
 	}
 
 	if (state == doorState::closing) {
-		if ((currentTime - startActionTime).asSeconds() > 0.5f) {
-			state = doorState::close;
-			sprite.setTexture(*textureClose->texture);
+		if ((currentTime - last_action_time).asSeconds() > 0.5f) {
+			current_frame -= 1;
+			last_action_time = currentTime;
+			sprite.setTexture(*textures[current_frame]->texture);
 
-		} 
+			if (current_frame == 0) {
+				state = doorState::close;
+			}
+		}
 	}
 
 }
@@ -130,6 +133,9 @@ void Door::update(float dt) {
 void Door::draw() {
 	if (mouseIsHover)
 		GameObject::draw();
+
+	for (auto& col : colliders)
+		window->draw(*col->shape);
 
 	window->draw(sprite);
 

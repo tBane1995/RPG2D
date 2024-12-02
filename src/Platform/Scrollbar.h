@@ -30,6 +30,7 @@ public:
     //////////////////////////////////////
 
     Scrollbar(sf::Vector2f size, sf::Vector2f position, float minValue, float maxValue, float scrollValue, float scrollLength);
+    Scrollbar(sf::Vector2f size, float minValue, float maxValue, float scrollValue, float scrollLength);
 
     ~Scrollbar() {
 
@@ -37,7 +38,8 @@ public:
 
     void setValue(int value);
     float getScrollHeight();
-
+    void setPosition(sf::Vector2f position);
+    void update();
     void update(sf::Event& event);
     void draw();
 };

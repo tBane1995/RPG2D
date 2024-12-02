@@ -15,8 +15,13 @@ Player::Player() : GameObject("hero", 0, 0, 24, 12, 64, true, ColliderType::Elip
 	cooldown = 0.0f;
 	attackTime = 0.7f;
 
-	position.x = 950;
-	position.y = 1200 - 512;
+	//position.x = 950;
+	//position.y = 1200 - 512;
+
+	// TO-DO - to delete
+	position.x = 1543;
+	position.y = 800;
+	//
 
 	isVisible = true;
 	isInTheMainList = true;
@@ -28,14 +33,14 @@ Player::Player() : GameObject("hero", 0, 0, 24, 12, 64, true, ColliderType::Elip
 	STRENGTH = 5;
 	DEXTERITY = 5;
 	INTELLIGENCE = 5;
-		
+
 	LEVEL = 0;
 	EXPERIENCE = 0;
 	EXPERIENCE_TO_NEXT_LEVEL = 50;
 	SKILL_POINTS = 0;
 
 	body = "sets/body/boy-brownhaired";
-		
+
 	bag = new Inventory(-1);
 	/*
 	bag->addItem("items/torn shirt");
@@ -86,7 +91,7 @@ Player::Player() : GameObject("hero", 0, 0, 24, 12, 64, true, ColliderType::Elip
 	loadPants();
 	loadRightHand();
 	loadLeftHand();
-		
+
 
 	setActionRangeArea();
 }
@@ -168,7 +173,7 @@ void Player::loadArmor() {
 	}
 
 	if (armor != nullptr) {
-		
+
 		for (short i = 0; i < 4; i++) {
 			armorIdleTextures[i] = getSingleTexture("sets/" + armor->name + "/idleTop" + std::to_string(i));
 			armorIdleTextures[4 + i] = getSingleTexture("sets/" + armor->name + "/idleRight" + std::to_string(i));
@@ -375,7 +380,7 @@ void Player::gainEXP(short EXP) {
 }
 
 bool Player::levelUp() {
-		
+
 	short LEVEL_SCALAR = 2;
 
 	if (EXPERIENCE >= EXPERIENCE_TO_NEXT_LEVEL) {
@@ -384,8 +389,8 @@ bool Player::levelUp() {
 		HP_FULL += 40;
 		EXPERIENCE_TO_NEXT_LEVEL *= LEVEL_SCALAR;
 		SKILL_POINTS += 5;
-		
-		hits->addHitText(sf::Vector2f(position.x, position.y-height), "lvl up!");
+
+		hits->addHitText(sf::Vector2f(position.x, position.y - height), "lvl up!");
 		return true;
 	}
 
@@ -397,7 +402,7 @@ void Player::update(float dt) {
 	float distance = 20.0f * stepSize * dt;
 
 	if (state == unitStates::attack) {
-		
+
 		if (cooldown <= 0.0f)
 		{
 			state = unitStates::idle;
@@ -408,14 +413,14 @@ void Player::update(float dt) {
 			frame = 0;
 
 		bodySprite.setTexture(*bodyAttackTextures[direction * 4 + frame]->texture);
-			
-		if(helmet!=nullptr)
+
+		if (helmet != nullptr)
 			helmetSprite.setTexture(*helmetAttackTextures[direction * 4 + frame]->texture);
-			
-		if(armor!=nullptr)
+
+		if (armor != nullptr)
 			armorSprite.setTexture(*armorAttackTextures[direction * 4 + frame]->texture);
-			
-		if(pants!=nullptr)
+
+		if (pants != nullptr)
 			pantsSprite.setTexture(*pantsAttackTextures[direction * 4 + frame]->texture);
 
 		if (rightHand != nullptr)
@@ -423,7 +428,7 @@ void Player::update(float dt) {
 
 		if (leftHand != nullptr)
 			leftHandSprite.setTexture(*leftHandAttackTextures[direction * 4 + frame]->texture);
-	}		
+	}
 	else if (state == unitStates::run) {
 
 		calculateCurrentFrame(dt);
@@ -435,37 +440,37 @@ void Player::update(float dt) {
 		if (direction == 3) position.x -= distance;
 
 		bodySprite.setTexture(*bodyRunTextures[direction * 4 + frame]->texture);
-			
-		if(helmet!=nullptr)
+
+		if (helmet != nullptr)
 			helmetSprite.setTexture(*helmetRunTextures[direction * 4 + frame]->texture);
-			
-		if(armor!=nullptr)
+
+		if (armor != nullptr)
 			armorSprite.setTexture(*armorRunTextures[direction * 4 + frame]->texture);
-			
-		if(pants!=nullptr)
+
+		if (pants != nullptr)
 			pantsSprite.setTexture(*pantsRunTextures[direction * 4 + frame]->texture);
 
 		if (rightHand != nullptr)
 			rightHandSprite.setTexture(*rightHandRunTextures[direction * 4 + frame]->texture);
-			
+
 		if (leftHand != nullptr)
 			leftHandSprite.setTexture(*leftHandRunTextures[direction * 4 + frame]->texture);
 
 	}
-	else if(state == unitStates::idle) {
+	else if (state == unitStates::idle) {
 
 		calculateCurrentFrame(dt);
-		bodySprite.setTexture(*bodyIdleTextures[direction * 4 +frame]->texture);
-			
-		if(helmet!=nullptr)
-			helmetSprite.setTexture(*helmetIdleTextures[direction * 4 +frame]->texture);
-			
-		if(armor!=nullptr)
-			armorSprite.setTexture(*armorIdleTextures[direction * 4 +frame]->texture);
-			
-		if(pants!=nullptr)
-			pantsSprite.setTexture(*pantsIdleTextures[direction * 4 +frame]->texture);
-			
+		bodySprite.setTexture(*bodyIdleTextures[direction * 4 + frame]->texture);
+
+		if (helmet != nullptr)
+			helmetSprite.setTexture(*helmetIdleTextures[direction * 4 + frame]->texture);
+
+		if (armor != nullptr)
+			armorSprite.setTexture(*armorIdleTextures[direction * 4 + frame]->texture);
+
+		if (pants != nullptr)
+			pantsSprite.setTexture(*pantsIdleTextures[direction * 4 + frame]->texture);
+
 		if (rightHand != nullptr)
 			rightHandSprite.setTexture(*rightHandIdleTextures[direction * 4 + frame]->texture);
 
@@ -477,15 +482,15 @@ void Player::update(float dt) {
 		cooldown -= dt;
 
 	bodySprite.setPosition(position);
-		
+
 	helmetSprite.setPosition(position);
 	armorSprite.setPosition(position);
 	pantsSprite.setPosition(position);
 	rightHandSprite.setPosition(position);
 	leftHandSprite.setPosition(position);
-		
+
 	actionRangeArea.setPosition(position);
-		
+
 }
 
 void Player::draw() {
@@ -493,7 +498,9 @@ void Player::draw() {
 		window->draw(actionRangeArea);
 		GameObject::draw();
 	}
-		
+
+	window->draw(*colliders[0]->shape);	// TO-DO - to delete
+
 	if (direction == 0) {
 		// TOP
 		window->draw(rightHandSprite);
@@ -507,7 +514,7 @@ void Player::draw() {
 
 	if (direction == 1) {
 		// RIGHT
-			
+
 		window->draw(leftHandSprite);
 		window->draw(bodySprite);
 		window->draw(helmetSprite);
@@ -534,9 +541,9 @@ void Player::draw() {
 		window->draw(pantsSprite);
 		window->draw(armorSprite);
 		window->draw(leftHandSprite);
-			
+
 	}
-		
+
 }
 
 Player* player = nullptr;
@@ -551,7 +558,7 @@ void createPlayer() {
 	//player->DEXTERITY += 4;
 
 	//player->SKILL_POINTS -= 12;
-	
+
 	player->gainEXP(40);
 	player->HP = 10;
 }

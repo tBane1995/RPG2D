@@ -60,10 +60,10 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
 
 			// searching - exist doubles or no
 			bool existed = false;
-			
+
 			for (short i = 0; i < singleTextures.size(); i++) {
 				sf::Image img = singleTextures[i]->texture->copyToImage();
-				
+
 				if (areImagesEqual(tile, img)) {
 					existed = true;
 					//cout << "exits now\n";
@@ -73,8 +73,8 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
 
 			// if no exist then add
 			if (existed == false) {
-				SingleTexture* new_texture = new SingleTexture(pathfile + "_" + std::to_string(counter), tile);
-				//cout << "created texture: " << pathfile + "_" + std::to_string(counter) << "\n";
+				SingleTexture* new_texture = new SingleTexture(pathfile + "_" + to_string(counter), tile);
+				//cout << "created texture: " << pathfile + "_" + to_string(counter) << "\n";
 				singleTextures.push_back(new_texture);
 
 				counter += 1;
@@ -95,7 +95,7 @@ void loadTextures() {
 	loadSingleTexture("noise2.png", 256, 256);
 	loadSingleTexture("empty.png", 32, 32);
 
- 	// GUI ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// GUI ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	loadSingleTexture("GUI/slot1.png", 40, 40);
 	loadSingleTexture("GUI/slot2.png", 32, 32);
@@ -206,7 +206,7 @@ void loadTextures() {
 
 
 	// SMALL OBJECTS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	loadSingleTexture("smallObjects/grass1.png", 33, 32);
 	loadSingleTexture("smallObjects/grass2.png", 33, 32);
 	loadSingleTexture("smallObjects/grass3.png", 33, 32);
@@ -215,7 +215,6 @@ void loadTextures() {
 
 	loadSingleTexture("objects/palisade.png", 16, 112);
 	loadSingleTexture("objects/palisade.png", 16, 112);
-	loadSingleTexture("objects/wooden_gate.png", 64, 112);
 	loadSingleTexture("objects/stone_wall.png", 8, 56);
 	loadSingleTexture("objects/great_stone_wall.png", 16, 112);
 	loadSingleTexture("objects/great_gate.png", 32, 112);
@@ -226,7 +225,7 @@ void loadTextures() {
 	loadSingleTexture("objects/pile_of_wood.png", 64, 80);
 
 	loadTextureSets("objects/brazier", 64, 64);
-	
+
 	// FLAT OBJECTS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	loadSingleTexture("flatObjects/stonepath1.png", 32, 32);
@@ -246,7 +245,7 @@ void loadTextures() {
 	loadSingleTexture("flatObjects/small_rock8.png", 16, 16);
 
 	// ITEMS ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	loadSingleTexture("items/bag.png", 28, 48);
 
 	// WEAPONS
@@ -306,11 +305,16 @@ void loadTextures() {
 
 	// DOORS ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	loadSingleTexture("doors/door_close.png", 32, 32);
-	loadSingleTexture("doors/door_open.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_0.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_1.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_2.png", 32, 32);
+	loadSingleTexture("doors/wooden_door_3.png", 32, 32);
+
+	loadSingleTexture("doors/wooden_gate_close.png", 64, 112);
+	loadSingleTexture("doors/wooden_gate_open.png", 64, 112);
 
 	// MONSTERS
-	std::vector < std::string > monsters;
+	std::vector < string > monsters;
 
 	monsters.push_back("dziobak");
 	monsters.push_back("goblin");
@@ -328,24 +332,24 @@ void loadTextures() {
 
 			loadSingleTexture("monsters/" + m + ".png", 63, 87);
 
-			loadSingleTexture("monsters/" + m + "/idleTop" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/idleRight" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/idleBottom" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/idleLeft" + std::to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/idleTop" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/idleRight" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/idleBottom" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/idleLeft" + to_string(i) + ".png", 63, 87);
 
-			loadSingleTexture("monsters/" + m + "/attackTop" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/attackRight" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/attackBottom" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/attackLeft" + std::to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/attackTop" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/attackRight" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/attackBottom" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/attackLeft" + to_string(i) + ".png", 63, 87);
 
-			loadSingleTexture("monsters/" + m + "/runTop" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/runRight" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/runBottom" + std::to_string(i) + ".png", 63, 87);
-			loadSingleTexture("monsters/" + m + "/runLeft" + std::to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/runTop" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/runRight" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/runBottom" + to_string(i) + ".png", 63, 87);
+			loadSingleTexture("monsters/" + m + "/runLeft" + to_string(i) + ".png", 63, 87);
 
 		}
 	}
-	
+
 	// FURNITURES
 	loadSingleTexture("furnitures/table.png", 32, 32);
 	loadSingleTexture("furnitures/table_alchemist.png", 32, 32);
@@ -377,10 +381,10 @@ void loadTextures() {
 	loadTextureSets("walls/set_wooden_wall", 32, 32);
 	loadTextureSets("walls/set_brick_wall", 32, 32);
 	loadTextureSets("walls/set_mulch_wall", 32, 32);
-	
+
 
 	// BODY SETS
-	std::vector < std::string > bodySets;
+	std::vector < string > bodySets;
 	bodySets.clear();
 	bodySets.push_back("boy-redhaired");		// face without beard
 	bodySets.push_back("boy-blackhaired");		// face without beard
@@ -393,32 +397,32 @@ void loadTextures() {
 	bodySets.push_back("woman-redhaired");		// face with long hair
 	bodySets.push_back("woman-blackhaired");	// face with long hair
 	bodySets.push_back("woman-brownhaired");	// face with long hair
-	
-	
+
+
 	for (auto& set : bodySets) {
 		for (short i = 0; i < 4; i++) {
 
-			loadSingleTexture("sets/body/" + set + "/idleTop" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/idleRight" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/idleBottom" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/idleLeft" + std::to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/idleTop" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/idleRight" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/idleBottom" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/idleLeft" + to_string(i) + ".png", 32, 58);
 
-			loadSingleTexture("sets/body/" + set + "/runTop" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/runRight" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/runBottom" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/runLeft" + std::to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/runTop" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/runRight" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/runBottom" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/runLeft" + to_string(i) + ".png", 32, 58);
 
-			loadSingleTexture("sets/body/" + set + "/attackTop" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/attackRight" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/attackBottom" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/body/" + set + "/attackLeft" + std::to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/attackTop" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/attackRight" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/attackBottom" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/body/" + set + "/attackLeft" + to_string(i) + ".png", 32, 58);
 
 		}
 	}
-	
+
 
 	// ITEMS SETS
-	std::vector < std::string > itemSets;
+	std::vector < string > itemSets;
 	itemSets.clear();
 	itemSets.push_back("skin jacket");
 	itemSets.push_back("skin pants");
@@ -450,21 +454,21 @@ void loadTextures() {
 	for (auto& set : itemSets) {
 
 		for (short i = 0; i < 4; i++) {
-			
-			loadSingleTexture("sets/items/" + set + "/idleTop" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/idleRight" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/idleBottom" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/idleLeft" + std::to_string(i) + ".png", 32, 58);
 
-			loadSingleTexture("sets/items/" + set + "/runTop" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/runRight" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/runBottom" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/runLeft" + std::to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/idleTop" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/idleRight" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/idleBottom" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/idleLeft" + to_string(i) + ".png", 32, 58);
 
-			loadSingleTexture("sets/items/" + set + "/attackTop" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/attackRight" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/attackBottom" + std::to_string(i) + ".png", 32, 58);
-			loadSingleTexture("sets/items/" + set + "/attackLeft" + std::to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/runTop" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/runRight" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/runBottom" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/runLeft" + to_string(i) + ".png", 32, 58);
+
+			loadSingleTexture("sets/items/" + set + "/attackTop" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/attackRight" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/attackBottom" + to_string(i) + ".png", 32, 58);
+			loadSingleTexture("sets/items/" + set + "/attackLeft" + to_string(i) + ".png", 32, 58);
 
 		}
 	}
@@ -506,7 +510,7 @@ std::vector < SingleTexture* > getTexturesSet(std::string name) {
 		if (tex->name.find(name) != std::string::npos)
 			texture_set.push_back(tex);
 
-	if( texture_set.empty())
+	if (texture_set.empty())
 		std::cout << "error - get Texture Set - Texture Set: \"" << name << "\" is empty\n";
 
 	return texture_set;

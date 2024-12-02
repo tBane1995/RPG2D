@@ -192,7 +192,7 @@ void game() {
 
                     mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
                     worldMousePosition = window->mapPixelToCoords(mousePosition);	// Zamień na współrzędne świata, uwzględniając aktualny widok
-                    std::cout << "cursor at " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
+                    cout << "cursor at " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
 
                     Point start(player->position.x, player->position.y);
                     Point goal(worldMousePosition.x, worldMousePosition.y);
@@ -203,7 +203,7 @@ void game() {
                     for (const Point& p : path)
                         std::cout << "(" << p.x << ", " << p.y << ") ";
 
-                    std::cout << "\n\n";
+                    cout << "\n\n";
 
                 }
             }
@@ -223,7 +223,7 @@ void game() {
         } // events
 
         // UPDATES
-        //std::cout << "cursor at: " << sf::Mouse::getPosition(*window).x << "," << sf::Mouse::getPosition(*window).y << endl;
+        //cout << "cursor at: " << sf::Mouse::getPosition(*window).x << "," << sf::Mouse::getPosition(*window).y << endl;
 
 
         if (gameState == gameStates::game) {
@@ -385,7 +385,7 @@ bool playerAttack() {
                     // TO-DO - must be dependent on the monster's height
                     int damage = m->takeDamage(player->getDamage());
                     
-                    hits->addHitText(hitPosition, std::to_string(damage));
+                    hits->addHitText(hitPosition, to_string(damage));
                 }
                 else {
                     // TO-DO - hits->addHitText(m->position, 0);
@@ -594,38 +594,129 @@ void attack(Unit* attacker, Unit* defender) {
 }
 
 void coverOutsideIfPlayerInBuilding() {
-    for (auto& b : buildings) {
-        if (b->playerInside()) {
 
-            float x1, x2, y1, y2;
-            x1 = b->position.x - b->size.x / 2 * 16;
-            x2 = b->position.x + b->size.x / 2 * 16;
-            y1 = b->position.y - b->size.y * 16;
-            y2 = b->position.y;
+    Building* building = nullptr;
 
-            sf::RectangleShape rectTop(sf::Vector2f(screenWidth, y1 - cam->position.y + screenHeight / 2));
-            rectTop.setFillColor(sf::Color::Black);
-            rectTop.setPosition(cam->position.x - screenWidth / 2, cam->position.y - screenHeight / 2);
-            window->draw(rectTop);
+    for (auto& b : buildings)
+        if (b->playerInside())
+            building = b;
 
-            sf::RectangleShape rectBottom(sf::Vector2f(screenWidth, cam->position.y + screenHeight / 2 - y2));
-            rectBottom.setFillColor(sf::Color::Black);
-            rectBottom.setPosition(cam->position.x - screenWidth / 2, y2);
-            window->draw(rectBottom);
+    if (building != nullptr) {
+        float x1, x2, y1, y2;
+        x1 = building->position.x - building->size.x / 2 * 16;
+        x2 = building->position.x + building->size.x / 2 * 16;
+        y1 = building->position.y - building->size.y * 16;
+        y2 = building->position.y;
 
-            sf::RectangleShape rectLeft(sf::Vector2f(x1 - cam->position.x + screenWidth / 2, y2 - y1));
-            rectLeft.setFillColor(sf::Color::Black);
-            rectLeft.setPosition(cam->position.x - screenWidth / 2, y1);
-            window->draw(rectLeft);
+        // OUTER MASK
+        sf::RenderTexture outside_mask;
+        outside_mask.create(screenWidth, screenHeight);
 
-            sf::RectangleShape rectRight(sf::Vector2f(cam->position.x + screenWidth / 2 - x2, y2 - y1));
-            rectRight.setFillColor(sf::Color::Black);
-            rectRight.setPosition(x2, y1);
-            window->draw(rectRight);
+        sf::RectangleShape rectTop(sf::Vector2f(screenWidth, screenHeight/2-(cam->position.y-y1)));
+        rectTop.setFillColor(sf::Color::Black);
+        rectTop.setPosition(0,0);
+        outside_mask.draw(rectTop);
 
+        sf::RectangleShape rectBottom(sf::Vector2f(screenWidth, screenHeight/2-(y2-cam->position.y)));
+        rectBottom.setFillColor(sf::Color::Black);
+        rectBottom.setPosition(0, y2-cam->position.y+screenHeight/2.0f);
+        outside_mask.draw(rectBottom);
+        
+        sf::RectangleShape rectLeft(sf::Vector2f(screenWidth/2-(cam->position.x-x1), y2 - y1));
+        rectLeft.setFillColor(sf::Color::Black);
+        rectLeft.setPosition(0, y1-cam->position.y+screenHeight/2.0f);
+        outside_mask.draw(rectLeft);
+
+        sf::RectangleShape rectRight(sf::Vector2f(screenWidth/2-(x2-cam->position.x), y2 - y1));
+        rectRight.setFillColor(sf::Color::Black);
+        rectRight.setPosition(x2-cam->position.x+screenWidth/2.0f, y1-cam->position.y+screenHeight/2.0f);
+        outside_mask.draw(rectRight);
+
+        // CENTER MASK
+        sf::Image center_mask_image;
+        center_mask_image.create(building->size.x*16, building->size.y*16, sf::Color::Black);
+
+        float xx, yy;
+        int tex_wdt, tex_hgh;
+
+        for (auto& wall : building->_walls) {
+            
+            tex_hgh = wall->texture->texture->getSize().y;
+            tex_wdt = wall->texture->texture->getSize().x;
+
+            for (int y = 0; y < tex_hgh; y++) {
+                for (int x = 0; x < tex_wdt; x++) {
+                    
+                    xx = building->size.x/2*16 - building->position.x + wall->position.x - tex_wdt/2 + x;
+                    yy = building->position.y - wall->position.y - tex_hgh/2 + y;
+                    
+                    if (xx >= 0 && xx < center_mask_image.getSize().x && yy >= 0 && yy < center_mask_image.getSize().y)
+                        center_mask_image.setPixel(xx, center_mask_image.getSize().y -1-yy, sf::Color(0, 0, 0, 0));
+                }
+            }
         }
+
+        for (auto& fur : building->_furnitures) {
+
+            tex_hgh = fur->texture->texture->getSize().y;
+            tex_wdt = fur->texture->texture->getSize().x;
+
+            for (int y = 0; y < tex_hgh; y++) {
+                for (int x = 0; x < tex_wdt; x++) {
+
+                    xx = building->size.x/2*16 - building->position.x + fur->position.x - tex_wdt/2 + x;
+                    yy = building->position.y - fur->position.y - tex_hgh / 2 + y;
+                    
+                    if(xx >= 0 && xx < center_mask_image.getSize().x && yy >= 0 && yy < center_mask_image.getSize().y)
+                        center_mask_image.setPixel(xx, center_mask_image.getSize().y - 1 - yy, sf::Color(0, 0, 0, 0));
+                }
+            }
+        }
+
+        for (short i = 0; i < building->floors->floors.size();i++) {
+
+            if (building->floors->floors[i] > 0) {
+                tex_hgh = 16;
+                tex_wdt = 16;
+
+                for (int y = 0; y < tex_hgh; y++) {
+                    for (int x = 0; x < tex_wdt; x++) {
+
+                        xx = (i % building->floors->width) * tex_wdt + x;
+                        yy = (i / building->floors->width) * tex_hgh + y;
+
+                        if (xx >= 0 && xx < center_mask_image.getSize().x && yy >= 0 && yy < center_mask_image.getSize().y)
+                            center_mask_image.setPixel(xx, center_mask_image.getSize().y - 1 - yy, sf::Color(0, 0, 0, 0));
+                    }
+                }
+            }
+        }
+
+
+        sf::Texture center_mask_texture;
+        center_mask_texture.loadFromImage(center_mask_image);
+        
+        sf::Sprite center_mask_sprite(center_mask_texture);
+        sf::Vector2f pos;
+        pos.x = building->position.x - cam->position.x + screenWidth/2.0f - building->size.x/2*16;
+        pos.y = building->position.y - cam->position.y + screenHeight/2.0f - building->size.y*16;
+        center_mask_sprite.setPosition(pos);
+
+        outside_mask.draw(center_mask_sprite);
+
+        outside_mask.display();
+
+        sf::Sprite spr(outside_mask.getTexture());
+
+        
+        pos.x = cam->position.x - screenWidth/2.0f;
+        pos.y = cam->position.y - screenHeight/2.0f;
+        spr.setPosition(pos);
+        window->draw(spr);
     }
+
 }
+
 
 
 void gameEvents() {

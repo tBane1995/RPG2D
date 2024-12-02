@@ -5,5 +5,6 @@
 class GameObject;
 
 extern std::vector < GameObject* > prefabs;
+
 GameObject* getPrefab(std::string name);
 void loadPrefabs();

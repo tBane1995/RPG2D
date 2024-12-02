@@ -7,12 +7,12 @@
 
 class SingleTexture;
 
-enum class GameObjectType { 
-	GameObject, 
+enum class GameObjectType {
+	GameObject,
 	Nature, Object,
-	Unit, Monster, Character, Player, 
-	ItemOnMap, InventoryOnMap, 
-	FlatObject, SmallObject, 
+	Unit, Monster, Character, Player,
+	ItemOnMap, InventoryOnMap,
+	FlatObject, SmallObject,
 	Terrain, Floor, Water,
 	Door, Furniture, Wall, Building
 };
@@ -25,12 +25,14 @@ public:
 	float width;
 	float length;
 	sf::Vector2f position;
+	float dx, dy;
 	ColliderType type;
 	sf::Shape* shape;
-	
 
-	Collider(float width, float length, sf::Vector2f position, ColliderType type);
+
+	Collider(float width, float length, sf::Vector2f position, float dx, float dy, ColliderType type);
 	Collider(Collider* col);
+	Collider(Collider* col, sf::Vector2f position);
 
 	~Collider() {
 		delete shape;	// sf::Shape* shape
@@ -38,7 +40,7 @@ public:
 
 	void setPosition(sf::Vector2f position) {
 		this->position = position;
-		shape->setPosition(this->position);
+		shape->setPosition(this->position.x + this->dx, this->position.y + this->dy);
 	}
 
 	void draw();
@@ -51,13 +53,13 @@ public:
 	sf::Vector2f position;
 	float height;
 	SingleTexture* texture;
-	
+
 	std::vector < Collider* > colliders;
 	sf::Text textname;
 
 	bool collisioning;	// check the collision
 	bool mouseIsHover;	// mouse is on GameObject
-	bool isVisible;		
+	bool isVisible;
 	bool isSelected;
 	bool isInTheMainList;
 
@@ -74,6 +76,7 @@ public:
 	void createTextname();
 	virtual void mouseHovering();
 	virtual void update(float dt) { 
+		// TO-DO
 		createTextname();
 	}
 	virtual void updateStatistic(float dt);

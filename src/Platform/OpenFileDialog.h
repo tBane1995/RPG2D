@@ -16,20 +16,35 @@ bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_
 class OpenFileDialog : public Dialog {
 public:
     sf::Vector2f position = sf::Vector2f(0, 0);
+
     sf::RectangleShape rect;        // main big panel
-    sf::RectangleShape titlebar;    // 
-    TextArea* titleText;            //  
-    sf::RectangleShape submitbar;   // 
-    TextArea* filenameText;         // "Filename" text
-    TextArea* selectedFilenameText; // selected filename
-    ButtonWithText* submitButton;       // 
+    float rect_width;
+    float rect_height;
+    float margin_vert;
+    float margin_hor;
+    float line_height;
+
+    // title bar
+    sf::RectangleShape titlebar;
+    TextArea* titleText;
+
+    // filenames 
+    sf::RectangleShape filenamesRect;
+    sf::Sprite icons[7];
+    sf::RectangleShape filenamesRects[7];
+    TextArea* filenames[7];
+
+    // submit bar
+    sf::RectangleShape submitbar;
+    TextArea* filenameInfo;
+    sf::RectangleShape selectedFilenameRect;
+    TextArea* selectedFilenameText;
+
+    ButtonWithText* selectButton;
+    ButtonWithText* cancelButton;
 
     std::filesystem::path current_path;                     // current path of directory  
     std::vector < std::filesystem::directory_entry > paths; // list of paths
-
-    sf::RectangleShape textField[7];    // text Field - rects
-    TextArea* texts[7];                 // texts - filenames
-    sf::Sprite icons[7];                // icons
 
     Scrollbar* scrollbar;   // scrollbar          
     bool fileSelected;      // if "submit button" pressed is true
@@ -37,9 +52,10 @@ public:
     OpenFileDialog(std::wstring title);
     ~OpenFileDialog();
 
-    void clearTexts();
-    void loadScrollbar();
     void loadDirectory();
+    void loadScrollbar();
+    void createFilenamesTexts();
+    void setFilenamesTexts();
 
     std::string getPathfile();
 

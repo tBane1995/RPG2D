@@ -11,16 +11,16 @@ class SingleTexture;
 
 class Door : public GameObject {
 public:
-	SingleTexture* textureOpen;
-	SingleTexture* textureClose;
+	std::vector < SingleTexture* > textures;
 	sf::Sprite sprite;
-	sf::Time startActionTime;
+	sf::Time last_action_time;
+	short current_frame;
 	doorState state;
 	SingleTexture* takeItTexture;
 	sf::Sprite takeItSprite;
 	bool showHand;
 
-	Door(std::string name);
+	Door(std::string name, float width, float length, float height, float width_left, float width_right);
 	Door(GameObject* object, float x, float y);
 
 	virtual ~Door() {
@@ -37,7 +37,6 @@ public:
 	}
 
 	virtual void update(float dt) override;
-
 	virtual void draw() override;
 };
 
