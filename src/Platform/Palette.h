@@ -53,38 +53,38 @@ public:
     std::vector < ButtonWithImage* > toolsButtons;
     std::vector < PaletteButton* > paletteButtons;
 
-    ButtonWithImage* selectedGroupButton;
-    ButtonWithImage* selectedToolButton;
-    PaletteButton* selectedPaletteButton;
+    ButtonWithImage* selectedGroupButton = nullptr;
+    ButtonWithImage* selectedToolButton = nullptr;
+    PaletteButton* selectedPaletteButton = nullptr;
 
-    ButtonWithImage* buttonUp;
-    ButtonWithImage* buttonDown;
+    ButtonWithImage* buttonUp = nullptr;
+    ButtonWithImage* buttonDown = nullptr;
 
     short scroll;
 
-    ButtonWithImage* btnGroupEmpty;
-    ButtonWithImage* btnGroupTerrain;
-    ButtonWithImage* btnGroupFloors;
-    ButtonWithImage* btnGroupWater;
-    ButtonWithImage* btnGroupFurnitures;
-    ButtonWithImage* btnGroupWalls;
-    ButtonWithImage* btnGroupMonsters;
-    ButtonWithImage* btnGroupFlatObjects;
-    ButtonWithImage* btnGroupItems;
-    ButtonWithImage* btnGroupNatures;
-    ButtonWithImage* btnGroupSmallObjects;
-    ButtonWithImage* btnGroupObjects;
+    ButtonWithImage* btnGroupEmpty = nullptr;
+    ButtonWithImage* btnGroupTerrain = nullptr;
+    ButtonWithImage* btnGroupFloors = nullptr;
+    ButtonWithImage* btnGroupWater = nullptr;
+    ButtonWithImage* btnGroupFurnitures = nullptr;
+    ButtonWithImage* btnGroupWalls = nullptr;
+    ButtonWithImage* btnGroupMonsters = nullptr;
+    ButtonWithImage* btnGroupFlatObjects = nullptr;
+    ButtonWithImage* btnGroupItems = nullptr;
+    ButtonWithImage* btnGroupNatures = nullptr;
+    ButtonWithImage* btnGroupSmallObjects = nullptr;
+    ButtonWithImage* btnGroupObjects = nullptr;
 
-    ButtonWithImage* btnToolsEmpty;
-    ButtonWithImage* btnToolsCursor;
-    ButtonWithImage* btnToolsBrush;
-    ButtonWithImage* btnToolsRectBrush;
-    ButtonWithImage* btnToolsIncrease;
-    ButtonWithImage* btnToolsDecrease;
-    ButtonWithImage* btnToolsRectangle;
-    ButtonWithImage* btnToolsElipse;
-    ButtonWithImage* btnToolsFill;
-    ButtonWithImage* btnToolsEraser;
+    ButtonWithImage* btnToolsEmpty = nullptr;
+    ButtonWithImage* btnToolsCursor = nullptr;
+    ButtonWithImage* btnToolsBrush = nullptr;
+    ButtonWithImage* btnToolsRectBrush = nullptr;
+    ButtonWithImage* btnToolsIncrease = nullptr;
+    ButtonWithImage* btnToolsDecrease = nullptr;
+    ButtonWithImage* btnToolsRectangle = nullptr;
+    ButtonWithImage* btnToolsElipse = nullptr;
+    ButtonWithImage* btnToolsFill = nullptr;
+    ButtonWithImage* btnToolsEraser = nullptr;
 
     std::vector < GameObject* > availableGameObjects;
 
