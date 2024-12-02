@@ -47,24 +47,29 @@ public:
     float rect_height;
     float margin_vert;
     float margin_hor;
-    float filenames_line_height;
+    float line_height;
 
-    sf::RectangleShape titlebar;    // 
-    TextArea* titleText;            //  
+    // title bar
+    sf::RectangleShape titlebar;
+    TextArea* titleText;
 
+    // filenames 
+    sf::RectangleShape filenamesRect;
     sf::Sprite icons[7];
     sf::RectangleShape filenamesRects[7];
     TextArea* filenames[7];
 
-    sf::RectangleShape submitbar;   // 
-    TextArea* filenameText;         // "Filename" text
-    TextArea* selectedFilenameText; // selected filename
-    ButtonWithText* submitButton;       // 
+    // submit bar
+    sf::RectangleShape submitbar;
+    TextArea* filenameInfo;
+    sf::RectangleShape selectedFilenameRect;
+    TextArea* selectedFilenameText;
+
+    ButtonWithText* selectButton;
+    ButtonWithText* cancelButton;
 
     std::filesystem::path current_path;                     // current path of directory  
     std::vector < std::filesystem::directory_entry > paths; // list of paths
-
-    
 
     Scrollbar* scrollbar;   // scrollbar          
     bool fileSelected;      // if "submit button" pressed is true
@@ -75,10 +80,10 @@ public:
         rect_width = 512;
         margin_vert = 4;
         margin_hor = 4;
-        filenames_line_height = 28;
+        line_height = 30;
 
-        // TITLE
-        titlebar = sf::RectangleShape(sf::Vector2f(512, 32)); 
+        // TITLE BAR
+        titlebar = sf::RectangleShape(sf::Vector2f(512, line_height));
         titlebar.setFillColor(sf::Color(48, 48, 48));
         rect_height += titlebar.getSize().y;
 
@@ -89,7 +94,7 @@ public:
         titleText->setTextColor(dialoguesColor);
 
         ////////////////////////////////////
-        // TEXTS AND SCROLLBAR
+        // FILENAMES AND SCROLLBAR
         current_path = std::filesystem::current_path();
         loadDirectory();
  
@@ -97,55 +102,64 @@ public:
         createFilenamesTexts();
         setFilenamesTexts();
 
-        rect_height += 7 * filenames_line_height;
+        filenamesRect = sf::RectangleShape(sf::Vector2f(titlebar.getSize().x, 7 * line_height));
+        filenamesRect.setFillColor(sf::Color::Transparent);
+
+        rect_height += filenamesRect.getSize().y;
 
         ///////////////////////////////////////
-        sf::Vector2f pos;
+        // SUBMIT BAR
 
-        filenameText = new TextArea(L"File name: ");
-        filenameText->setCharacterSize(17);
-        filenameText->generateRect();
-        filenameText->setRectColor(sf::Color::Transparent);
-        filenameText->setTextColor(dialoguesColor);
-        pos.x = position.x - 256;
-        pos.y = position.y + 256 - 128 - filenameText->rect.getSize().y + 4;
-        filenameText->setPosition(pos);
-        
+        filenameInfo = new TextArea(L"File name: ");
+        filenameInfo->setCharacterSize(17);
+        filenameInfo->setTextColor(dialoguesColor);
+        filenameInfo->setRectColor(sf::Color::Transparent);
+        filenameInfo->generateRect();
+
+        sf::Vector2f size;
+        size.x = rect_width - filenameInfo->getSize().x - 3*margin_vert;
+        size.y = line_height;
+        selectedFilenameRect = sf::RectangleShape(size);
+        selectedFilenameRect.setFillColor(sf::Color(32,32,32));
+
         selectedFilenameText = new TextArea(L"");
-        selectedFilenameText->setCharacterSize(24);
-        selectedFilenameText->setRectColor(sf::Color(32, 32, 32));
+        selectedFilenameText->setCharacterSize(17);
         selectedFilenameText->setTextColor(dialoguesColor);
-        selectedFilenameText->setRectSize(sf::Vector2f(256 + 48 - 4, filenameText->rect.getSize().y));
-        pos.x = position.x - 256 + filenameText->getSize().x;
-        pos.y = position.y + 256 - 128 - selectedFilenameText->rect.getSize().y + 4;
-        selectedFilenameText->setPosition(pos);
-       
-        submitButton = new ButtonWithText("submit", 23);
-        cout << submitButton->rect.getSize().y << "\n";
-        pos.x = position.x + 256 - submitButton->rect.getSize().x - 4;
-        pos.y = position.y + 256 - 128 - submitButton->rect.getSize().y + 4;
-        submitButton->setPosition(pos);
+        selectedFilenameText->setRectColor(sf::Color::Transparent);
+        selectedFilenameText->generateRect();
 
-        submitbar = sf::RectangleShape(sf::Vector2f(512, selectedFilenameText->rect.getSize().y + 8));
-        submitbar.setFillColor(sf::Color(48, 48, 48));
-        submitbar.setPosition(position.x +cam->position.x - 256, position.y + cam->position.y + 256 - 128 - 32 + 1);
+        selectButton = new ButtonWithText("select", 17);
+        cancelButton = new ButtonWithText("cancel", 17);
+
+        submitbar = sf::RectangleShape(sf::Vector2f(rect_width, selectedFilenameRect.getSize().y + 3 * margin_vert + selectButton->rect.getSize().y));
+        submitbar.setFillColor(sf::Color::Transparent);
+
         rect_height += submitbar.getSize().y;
+
+        /////////////////
 
         rect = sf::RectangleShape(sf::Vector2f(512, rect_height));
         rect.setFillColor(panelColor);
-        
 
         // POSITIONING /////////////
+        sf::Vector2f pos;
+
+        // title bar
         sf::Vector2f p = sf::Vector2f(position.x - rect_width/2.0f,+ position.y - rect_height/2.0f);
         rect.setPosition(p.x+cam->position.x, p.y+cam->position.y);
         
         titlebar.setPosition(p.x+cam->position.x, p.y+cam->position.y);
         titleText->setPosition(sf::Vector2f(p.x + margin_vert, p.y+titleText->getLineHeight()/4.0f));
 
-        pos.x = position.x - rect_width/2.0f + (titleText->texts[0].getPosition().x - titleText->rect.getPosition().x);
+        // filenames and scrollbar
+        pos.x = cam->position.x + position.x - rect_width/2.0f;
+        pos.y = cam->position.y+position.y-rect_height/2.0f + titlebar.getSize().y;
+        filenamesRect.setPosition(pos);
+
+        pos.x = position.x - rect_width / 2.0f + (titleText->texts[0].getPosition().x - titleText->rect.getPosition().x);
         for (short i = 0; i < 7; i++) {
 
-            pos.y = position.y - rect_height/2.0f + titlebar.getSize().y + i * filenamesRects[0].getSize().y;
+            pos.y = position.y - rect_height/2.0f + titlebar.getSize().y + i * line_height;
 
             icons[i].setPosition(pos.x+cam->position.x, pos.y+cam->position.y);
             filenamesRects[i].setPosition(pos.x+cam->position.x+30, pos.y+cam->position.y);
@@ -156,6 +170,27 @@ public:
         pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y;
         scrollbar->setPosition(pos);
         
+        // submit bar
+        pos.x = position.x - rect_width/2.0f + cam->position.x;
+        pos.y = position.y - rect_height/2.0f + cam->position.y + titlebar.getSize().y + 7 * line_height;
+        submitbar.setPosition(pos);
+
+        pos.x = position.x - rect_width/2.0f + margin_vert;
+        pos.y = position.y - rect_height/2.0f + titlebar.getSize().y + 7.0f*line_height + filenameInfo->getLineHeight()/4.0f + margin_vert;
+        filenameInfo->setPosition(pos);
+
+        pos.x = position.x - rect_width/2.0f + filenameInfo->getSize().x + 2.0f*margin_hor;
+        pos.y = position.y - rect_height/2.0f + titlebar.getSize().y + 7.0f*line_height + margin_vert;
+
+        selectedFilenameRect.setPosition(pos.x + cam->position.x, pos.y + cam->position.y);
+        selectedFilenameText->setPosition(sf::Vector2f(pos.x, pos.y + selectedFilenameText->getLineHeight()/4.0f));
+
+        pos.x = position.x + rect_width/2.0f - cancelButton->rect.getSize().x - margin_hor; 
+        pos.y = position.y + rect_height/2.0f - cancelButton->rect.getSize().y - margin_vert;
+        cancelButton->setPosition(pos);
+
+        pos.x = pos.x - selectButton->rect.getSize().x - margin_hor;
+        selectButton->setPosition(pos);
         ///////////////////////////
 
         fileSelected = false;
@@ -164,9 +199,10 @@ public:
     ~OpenFileDialog() {
 
         delete titleText;
-        delete filenameText;
+        delete filenameInfo;
         delete selectedFilenameText;
-        delete submitButton;
+        delete selectButton;
+        delete cancelButton;
 
         for (auto& t : filenames)
             delete t;
@@ -191,7 +227,7 @@ public:
 
     void loadScrollbar() {
 
-        sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * filenames_line_height + 1);
+        sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * line_height + 1);
         scrollbar = new Scrollbar(scrollbarSize, 0, paths.size() - 1, 0, 7);
          
     }
@@ -201,7 +237,7 @@ public:
         float filename_rect_width = rect_width - scrollbar->bar.getSize().x - 30 - 2 * margin_vert;
 
         for (int i = 0; i < 7; i++) {
-            filenamesRects[i] = sf::RectangleShape(sf::Vector2f(filename_rect_width, filenames_line_height));
+            filenamesRects[i] = sf::RectangleShape(sf::Vector2f(filename_rect_width, line_height));
             filenamesRects[i].setFillColor(sf::Color::Transparent);
 
             filenames[i] = new TextArea(L"");
@@ -250,9 +286,10 @@ public:
         if (event.type == sf::Event::MouseButtonReleased) {
             if (event.mouseButton.button == sf::Mouse::Left) {
 
-                submitButton->click();
+                selectButton->click();
+                cancelButton->click();
 
-                if (submitButton->state == ButtonState::Pressed) {
+                if (selectButton->state == ButtonState::Pressed) {
                     fileSelected = true;
                 }
                 else {
@@ -289,21 +326,20 @@ public:
 
         setFilenamesTexts();
 
-        submitButton->update(dt);
+        selectButton->update(dt);
+        cancelButton->update(dt);
     }
 
     void draw() {
+        //main rect
         window->draw(rect);
 
+        // tile bar
         window->draw(titlebar);
         titleText->draw();
 
-        window->draw(submitbar);
-        filenameText->draw();
-        selectedFilenameText->draw();
-        submitButton->draw();
-        
-
+        // filenames and scrollbar
+        window->draw(filenamesRect);
         for (short i = 0; i < 7; i++) {
             window->draw(filenamesRects[i]);
             filenames[i]->draw();
@@ -311,6 +347,17 @@ public:
         }
 
         scrollbar->draw();
+        
+        // submit bar
+        window->draw(submitbar);
+        window->draw(selectedFilenameRect);
+        filenameInfo->draw();
+        selectedFilenameText->draw();
+        selectButton->draw();
+        cancelButton->draw();
+        
+
+        
     }
 };
 
