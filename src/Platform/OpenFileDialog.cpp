@@ -235,8 +235,11 @@ void OpenFileDialog::setFilenamesTexts() {
             else
                 icons[i].setTexture(*getSingleTexture("GUI/icons/file")->texture);
         }
-        else
+        else {
             filenames[i]->setWstring(L"");
+            icons[i].setTexture(*getSingleTexture("GUI/icons/empty")->texture);
+        }
+            
     }
 }
 

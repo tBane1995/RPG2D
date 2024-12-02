@@ -162,6 +162,7 @@ void loadTextures() {
 	loadSingleTexture("GUI/icons/MapEditor_small_ico.png", 15, 15);
 	loadSingleTexture("GUI/icons/dictionary.png", 15, 15);
 	loadSingleTexture("GUI/icons/file.png", 15, 15);
+	loadSingleTexture("GUI/icons/empty.png", 15, 15);
 
 	// TILES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	loadSingleTexture("tiles/0_tileset.png", 0, 0);
