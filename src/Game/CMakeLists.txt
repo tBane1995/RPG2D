@@ -18,5 +18,5 @@ set_property(TARGET RPG2D_Game PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${PROJECT_
 
 source_group("Source Files\\" FILES ${RPG2D_Game_SOURCES} ${RPG2D_Game_Common_SOURCES})
 source_group("Header Files\\" FILES ${RPG2D_Game_HEADERS} ${RPG2D_Game_Common_HEADERS})
-source_group("Source Files\\Headers" FILES ${Common_SOURCES})
-source_group("Header Files\\Headers" FILES ${Common_HEADERS})
+source_group("Source Files\\Platform" FILES ${Common_SOURCES})
+source_group("Header Files\\Platform" FILES ${Common_HEADERS})

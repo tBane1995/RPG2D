@@ -18,5 +18,5 @@ set_property(TARGET RPG2D_Editor PROPERTY VS_DEBUGGER_WORKING_DIRECTORY ${PROJEC
 
 source_group("Source Files\\" FILES ${RPG2D_Editor_SOURCES} ${RPG2D_Editor_Common_SOURCES})
 source_group("Header Files\\" FILES ${RPG2D_Editor_HEADERS} ${RPG2D_Editor_Common_HEADERS})
-source_group("Source Files\\Headers" FILES ${Common_SOURCES})
-source_group("Header Files\\Headers" FILES ${Common_HEADERS})
+source_group("Source Files\\Platform" FILES ${Common_SOURCES})
+source_group("Header Files\\Platform" FILES ${Common_HEADERS})
