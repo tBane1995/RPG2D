@@ -218,6 +218,3 @@ void addPrefabsToBuildingAndLists() {
 
     }
 }
-
-    }
-}
