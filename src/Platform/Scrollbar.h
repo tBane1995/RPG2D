@@ -43,3 +43,38 @@ public:
     void update(sf::Event& event);
     void draw();
 };
+
+#include <SFML/Graphics.hpp>
+#include <iostream>
+//size convention : 
+/*
+the cursor is 10% the size of the bar
+so the bar starts and ends 5% before the limit defined by the variable location
+*/
+
+
+class Scrollbar2 {
+public:
+    //initialisation
+    Scrollbar2(sf::Color color, bool sel, int loc0, int loc1, int siz0, int siz1, float progress);  //conversion
+    void initShapes(int loc0, int loc1);    //initializing the bar
+    void changeProgress(float pro);
+    void updateCursor();
+    void chooseColor(bool b);
+    void drawTo(sf::RenderWindow* window);
+    void render(bool clicked, sf::RenderWindow* window);
+    bool detect(sf::RenderWindow* window);
+
+
+private:
+    float progress;     //float between 0 and 1, "percentage" of where the cursor is
+    sf::Vector2f size;
+    int location[2];
+    sf::Color colorBar;
+    sf::Color colorCursor;
+    bool wasSelected = false;
+    float oldMouseY = 0;
+    sf::RectangleShape scroll;
+    sf::RectangleShape bar;
+
+};

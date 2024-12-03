@@ -196,6 +196,7 @@ void OpenFileDialog::loadDirectory() {
 void OpenFileDialog::loadScrollbar() {
     sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * line_height + 1);
     scrollbar = new Scrollbar(scrollbarSize, 0, paths.size() - 1, 0, 7);
+    scrollbar2 = new Scrollbar2(sf::Color::Red, true, 0, 0, 100, 100, 0);
 }
 
 void OpenFileDialog::createFilenamesTexts() {
@@ -251,6 +252,7 @@ std::string OpenFileDialog::getPathfile() {
 
 void OpenFileDialog::update(sf::Event& event) {
     scrollbar->update(event);
+    scrollbar2->render(true, window);
 
     if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
@@ -316,6 +318,7 @@ void OpenFileDialog::draw() {
     }
 
     scrollbar->draw();
+    scrollbar2->drawTo(window);
 
     // submit bar
     window->draw(submitbar);
