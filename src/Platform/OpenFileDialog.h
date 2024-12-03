@@ -9,6 +9,7 @@
 class ButtonWithText;
 class Scrollbar;
 class Scrollbar2;
+class Scrollbar3;
 class TextArea;
 
 bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_entry second);
@@ -47,8 +48,9 @@ public:
     std::filesystem::path current_path;                     // current path of directory  
     std::vector < std::filesystem::directory_entry > paths; // list of paths
 
-    Scrollbar* scrollbar;   // scrollbar      
-    Scrollbar2* scrollbar2;
+    Scrollbar* scrollbar;   // scrollbar 
+    Scrollbar2* scrollbar2; // To-DO - to delete
+    Scrollbar3* scrollbar3; // TO-DO - to delete 
     bool fileSelected;      // if "submit button" pressed is true
 
     OpenFileDialog(std::wstring title);

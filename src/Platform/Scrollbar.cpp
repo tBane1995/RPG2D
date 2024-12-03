@@ -356,3 +356,77 @@ bool Scrollbar2::detect(sf::RenderWindow* window) {
     return result;
 };
 //utilitary fonction
+
+
+//////////////////////////////////////////////////////////////////////////////////
+
+Scrollbar3::Scrollbar3(sf::Vector2f size, sf::Vector2f position, short min_value, short max_value, short scroll_value, short scroll_length) {
+
+    this->size = size;
+    this->position = position;
+
+    this->min_value = min_value;
+    this->max_value = max_value;
+    this->scroll_value = scroll_value;
+    this->scroll_length = scroll_length;
+
+    this->is_pressed = false;
+
+    // COLORS
+    bar_color = sf::Color::Red;
+    scroll_color = sf::Color::Blue;
+
+    // BAR
+    bar_top = sf::RectangleShape(sf::Vector2f(size.x, size.x));
+    bar_top.setPosition(position);
+    bar_top.setFillColor(bar_color);
+
+    bar_center = sf::RectangleShape(sf::Vector2f(size.x, size.y-2.0f*size.x));
+    bar_center.setPosition(position.x, position.y + size.x);
+    bar_center.setFillColor(bar_color);
+
+    bar_bottom = sf::RectangleShape(sf::Vector2f(size.x, size.x));
+    bar_bottom.setPosition(position.x, position.y + size.y - size.x);
+    bar_bottom.setFillColor(bar_color);
+   
+    // SCROLL
+    float scroll_position_y = position.y + float(scroll_value)/float(max_value-min_value)*float(size.y);
+    float scroll_size = getScrollSizeY();
+
+    scroll_top = sf::RectangleShape(sf::Vector2f(size.x,size.x));
+    scroll_top.setPosition(position.x+16, scroll_position_y - scroll_size/2 - size.x);
+    scroll_top.setFillColor(scroll_color);
+
+    scroll_center = sf::RectangleShape(sf::Vector2f(size.x, getScrollSizeY()-2*size.x));
+    scroll_center.setPosition(position.x+16, scroll_position_y - scroll_size/2);
+    scroll_center.setFillColor(scroll_color);
+
+    scroll_bottom = sf::RectangleShape(sf::Vector2f(size.x, size.x));
+    scroll_bottom.setPosition(position.x+16, scroll_position_y + scroll_size/2 + size.x);
+    scroll_bottom.setFillColor(scroll_color);
+}
+
+float Scrollbar3::getScrollSizeY() {
+
+    return float(size.y) * float(scroll_length)/float(max_value - min_value);
+}
+
+void Scrollbar3::update() {
+
+}
+
+void Scrollbar3::update(sf::Event& event) {
+
+}
+
+void Scrollbar3::draw() {
+
+    window->draw(bar_top);
+    window->draw(bar_center);
+    window->draw(bar_bottom);
+
+    window->draw(scroll_top);
+    //window->draw(scroll_center);
+    //window->draw(scroll_bottom);
+
+}

@@ -78,3 +78,34 @@ private:
     sf::RectangleShape bar;
 
 };
+
+class Scrollbar3 {
+public:
+    // TO-DO - must be a Scrollbar no Scrollbar3
+    sf::Vector2f size;      // 16 x 16+16+16
+    sf::Vector2f position;
+
+    sf::Color bar_color;
+    sf::Color scroll_color;
+
+    short min_value;
+    short max_value;
+    short scroll_value;
+    short scroll_length;
+
+    sf::RectangleShape bar_top;
+    sf::RectangleShape bar_center;
+    sf::RectangleShape bar_bottom;
+
+    sf::RectangleShape scroll_top;
+    sf::RectangleShape scroll_center;
+    sf::RectangleShape scroll_bottom;
+
+    bool is_pressed;
+
+    Scrollbar3(sf::Vector2f size, sf::Vector2f position, short min_value, short max_value, short scroll_value, short scroll_length);
+    float getScrollSizeY();
+    void update();
+    void update(sf::Event& event);
+    void draw();
+};
