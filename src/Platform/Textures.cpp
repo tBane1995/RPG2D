@@ -231,6 +231,8 @@ void loadTextures() {
 
 	loadSingleTexture("flatObjects/stonepath1.png", 32, 32);
 	loadSingleTexture("flatObjects/stonepath2.png", 32, 32);
+	loadSingleTexture("flatObjects/sandspath1.png", 32, 32);
+	loadSingleTexture("flatObjects/sandspath2.png", 32, 32);
 
 	loadSingleTexture("flatObjects/herb1.png", 33, 32);
 	loadSingleTexture("flatObjects/herb2.png", 33, 32);
@@ -311,8 +313,10 @@ void loadTextures() {
 	loadSingleTexture("doors/wooden_door_2.png", 32, 32);
 	loadSingleTexture("doors/wooden_door_3.png", 32, 32);
 
-	loadSingleTexture("doors/wooden_gate_close.png", 64, 112);
-	loadSingleTexture("doors/wooden_gate_open.png", 64, 112);
+	loadSingleTexture("doors/wooden_gate_0.png", 64, 112);
+	loadSingleTexture("doors/wooden_gate_1.png", 64, 112);
+	loadSingleTexture("doors/wooden_gate_2.png", 64, 112);
+	loadSingleTexture("doors/wooden_gate_3.png", 64, 112);
 
 	// MONSTERS
 	std::vector < std::string > monsters;

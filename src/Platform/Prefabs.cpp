@@ -58,6 +58,8 @@ void loadPrefabs() {
     // FLAT OBJECTS
     prefabs.push_back(new FlatObject("flatObjects/stonepath1", 64, 32, 32));
     prefabs.push_back(new FlatObject("flatObjects/stonepath2", 64, 32, 32));
+    prefabs.push_back(new FlatObject("flatObjects/sandspath1", 64, 32, 32));
+    prefabs.push_back(new FlatObject("flatObjects/sandspath2", 64, 32, 32));
 
     prefabs.push_back(new FlatObject("flatObjects/herb1", 16, 8, 16));
     prefabs.push_back(new FlatObject("flatObjects/herb2", 16, 8, 16));
