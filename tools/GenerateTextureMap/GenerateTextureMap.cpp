@@ -157,7 +157,12 @@ void JoinAssets()
                 sf::Image Im;
                 Im.loadFromFile(Assets[i].Path);
                 DrawOnImage(Im, ImageMap, DestX, DestY);
-                DataFile << Assets[i].Path << ":" << std::to_string(DestX) << "," << std::to_string(DestY) << ","
+                std::string Path = Assets[i].Path;
+                for (size_t i = 0; i < Path.length(); ++i)
+                {
+                    if (Path[i] == '\\') Path[i] = '/';
+                }
+                DataFile << Path << ":" << std::to_string(DestX) << "," << std::to_string(DestY) << ","
                     << std::to_string(Assets[i].Width) << "," << std::to_string(Assets[i].Height) << std::endl;
                 DestX += Assets[i].Width;
             }
