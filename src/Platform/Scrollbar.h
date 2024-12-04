@@ -101,11 +101,14 @@ public:
     sf::RectangleShape scroll_center;
     sf::RectangleShape scroll_bottom;
 
+    float start_mouse_y;
     bool is_pressed;
 
     Scrollbar3(sf::Vector2f size, sf::Vector2f position, short min_value, short max_value, short scroll_value, short scroll_length);
     void setValue(short value);
     float getScrollSizeY();
+    void scrollPositioning();
+    bool isSelected();
     void update();
     void update(sf::Event& event);
     void draw();

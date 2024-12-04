@@ -249,7 +249,8 @@ Scrollbar3::Scrollbar3(sf::Vector2f size, sf::Vector2f position, short min_value
     this->scroll_length = scroll_length;
 
     setValue(scroll_value);
-
+    
+    this->start_mouse_y = 0;
     this->is_pressed = false;
 
     // COLORS
@@ -290,8 +291,8 @@ void Scrollbar3::setValue(short value) {
     if (scroll_value < min_value)
         scroll_value = min_value;
 
-    if (scroll_value > max_value - scroll_value + 1)
-        scroll_value = max_value - scroll_value + 1;
+    if (scroll_value > max_value - scroll_length + 1)
+        scroll_value = max_value - scroll_length + 1;
 
 }
 
@@ -300,11 +301,56 @@ float Scrollbar3::getScrollSizeY() {
     return float(size.y) * float(scroll_length)/float(max_value - min_value + 1);
 }
 
+void Scrollbar3::scrollPositioning() {
+
+    float delta_y = float(scroll_value) * (size.y/float(max_value-min_value+1));
+    scroll_top.setPosition(position.x + 16, position.y + delta_y);
+    scroll_center.setPosition(position.x + 16, position.y + size.x + delta_y);
+    scroll_bottom.setPosition(position.x + 16, position.y + size.x + getScrollSizeY() - 2 * size.x + delta_y);
+}
+
+bool Scrollbar3::isSelected() {
+    
+    float min_x = scroll_top.getPosition().x;
+    float min_y = scroll_top.getPosition().y;
+    float max_x = scroll_bottom.getPosition().x + scroll_bottom.getSize().x;
+    float max_y = scroll_bottom.getPosition().y + scroll_bottom.getSize().y;
+
+    
+
+    if (worldMousePosition.x >= min_x && worldMousePosition.x <= max_x && worldMousePosition.y >= min_y && worldMousePosition.y <= max_y)
+        return true;
+    else
+        return false;
+}
+
 void Scrollbar3::update() {
 
 }
 
 void Scrollbar3::update(sf::Event& event) {
+    
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            if (isSelected()) {
+                start_mouse_y = worldMousePosition.y - position.y;
+                is_pressed = true;
+            }
+        }
+    }
+    else if (event.type == sf::Event::MouseButtonReleased) {
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            is_pressed = false;
+        }
+    }
+
+    if (is_pressed) {
+        float scrollPos = worldMousePosition.y - start_mouse_y;
+        std::cout << scrollPos << "\n";
+        setValue(scrollPos / (size.y / float(max_value - min_value + 1)));
+        scrollPositioning();
+    }
+    
 
 }
 
