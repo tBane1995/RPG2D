@@ -1,5 +1,8 @@
 ﻿#include "Textures.h"
 #include <iostream>
+#include <fstream>
+#include "Utils.h"
+
 
 bool areImagesEqual(sf::Image& img1, sf::Image& img2) {
 	if (img1.getSize() != img2.getSize()) {
@@ -85,9 +88,11 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
 
 }
 
-void loadTextures() {
-
+void loadTextures()
+{
+	
 	singleTextures.clear();
+	loadSingleTexture("TextureMap.png", 8192, 4096);
 
 	// NOISE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -490,10 +495,20 @@ void loadTextures() {
 }
 
 SingleTexture* getSingleTexture(std::string name) {
-
 	for (auto& t : singleTextures) {
 		if (t->name == name) {
 			return t;
+		}
+	}
+
+	std::cout << "error - get Texture - Texture: \"" << name << "\" not exists\n";
+	return nullptr;
+}
+
+TTextureEntry* getSingleTextureInfo(std::string name) {
+	for (TTextureEntry& t : TextureMapInfo) {
+		if (t.Path == (name + ".png")) {
+			return &t;
 		}
 	}
 
@@ -514,4 +529,36 @@ std::vector < SingleTexture* > getTexturesSet(std::string name) {
 		std::cout << "error - get Texture Set - Texture Set: \"" << name << "\" is empty\n";
 
 	return texture_set;
+}
+
+std::vector<TTextureEntry> TextureMapInfo;
+void loadTextureMapInfo()
+{
+	TextureMapInfo.clear();
+
+	std::ifstream ifs;
+	ifs.open("assets/TextureMap.png.txt", std::ios::in || std::ios::beg);
+	while (!ifs.eof() && !ifs.fail())
+	{
+		TTextureEntry Item;
+		std::string Line;
+		std::getline(ifs, Line);
+		size_t StartPos = 0UL;
+		size_t Pos = Line.find(':');
+		if (Pos != std::string::npos)
+		{
+			// pomijamy czlon "assets\" w nazwie, zeby zachowac zgodnosc z dotychczasowym kodem bez wiekszych zmian
+			Item.Path = Line.substr(StartPos + 7, Pos - (StartPos+7));
+			std::vector<std::string> Arr;
+			Explode(',', Line.substr(Pos + 1), Arr);
+			if (Arr.size() == 4)
+			{
+				Item.x = std::atoi(Arr[0].c_str());
+				Item.y = std::atoi(Arr[1].c_str());
+				Item.Width = std::atoi(Arr[2].c_str());
+				Item.Height = std::atoi(Arr[3].c_str());
+				TextureMapInfo.push_back(Item);
+			}
+		}
+	}
 }

@@ -9,6 +9,15 @@ bool areImagesEqual(sf::Image& img1, sf::Image& img2);
 
 enum class TextureType { Single, Set };
 
+struct TTextureEntry
+{
+	std::string Path;
+	int x;
+	int y;
+	int Width;
+	int Height;
+};
+
 class Texture {
 public:
 	std::string name;
@@ -52,9 +61,12 @@ public:
 };
 
 extern std::vector < SingleTexture* > singleTextures;
+extern std::vector<TTextureEntry> TextureMapInfo;
 
 void loadSingleTexture(std::string pathfile, float cx, float cy);
 void loadTextureSets(std::string pathfile, int tile_width, int tile_height);
 void loadTextures();
 SingleTexture* getSingleTexture(std::string name);
+TTextureEntry* getSingleTextureInfo(std::string name);
 std::vector < SingleTexture* > getTexturesSet(std::string name);
+void loadTextureMapInfo();
