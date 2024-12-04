@@ -19,3 +19,4 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 add_subdirectory(src/Game)
 add_subdirectory(src/Editor)
+add_subdirectory(tools/GenerateTextureMap)

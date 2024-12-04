@@ -79,3 +79,5 @@ Content/Files/data.db
 # Visual Studio user specific files
 .vs/*
 !.vs/launch.vs.json
+
+assets/TextureMap*.*
