@@ -178,6 +178,7 @@ OpenFileDialog::~OpenFileDialog() {
         delete t;
 
     delete scrollbar;
+    delete scrollbar3;
 }
 
 void OpenFileDialog::loadDirectory() {
@@ -196,7 +197,6 @@ void OpenFileDialog::loadDirectory() {
 void OpenFileDialog::loadScrollbar() {
     sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * line_height + 1);
     scrollbar = new Scrollbar(scrollbarSize, 0, paths.size() - 1, 0, 7);
-    scrollbar2 = new Scrollbar2(sf::Color::Red, true, 0, 0, 100, 100, 0);
     scrollbar3 = new Scrollbar3(sf::Vector2f(16, 128), sf::Vector2f(0, 0), 0, 8, 4, 4);
 }
 
@@ -253,7 +253,6 @@ std::string OpenFileDialog::getPathfile() {
 
 void OpenFileDialog::update(sf::Event& event) {
     scrollbar->update(event);
-    scrollbar2->render(true, window);
     scrollbar3->update(event);
 
     if (event.type == sf::Event::MouseButtonReleased) {
@@ -320,7 +319,6 @@ void OpenFileDialog::draw() {
     }
 
     scrollbar->draw();
-    scrollbar2->drawTo(window);
     scrollbar3->draw();
 
     // submit bar

@@ -8,7 +8,6 @@
 
 class ButtonWithText;
 class Scrollbar;
-class Scrollbar2;
 class Scrollbar3;
 class TextArea;
 
@@ -49,7 +48,6 @@ public:
     std::vector < std::filesystem::directory_entry > paths; // list of paths
 
     Scrollbar* scrollbar;   // scrollbar 
-    Scrollbar2* scrollbar2; // To-DO - to delete
     Scrollbar3* scrollbar3; // TO-DO - to delete 
     bool fileSelected;      // if "submit button" pressed is true
 

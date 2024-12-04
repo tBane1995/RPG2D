@@ -104,6 +104,7 @@ public:
     bool is_pressed;
 
     Scrollbar3(sf::Vector2f size, sf::Vector2f position, short min_value, short max_value, short scroll_value, short scroll_length);
+    void setValue(short value);
     float getScrollSizeY();
     void update();
     void update(sf::Event& event);

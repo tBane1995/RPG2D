@@ -49,8 +49,6 @@ Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 
 	textname.setPosition(position.x, position.y - height - 3);
 	takeItSprite.setPosition(position.x, position.y - 50);
-
-	state = doorState::opening;	// TO-DO - to delete
 }
 
 void Door::open() {
@@ -119,6 +117,7 @@ void Door::update(float dt) {
 	}
 
 	if (state == doorState::closing) {
+
 		if ((currentTime - last_action_time).asSeconds() > 0.5f) {
 			current_frame -= 1;
 			last_action_time = currentTime;
@@ -129,16 +128,6 @@ void Door::update(float dt) {
 			}
 		}
 	}
-	
-	////////////////////////////////////////////////
-	// TO-DO - to delete
-	if (state == doorState::open) {
-		state = doorState::closing;
-	}
-	else if (state == doorState::close) {
-		state = doorState::opening;
-	}
-	////////////////////////////////////////////////
 }
 
 void Door::draw() {
