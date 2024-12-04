@@ -620,6 +620,7 @@ int main()
     std::cout << "hello world, current working directory is: " << std::filesystem::current_path() << std::endl;    // TO-DO - test / to delete
 
     // LOADS
+    loadTextureMapInfo();
 	loadFonts();
 	loadTextures();	// TO-DO "FROM FILE"
 	loadShaders();		    // TO-DO "FROM FILE"
