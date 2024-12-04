@@ -40,7 +40,7 @@ void ScrollableText::update(sf::Event& event) {
 
 	sf::Vector2f position;
 	position.x = textarea->position.x;
-	position.y = margin -scrollbar->scrollValue - height / 2.0f;
+	position.y = margin -scrollbar->scroll_value - height / 2.0f;
 	textarea->setPosition(position);
 
 	sf::View v = sf::View(sf::FloatRect(sf::Vector2f(cam->position.x-(width-2*margin)/2.0f,cam->position.y -(height-2*margin)/2.0f), sf::Vector2f(width-2*margin, height-2*margin)));

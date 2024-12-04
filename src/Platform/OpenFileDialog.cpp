@@ -137,7 +137,7 @@ OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile
         filenames[i]->setPosition(sf::Vector2f(pos.x + 30, pos.y + filenames[i]->getLineHeight() / 4.0f));
     }
 
-    pos.x = position.x + rect_width / 2.0f - scrollbar->bar.getSize().x;
+    pos.x = position.x + rect_width / 2.0f - scrollbar->size.x;
     pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y;
     scrollbar->setPosition(pos);
 
@@ -178,7 +178,6 @@ OpenFileDialog::~OpenFileDialog() {
         delete t;
 
     delete scrollbar;
-    delete scrollbar3;
 }
 
 void OpenFileDialog::loadDirectory() {
@@ -196,13 +195,14 @@ void OpenFileDialog::loadDirectory() {
 
 void OpenFileDialog::loadScrollbar() {
     sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * line_height + 1);
-    scrollbar = new Scrollbar(scrollbarSize, 0, paths.size() - 1, 0, 7);
-    scrollbar3 = new Scrollbar3(sf::Vector2f(16, 128), sf::Vector2f(0, 0), 0, 8, 4, 4);
+    if (scrollbar != nullptr)
+        delete scrollbar;
+    scrollbar = new Scrollbar(scrollbarSize,sf::Vector2f(0,0), 0, paths.size()-1, 0, 7);
 }
 
 void OpenFileDialog::createFilenamesTexts() {
 
-    float filename_rect_width = rect_width - scrollbar->bar.getSize().x - 30 - 2 * margin_vert;
+    float filename_rect_width = rect_width - scrollbar->size.x - 30 - 2 * margin_vert;
 
     for (int i = 0; i < 7; i++) {
         filenamesRects[i] = sf::RectangleShape(sf::Vector2f(filename_rect_width, line_height));
@@ -222,16 +222,16 @@ void OpenFileDialog::createFilenamesTexts() {
 void OpenFileDialog::setFilenamesTexts() {
     for (short i = 0; i < 7; i++) {
 
-        if (i + short(scrollbar->scrollValue) < paths.size()) {
-            if (i + short(scrollbar->scrollValue) == 0) {
+        if (i + short(scrollbar->scroll_value) < paths.size()) {
+            if (i + short(scrollbar->scroll_value) == 0) {
                 filenames[i]->setWstring(L"..");
             }
             else {
-                filenames[i]->setWstring(paths[i + short(scrollbar->scrollValue)].path().filename().wstring());
+                filenames[i]->setWstring(paths[i + short(scrollbar->scroll_value)].path().filename().wstring());
             }
             filenames[i]->generateRect();
 
-            std::string extension = paths[i + short(scrollbar->scrollValue)].path().extension().string();
+            std::string extension = paths[i + short(scrollbar->scroll_value)].path().extension().string();
             if (extension == "")
                 icons[i].setTexture(*getSingleTexture("GUI/icons/dictionary")->texture);
             else
@@ -253,7 +253,6 @@ std::string OpenFileDialog::getPathfile() {
 
 void OpenFileDialog::update(sf::Event& event) {
     scrollbar->update(event);
-    scrollbar3->update(event);
 
     if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
@@ -269,19 +268,21 @@ void OpenFileDialog::update(sf::Event& event) {
                     if (filenames[i]->rect.getGlobalBounds().contains(worldMousePosition)) {
                         std::cout << "click";
                         // LOAD THE DIRECTORY
-                        if (i + short(scrollbar->scrollValue) < paths.size()) {
+                        if (i + short(scrollbar->scroll_value) < paths.size()) {
 
-                            if (!paths[i + short(scrollbar->scrollValue)].is_directory()) {
+                            if (!paths[i + short(scrollbar->scroll_value)].is_directory()) {
                                 std::cout << "is file";
                                 selectedFilenameText->setWstring(filenames[i]->s);
                             }
                             else {
-                                current_path = std::filesystem::path(paths[i + short(scrollbar->scrollValue)].path().wstring());
+                                current_path = std::filesystem::path(paths[i + short(scrollbar->scroll_value)].path().wstring());
                                 selectedFilenameText->setWstring(L"");
                                 loadDirectory();
-                                scrollbar->setValue(0);
-                                scrollbar->maxValue = paths.size() - 1;
-                                scrollbar->update();
+                                loadScrollbar();
+                                sf::Vector2f pos;
+                                pos.x = position.x + rect_width / 2.0f - scrollbar->size.x;
+                                pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y;
+                                scrollbar->setPosition(pos);
                             }
 
                         }
@@ -319,7 +320,6 @@ void OpenFileDialog::draw() {
     }
 
     scrollbar->draw();
-    scrollbar3->draw();
 
     // submit bar
     window->draw(submitbar);
