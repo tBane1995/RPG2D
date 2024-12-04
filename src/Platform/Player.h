@@ -9,6 +9,7 @@
 class Inventory;
 class Item;
 class SingleTexture;
+class TTextureEntry;
 
 class Player : public GameObject {
 public:
@@ -21,34 +22,34 @@ public:
 	// TO-DO sf::Texture to Texture*
 	// BODY
 	std::string body;
-	SingleTexture* bodyIdleTextures[16];	// idle for top, right, bottom, left
-	SingleTexture* bodyRunTextures[16];	// run for top, right, bottom, left
-	SingleTexture* bodyAttackTextures[16];	// fight for top, right, bottom, left
+	TTextureEntry* bodyIdleTextures[16];	// idle for top, right, bottom, left
+	TTextureEntry* bodyRunTextures[16];	// run for top, right, bottom, left
+	TTextureEntry* bodyAttackTextures[16];	// fight for top, right, bottom, left
 
 	// HELMET
-	SingleTexture* helmetIdleTextures[16];
-	SingleTexture* helmetRunTextures[16];
-	SingleTexture* helmetAttackTextures[16];
+	TTextureEntry* helmetIdleTextures[16];
+	TTextureEntry* helmetRunTextures[16];
+	TTextureEntry* helmetAttackTextures[16];
 
 	// ARMOR
-	SingleTexture* armorIdleTextures[16];
-	SingleTexture* armorRunTextures[16];
-	SingleTexture* armorAttackTextures[16];
+	TTextureEntry* armorIdleTextures[16];
+	TTextureEntry* armorRunTextures[16];
+	TTextureEntry* armorAttackTextures[16];
 
 	// PANTS
-	SingleTexture* pantsIdleTextures[16];
-	SingleTexture* pantsRunTextures[16];
-	SingleTexture* pantsAttackTextures[16];
+	TTextureEntry* pantsIdleTextures[16];
+	TTextureEntry* pantsRunTextures[16];
+	TTextureEntry* pantsAttackTextures[16];
 
 	// WEAPON
-	SingleTexture* rightHandIdleTextures[16];
-	SingleTexture* rightHandRunTextures[16];
-	SingleTexture* rightHandAttackTextures[16];
+	TTextureEntry* rightHandIdleTextures[16];
+	TTextureEntry* rightHandRunTextures[16];
+	TTextureEntry* rightHandAttackTextures[16];
 
 	// SHIELD
-	SingleTexture* leftHandIdleTextures[16];
-	SingleTexture* leftHandRunTextures[16];
-	SingleTexture* leftHandAttackTextures[16];
+	TTextureEntry* leftHandIdleTextures[16];
+	TTextureEntry* leftHandRunTextures[16];
+	TTextureEntry* leftHandAttackTextures[16];
 
 	// SPRITES
 	sf::Sprite bodySprite;
