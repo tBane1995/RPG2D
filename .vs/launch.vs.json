@@ -15,6 +15,14 @@
       "projectTarget": "RPG2D_Editor.exe",
       "name": "RPG2D_Editor.exe",
       "currentDir": "${workspaceRoot}"
+    },
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "GenTextureMap.exe",
+      "name": "GenTextureMap.exe",
+      "currentDir": "${workspaceRoot}"
     }
+
   ]
 }
