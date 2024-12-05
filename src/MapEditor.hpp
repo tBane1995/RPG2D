@@ -99,6 +99,11 @@ void MapEditor() {
         gameObjects.push_back(p);
 
     updateGameObjects();
+    
+    // TO-DO - TEST CONFIRM DIALOG    
+    Confirm* conf = new Confirm(L"To jest testowe okno potwierdzenia. W tym oknie można wybrać opcje tak lub nie.");
+    dialogs.push_back(conf);
+    //
 
     while (window->isOpen()) {
 
@@ -154,6 +159,10 @@ void MapEditor() {
                 else if (dialogs.back()->type == DialogType::ScrollableText) {
                     ScrollableText* scrolltext = dynamic_cast<ScrollableText*>(dialogs.back());
                     scrolltext->update(event);
+                }
+                else if (dialogs.back()->type == DialogType::Confirm) {
+                    Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
+                    confirm->update(event);
                 }
                 
 
