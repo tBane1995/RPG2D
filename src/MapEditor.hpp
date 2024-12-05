@@ -99,6 +99,11 @@ void MapEditor() {
         gameObjects.push_back(p);
 
     updateGameObjects();
+    
+    // TO-DO - TEST CONFIRM DIALOG    
+    Confirm* conf = new Confirm(L"To jest testowe okno potwierdzenia");
+    dialogs.push_back(conf);
+    //
 
     while (window->isOpen()) {
 
