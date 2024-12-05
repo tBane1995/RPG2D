@@ -39,7 +39,7 @@ void TextArea::generateRect() {
 	sf::Vector2f size;
 	if (texts.size() > 0 && line_length > 0.0f) {
 		size.x = line_length;
-		size.y = getLineHeight();
+		size.y = texts.size() * getLineHeight();
 	}
 	else if(!texts.empty()){
 		size.x = float(texts.front().getLocalBounds().getSize().x) + characterSize * 0.5f;

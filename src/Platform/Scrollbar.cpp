@@ -72,7 +72,7 @@ void Scrollbar::setValue(short value) {
     if (scroll_value < min_value)
         scroll_value = min_value;
 
-    if (scroll_value > max_value - scroll_length + 1)
+    else if ( max_value - scroll_length > 0 && scroll_value > max_value - scroll_length + 1)
         scroll_value = max_value - scroll_length + 1;
 
 }
