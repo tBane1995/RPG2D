@@ -39,15 +39,15 @@ Scrollbar::Scrollbar(sf::Vector2f size, sf::Vector2f position, short min_value, 
    
     // SCROLL RECT
     scroll_top = sf::RectangleShape(sf::Vector2f(size.x,size.x));
-    scroll_top.setPosition(position.x, position.y);
+    scroll_top.setPosition(position.x, position.y+size.x);
     scroll_top.setFillColor(scroll_color);
 
     scroll_center = sf::RectangleShape(sf::Vector2f(size.x, getScrollSizeY()-2*size.x));
-    scroll_center.setPosition(position.x, position.y+size.x);
+    scroll_center.setPosition(position.x, position.y+size.x+size.x);
     scroll_center.setFillColor(sf::Color::Green);
 
     scroll_bottom = sf::RectangleShape(sf::Vector2f(size.x, size.x));
-    scroll_bottom.setPosition(position.x, position.y+size.x+getScrollSizeY()-2*size.x);
+    scroll_bottom.setPosition(position.x, position.y+size.x+size.x+getScrollSizeY()-2*size.x);
     scroll_bottom.setFillColor(scroll_color);
 
     // BAR SPRITES
@@ -66,15 +66,15 @@ Scrollbar::Scrollbar(sf::Vector2f size, sf::Vector2f position, short min_value, 
     // SCROLL SPRITES
     spr_scroll_top = sf::Sprite(*getSingleTexture("GUI/scrollbar/scroll_top")->texture);
     spr_scroll_top.setScale(size.x/16.0f, size.x/16.0f);
-    spr_scroll_top.setPosition(position.x, position.y);
+    spr_scroll_top.setPosition(position.x, position.y+size.x);
 
     spr_scroll_center = sf::Sprite(*getSingleTexture("GUI/scrollbar/scroll_center")->texture);
     spr_scroll_center.setScale(size.x/16.0f, (getScrollSizeY()-2*size.x)/16.0f);
-    spr_scroll_center.setPosition(position.x, position.y+size.x);
+    spr_scroll_center.setPosition(position.x, position.y+size.x+size.x);
 
     spr_scroll_bottom = sf::Sprite(*getSingleTexture("GUI/scrollbar/scroll_bottom")->texture);
     spr_scroll_bottom.setScale(size.x/16.0f, size.x/16.0f);
-    spr_scroll_bottom.setPosition(position.x, position.y + size.x + getScrollSizeY()-2*size.x);
+    spr_scroll_bottom.setPosition(position.x, position.y + size.x + size.x + getScrollSizeY()-2*size.x);
 
 }
 
@@ -86,20 +86,20 @@ void Scrollbar::setPosition(sf::Vector2f pos) {
     bar_center.setPosition(position.x, position.y + size.x);
     bar_bottom.setPosition(position.x, position.y + size.y - size.x);
 
-    // SCROLL RECT
-    scroll_top.setPosition(position.x, position.y);
-    scroll_center.setPosition(position.x, position.y + size.x);
-    scroll_bottom.setPosition(position.x, position.y + size.x + getScrollSizeY() - 2 * size.x);
-
     // BAR SPRITES
     spr_bar_top.setPosition(position);
     spr_bar_center.setPosition(position.x, position.y + size.x);
     spr_bar_bottom.setPosition(position.x, position.y + size.y - size.x);
 
+    // SCROLL RECT
+    scroll_top.setPosition(position.x, position.y+size.x);
+    scroll_center.setPosition(position.x, position.y + size.x+size.x);
+    scroll_bottom.setPosition(position.x, position.y + size.x + size.x + getScrollSizeY() - 2 * size.x);
+
     // SCROLL SPRITES
-    spr_scroll_top.setPosition(position.x, position.y);
-    spr_scroll_center.setPosition(position.x, position.y + size.x);
-    spr_scroll_bottom.setPosition(position.x, position.y + size.x + getScrollSizeY() - 2 * size.x);
+    spr_scroll_top.setPosition(position.x, position.y+size.x);
+    spr_scroll_center.setPosition(position.x, position.y + size.x + size.x);
+    spr_scroll_bottom.setPosition(position.x, position.y + size.x + size.x + getScrollSizeY() - 2 * size.x);
 }
 
 void Scrollbar::setValue(short value) {
@@ -115,22 +115,22 @@ void Scrollbar::setValue(short value) {
 
 float Scrollbar::getScrollSizeY() {
 
-    return float(size.y) * float(scroll_length)/float(max_value - min_value + 1);
+    return float(size.y-2*size.x) * float(scroll_length)/float(max_value - min_value + 1);
 }
 
 void Scrollbar::scrollPositioning() {
 
-    float delta_y = float(scroll_value) * (size.y/float(max_value-min_value+1));
+    float delta_y = float(scroll_value) * ((size.y-2*size.x)/float(max_value-min_value+1));
 
     // SCROLL RECT
-    scroll_top.setPosition(position.x, position.y + delta_y);
-    scroll_center.setPosition(position.x, position.y + size.x + delta_y);
-    scroll_bottom.setPosition(position.x, position.y + size.x + getScrollSizeY() - 2 * size.x + delta_y);
+    scroll_top.setPosition(position.x, position.y + size.x + delta_y);
+    scroll_center.setPosition(position.x, position.y + size.x + size.x + delta_y);
+    scroll_bottom.setPosition(position.x, position.y + size.x + size.x + getScrollSizeY() - 2 * size.x + delta_y);
 
     // SCROLL SPRITES
-    spr_scroll_top.setPosition(position.x, position.y + delta_y);
-    spr_scroll_center.setPosition(position.x, position.y + size.x + delta_y);
-    spr_scroll_bottom.setPosition(position.x, position.y + size.x + getScrollSizeY() - 2 * size.x + delta_y);
+    spr_scroll_top.setPosition(position.x, position.y + size.x + delta_y);
+    spr_scroll_center.setPosition(position.x, position.y + size.x + size.x + delta_y);
+    spr_scroll_bottom.setPosition(position.x, position.y + size.x + size.x + getScrollSizeY() - 2 * size.x + delta_y);
 }
 
 bool Scrollbar::isSelected() {

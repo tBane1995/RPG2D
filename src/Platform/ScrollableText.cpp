@@ -17,9 +17,7 @@ ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::Scrollabl
 	sf::Vector2f scrollbar_size = sf::Vector2f(16, height);
 	sf::Vector2f scrollbar_position = sf::Vector2f(width/2.0f, -height/2.0f);
 	float scroll_max = textarea->getSize().y + textarea->getLineHeight();
-	std::cout << "scrollmax: " << scroll_max << "\n";
 	float scroll_len = height;
-	std::cout << "scrolllen: " << scroll_len << "\n";
 	scrollbar = new Scrollbar(scrollbar_size, scrollbar_position, 0, scroll_max, 0, scroll_len);
 		
 	text_texture.create(width-2*margin, height-2*margin);
