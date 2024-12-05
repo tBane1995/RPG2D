@@ -26,6 +26,14 @@ public:
     sf::RectangleShape scroll_center;
     sf::RectangleShape scroll_bottom;
 
+    sf::Sprite spr_bar_top;
+    sf::Sprite spr_bar_center;
+    sf::Sprite spr_bar_bottom;
+
+    sf::Sprite spr_scroll_top;
+    sf::Sprite spr_scroll_center;
+    sf::Sprite spr_scroll_bottom;
+
     float start_mouse_y;
     bool is_pressed;
 

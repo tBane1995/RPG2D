@@ -144,8 +144,6 @@ void loadTextures() {
 
 	loadSingleTexture("GUI/spacebutton.png", 80, 20);
 
-	loadSingleTexture("GUI/scrollbar/button_bottom.png", 8, 8);
-	loadSingleTexture("GUI/scrollbar/button_top.png", 8, 8);
 	loadSingleTexture("GUI/scrollbar/bar_bottom.png", 8, 8);
 	loadSingleTexture("GUI/scrollbar/bar_top.png", 8, 8);
 	loadSingleTexture("GUI/scrollbar/bar_center.png", 8, 8);
