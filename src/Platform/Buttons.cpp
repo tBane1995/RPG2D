@@ -6,10 +6,12 @@
 #include "Textures.h"
 #include "Fonts.h"
 #include "Window.h"
+#include "Theme.h"
 
-sf::Color idleColor = sf::Color(32.0f, 32.0f, 32.0f);
-sf::Color hoverColor = sf::Color(48.0f, 48.0f, 48.0f);
-sf::Color pressedColor = sf::Color(64.0f, 64.0f, 64.0f);
+// TO-DO - not working colors - are a nulls
+sf::Color idleColor = panelColor_medium;
+sf::Color hoverColor = panelColor_normal;
+sf::Color pressedColor = panelColor_light;
 
 sf::Color spriteIdleColor = sf::Color(192.0f, 192.0f, 192.0f);
 sf::Color spriteHoverColor = sf::Color(224.0f, 224.0f, 224.0f);

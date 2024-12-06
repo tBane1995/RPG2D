@@ -17,7 +17,7 @@ Message::Message(std::wstring message) : Dialog(DialogType::Message) {
 	text->setPosition(sf::Vector2f(cam->position.x-width/2.0f+margin, cam->position.y-height/2.0f+margin));
 
 	rect = sf::RectangleShape(sf::Vector2f(width, height));
-	rect.setFillColor(panelColor);
+	rect.setFillColor(panelColor_normal);
 	rect.setPosition(cam->position.x-width/2.0f, cam->position.y-height/2.0f);
 }
 

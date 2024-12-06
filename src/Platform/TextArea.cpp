@@ -52,7 +52,7 @@ void TextArea::generateRect() {
 			
 	rect.setSize(size);
 	rect.setPosition(position.x+cam->position.x, position.y+cam->position.y);
-	rect.setFillColor(panelColor);
+	rect.setFillColor(panelColor_normal);
 }
 
 void TextArea::setWstring(std::wstring s) {

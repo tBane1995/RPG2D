@@ -110,7 +110,7 @@ OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile
     /////////////////
 
     rect = sf::RectangleShape(sf::Vector2f(512, rect_height));
-    rect.setFillColor(panelColor);
+    rect.setFillColor(panelColor_normal);
 
     // POSITIONING /////////////
     sf::Vector2f pos;

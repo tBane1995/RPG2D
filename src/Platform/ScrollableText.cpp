@@ -11,7 +11,7 @@ ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::Scrollabl
 	textarea->setPosition(sf::Vector2f(- width/2.0f + margin, - height/2.0f + margin));
 
 	rect = sf::RectangleShape(sf::Vector2f(width, height));
-	rect.setFillColor(panelColor);
+	rect.setFillColor(panelColor_normal);
 	rect.setPosition(cam->position.x - width / 2.0f, cam->position.y - height / 2.0f);
 
 	sf::Vector2f scrollbar_size = sf::Vector2f(16, height);

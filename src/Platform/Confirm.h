@@ -32,7 +32,7 @@ public:
 		short height = 128;
 
 		rect = sf::RectangleShape(sf::Vector2f(width, height));
-		rect.setFillColor(panelColor);
+		rect.setFillColor(panelColor_normal);
 		sf::Vector2f pos;
 		pos.x = position.x - width / 2.0f;
 		pos.y = position.y - height / 2.0f;

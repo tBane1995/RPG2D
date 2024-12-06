@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include "Theme.h"
 
 extern sf::Color idleColor;
 extern sf::Color hoverColor;

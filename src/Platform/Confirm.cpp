@@ -8,14 +8,3 @@
 #include "Mouse.h"
 #include "Textures.h"
 #include "Time.h"
-
-Confirm::Confirm(std::wstring text) : Dialog(DialogType::Confirm) {
-
-}
-
-Confirm::~Confirm() {
-	delete textarea;
-	delete btn_yes;
-	delete btn_no;
-}
-
