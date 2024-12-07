@@ -1,6 +1,8 @@
 ﻿#ifndef MapEditor_hpp
 #define MapEditor_hpp
 
+#include "Platform/Platform.h"
+
 enum class MapEditorStates { Start, Editor };
 MapEditorStates mapEditorState;
 
@@ -65,7 +67,7 @@ void MapEditor() {
     
     mapEditorState = MapEditorStates::Editor;
 
-    initTheme();
+    initPlatform();
 
     clearAllMainListsOfGameObjects();
 

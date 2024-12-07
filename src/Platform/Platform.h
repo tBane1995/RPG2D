@@ -72,3 +72,5 @@
 #include "Platform/TradePanel.h"
 #include "Platform/JournalPanel.h"
 #include "Platform/StatsPanel.h"
+
+void initPlatform();
