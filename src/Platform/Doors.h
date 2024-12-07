@@ -5,7 +5,7 @@
 #include <vector>
 #include "GameObjects.h"
 
-enum class doorState { open, opening, close, closing };
+enum class DoorState { Open, Opening, Close, Closing };
 
 class SingleTexture;
 
@@ -15,7 +15,7 @@ public:
 	sf::Sprite sprite;
 	sf::Time last_action_time;
 	short current_frame;
-	doorState state;
+	DoorState state;
 	SingleTexture* takeItTexture;
 	sf::Sprite takeItSprite;
 	bool showHand;

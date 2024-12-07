@@ -10,7 +10,7 @@ Door::Door(std::string name, float width, float length, float height, float widt
 
 	type = GameObjectType::Door;
 
-	state = doorState::close;
+	state = DoorState::Close;
 	textures = getTexturesSet(name);
 	this->texture = textures[0];
 	current_frame = 0;
@@ -31,7 +31,7 @@ Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 
 	type = GameObjectType::Door;
 
-	state = doorState::close;
+	state = DoorState::Close;
 	textures = getTexturesSet(name);
 	this->texture = textures[0];
 	current_frame = 0;
@@ -52,13 +52,13 @@ Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 }
 
 void Door::open() {
-	state = doorState::opening;
+	state = DoorState::Opening;
 	last_action_time = currentTime;
 }
 
 
 void Door::close() {
-	state = doorState::closing;
+	state = DoorState::Closing;
 	float width = sprite.getGlobalBounds().getSize().x - colliders[0]->width - colliders[1]->width;
 	colliders.push_back(new Collider(width, colliders[0]->length, position, 0, -8, ColliderType::Rectangle));
 	last_action_time = currentTime;
@@ -100,34 +100,37 @@ void Door::update(float dt) {
 
 	(playerNextTo()) ? showHand = true : showHand = false;
 
-	if (state == doorState::opening) {
-
-		if ((currentTime - last_action_time).asSeconds() > 0.5f) {
+	if ((currentTime - last_action_time).asSeconds() > 0.5f) {
+		if (state == DoorState::Opening) {
 			current_frame += 1;
 			last_action_time = currentTime;
 			sprite.setTexture(*textures[current_frame]->texture);
 
 			if (current_frame == textures.size() - 1) {
-				state = doorState::open;
+				state = DoorState::Open;
 				delete colliders.back();
 				colliders.pop_back();
 			}
 		}
-
-	}
-
-	if (state == doorState::closing) {
-
-		if ((currentTime - last_action_time).asSeconds() > 0.5f) {
+		else if (state == DoorState::Closing) {
 			current_frame -= 1;
 			last_action_time = currentTime;
 			sprite.setTexture(*textures[current_frame]->texture);
 
 			if (current_frame == 0) {
-				state = doorState::close;
+				state = DoorState::Close;
 			}
 		}
+		else if (state == DoorState::Open) {
+			close();
+		}
+		else if (state == DoorState::Close) {
+			open();
+		}
+
 	}
+
+	
 }
 
 void Door::draw() {

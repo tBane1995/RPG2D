@@ -521,12 +521,12 @@ bool interactionsWithDoors() {
     for (auto& door : doors) {
         if(door->playerNextTo()) {
 
-            if (door->state == doorState::open) {
+            if (door->state == DoorState::Open) {
                 door->close();
                 return true;
             }
             
-            if (door->state == doorState::close) {
+            if (door->state == DoorState::Close) {
                 door->open();
                 return true;
             }
