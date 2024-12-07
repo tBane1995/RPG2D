@@ -1,3 +1,4 @@
+#include "Theme.h"
 #include "Buttons.h"
 #include "Mouse.h"
 #include "GUI.h"
@@ -6,7 +7,7 @@
 #include "Textures.h"
 #include "Fonts.h"
 #include "Window.h"
-#include "Theme.h"
+
 
 // TO-DO - not working colors - are a nulls
 sf::Color idleColor = panelColor_medium;

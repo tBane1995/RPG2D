@@ -609,6 +609,35 @@ void testIntersectionTwoLines() {
     }
 }
 
+void moveThe2PixelsToUpForSprites() {
+    // Ta funkcja wczytuje podane sety oraz przesuwa ich piksele o 2 piksele w górę
+
+    std::vector < std::string > namesOfSets;
+    namesOfSets.push_back("assets/sets/body/boy-blackhaired");
+    namesOfSets.push_back("assets/sets/body/boy-brownhaired");
+    namesOfSets.push_back("assets/sets/body/boy-redhaired");
+
+    namesOfSets.push_back("assets/sets/body/man-blackhaired");
+    namesOfSets.push_back("assets/sets/body/man-brownhaired");
+    namesOfSets.push_back("assets/sets/body/man-redhaired");
+
+    namesOfSets.push_back("assets/sets/body/woman-blackhaired");
+    namesOfSets.push_back("assets/sets/body/woman-brownhaired");
+    namesOfSets.push_back("assets/sets/body/woman-redhaired");
+
+
+    for (auto& nameOfSet : namesOfSets) {
+        if (std::filesystem::exists(current_path) && std::filesystem::is_directory(current_path)) {
+
+            for (auto& entry : std::filesystem::directory_iterator(current_path)) {
+                paths.push_back(entry);
+            }
+        }
+    }
+
+
+}
+
 int main()
 {
 
@@ -617,6 +646,7 @@ int main()
     //createSetsFromRuns("assets/monsters/jaszczur/");
     //editWhitePixelsToTransparent("assets/monsters/dziobak/");
     //convertPNGsToSet();
+    //moveThe2PixelsToUpForSprites();
     
     // LOADS
 	loadFonts();

@@ -65,6 +65,8 @@ void MapEditor() {
     
     mapEditorState = MapEditorStates::Editor;
 
+    initTheme();
+
     clearAllMainListsOfGameObjects();
 
     createTerrainPrefabs();

@@ -1,10 +1,10 @@
 #pragma once
-
+#include "Theme.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
 #include <functional>
-#include "Theme.h"
+
 
 extern sf::Color idleColor;
 extern sf::Color hoverColor;
