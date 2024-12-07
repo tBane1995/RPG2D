@@ -12,6 +12,7 @@ enum class TextureType { Single, Set };
 struct TTextureEntry
 {
 	std::string Path;
+	int MapIndex;
 	int x;
 	int y;
 	int Width;
@@ -31,34 +32,26 @@ public:
 		this->type = type;
 		cx = cy = 0;
 	}
+	virtual ~Texture() {};
 };
 
 class SingleTexture : public Texture {
 public:
 	sf::Texture* texture;
 	
-	SingleTexture(std::string pathfile, float cx, float cy) : Texture(pathfile, TextureType::Single, cx, cy) {
+	SingleTexture(std::string pathfile, float cx, float cy);
+	SingleTexture(std::string name, sf::Image image);
+	virtual ~SingleTexture();
 
-		texture = new sf::Texture;
-		texture->loadFromFile("assets/" + pathfile);
-		texture->setRepeated(true);
+	sf::Vector2u getSize();
 
-		//cout << "load texture: " << pathfile << " as: " << name << endl;
-	}
+	static void SetTextureForSprite(sf::Sprite* Sprite, SingleTexture* Texture);
+	static void SetOriginForSprite(sf::Sprite* Sprite, SingleTexture* Texture, float DividerX = 2.0f, float DividerY = 2.0f);
 
-	SingleTexture(std::string name, sf::Image image) : Texture(name, TextureType::Single) {
-		
-		texture = new sf::Texture;
-		texture->loadFromImage(image);
-		texture->setRepeated(true);
-
-		cx = texture->getSize().x / 2;
-		cy = texture->getSize().y / 2;
-		
-		//cout << "load texture from set as: " << name << endl;
-	}
 private:
 	bool TextureAllocated;
+	int IndexToMapFiles;
+	TTextureEntry* Info;
 };
 
 extern std::vector < SingleTexture* > singleTextures;
@@ -70,4 +63,4 @@ void loadTextures();
 SingleTexture* getSingleTexture(std::string name);
 TTextureEntry* getSingleTextureInfo(std::string name);
 std::vector < SingleTexture* > getTexturesSet(std::string name);
-void loadTextureMapInfo();
+void loadTextureMapInfo(std::string Fname, int Index);
