@@ -11,14 +11,14 @@ Furniture::Furniture(std::string name, float width, float length, float height) 
 		
 	texture = getSingleTexture(name);
 	sprite = sf::Sprite();
-	sprite.setTexture(*texture->texture);
-	sprite.setOrigin(texture->cx, texture->cy);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
+	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
 
 	inventory = nullptr;
 	takeItTexture = getSingleTexture("GUI/hand");
 	takeItSprite = sf::Sprite();
-	takeItSprite.setTexture(*takeItTexture->texture);
-	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
+	SingleTexture::SetTextureForSprite(&takeItSprite, takeItTexture);
+	SingleTexture::SetOriginForSprite(&takeItSprite, takeItTexture, 1.0f, 1.0f);
 	showHand = false;
 }
 	
@@ -27,15 +27,15 @@ Furniture::Furniture(GameObject* object, float x, float y) : GameObject(object, 
 		
 	texture = getSingleTexture(name);
 	sprite = sf::Sprite();
-	sprite.setTexture(*texture->texture);
-	sprite.setOrigin(texture->cx, texture->cy);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
+	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
 
 	inventory = nullptr;
 		
 	takeItTexture = getSingleTexture("GUI/hand");
 	takeItSprite = sf::Sprite();
-	takeItSprite.setTexture(*takeItTexture->texture);
-	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
+	SingleTexture::SetTextureForSprite(&takeItSprite, takeItTexture);
+	SingleTexture::SetOriginForSprite(&takeItSprite, takeItTexture, 1.0f, 1.0f);
 	showHand = false;
 
 	sprite.setPosition(position);
@@ -69,9 +69,13 @@ void Furniture::update(float dt) {
 				showHand = true;
 
 				if (inventory->items.size() > 0)
-					takeItSprite.setTexture(*getSingleTexture("GUI/hand")->texture);
+				{
+					SingleTexture::SetTextureForSprite(&takeItSprite, getSingleTexture("GUI/hand"));
+				}
 				else
-					takeItSprite.setTexture(*getSingleTexture("GUI/grey_hand")->texture);
+				{
+					SingleTexture::SetTextureForSprite(&takeItSprite, getSingleTexture("GUI/grey_hand"));
+				}
 			}
 
 		}

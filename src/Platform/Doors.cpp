@@ -16,15 +16,14 @@ Door::Door(std::string name, float width, float length, float height, float widt
 	current_frame = 0;
 
 	sprite = sf::Sprite();
-	sprite.setTexture(*textures[0]->texture);
-	sprite.setOrigin(textures[0]->cx, textures[0]->texture->getSize().y - 1);
+	SingleTexture::SetTextureForSprite(&sprite, textures[0]);
+	sprite.setOrigin(textures[0]->cx, textures[0]->getSize().y - 1);
 
 	takeItTexture = getSingleTexture("GUI/hand");
 	takeItSprite = sf::Sprite();
-	takeItSprite.setTexture(*takeItTexture->texture);
-	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
+	SingleTexture::SetTextureForSprite(&takeItSprite, takeItTexture);
+	SingleTexture::SetOriginForSprite(&takeItSprite, takeItTexture, 1.0f, 1.0f);
 	showHand = false;
-
 }
 
 Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
@@ -37,14 +36,14 @@ Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	current_frame = 0;
 
 	sprite = sf::Sprite();
-	sprite.setTexture(*textures[0]->texture);
+	SingleTexture::SetTextureForSprite(&sprite, textures[0]);
 	sprite.setOrigin(dynamic_cast<Door*>(object)->sprite.getOrigin());
 	sprite.setPosition(position.x, position.y);
 
 	takeItTexture = getSingleTexture("GUI/hand");
 	takeItSprite = sf::Sprite();
-	takeItSprite.setTexture(*takeItTexture->texture);
-	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
+	SingleTexture::SetTextureForSprite(&takeItSprite, takeItTexture);
+	SingleTexture::SetOriginForSprite(&takeItSprite, takeItTexture, 1.0f, 1.0f);
 	showHand = false;
 
 	textname.setPosition(position.x, position.y - height - 3);
@@ -105,7 +104,7 @@ void Door::update(float dt) {
 		if ((currentTime - last_action_time).asSeconds() > 0.5f) {
 			current_frame += 1;
 			last_action_time = currentTime;
-			sprite.setTexture(*textures[current_frame]->texture);
+			SingleTexture::SetTextureForSprite(&sprite, textures[current_frame]);
 
 			if (current_frame == textures.size() - 1) {
 				state = doorState::open;
@@ -120,7 +119,7 @@ void Door::update(float dt) {
 		if ((currentTime - last_action_time).asSeconds() > 0.5f) {
 			current_frame -= 1;
 			last_action_time = currentTime;
-			sprite.setTexture(*textures[current_frame]->texture);
+			SingleTexture::SetTextureForSprite(&sprite, textures[current_frame]);
 
 			if (current_frame == 0) {
 				state = doorState::close;

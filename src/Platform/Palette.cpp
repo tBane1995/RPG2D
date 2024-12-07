@@ -45,16 +45,18 @@ void PaletteButton::setGameObject(GameObject* object) {
     sprite = sf::Sprite();
 
     if (object != nullptr) {
-
+        SingleTexture* CurrentTextureForObject = nullptr;
         if (object->type != GameObjectType::Water) {
-            sprite.setTexture(*object->texture->texture);
+            CurrentTextureForObject = object->texture;
+            SingleTexture::SetTextureForSprite(&sprite, CurrentTextureForObject);
         }
         else
-            sprite.setTexture(*dynamic_cast<WaterPrefab*>(object)->terrain->texture->texture);
+        {
+            CurrentTextureForObject = dynamic_cast<WaterPrefab*>(object)->terrain->texture;
+            SingleTexture::SetTextureForSprite(&sprite, CurrentTextureForObject);
+        }
 
         if (object->type == GameObjectType::Terrain || object->type == GameObjectType::Water) {
-
-
             sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
             sprite.setOrigin(8, 8);
             sprite.setScale(3.0f, 3.0f);
@@ -62,23 +64,23 @@ void PaletteButton::setGameObject(GameObject* object) {
         else if (object->type != GameObjectType::ItemOnMap) {
 
             sf::Vector2f o; // origin
-            o.x = sprite.getTexture()->getSize().x / 2.0f;
-            o.y = sprite.getTexture()->getSize().y / 2.0f;
+            o.x = CurrentTextureForObject->getSize().x / 2.0f;
+            o.y = CurrentTextureForObject->getSize().y / 2.0f;
             sprite.setOrigin(o);
 
             sf::Vector2f s; // scale
 
             if (sprite.getLocalBounds().getSize().x > sprite.getLocalBounds().getSize().y) {
-                s.x = 64.0f / float(sprite.getTexture()->getSize().x) * 0.75f;
-                s.y = 64.0f / float(sprite.getTexture()->getSize().x) * 0.75f;
+                s.x = 64.0f / float(CurrentTextureForObject->getSize().x) * 0.75f;
+                s.y = 64.0f / float(CurrentTextureForObject->getSize().x) * 0.75f;
             }
             else if (sprite.getLocalBounds().getSize().x < sprite.getLocalBounds().getSize().y) {
-                s.x = 64.0f / float(sprite.getTexture()->getSize().y) * 0.75f;
-                s.y = 64.0f / float(sprite.getTexture()->getSize().y) * 0.75f;
+                s.x = 64.0f / float(CurrentTextureForObject->getSize().y) * 0.75f;
+                s.y = 64.0f / float(CurrentTextureForObject->getSize().y) * 0.75f;
             }
             else {
-                s.x = 64.0f / float(sprite.getTexture()->getSize().x) * 0.75f;
-                s.y = 64.0f / float(sprite.getTexture()->getSize().x) * 0.75f;
+                s.x = 64.0f / float(CurrentTextureForObject->getSize().x) * 0.75f;
+                s.y = 64.0f / float(CurrentTextureForObject->getSize().x) * 0.75f;
             }
 
             sprite.setScale(s);
@@ -87,8 +89,6 @@ void PaletteButton::setGameObject(GameObject* object) {
             // Items
             sprite.setOrigin(28, 28);
             sprite.setTextureRect(sf::IntRect(4, 4, 56, 56));
-
-
         }
 
         hover_func = [this]() {

@@ -22,17 +22,17 @@ Scrollbar::Scrollbar(sf::Vector2f size, sf::Vector2f position, float minValue, f
     bar.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
     barTop = sf::Sprite();
-    barTop.setTexture(*getSingleTexture("GUI/scrollbar/bar_top")->texture);
+    SingleTexture::SetTextureForSprite(&barTop, getSingleTexture("GUI/scrollbar/bar_top"));
     barTop.setPosition(position.x + cam->position.x, position.y + cam->position.y);
     barTop.setScale(bar.getSize().x / 16.0f, bar.getSize().x / 16.0f);
 
     barCenter = sf::Sprite();
-    barCenter.setTexture(*getSingleTexture("GUI/scrollbar/bar_center")->texture);
+    SingleTexture::SetTextureForSprite(&barCenter, getSingleTexture("GUI/scrollbar/bar_center"));
     barCenter.setPosition(position.x + cam->position.x, position.y + cam->position.y + scroll.getSize().x);
     barCenter.setScale(bar.getSize().x / 16.0f, (bar.getSize().y - 2.0f * bar.getSize().x) / 16.0f);
 
     barBottom = sf::Sprite();
-    barBottom.setTexture(*getSingleTexture("GUI/scrollbar/bar_bottom")->texture);
+    SingleTexture::SetTextureForSprite(&barBottom, getSingleTexture("GUI/scrollbar/bar_bottom"));
     barBottom.setPosition(position.x + cam->position.x, position.y + cam->position.y + bar.getSize().y - bar.getSize().x);
     barBottom.setScale(bar.getSize().x / 16.0f, bar.getSize().x / 16.0f);
 
@@ -47,17 +47,17 @@ Scrollbar::Scrollbar(sf::Vector2f size, sf::Vector2f position, float minValue, f
     scroll.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y);
 
     scrollTop = sf::Sprite();
-    scrollTop.setTexture(*getSingleTexture("GUI/scrollbar/scroll_top")->texture);
+    SingleTexture::SetTextureForSprite(&scrollTop, getSingleTexture("GUI/scrollbar/scroll_top"));
     scrollTop.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y);
     scrollTop.setScale(scroll.getSize().x / 16.0f, scroll.getSize().x / 16.0f);
 
     scrollCenter = sf::Sprite();
-    scrollCenter.setTexture(*getSingleTexture("GUI/scrollbar/scroll_center")->texture);
+    SingleTexture::SetTextureForSprite(&scrollCenter, getSingleTexture("GUI/scrollbar/scroll_center"));
     scrollCenter.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y + scroll.getSize().x);
     scrollCenter.setScale(scroll.getSize().x / 16.0f, (getScrollHeight() - 2.0f * scroll.getSize().x) / 16.0f);
 
     scrollBottom = sf::Sprite();
-    scrollBottom.setTexture(*getSingleTexture("GUI/scrollbar/scroll_bottom")->texture);
+    SingleTexture::SetTextureForSprite(&scrollBottom, getSingleTexture("GUI/scrollbar/scroll_bottom"));
     scrollBottom.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y + getScrollHeight() - scroll.getSize().x);
     scrollBottom.setScale(scroll.getSize().x / 16.0f, scroll.getSize().x / 16.0f);
 
@@ -81,17 +81,17 @@ Scrollbar::Scrollbar(sf::Vector2f size, float minValue, float maxValue, float sc
     bar.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
     barTop = sf::Sprite();
-    barTop.setTexture(*getSingleTexture("GUI/scrollbar/bar_top")->texture);
+    SingleTexture::SetTextureForSprite(&barTop, getSingleTexture("GUI/scrollbar/bar_top"));
     barTop.setPosition(position.x + cam->position.x, position.y + cam->position.y);
     barTop.setScale(bar.getSize().x / 16.0f, bar.getSize().x / 16.0f);
 
     barCenter = sf::Sprite();
-    barCenter.setTexture(*getSingleTexture("GUI/scrollbar/bar_center")->texture);
+    SingleTexture::SetTextureForSprite(&barCenter, getSingleTexture("GUI/scrollbar/bar_center"));
     barCenter.setPosition(position.x + cam->position.x, position.y + cam->position.y + scroll.getSize().x);
     barCenter.setScale(bar.getSize().x / 16.0f, (bar.getSize().y - 2.0f * bar.getSize().x) / 16.0f);
 
     barBottom = sf::Sprite();
-    barBottom.setTexture(*getSingleTexture("GUI/scrollbar/bar_bottom")->texture);
+    SingleTexture::SetTextureForSprite(&barBottom, getSingleTexture("GUI/scrollbar/bar_bottom"));
     barBottom.setPosition(position.x + cam->position.x, position.y + cam->position.y + bar.getSize().y - bar.getSize().x);
     barBottom.setScale(bar.getSize().x / 16.0f, bar.getSize().x / 16.0f);
 
@@ -106,17 +106,17 @@ Scrollbar::Scrollbar(sf::Vector2f size, float minValue, float maxValue, float sc
     scroll.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y);
 
     scrollTop = sf::Sprite();
-    scrollTop.setTexture(*getSingleTexture("GUI/scrollbar/scroll_top")->texture);
+    SingleTexture::SetTextureForSprite(&scrollTop, getSingleTexture("GUI/scrollbar/scroll_top"));
     scrollTop.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y);
     scrollTop.setScale(scroll.getSize().x / 16.0f, scroll.getSize().x / 16.0f);
 
     scrollCenter = sf::Sprite();
-    scrollCenter.setTexture(*getSingleTexture("GUI/scrollbar/scroll_center")->texture);
+    SingleTexture::SetTextureForSprite(&scrollCenter, getSingleTexture("GUI/scrollbar/scroll_center"));
     scrollCenter.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y + scroll.getSize().x);
     scrollCenter.setScale(scroll.getSize().x / 16.0f, (getScrollHeight() - 2.0f * scroll.getSize().x) / 16.0f);
 
     scrollBottom = sf::Sprite();
-    scrollBottom.setTexture(*getSingleTexture("GUI/scrollbar/scroll_bottom")->texture);
+    SingleTexture::SetTextureForSprite(&scrollBottom, getSingleTexture("GUI/scrollbar/scroll_bottom"));
     scrollBottom.setPosition(scrollPosition.x + cam->position.x, scrollPosition.y + cam->position.y + getScrollHeight() - scroll.getSize().x);
     scrollBottom.setScale(scroll.getSize().x / 16.0f, scroll.getSize().x / 16.0f);
 

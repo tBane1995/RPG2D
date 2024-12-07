@@ -223,7 +223,8 @@ void MeshEditor() {
         GameObject* prefab = getPrefab("natures/tree9");
         Nature* nature = dynamic_cast<Nature*>(prefab);
         sf::Sprite sprite = nature->sprite;
-        sprite.setOrigin(nature->texture->cx, nature->texture->cy);
+        //sprite.setOrigin(nature->texture->cx, nature->texture->cy);
+        SingleTexture::SetOriginForSprite(&sprite, nature->texture, 1.0f, 1.0f);
         sprite.setScale(2.0f, 2.0f);
 
         window->draw(sprite);

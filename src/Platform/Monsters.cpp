@@ -57,7 +57,7 @@ void Monster::loadTextures() {
 	}
 
 	sprite = sf::Sprite();
-	sprite.setOrigin(idleTextures[0]->cx, idleTextures[0]->cy);
+	SingleTexture::SetOriginForSprite(&sprite, idleTextures[0], 1.0f, 1.0f);
 }
 
 void Monster::dropLoot() {
@@ -182,7 +182,7 @@ void Monster::idle(float dt) {
 	}
 
 	calculateCurrentFrame(dt);
-	sprite.setTexture(*idleTextures[direction * 4 + frame]->texture);
+	SingleTexture::SetTextureForSprite(&sprite, idleTextures[direction * 4 + frame]);
 }
 
 void Monster::run(float dt) {
@@ -199,7 +199,7 @@ void Monster::run(float dt) {
 	followThePath(dt);
 
 	calculateCurrentFrame(dt);
-	sprite.setTexture(*runTextures[direction * 4 + frame]->texture);
+	SingleTexture::SetTextureForSprite(&sprite, runTextures[direction * 4 + frame]);
 }
 
 void Monster::update(float dt) {

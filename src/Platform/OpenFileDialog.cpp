@@ -231,9 +231,13 @@ void OpenFileDialog::setFilenamesTexts() {
 
             std::string extension = paths[i + short(scrollbar->scrollValue)].path().extension().string();
             if (extension == "")
-                icons[i].setTexture(*getSingleTexture("GUI/icons/dictionary")->texture);
+            {
+                SingleTexture::SetTextureForSprite(&icons[i], getSingleTexture("GUI/icons/dictionary"));
+            }
             else
-                icons[i].setTexture(*getSingleTexture("GUI/icons/file")->texture);
+            {
+                SingleTexture::SetTextureForSprite(&icons[i], getSingleTexture("GUI/icons/file"));
+            }
         }
         else
             filenames[i]->setWstring(L"");

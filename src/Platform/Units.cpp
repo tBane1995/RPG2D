@@ -113,8 +113,7 @@ void Unit::loadBody() {
 	texture = idleTextures[0];
 
 	sprite = sf::Sprite();
-	sprite.setOrigin(texture->texture->getSize().x / 2, texture->texture->getSize().y / 2 );
-
+	SingleTexture::SetOriginForSprite(&sprite, texture);
 }
 
 void Unit::createViewRangeArea() {
@@ -245,7 +244,7 @@ void Unit::idle(float dt) {
 
 	calculateCurrentFrame(dt);
 	texture = idleTextures[direction * 4 + frame];
-	sprite.setTexture(*texture->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 }
 
 void Unit::run(float dt) {
@@ -254,7 +253,7 @@ void Unit::run(float dt) {
 
 	calculateCurrentFrame(dt);
 	texture = runTextures[direction * 4 + frame];
-	sprite.setTexture(*texture->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 }
 
 void Unit::attack(float dt) {
@@ -285,14 +284,14 @@ void Unit::attack(float dt) {
 		frame = 3;
 
 	texture = attackTextures[direction * 4 + frame];
-	sprite.setTexture(*texture->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 }
 
 void Unit::idling(float dt) {
 
 	calculateCurrentFrame(dt);
 	texture = idleTextures[direction * 4 + frame];
-	sprite.setTexture(*texture->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 	sprite.setPosition(position);
 }
 

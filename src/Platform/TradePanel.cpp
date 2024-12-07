@@ -38,7 +38,7 @@ void updateTradePanel() {
 	drawItemStats = false;
 
 	background = sf::Sprite();
-	background.setTexture(*getSingleTexture("GUI/infoPanel")->texture);
+	SingleTexture::SetTextureForSprite(&background, getSingleTexture("GUI/infoPanel"));
 	background.setPosition(cam->position.x, cam->position.y + 275);
 	background.setOrigin(300, 75);
 
@@ -47,7 +47,7 @@ void updateTradePanel() {
 		drawItemStats = true;
 
 		itemSprite = sf::Sprite();
-		itemSprite.setTexture(*item->texture->texture);
+		SingleTexture::SetTextureForSprite(&itemSprite, item->texture);
 		itemSprite.setOrigin(32, 32);
 		itemSprite.setScale(2, 2);
 		itemSprite.setPosition(cam->position.x - 300 + 80, cam->position.y + 275);

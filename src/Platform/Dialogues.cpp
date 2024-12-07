@@ -35,8 +35,9 @@ DialogueBox::DialogueBox(Dialogue* dialogue) {
 	chooseScroll = 0;
 	chooseCursor = 0;
 
+	SingleTexture* tex = getSingleTexture("GUI/infoPanel");
 	background = sf::Sprite();
-	background.setTexture(*getSingleTexture("GUI/infoPanel")->texture);
+	SingleTexture::SetTextureForSprite(&background, tex);
 	background.setOrigin(300, 75);
 	background.setPosition(cam->position.x, cam->position.y+screenHeight/2.0f-75.0f);
 

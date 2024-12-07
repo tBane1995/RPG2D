@@ -7,8 +7,8 @@ Nature::Nature(std::string name, float width, float length, float height) : Game
 	type = GameObjectType::Nature;
 	this->texture = getSingleTexture(name);
 	sprite = sf::Sprite();
-	sprite.setTexture(*texture->texture);
-	sprite.setOrigin(texture->cx, texture->cy);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
+	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
 	sprite.setPosition(position);
 
 }
@@ -19,8 +19,8 @@ Nature::Nature(GameObject* object, float x, float y) : GameObject(object, x, y) 
 	this->texture = getSingleTexture(name);
 
 	sprite = sf::Sprite();
-	sprite.setTexture(*texture->texture);
-	sprite.setOrigin(texture->cx, texture->cy);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
+	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
 	sprite.setPosition(position);
 
 }
