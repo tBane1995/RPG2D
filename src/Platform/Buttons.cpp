@@ -487,3 +487,14 @@ void ButtonWithImage::draw() {
 
     window->draw(sprite);
 }
+
+void initButtonsGlobalVariables()
+{
+    idleColor = panelColor_medium;
+    hoverColor = panelColor_normal;
+    pressedColor = panelColor_light;
+
+    spriteIdleColor = sf::Color(192.0f, 192.0f, 192.0f);
+    spriteHoverColor = sf::Color(224.0f, 224.0f, 224.0f);
+    spritePressedColor = sf::Color::White;
+}

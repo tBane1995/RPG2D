@@ -611,7 +611,7 @@ void testIntersectionTwoLines() {
 
 void moveThe2PixelsToUpForSprites() {
     // Ta funkcja wczytuje podane sety oraz przesuwa ich piksele o 2 piksele w górę
-
+/*
     std::vector < std::string > namesOfSets;
     namesOfSets.push_back("assets/sets/body/boy-blackhaired");
     namesOfSets.push_back("assets/sets/body/boy-brownhaired");
@@ -634,7 +634,7 @@ void moveThe2PixelsToUpForSprites() {
             }
         }
     }
-
+    */
 
 }
 
