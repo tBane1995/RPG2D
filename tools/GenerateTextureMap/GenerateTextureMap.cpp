@@ -32,11 +32,11 @@ public:
     {
         Close();
     }
-    void Open(std::string TextureImageFileName = "TextureMap.png")
+    void Open(std::string TextureImageFileName = "TextureMap.txt")
     {
         Close();
         std::lock_guard<std::mutex> lock(mu);
-        file.open(TextureImageFileName + ".txt", std::ios::out | std::ios::trunc);
+        file.open(TextureImageFileName, std::ios::out | std::ios::trunc);
     }
     void Close()
     {
@@ -232,7 +232,7 @@ void JoinAssets(std::string CurrentMapType)
 
                 Counter++;
                 Fname = TextureImageFileNameBase + CurrentMapType + std::to_string(Counter);
-                DataFile.Open("assets\\" + Fname);
+                DataFile.Open("assets\\" + Fname + ".txt");
                 ImageMap.create(MapWidth, MapHeight, sf::Color(255, 255, 255, 0));
                 MapSize = ImageMap.getSize();
                 DestY = 0;
