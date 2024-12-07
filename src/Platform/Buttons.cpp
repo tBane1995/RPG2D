@@ -9,14 +9,15 @@
 #include "Window.h"
 
 
-// TO-DO - not working colors - are a nulls
-sf::Color idleColor = panelColor_medium;
-sf::Color hoverColor = panelColor_normal;
-sf::Color pressedColor = panelColor_light;
 
-sf::Color spriteIdleColor = sf::Color(192.0f, 192.0f, 192.0f);
-sf::Color spriteHoverColor = sf::Color(224.0f, 224.0f, 224.0f);
-sf::Color spritePressedColor = sf::Color::White;
+// TO-DO - not working colors - are a nulls
+sf::Color idleColor;
+sf::Color hoverColor;
+sf::Color pressedColor;
+
+sf::Color spriteIdleColor;
+sf::Color spriteHoverColor;
+sf::Color spritePressedColor;
 
 Btn::Btn(float width, float height, sf::Vector2f position)
 {
@@ -213,7 +214,7 @@ ButtonWithText::ButtonWithText(std::string s, sf::Vector2f position, short chara
 
     text = sf::Text();
     text.setFont(basicFont);
-    text.setFillColor(sf::Color::White);
+    text.setFillColor(textColor);
     text.setCharacterSize(characterSize);
     text.setString(s);
     text.setPosition(position.x + cam->position.x + float(margin)*0.95f, position.y + cam->position.y + float(margin) * 0.6f);
@@ -223,7 +224,7 @@ ButtonWithText::ButtonWithText(std::string s, sf::Vector2f position, short chara
     size.x = text.getLocalBounds().getSize().x + float(margin)*2.15f;
     size.y = float(text.getCharacterSize()) * 1.1f + float(margin) * 1.8f;
     rect.setSize(size);
-    rect.setFillColor(sf::Color::Black);
+    rect.setFillColor(idleColor);
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
     state = ButtonState::Idle;
@@ -240,7 +241,7 @@ ButtonWithText::ButtonWithText(std::string s, short characterSize) {
 
     text = sf::Text();
     text.setFont(basicFont);
-    text.setFillColor(sf::Color::White);
+    text.setFillColor(textColor);
     text.setCharacterSize(characterSize);
     text.setString(s);
     text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
@@ -250,7 +251,7 @@ ButtonWithText::ButtonWithText(std::string s, short characterSize) {
     size.x = text.getLocalBounds().getSize().x + float(margin) * 2.15f;
     size.y = float(text.getCharacterSize()) * 1.1f + float(margin) * 1.8f;
     rect.setSize(size);
-    rect.setFillColor(sf::Color::Black);
+    rect.setFillColor(idleColor);
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
     state = ButtonState::Idle;
@@ -490,11 +491,15 @@ void ButtonWithImage::draw() {
 
 void initButtonsGlobalVariables()
 {
-    idleColor = panelColor_medium;
-    hoverColor = panelColor_normal;
-    pressedColor = panelColor_light;
+    float idle_val = 255.0f;
+    float hover_val = idle_val + 127.5f;
+    float pressed_val = idle_val + 255.0f;
+
+    idleColor = sf::Color(panelColor_dark.r * idle_val / 255.0f, panelColor_dark.g * idle_val / 255.0f, panelColor_dark.b * idle_val / 255.0f);
+    hoverColor = sf::Color(idleColor.r * hover_val / 255.0f, idleColor.g * hover_val / 255.0f, idleColor.b * hover_val / 255.0f);
+    pressedColor = sf::Color(idleColor.r * pressed_val / 255.0f, idleColor.g * pressed_val / 255.0f, idleColor.b * pressed_val / 255.0f);
 
     spriteIdleColor = sf::Color(192.0f, 192.0f, 192.0f);
     spriteHoverColor = sf::Color(224.0f, 224.0f, 224.0f);
-    spritePressedColor = sf::Color::White;
+    spritePressedColor = sf::Color(255.0f, 255.0f, 255.0f);
 }

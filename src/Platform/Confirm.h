@@ -40,10 +40,10 @@ public:
 
 		textarea = new TextArea(text, pos, width);
 
-		btn_yes = new ButtonWithText("tak");
+		btn_yes = new ButtonWithText("tak", 17);
 		btn_yes->setPosition(sf::Vector2f(position.x - 64 - btn_yes->rect.getSize().x/2.0f, position.y + 16));
 		
-		btn_no = new ButtonWithText("nie");
+		btn_no = new ButtonWithText("nie", 17);
 		btn_no->setPosition(sf::Vector2f(position.x + 64 - btn_no->rect.getSize().x/2.0f, position.y + 16));
 
 		value = ConfirmValue::Undefinded;

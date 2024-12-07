@@ -1,3 +1,4 @@
+
 #include "OpenFileDialog.h"
 #include "Buttons.h"
 #include "Scrollbar.h"
@@ -5,7 +6,7 @@
 #include <iostream>
 #include "Camera.h"
 #include "Fonts.h"
-#include "Theme.h"
+
 #include "Mouse.h"
 #include "Textures.h"
 #include "Time.h"
@@ -253,6 +254,12 @@ std::string OpenFileDialog::getPathfile() {
 
 void OpenFileDialog::update(sf::Event& event) {
     scrollbar->update(event);
+
+    selectButton->unclick();
+    cancelButton->unclick();
+
+    selectButton->hover();
+    cancelButton->hover();
 
     if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
