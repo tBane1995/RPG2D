@@ -254,17 +254,23 @@ void GameObject::mouseHovering()
 	for (int i = 0; i < colliders.size() && mouseIsHover == false; i++) {
 		if (colliders[i]->type == ColliderType::Elipse) {
 
-			if (pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x, position.y, colliders[i]->width / 2.0f, colliders[i]->length / 2.0f))
+			if (pointInEllipse(worldMousePosition.x, worldMousePosition.y, position.x+colliders[i]->dx, position.y+colliders[i]->dy, colliders[i]->width / 2.0f, colliders[i]->length / 2.0f))
 				mouseIsHover = true;
 
 		}
 
 		if (colliders[i]->type == ColliderType::Rectangle) {
 
-			if (pointInRectangle(worldMousePosition.x, worldMousePosition.y, position.x, position.y, colliders[i]->width, colliders[i]->length))
+			if (pointInRectangle(worldMousePosition.x, worldMousePosition.y, position.x+colliders[i]->dx, position.y+colliders[i]->dy, colliders[i]->width, colliders[i]->length))
 				mouseIsHover = true;
 		}
 	}
+}
+
+void GameObject::update(float dt) {
+
+	mouseHovering();
+	createTextname();
 }
 
 void GameObject::updateStatistic(float dt)
