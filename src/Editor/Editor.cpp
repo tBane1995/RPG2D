@@ -609,7 +609,7 @@ void testIntersectionTwoLines() {
     }
 }
 
-void moveThe2PixelsToUpForSprites() {
+void moveThePixelsToUpForSprites() {
     // Ta funkcja wczytuje podane sety oraz przesuwa ich piksele o 2 piksele w górę
 
     std::vector < std::string > namesOfSets;
@@ -625,14 +625,48 @@ void moveThe2PixelsToUpForSprites() {
     namesOfSets.push_back("assets/sets/body/woman-brownhaired");
     namesOfSets.push_back("assets/sets/body/woman-redhaired");
 
+    std::filesystem::path current_path = std::filesystem::current_path();
+    // current_path = "assets/";    // jak to zrobić ?
+    std::vector < std::filesystem::directory_entry > files;
 
-    for (auto& nameOfSet : namesOfSets) {
-        if (std::filesystem::exists(current_path) && std::filesystem::is_directory(current_path)) {
+    for (auto& set : namesOfSets) {
 
-            for (auto& entry : std::filesystem::directory_iterator(current_path)) {
-                paths.push_back(entry);
-            }
+        files.clear();
+        current_path = set;
+
+        for (auto& entry : std::filesystem::directory_iterator(current_path)) {
+            files.push_back(entry);
         }
+
+        for (auto& file : files) {
+
+            std::string pathfile = file.path().string();
+            sf::Image img;
+            img.loadFromFile(pathfile);
+            std::cout << "wczytano plik: " << pathfile <<"\n";
+
+            sf::Image new_img;
+            new_img.create(img.getSize().x, img.getSize().y, sf::Color::Transparent);
+
+            short xx, yy;
+
+            for (short y = 0; y < img.getSize().y; y++) {
+                for (short x = 0; x < img.getSize().x; x++) {
+
+                    xx = x;
+                    yy = y - 2;
+
+                    if (yy > 0 & yy < new_img.getSize().y && xx > 0 && xx < new_img.getSize().x) {
+                        new_img.setPixel(xx, yy, img.getPixel(x, y));
+                    }
+
+                }
+            }
+
+            new_img.saveToFile(pathfile);
+        }
+
+
     }
 
 
@@ -646,7 +680,7 @@ int main()
     //createSetsFromRuns("assets/monsters/jaszczur/");
     //editWhitePixelsToTransparent("assets/monsters/dziobak/");
     //convertPNGsToSet();
-    //moveThe2PixelsToUpForSprites();
+    //moveThePixelsToUpForSprites();
     
     // LOADS
 	loadFonts();
