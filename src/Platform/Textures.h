@@ -57,7 +57,8 @@ public:
 		
 		//cout << "load texture from set as: " << name << endl;
 	}
-
+private:
+	bool TextureAllocated;
 };
 
 extern std::vector < SingleTexture* > singleTextures;
