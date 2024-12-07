@@ -19,6 +19,7 @@ class Confirm : public Dialog {
 public:
 	sf::Vector2f position;
 	sf::RectangleShape rect;
+	float margin = 8;
 	TextArea* textarea;
 	ButtonWithText* btn_yes;
 	ButtonWithText* btn_no;

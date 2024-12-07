@@ -23,7 +23,8 @@ Confirm::Confirm(std::wstring text) : Dialog(DialogType::Confirm) {
 	pos.y = position.y - height / 2.0f;
 	rect.setPosition(pos);
 
-	textarea = new TextArea(text, pos, width);
+	sf::Vector2f textpos = sf::Vector2f(pos.x + margin, pos.y + margin);
+	textarea = new TextArea(text, textpos, width-2*margin);
 
 	btn_yes = new ButtonWithText("tak", 17);
 	btn_yes->setPosition(sf::Vector2f(position.x - 64 - btn_yes->rect.getSize().x / 2.0f, position.y + 16));
@@ -53,13 +54,22 @@ void Confirm::update(sf::Event& event) {
 	btn_yes->hover();
 	btn_no->hover();
 
-	if (btn_yes->click()) {
-		value = ConfirmValue::True;
+	if (event.type == sf::Event::MouseButtonReleased) {
+		if (event.mouseButton.button == sf::Mouse::Left) {
+
+			if (btn_yes->click()) {
+				value = ConfirmValue::True;
+			}
+
+			if (btn_no->click()) {
+				value = ConfirmValue::False;
+			}
+
+		}
 	}
 
-	if (btn_no->click()) {
-		value = ConfirmValue::False;
-	}
+
+	
 
 	btn_yes->update(dt);
 	btn_no->update(dt);

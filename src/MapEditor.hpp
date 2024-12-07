@@ -148,15 +148,37 @@ void MapEditor() {
             }
 
             if (!dialogs.empty()) {
-                if (dialogs.back()->type == DialogType::OpenFile) {
+                
+                if (dialogs.size()>=2 && dialogs.back()->type == DialogType::Confirm && dialogs[dialogs.size()-2]->type == DialogType::OpenFile) {
+                    Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
+                    confirm->update(event);
+
+                    if (confirm->value != ConfirmValue::Undefinded) {
+                        if (confirm->value == ConfirmValue::True) {
+                            OpenFileDialog* opendial = dynamic_cast<OpenFileDialog*>(dialogs[dialogs.size()-2]);
+                            mapa->load(opendial->getPathfile());
+                            delete confirm;
+                            dialogs.pop_back();
+                            delete opendial;
+                            dialogs.pop_back();
+                        }
+
+                        if (confirm->value == ConfirmValue::False) {
+                            delete confirm;
+                            dialogs.pop_back();
+                            OpenFileDialog* opendial = dynamic_cast<OpenFileDialog*>(dialogs.back());
+                            opendial->fileSelected = false;
+                        }
+                    }
+                }
+                else if (dialogs.back()->type == DialogType::OpenFile) {
                     OpenFileDialog* opendial = dynamic_cast<OpenFileDialog*>(dialogs.back());
 
                     opendial->update(event);
 
                     if (opendial->fileSelected) {
-                        mapa->load(opendial->getPathfile());
-                        delete dialogs.back();
-                        dialogs.pop_back();
+
+                        dialogs.push_back(new Confirm(L"Plik "+ ConvertUtf8ToWide(opendial->getPathfile())+L" już istnieje. chcesz go zamienić ?"));
                     }
 
                 }
@@ -167,6 +189,11 @@ void MapEditor() {
                 else if (dialogs.back()->type == DialogType::Confirm) {
                     Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
                     confirm->update(event);
+
+                    if (confirm->value != ConfirmValue::Undefinded) {
+                        delete dialogs.back();
+                        dialogs.pop_back();
+                    }
                 }
                 
 
