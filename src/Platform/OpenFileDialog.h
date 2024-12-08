@@ -17,6 +17,7 @@ class OpenFileDialog : public Dialog {
 public:
     sf::Vector2f position = sf::Vector2f(0, 0);
 
+    sf::RectangleShape border;
     sf::RectangleShape rect;        // main big panel
     float rect_width;
     float rect_height;

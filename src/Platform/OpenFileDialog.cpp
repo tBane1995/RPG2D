@@ -108,57 +108,65 @@ OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile
 
     rect_height += submitbar.getSize().y;
 
+    //////////
+
+    rect_height += 2 * borderWidth;
+
     /////////////////
 
-    rect = sf::RectangleShape(sf::Vector2f(512, rect_height));
+    border = sf::RectangleShape(sf::Vector2f(512.0f+2*borderWidth, rect_height));
+    border.setFillColor(panelColor_dark);
+
+    rect = sf::RectangleShape(sf::Vector2f(512.0f, rect_height - 2.0f*borderWidth));
     rect.setFillColor(panelColor_normal);
 
     // POSITIONING /////////////
     sf::Vector2f pos;
 
     // title bar
-    sf::Vector2f p = sf::Vector2f(position.x - rect_width / 2.0f, +position.y - rect_height / 2.0f);
-    rect.setPosition(p.x + cam->position.x, p.y + cam->position.y);
+    sf::Vector2f p = sf::Vector2f(position.x - rect_width/2.0f, + position.y - rect_height/2.0f);
+    border.setPosition(p);
+    rect.setPosition(p.x + cam->position.x+borderWidth, p.y + cam->position.y+borderWidth);
 
-    titlebar.setPosition(p.x + cam->position.x, p.y + cam->position.y);
-    titleText->setPosition(sf::Vector2f(p.x + margin_vert, p.y + titleText->getLineHeight() / 4.0f));
+    titlebar.setPosition(p.x + cam->position.x+borderWidth, p.y + cam->position.y+borderWidth);
+    titleText->setPosition(sf::Vector2f(p.x + margin_vert+borderWidth, p.y + titleText->getLineHeight() / 4.0f + borderWidth));
 
     // filenames and scrollbar
-    pos.x = cam->position.x + position.x - rect_width / 2.0f;
-    pos.y = cam->position.y + position.y - rect_height / 2.0f + titlebar.getSize().y;
+    pos.x = cam->position.x + position.x - rect_width/2.0f + borderWidth;
+    pos.y = cam->position.y + position.y - rect_height/2.0f + titlebar.getSize().y + borderWidth;
     filenamesRect.setPosition(pos);
 
-    pos.x = position.x - rect_width / 2.0f + (titleText->texts[0].getPosition().x - titleText->rect.getPosition().x);
+    pos.x = position.x - rect_width/2.0f + borderWidth + (titleText->texts[0].getPosition().x - titleText->rect.getPosition().x);
     for (short i = 0; i < 7; i++) {
 
-        pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + i * line_height;
+        pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + i * line_height + borderWidth;
 
         icons[i].setPosition(pos.x + cam->position.x, pos.y + cam->position.y);
         filenamesRects[i].setPosition(pos.x + cam->position.x + 30, pos.y + cam->position.y);
         filenames[i]->setPosition(sf::Vector2f(pos.x + 30, pos.y + filenames[i]->getLineHeight() / 4.0f));
     }
 
-    pos.x = position.x + rect_width / 2.0f - scrollbar->size.x;
-    pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y;
+    pos.x = position.x + rect_width/2.0f + borderWidth - scrollbar->size.x;
+    pos.y = position.y - rect_height/2.0f + titlebar.getSize().y + borderWidth;
     scrollbar->setPosition(pos);
 
     // submit bar
-    pos.x = position.x - rect_width / 2.0f + cam->position.x;
-    pos.y = position.y - rect_height / 2.0f + cam->position.y + titlebar.getSize().y + 7 * line_height;
+    pos.x = position.x - rect_width/2.0f + cam->position.x + borderWidth;
+    pos.y = position.y - rect_height/2.0f + cam->position.y + titlebar.getSize().y + 7 * line_height + borderWidth;
     submitbar.setPosition(pos);
 
-    pos.x = position.x - rect_width / 2.0f + margin_vert;
-    pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + 7.0f * line_height + filenameInfo->getLineHeight() / 4.0f + margin_vert;
+    pos.x = position.x - rect_width/2.0f + margin_vert + borderWidth;
+    pos.y = position.y - rect_height/2.0f + titlebar.getSize().y + 7.0f * line_height + filenameInfo->getLineHeight() / 4.0f + margin_vert + borderWidth;
     filenameInfo->setPosition(pos);
 
-    pos.x = position.x - rect_width / 2.0f + filenameInfo->getSize().x + 2.0f * margin_hor;
-    pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + 7.0f * line_height + margin_vert;
+    pos.x = position.x - rect_width/2.0f + filenameInfo->getSize().x + 2.0f * margin_hor + borderWidth;
+    pos.y = position.y - rect_height/2.0f + titlebar.getSize().y + 7.0f * line_height + margin_vert + borderWidth;
 
     selectedFilenameRect.setPosition(pos.x + cam->position.x, pos.y + cam->position.y);
     selectedFilenameText->setPosition(sf::Vector2f(pos.x, pos.y + selectedFilenameText->getLineHeight() / 4.0f));
 
-    pos.x = position.x + rect_width / 2.0f - cancelButton->rect.getSize().x - margin_hor;
-    pos.y = position.y + rect_height / 2.0f - cancelButton->rect.getSize().y - margin_vert;
+    pos.x = position.x + rect_width/2.0f - cancelButton->rect.getSize().x - margin_hor + borderWidth;
+    pos.y = position.y + rect_height/2.0f - cancelButton->rect.getSize().y - margin_vert - borderWidth;
     cancelButton->setPosition(pos);
 
     pos.x = pos.x - selectButton->rect.getSize().x - margin_hor;
@@ -312,6 +320,7 @@ void OpenFileDialog::update(sf::Event& event) {
 
 void OpenFileDialog::draw() {
     //main rect
+    window->draw(border);
     window->draw(rect);
 
     // tile bar
