@@ -16,15 +16,20 @@ Confirm::Confirm(std::wstring text) : Dialog(DialogType::Confirm) {
 	short width = 256;
 	short height = 128;
 
-	rect = sf::RectangleShape(sf::Vector2f(width, height));
+	border = sf::RectangleShape(sf::Vector2f(width, height));
+	border.setFillColor(panelColor_dark);
+	
+	rect = sf::RectangleShape(sf::Vector2f(width-2*borderWidth, height-2*borderWidth));
 	rect.setFillColor(panelColor_normal);
+	
 	sf::Vector2f pos;
 	pos.x = position.x - width / 2.0f;
 	pos.y = position.y - height / 2.0f;
-	rect.setPosition(pos);
+	border.setPosition(pos);
+	rect.setPosition(pos.x+borderWidth, pos.y+borderWidth);
 
-	sf::Vector2f textpos = sf::Vector2f(pos.x + margin, pos.y + margin);
-	textarea = new TextArea(text, textpos, width-2*margin);
+	sf::Vector2f textpos = sf::Vector2f(pos.x + borderWidth + margin, pos.y + borderWidth + margin);
+	textarea = new TextArea(text, textpos, width-2*borderWidth-2*margin);
 
 	btn_yes = new ButtonWithText("tak", 17);
 	btn_yes->setPosition(sf::Vector2f(position.x - 64 - btn_yes->rect.getSize().x / 2.0f, position.y + 16));
@@ -77,6 +82,7 @@ void Confirm::update(sf::Event& event) {
 }
 
 void Confirm::draw() {
+	window->draw(border);
 	window->draw(rect);
 	textarea->draw();
 	btn_yes->draw();

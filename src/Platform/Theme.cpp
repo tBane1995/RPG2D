@@ -5,6 +5,7 @@ sf::Color dialoguesColor = sf::Color(234, 224, 175);
 sf::Color dialoguesActiveColor = sf::Color(255, 201, 14);
 
 // EDITOR
+float borderWidth;
 sf::Color panelColor_normal;
 sf::Color panelColor_light;
 sf::Color panelColor_medium;
@@ -19,6 +20,7 @@ void initTheme() {
 	dialoguesActiveColor = sf::Color(255, 201, 14);
 
 	// EDITOR
+	borderWidth = 8.0f;
 	panelColor_normal = sf::Color(64, 64, 64);
 	panelColor_light = sf::Color(80, 80, 80);
 	panelColor_medium = sf::Color(48, 48, 48);
