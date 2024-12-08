@@ -26,8 +26,8 @@ ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::Scrollabl
 	scrollbar = new Scrollbar(scrollbar_size, scrollbar_position, 0, scroll_max, 0, scroll_len);
 	
 	// TO-DO - generowanie tekstury przewijalnej dla tekstu
-	text_texture.create(width-2.0f*borderWidth-2.0f*margin, height-2.0f*borderWidth-2.0f*margin);
-	sf::View v = sf::View(sf::FloatRect(sf::Vector2f(cam->position.x-(width-2*margin-2*borderWidth)/2.0f, cam->position.y-(height-2*margin-2*borderWidth)/2.0f), sf::Vector2f(width-2*margin-2*borderWidth, height-2*margin-2*borderWidth)));
+	text_texture.create(width-2.0f*(borderWidth+margin) - scrollbar_size.x, height-2.0f*(borderWidth+margin));
+	sf::View v = sf::View(sf::FloatRect(sf::Vector2f(cam->position.x-width/2.0f+borderWidth+margin, cam->position.y-height/2.0f+borderWidth+margin), sf::Vector2f(width-2*(borderWidth+margin), height-2*(borderWidth+margin))));
 	text_texture.setView(v);
 	text_texture.setSmooth(true);
 	text_texture.clear(sf::Color::Transparent);
@@ -38,7 +38,7 @@ ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::Scrollabl
 	text_sprite = sf::Sprite(text_texture.getTexture());
 	sf::Vector2f textpos;
 	textpos.x = cam->position.x + position.x - width / 2.0f + borderWidth + margin - (textarea->texts[0].getPosition().x-textarea->rect.getPosition().x);
-	textpos.y = cam->position.y + position.y - height / 2.0f + borderWidth + margin;
+	textpos.y = cam->position.y + position.y - height / 2.0f + borderWidth + margin - (textarea->texts[0].getPosition().y - textarea->rect.getPosition().y);
 	text_sprite.setPosition(textpos);
 	// TO-DO
 }
@@ -52,7 +52,7 @@ void ScrollableText::update(sf::Event& event) {
 	position.y = borderWidth + margin -scrollbar->scroll_value - height / 2.0f;
 	textarea->setPosition(position);
 
-	sf::View v = sf::View(sf::FloatRect(sf::Vector2f(cam->position.x-(width-2*margin)/2.0f,cam->position.y -(height-2*margin)/2.0f), sf::Vector2f(width-2*margin, height-2*margin)));
+	sf::View v = sf::View(sf::FloatRect(sf::Vector2f(cam->position.x - width / 2.0f + borderWidth + margin, cam->position.y - height / 2.0f + borderWidth + margin), sf::Vector2f(width - 2 * (borderWidth + margin), height - 2 * (borderWidth + margin))));
 	text_texture.setView(v);
 	text_texture.clear(sf::Color::Transparent);
 	text_texture.draw(textarea->rect);
