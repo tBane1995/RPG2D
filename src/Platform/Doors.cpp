@@ -22,7 +22,7 @@ Door::Door(std::string name, float width, float length, float height, float widt
 	takeItTexture = getSingleTexture("GUI/hand");
 	takeItSprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&takeItSprite, takeItTexture);
-	SingleTexture::SetOriginForSprite(&takeItSprite, takeItTexture, 1.0f, 1.0f);
+	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 	showHand = false;
 }
 
@@ -43,7 +43,7 @@ Door::Door(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	takeItTexture = getSingleTexture("GUI/hand");
 	takeItSprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&takeItSprite, takeItTexture);
-	SingleTexture::SetOriginForSprite(&takeItSprite, takeItTexture, 1.0f, 1.0f);
+	takeItSprite.setOrigin(takeItTexture->cx, takeItTexture->cy);
 	showHand = false;
 
 	textname.setPosition(position.x, position.y - height - 3);

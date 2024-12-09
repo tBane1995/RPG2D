@@ -26,7 +26,7 @@ Character::Character(std::string name, std::string bodySet) : Unit(name, bodySet
 	talkWithTexture = getSingleTexture("GUI/talk");
 	talkWithSprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&talkWithSprite, talkWithTexture);
-	SingleTexture::SetOriginForSprite(&talkWithSprite, talkWithTexture, 1.0f, 1.0f);
+	talkWithSprite.setOrigin(talkWithTexture->cx, talkWithTexture->cy);
 	showHand = false;
 
 }
@@ -52,7 +52,7 @@ Character::Character(GameObject* object, float x, float y) : Unit(object, x, y) 
 	talkWithTexture = getSingleTexture("GUI/talk");
 	talkWithSprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&talkWithSprite, talkWithTexture);
-	SingleTexture::SetOriginForSprite(&talkWithSprite, talkWithTexture, 1.0f, 1.0f);
+	talkWithSprite.setOrigin(talkWithTexture->cx, talkWithTexture->cy);
 	showHand = false;
 }
 

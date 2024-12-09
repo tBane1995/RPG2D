@@ -36,7 +36,7 @@ ControlsPanel::ControlsPanel() {
 
     tex = getSingleTexture("GUI/smallButtons/smallbutton-ArrowRight");
     right = sf::Sprite();
-    SingleTexture::SetTextureForSprite(&left, tex);
+    SingleTexture::SetTextureForSprite(&right, tex);
     right.setOrigin(20, 20);
 
     tex = getSingleTexture("GUI/spacebutton");

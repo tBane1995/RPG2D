@@ -66,7 +66,7 @@ ItemOnMap::ItemOnMap(Item* item, float x, float y, short count) : GameObject(ite
 	texture = getSingleTexture(item->name);
 	sprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&sprite, texture);
-	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
+	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(x, y);
 	sprite.setScale(0.75f, 0.75f);
 }
@@ -80,7 +80,7 @@ ItemOnMap::ItemOnMap(GameObject* object, float x, float y) : GameObject(object, 
 	texture = getSingleTexture(item->name);
 	sprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&sprite, texture);
-	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
+	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(position);
 	sprite.setScale(0.75f, 0.75f);
 }
@@ -388,7 +388,7 @@ InventoryOnMap::InventoryOnMap(Inventory* inventory, float x, float y) : GameObj
 	texture = getSingleTexture("items/bag");
 	sprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&sprite, texture);
-	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
+	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(position);
 	sprite.setScale(0.75f, 0.75f);
 	collected = false;

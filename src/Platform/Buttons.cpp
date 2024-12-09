@@ -79,7 +79,8 @@ Btn::Btn(SingleTexture* texture, sf::Vector2f position)
 
     sprite = sf::Sprite();
     SingleTexture::SetTextureForSprite(&sprite, texture);
-    SingleTexture::SetOriginForSprite(&sprite, texture, 2.0f, 2.0f);
+    sprite.setOrigin(texture->getSize().x / 2.0f, texture->getSize().y / 2.0f);
+
     sf::Vector2f scale = sf::Vector2f(size.x / texture->getSize().x, size.y / texture->getSize().y);
     sprite.setScale(scale);
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
@@ -102,10 +103,11 @@ void Btn::setTexture(SingleTexture* texture) {
 
     sprite = sf::Sprite();
     SingleTexture::SetTextureForSprite(&sprite, texture);
-    SingleTexture::SetOriginForSprite(&sprite, texture, 2.0f, 2.0f);
-    sf::Vector2f scale = sf::Vector2f(size.x / texture->texture->getSize().x, size.y / texture->texture->getSize().y);
+    sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
+    sf::Vector2f scale = sf::Vector2f(size.x / texture->getSize().x, size.y / texture->getSize().y);
     sprite.setScale(scale);
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    this->texture = texture;
 
     changeColor();
 }
@@ -391,7 +393,7 @@ ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
 
     if (texture != nullptr) {
         SingleTexture::SetTextureForSprite(&sprite, texture);
-        SingleTexture::SetOriginForSprite(&sprite, texture, 2.0f, 2.0f);
+        sprite.setOrigin(texture->getSize().x / 2.0f, texture->getSize().y / 2.0f);
     }
 
     hover_func = { };
@@ -404,7 +406,8 @@ ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
 void ButtonWithImage::setTexture(SingleTexture* texture) {
     sprite = sf::Sprite();
     SingleTexture::SetTextureForSprite(&sprite, texture);
-    SingleTexture::SetOriginForSprite(&sprite, texture, 2.0f, 2.0f);
+    sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
+    this->texture = texture;
 }
 
 void ButtonWithImage::changeColor()

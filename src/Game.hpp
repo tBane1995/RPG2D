@@ -641,8 +641,8 @@ void coverOutsideIfPlayerInBuilding() {
 
         for (auto& wall : building->_walls) {
             
-            tex_hgh = wall->texture->texture->getSize().y;
-            tex_wdt = wall->texture->texture->getSize().x;
+            tex_hgh = wall->texture->getSize().y;
+            tex_wdt = wall->texture->getSize().x;
 
             for (int y = 0; y < tex_hgh; y++) {
                 for (int x = 0; x < tex_wdt; x++) {
@@ -658,8 +658,8 @@ void coverOutsideIfPlayerInBuilding() {
 
         for (auto& fur : building->_furnitures) {
 
-            tex_hgh = fur->texture->texture->getSize().y;
-            tex_wdt = fur->texture->texture->getSize().x;
+            tex_hgh = fur->texture->getSize().y;
+            tex_wdt = fur->texture->getSize().x;
 
             for (int y = 0; y < tex_hgh; y++) {
                 for (int x = 0; x < tex_wdt; x++) {

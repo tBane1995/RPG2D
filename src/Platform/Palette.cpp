@@ -91,11 +91,11 @@ void PaletteButton::setGameObject(GameObject* object) {
             sprite.setTextureRect(sf::IntRect(4, 4, 56, 56));
         }
 
-        hover_func = [this]() {
+        hover_func = [this, CurrentTextureForObject]() {
             if (tip == nullptr || tip->btn != this) {
                 sf::Vector2f pos;
-                pos.x = this->position.x - sprite.getTexture()->getSize().x / 2.0f;
-                pos.y = this->position.y + sprite.getTexture()->getSize().y / 4.0f;
+                pos.x = this->position.x - CurrentTextureForObject->getSize().x / 2.0f;
+                pos.y = this->position.y + CurrentTextureForObject->getSize().y / 4.0f;
                 tip = new Tip(ConvertUtf8ToWide(this->object->name), pos, this);       // TO-DO delete convert and use std::wstring
             }
 

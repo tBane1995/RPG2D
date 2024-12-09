@@ -4,6 +4,7 @@
 #include "TextArea.h"
 #include "Window.h"
 #include "Time.h"
+#include "Textures.h"
 
 Tip::Tip(std::wstring tip, ButtonWithImage* btn) {
 		
@@ -17,8 +18,8 @@ Tip::Tip(std::wstring tip, ButtonWithImage* btn) {
 	}
 	else
 	{
-		position.x = btn->position.x - btn->sprite.getTexture()->getSize().x/2.0f;
-		position.y = btn->position.y + btn->sprite.getTexture()->getSize().y/2.0f;
+		position.x = btn->position.x - btn->texture->getSize().x/2.0f;
+		position.y = btn->position.y + btn->texture->getSize().y/2.0f;
 	}
 		
 

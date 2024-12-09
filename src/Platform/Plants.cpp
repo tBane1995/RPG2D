@@ -10,7 +10,7 @@ Plant::Plant(std::string name, float width, float length, float height) : GameOb
 	textures.push_back(getSingleTexture("plants/grass_1"));
 
 	SingleTexture::SetTextureForSprite(&sprite, textures[0]);
-	SingleTexture::SetOriginForSprite(&sprite, textures[0], 1.0f, 1.0f);
+	sprite.setOrigin(textures[0]->cx, textures[0]->cy);
 	sprite.setPosition(position);
 
 	current_texture = 0;
@@ -26,7 +26,7 @@ Plant::Plant(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	}
 			
 	SingleTexture::SetTextureForSprite(&sprite, textures[0]);
-	SingleTexture::SetOriginForSprite(&sprite, textures[0], 1.0f, 1.0f);
+	sprite.setOrigin(textures[0]->cx, textures[0]->cy);
 	sprite.setPosition(position);
 
 	current_texture = 0;

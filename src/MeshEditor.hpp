@@ -130,7 +130,7 @@ void MeshEditor() {
     meshEditorState = MeshEditorStates::Editor;
 
     // TO-DO
-    tex_size = dynamic_cast<Nature*>(getPrefab("natures/tree9"))->texture->texture->getSize();
+    tex_size = dynamic_cast<Nature*>(getPrefab("natures/tree9"))->texture->getSize();
     (tex_size.x > tex_size.y) ? frag_size = tex_size.x : frag_size = tex_size.y;
     frag_size /= 16;
     //
@@ -224,7 +224,7 @@ void MeshEditor() {
         Nature* nature = dynamic_cast<Nature*>(prefab);
         sf::Sprite sprite = nature->sprite;
         //sprite.setOrigin(nature->texture->cx, nature->texture->cy);
-        SingleTexture::SetOriginForSprite(&sprite, nature->texture, 1.0f, 1.0f);
+        sprite.setOrigin(nature->texture->cx, nature->texture->cy);
         sprite.setScale(2.0f, 2.0f);
 
         window->draw(sprite);

@@ -7,7 +7,8 @@
 #include "Pathfinding.h"
 #include "RenderParameters.h"
 
-Monster::Monster(std::string name, float width, float length, float height, short EXP) : Unit(name, name, width, length, height) {
+Monster::Monster(std::string name, float width, float length, float height, short EXP) : Unit(name, name, width, length, height)
+{
 	type = GameObjectType::Monster;
 	direction = 2;
 	isAlive = true;
@@ -57,7 +58,8 @@ void Monster::loadTextures() {
 	}
 
 	sprite = sf::Sprite();
-	SingleTexture::SetOriginForSprite(&sprite, idleTextures[0], 1.0f, 1.0f);
+	//SingleTexture::SetOriginForSprite(&sprite, idleTextures[0], 1.0f, 1.0f);
+	sprite.setOrigin(idleTextures[0]->cx, idleTextures[0]->cy);
 }
 
 void Monster::dropLoot() {
@@ -288,16 +290,14 @@ void Monster::updateStatistic(float dt) {
 }
 
 void Monster::draw() {
-
-	if (isAlive) {
-
+	if (isAlive)
+	{
 		Unit::draw();
 
 		window->draw(sprite);
 		window->draw(lifeBarBackground);
 		window->draw(lifeBar);
-
-
+		//std::cout << "SpritePos: " << sprite.getPosition().x << "x" << sprite.getPosition().y << "  lifeBarPos:" << lifeBar.getPosition().x << "x" << lifeBar.getPosition().y << std::endl;
 	}
 }
 

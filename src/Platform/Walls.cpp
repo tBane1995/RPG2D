@@ -7,7 +7,7 @@ Wall::Wall(std::string name, float width, float length, float height) : GameObje
 	this->texture = getSingleTexture(name);
 	sprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&sprite, texture);
-	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
+	sprite.setOrigin(texture->cx, texture->cy);
 }
 
 Wall::Wall(GameObject* object, float x, float y) : GameObject(object, x, y) {
@@ -15,7 +15,7 @@ Wall::Wall(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	this->texture = getSingleTexture(name);
 	sprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&sprite, texture);
-	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
+	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(position);
 }
 

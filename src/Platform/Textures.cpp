@@ -99,6 +99,43 @@ sf::Vector2u SingleTexture::getSize()
 	return texture->getSize();
 }
 
+sf::Vector2u SingleTexture::GetTexturePosInMap()
+{
+	if (Info)
+	{
+		return sf::Vector2u(Info->x, Info->y);
+	}
+	return sf::Vector2u(0, 0);
+}
+
+sf::Texture* SingleTexture::CutTexture()
+{
+	sf::Image Image, ImageMap;
+	int Left, Top;
+	int Width, Height;
+
+	if (Info)
+	{
+		Left = Info->x;
+		Top = Info->y;
+		Width = Info->Width;
+		Height = Info->Height;
+	}
+	else
+	{
+		Left = 0;
+		Top = 0;
+		Width = texture->getSize().x;
+		Height = texture->getSize().y;
+	}
+	ImageMap = texture->copyToImage();
+	Image.create(Width, Height, sf::Color::Transparent);
+	Image.copy(ImageMap, 0, 0, sf::IntRect(Left, Top, Width, Height));
+	sf::Texture* Tex = new sf::Texture();
+	Tex->loadFromImage(Image);
+	return Tex;
+}
+
 void SingleTexture::SetTextureForSprite(sf::Sprite* Sprite, SingleTexture* Texture)
 {
 	Sprite->setTexture(*Texture->texture);
@@ -110,19 +147,6 @@ void SingleTexture::SetTextureForSprite(sf::Sprite* Sprite, SingleTexture* Textu
 	else
 	{
 		Sprite->setTextureRect(sf::IntRect(0, 0, Texture->texture->getSize().x, Texture->texture->getSize().y));
-	}
-}
-
-void SingleTexture::SetOriginForSprite(sf::Sprite* Sprite, SingleTexture* Texture, float DividerX, float DividerY)
-{
-	if (Texture->Info)
-	{
-		TTextureEntry* Info = Texture->Info;
-		Sprite->setOrigin(Info->Width / DividerX, Info->Height / DividerY);
-	}
-	else
-	{
-		Sprite->setOrigin(Texture->texture->getSize().x / DividerX, Texture->texture->getSize().y / DividerY);
 	}
 }
 

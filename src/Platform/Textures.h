@@ -44,9 +44,9 @@ public:
 	virtual ~SingleTexture();
 
 	sf::Vector2u getSize();
-
+	sf::Vector2u GetTexturePosInMap();
+	sf::Texture* CutTexture();
 	static void SetTextureForSprite(sf::Sprite* Sprite, SingleTexture* Texture);
-	static void SetOriginForSprite(sf::Sprite* Sprite, SingleTexture* Texture, float DividerX = 2.0f, float DividerY = 2.0f);
 
 private:
 	bool TextureAllocated;

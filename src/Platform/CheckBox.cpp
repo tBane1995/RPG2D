@@ -17,7 +17,7 @@ CheckBox::CheckBox(sf::Vector2f size, sf::Vector2f position, bool value) {
 	checkSprite = sf::Sprite();
 	sf::Vector2f texsize = sf::Vector2f(CheckTexture->getSize().x, CheckTexture->getSize().y);
 	SingleTexture::SetTextureForSprite(&checkSprite, CheckTexture);
-	SingleTexture::SetOriginForSprite(&checkSprite, CheckTexture, 2.0f, 2.0f);
+	checkSprite.setOrigin(texsize.x / 2.0f, texsize.y / 2.0f);
 	checkSprite.setScale(size.x/texsize.x, size.y/texsize.y);
 	checkSprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 		
@@ -35,7 +35,7 @@ void CheckBox::edit(sf::Vector2f size, sf::Vector2f position) {
 	checkSprite = sf::Sprite();
 	sf::Vector2f texsize = sf::Vector2f(CheckTexture->getSize().x, CheckTexture->getSize().y);
 	SingleTexture::SetTextureForSprite(&checkSprite, CheckTexture);
-	SingleTexture::SetOriginForSprite(&checkSprite, CheckTexture, 2.0f, 2.0f);
+	checkSprite.setOrigin(texsize.x / 2.0f, texsize.y / 2.0f);
 	checkSprite.setScale(size.x / texsize.x, size.y / texsize.y);
 	checkSprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 }

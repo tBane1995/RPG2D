@@ -103,8 +103,8 @@ void InventoryPanel::update(int cursor) {
 				float x = cam->position.x + position.x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
 				float y = cam->position.y + position.y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
 
-				float twidth = item->texture->texture->getSize().x;
-				float theight = item->texture->texture->getSize().y;
+				float twidth = item->texture->getSize().x;
+				float theight = item->texture->getSize().y;
 					
 				SingleTexture::SetTextureForSprite(&itemsSprites[i], item->texture);
 				itemsSprites[i].setOrigin(twidth / 2, theight / 2);

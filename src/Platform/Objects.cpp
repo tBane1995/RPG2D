@@ -15,8 +15,7 @@ Object::Object(std::string name, float width, float length, float height, bool c
 
 	sprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&sprite, texture);
-	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
-
+	sprite.setOrigin(texture->cx, texture->cy);
 }
 
 Object::Object(GameObject* object, float x, float y) : GameObject(object, x, y) {
@@ -30,7 +29,7 @@ Object::Object(GameObject* object, float x, float y) : GameObject(object, x, y) 
 
 	sprite = sf::Sprite();
 	SingleTexture::SetTextureForSprite(&sprite, texture);
-	SingleTexture::SetOriginForSprite(&sprite, texture, 1.0f, 1.0f);
+	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(position);
 
 }
