@@ -11,6 +11,7 @@
 #include "Textures.h"
 #include "Time.h"
 
+
 bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_entry second) {
 
     if (first.is_directory() && second.is_directory()) {
@@ -138,7 +139,7 @@ OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile
     pos.x = position.x - rect_width/2.0f + borderWidth + (titleText->texts[0].getPosition().x - titleText->rect.getPosition().x);
     for (short i = 0; i < 7; i++) {
 
-        pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + i * line_height + borderWidth;
+        pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + borderWidth + i * line_height;
 
         icons[i].setPosition(pos.x + cam->position.x, pos.y + cam->position.y);
         filenamesRects[i].setPosition(pos.x + cam->position.x + 30, pos.y + cam->position.y);
@@ -198,6 +199,9 @@ void OpenFileDialog::loadDirectory() {
     }
     std::sort(paths.begin(), paths.end(), sortkey);
 
+    for (auto& p : paths)
+        std::cout << p.path().filename() << "\n";
+
     paths.emplace(paths.begin(), current_path.parent_path());
 }
 
@@ -232,29 +236,40 @@ void OpenFileDialog::createFilenamesTexts() {
 }
 
 void OpenFileDialog::setFilenamesTexts() {
+
+    std::cout << "scrollVal: " << scrollbar->scroll_value << "\n";
+
     for (short i = 0; i < 7; i++) {
 
-        if (i + short(scrollbar->scroll_value) < paths.size()) {
-            if (i + short(scrollbar->scroll_value) == 0) {
+        if (short(scrollbar->scroll_value)+i < paths.size()) {
+            if (short(scrollbar->scroll_value)+i == 0) {
                 filenames[i]->setWstring(L"..");
             }
             else {
-                filenames[i]->setWstring(paths[i + short(scrollbar->scroll_value)].path().filename().wstring());
+                filenames[i]->setWstring(paths[+short(scrollbar->scroll_value)+i].path().filename().wstring());
             }
             filenames[i]->generateRect();
 
-            std::string extension = paths[i + short(scrollbar->scroll_value)].path().extension().string();
+            std::string extension = paths[short(scrollbar->scroll_value)+i].path().extension().string();
             if(paths[i+short(scrollbar->scroll_value)].is_directory())
                 icons[i].setTexture(*getSingleTexture("GUI/icons/dictionary")->texture);
             else
                 icons[i].setTexture(*getSingleTexture("GUI/icons/file")->texture);
+
+            
         }
         else {
             filenames[i]->setWstring(L"");
             icons[i].setTexture(*getSingleTexture("GUI/icons/empty")->texture);
         }
-            
+
+        std::cout << "i: " << i;
+        std::cout << "\t i+scrVal: " << i + scrollbar->scroll_value;
+        std::wcout << L"filename: " << filenames[i]->lines[0];
+        std::cout << "\n";
     }
+
+    std::cout << "\n\n\n\n";
 }
 
 std::string OpenFileDialog::getPathfile() {
@@ -284,7 +299,7 @@ void OpenFileDialog::update(sf::Event& event) {
             else {
                 for (short i = 0; i < 7; i++) {
                     if (filenames[i]->rect.getGlobalBounds().contains(worldMousePosition)) {
-                        std::cout << "click";
+      
                         // LOAD THE DIRECTORY
                         if (i + short(scrollbar->scroll_value) < paths.size()) {
 

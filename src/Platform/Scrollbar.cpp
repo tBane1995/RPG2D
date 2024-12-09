@@ -112,12 +112,11 @@ void Scrollbar::setPosition(sf::Vector2f pos) {
 void Scrollbar::setValue(short value) {
     scroll_value = value;
 
-    if (scroll_value < min_value)
-        scroll_value = min_value;
-
-    else if ( scroll_value > max_value - scroll_length + 1)
+    if ( scroll_value > max_value - scroll_length + 1)
         scroll_value = max_value - scroll_length + 1;
 
+    if (scroll_value < min_value)
+        scroll_value = min_value;
 }
 
 float Scrollbar::getScrollSizeY() {

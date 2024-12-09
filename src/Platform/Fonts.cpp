@@ -39,6 +39,11 @@ std::vector < std::wstring > wrapText(std::wstring text, const sf::Font& font, s
 
     std::vector < std::wstring > wrappedText;
 
+    if (text == L"") {
+        wrappedText.push_back(text);
+        return wrappedText;
+    }
+
     std::wistringstream wordsStream(text);
     std::wstring word;
     std::wstring currentLine;
