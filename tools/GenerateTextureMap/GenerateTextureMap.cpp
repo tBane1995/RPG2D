@@ -88,7 +88,8 @@ void CreateMainTextureMaps(const std::string& Directory)
     {
         if (entry.is_directory())
         {
-            if (entry.path().string() != Directory + "\\monsters" && entry.path().string() != Directory + "\\sets")
+            if (entry.path().string() != Directory + "\\monsters" && entry.path().string() != Directory + "\\sets" && entry.path().string() != Directory + "\\tiles"
+                && entry.path().string() != Directory + "\\floors")
             {
                 MainDirectories.push_back(entry.path().string());
             }
@@ -145,7 +146,7 @@ void ProcessDirectory(const std::string& Directory, const std::string& Indent)
         sf::Image Im;
         for (const auto& entry : std::filesystem::directory_iterator(Directory))
         {
-            if (entry.is_regular_file() && entry.path().extension() == ".png")
+            if (entry.is_regular_file() && entry.path().extension() == ".png" && entry.path().filename().string().find("set_") == std::string::npos)
             {
                 std::cout << Indent << "  Adding file: " << entry.path().string() << std::endl;
                 Im.loadFromFile(entry.path().string());
