@@ -13,9 +13,10 @@ CheckBox::CheckBox(sf::Vector2f size, sf::Vector2f position, bool value) {
 	rect.setOrigin(size.x / 2.0f, size.y / 2.0f);
 	rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 
+	SingleTexture* CheckTexture = getSingleTexture("GUI/checkbox/check");
 	checkSprite = sf::Sprite();
-	checkSprite.setTexture(*getSingleTexture("GUI/checkbox/check")->texture);
-	sf::Vector2f texsize = sf::Vector2f( checkSprite.getTexture()->getSize().x, checkSprite.getTexture()->getSize().y);
+	sf::Vector2f texsize = sf::Vector2f(CheckTexture->getSize().x, CheckTexture->getSize().y);
+	SingleTexture::SetTextureForSprite(&checkSprite, CheckTexture);
 	checkSprite.setOrigin(texsize.x / 2.0f, texsize.y / 2.0f);
 	checkSprite.setScale(size.x/texsize.x, size.y/texsize.y);
 	checkSprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
@@ -30,9 +31,10 @@ void CheckBox::edit(sf::Vector2f size, sf::Vector2f position) {
 	rect.setOrigin(size.x / 2.0f, size.y / 2.0f);
 	rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 
+	SingleTexture* CheckTexture = getSingleTexture("GUI/checkbox/check");
 	checkSprite = sf::Sprite();
-	checkSprite.setTexture(*getSingleTexture("GUI/checkbox/check")->texture);
-	sf::Vector2f texsize = sf::Vector2f(checkSprite.getTexture()->getSize().x, checkSprite.getTexture()->getSize().y);
+	sf::Vector2f texsize = sf::Vector2f(CheckTexture->getSize().x, CheckTexture->getSize().y);
+	SingleTexture::SetTextureForSprite(&checkSprite, CheckTexture);
 	checkSprite.setOrigin(texsize.x / 2.0f, texsize.y / 2.0f);
 	checkSprite.setScale(size.x / texsize.x, size.y / texsize.y);
 	checkSprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);

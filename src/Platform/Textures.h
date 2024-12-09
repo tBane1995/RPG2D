@@ -9,6 +9,16 @@ bool areImagesEqual(sf::Image& img1, sf::Image& img2);
 
 enum class TextureType { Single, Set };
 
+struct TTextureEntry
+{
+	std::string Path;
+	int MapIndex;
+	int x;
+	int y;
+	int Width;
+	int Height;
+};
+
 class Texture {
 public:
 	std::string name;
@@ -22,39 +32,35 @@ public:
 		this->type = type;
 		cx = cy = 0;
 	}
+	virtual ~Texture() {};
 };
 
 class SingleTexture : public Texture {
 public:
 	sf::Texture* texture;
 	
-	SingleTexture(std::string pathfile, float cx, float cy) : Texture(pathfile, TextureType::Single, cx, cy) {
+	SingleTexture(std::string pathfile, float cx, float cy);
+	SingleTexture(std::string name, sf::Image image);
+	virtual ~SingleTexture();
 
-		texture = new sf::Texture;
-		texture->loadFromFile("assets/" + pathfile);
-		texture->setRepeated(true);
+	sf::Vector2u getSize();
+	sf::Vector2u GetTexturePosInMap();
+	sf::Texture* CutTexture();
+	static void SetTextureForSprite(sf::Sprite* Sprite, SingleTexture* Texture);
 
-		//cout << "load texture: " << pathfile << " as: " << name << endl;
-	}
-
-	SingleTexture(std::string name, sf::Image image) : Texture(name, TextureType::Single) {
-		
-		texture = new sf::Texture;
-		texture->loadFromImage(image);
-		texture->setRepeated(true);
-
-		cx = texture->getSize().x / 2;
-		cy = texture->getSize().y / 2;
-		
-		//cout << "load texture from set as: " << name << endl;
-	}
-
+private:
+	bool TextureAllocated;
+	int IndexToMapFiles;
+	TTextureEntry* Info;
 };
 
 extern std::vector < SingleTexture* > singleTextures;
+extern std::vector<TTextureEntry> TextureMapInfo;
 
 void loadSingleTexture(std::string pathfile, float cx, float cy);
 void loadTextureSets(std::string pathfile, int tile_width, int tile_height);
 void loadTextures();
 SingleTexture* getSingleTexture(std::string name);
+TTextureEntry* getSingleTextureInfo(std::string name);
 std::vector < SingleTexture* > getTexturesSet(std::string name);
+void loadTextureMapInfo(std::string Fname, int Index);

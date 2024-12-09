@@ -119,10 +119,12 @@ void Building::loadTexture2(std::ifstream& file) {
     sf::Image house_image;
     house_image.create(size.x * 16 + tile_width, (walls_height + size.x / 2.0f) * 16.0f + tiles_rows * tile_height + tile_height * 0.75f, sf::Color::Transparent);
 
+    sf::Image ImageMap = walls->texture->copyToImage();
+
     // DRAWING A WALLS
     sf::Image walls_image;
     walls_image.create(32, 32, sf::Color::Transparent);
-    walls_image = walls->texture->copyToImage();
+    walls_image.copy(ImageMap, 0, 0, sf::IntRect(walls->GetTexturePosInMap().x, walls->GetTexturePosInMap().y, walls->getSize().x, walls->getSize().y));
 
     for (short y = 2; y <= walls_height; y++) {
         for (short x = 0; x < size.x / 2; x++) {
@@ -132,7 +134,7 @@ void Building::loadTexture2(std::ifstream& file) {
 
     sf::Image bottom_walls_image;
     bottom_walls_image.create(32, 32, sf::Color::Transparent);
-    bottom_walls_image = bottom_walls->texture->copyToImage();
+    bottom_walls_image.copy(ImageMap, 0, 0, sf::IntRect(bottom_walls->GetTexturePosInMap().x, bottom_walls->GetTexturePosInMap().y, bottom_walls->getSize().x, bottom_walls->getSize().y));
 
     for (short x = 0; x < size.x / 2; x++) {
         house_image.copy(bottom_walls_image, x * 2 * 16 + tile_width / 2.0f, house_image.getSize().y - 2 * 16);
@@ -141,7 +143,7 @@ void Building::loadTexture2(std::ifstream& file) {
     // top_walls
     sf::Image top_walls_image;
     top_walls_image.create(32, 32, sf::Color::Transparent);
-    top_walls_image = top_walls->texture->copyToImage();
+    top_walls_image.copy(ImageMap, 0, 0, sf::IntRect(top_walls->GetTexturePosInMap().x, top_walls->GetTexturePosInMap().y, top_walls->getSize().x, top_walls->getSize().y));
 
     short width = size.x / 2;
     short start_x;
@@ -193,7 +195,8 @@ void Building::loadTexture2(std::ifstream& file) {
 
 
     // CREATE A TILES
-    sf::RenderStates rstate(getSingleTexture("buildings/parts/roof")->texture);
+    sf::Texture* RoofTexture = getSingleTexture("buildings/parts/roof")->CutTexture();
+    sf::RenderStates rstate(RoofTexture);
 
     // LEFT SIDE OF ROOF
     // even tiles
@@ -495,7 +498,7 @@ void Building::loadTexture2(std::ifstream& file) {
 
     // RENDER EMPTY PLACE FOR THE DOOR
     if (_door != nullptr) {
-        sf::RectangleShape door(sf::Vector2f(_door->sprite.getTexture()->getSize()));
+        sf::RectangleShape door(sf::Vector2f(_door->textures[_door->current_frame]->getSize()));
 
         for (short y = 0; y < door.getSize().y - 1; y++)
             for (short x = 0; x < door.getSize().x; x++) {
@@ -509,7 +512,8 @@ void Building::loadTexture2(std::ifstream& file) {
     // RENDER WINDOWS
     if ((size.x / 2 - 1) > 2 && (size.x / 4 - 1) % 2 == 1) {
         sf::Texture win_tex = *windows->texture;
-        sf::Image window_image = win_tex.copyToImage();
+        sf::Image window_image;
+        window_image.copy(ImageMap, 0, 0, sf::IntRect(windows->GetTexturePosInMap().x, windows->GetTexturePosInMap().y, windows->getSize().x, windows->getSize().y));
 
         short left_window_pos;
         short right_window_pos;
@@ -525,6 +529,8 @@ void Building::loadTexture2(std::ifstream& file) {
         }
     }
 
+    delete RoofTexture;
+    RoofTexture = nullptr;
 
     // create main tex
     sf::Texture* tex = new sf::Texture();
@@ -571,8 +577,8 @@ void Building::loadDoor(std::ifstream& file) {
     _door = new Door(getPrefab("doors/wooden_door"), position.x, position.y);
 }
 
-void Building::loadWalls(std::ifstream& file) {
-
+void Building::loadWalls(std::ifstream& file)
+{
     std::string line;
     std::string fragment;
 
@@ -979,7 +985,6 @@ void loadBuildingFromFile(std::string filename) {
     building = new Building(filename);
     terrain = new Terrain(0, 0, building->size.x, building->size.y);
     addGameObjectsToMainLists();    // TO-DO
-
 }
 
 void saveBuildingToFile(std::string filename) {

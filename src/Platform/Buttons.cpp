@@ -76,15 +76,16 @@ Btn::Btn(SingleTexture* texture, sf::Vector2f position)
 {
     this->position = position;
 
-    sf::Vector2f size = sf::Vector2f(texture->texture->getSize().x, texture->texture->getSize().y);
+    sf::Vector2f size = sf::Vector2f(texture->getSize().x, texture->getSize().y);
     rect = sf::RectangleShape(size);
     rect.setOrigin(size.x / 2, size.y / 2);
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
     sprite = sf::Sprite();
-    sprite.setTexture(*texture->texture);
-    sprite.setOrigin(texture->texture->getSize().x / 2.0f, texture->texture->getSize().y / 2.0f);
-    sf::Vector2f scale = sf::Vector2f(size.x / texture->texture->getSize().x, size.y / texture->texture->getSize().y);
+    SingleTexture::SetTextureForSprite(&sprite, texture);
+    sprite.setOrigin(texture->getSize().x / 2.0f, texture->getSize().y / 2.0f);
+
+    sf::Vector2f scale = sf::Vector2f(size.x / texture->getSize().x, size.y / texture->getSize().y);
     sprite.setScale(scale);
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
@@ -99,17 +100,18 @@ Btn::Btn(SingleTexture* texture, sf::Vector2f position)
 }
 
 void Btn::setTexture(SingleTexture* texture) {
-    sf::Vector2f size = sf::Vector2f(texture->texture->getSize().x, texture->texture->getSize().y);
+    sf::Vector2f size = sf::Vector2f(texture->getSize().x, texture->getSize().y);
     rect = sf::RectangleShape(size);
     rect.setOrigin(size.x / 2, size.y / 2);
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
     sprite = sf::Sprite();
-    sprite.setTexture(*texture->texture);
-    sprite.setOrigin(texture->texture->getSize().x / 2, texture->texture->getSize().y / 2);
-    sf::Vector2f scale = sf::Vector2f(size.x / texture->texture->getSize().x, size.y / texture->texture->getSize().y);
+    SingleTexture::SetTextureForSprite(&sprite, texture);
+    sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
+    sf::Vector2f scale = sf::Vector2f(size.x / texture->getSize().x, size.y / texture->getSize().y);
     sprite.setScale(scale);
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    this->texture = texture;
 
     changeColor();
 }
@@ -394,8 +396,8 @@ ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
     state = ButtonState::Idle;
 
     if (texture != nullptr) {
-        sprite.setTexture(*texture->texture);
-        sprite.setOrigin(texture->texture->getSize().x / 2.0f, texture->texture->getSize().y / 2.0f);
+        SingleTexture::SetTextureForSprite(&sprite, texture);
+        sprite.setOrigin(texture->getSize().x / 2.0f, texture->getSize().y / 2.0f);
     }
 
     hover_func = { };
@@ -407,8 +409,9 @@ ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
 
 void ButtonWithImage::setTexture(SingleTexture* texture) {
     sprite = sf::Sprite();
-    sprite.setTexture(*texture->texture);
-    sprite.setOrigin(texture->texture->getSize().x / 2, texture->texture->getSize().y / 2);
+    SingleTexture::SetTextureForSprite(&sprite, texture);
+    sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
+    this->texture = texture;
 }
 
 void ButtonWithImage::changeColor()

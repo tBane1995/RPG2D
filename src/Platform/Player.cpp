@@ -412,22 +412,22 @@ void Player::update(float dt) {
 		if (frame < 0)
 			frame = 0;
 
-		bodySprite.setTexture(*bodyAttackTextures[direction * 4 + frame]->texture);
+		SingleTexture::SetTextureForSprite(&bodySprite, bodyAttackTextures[direction * 4 + frame]);
 
 		if (helmet != nullptr)
-			helmetSprite.setTexture(*helmetAttackTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&helmetSprite, helmetAttackTextures[direction * 4 + frame]);
 
 		if (armor != nullptr)
-			armorSprite.setTexture(*armorAttackTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&armorSprite, armorAttackTextures[direction * 4 + frame]);
 
 		if (pants != nullptr)
-			pantsSprite.setTexture(*pantsAttackTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&pantsSprite, pantsAttackTextures[direction * 4 + frame]);
 
 		if (rightHand != nullptr)
-			rightHandSprite.setTexture(*rightHandAttackTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&rightHandSprite, rightHandAttackTextures[direction * 4 + frame]);
 
 		if (leftHand != nullptr)
-			leftHandSprite.setTexture(*leftHandAttackTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&leftHandSprite, leftHandAttackTextures[direction * 4 + frame]);
 	}
 	else if (state == unitStates::run) {
 
@@ -439,43 +439,44 @@ void Player::update(float dt) {
 		if (direction == 2) position.y += distance;
 		if (direction == 3) position.x -= distance;
 
-		bodySprite.setTexture(*bodyRunTextures[direction * 4 + frame]->texture);
+		SingleTexture::SetTextureForSprite(&bodySprite, bodyRunTextures[direction * 4 + frame]);
 
 		if (helmet != nullptr)
-			helmetSprite.setTexture(*helmetRunTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&helmetSprite, helmetRunTextures[direction * 4 + frame]);
 
 		if (armor != nullptr)
-			armorSprite.setTexture(*armorRunTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&armorSprite, armorRunTextures[direction * 4 + frame]);
 
 		if (pants != nullptr)
-			pantsSprite.setTexture(*pantsRunTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&pantsSprite, pantsRunTextures[direction * 4 + frame]);
 
 		if (rightHand != nullptr)
-			rightHandSprite.setTexture(*rightHandRunTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&rightHandSprite, rightHandRunTextures[direction * 4 + frame]);
 
 		if (leftHand != nullptr)
-			leftHandSprite.setTexture(*leftHandRunTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&leftHandSprite, leftHandRunTextures[direction * 4 + frame]);
 
 	}
 	else if (state == unitStates::idle) {
 
 		calculateCurrentFrame(dt);
-		bodySprite.setTexture(*bodyIdleTextures[direction * 4 + frame]->texture);
+
+		SingleTexture::SetTextureForSprite(&bodySprite, bodyIdleTextures[direction * 4 + frame]);
 
 		if (helmet != nullptr)
-			helmetSprite.setTexture(*helmetIdleTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&helmetSprite, helmetIdleTextures[direction * 4 + frame]);
 
 		if (armor != nullptr)
-			armorSprite.setTexture(*armorIdleTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&armorSprite, armorIdleTextures[direction * 4 + frame]);
 
 		if (pants != nullptr)
-			pantsSprite.setTexture(*pantsIdleTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&pantsSprite, pantsIdleTextures[direction * 4 + frame]);
 
 		if (rightHand != nullptr)
-			rightHandSprite.setTexture(*rightHandIdleTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&rightHandSprite, rightHandIdleTextures[direction * 4 + frame]);
 
 		if (leftHand != nullptr)
-			leftHandSprite.setTexture(*leftHandIdleTextures[direction * 4 + frame]->texture);
+			SingleTexture::SetTextureForSprite(&leftHandSprite, leftHandIdleTextures[direction * 4 + frame]);
 	}
 
 	if (cooldown > 0.0f)

@@ -25,7 +25,7 @@ Character::Character(std::string name, std::string bodySet) : Unit(name, bodySet
 
 	talkWithTexture = getSingleTexture("GUI/talk");
 	talkWithSprite = sf::Sprite();
-	talkWithSprite.setTexture(*talkWithTexture->texture);
+	SingleTexture::SetTextureForSprite(&talkWithSprite, talkWithTexture);
 	talkWithSprite.setOrigin(talkWithTexture->cx, talkWithTexture->cy);
 	showHand = false;
 
@@ -51,7 +51,7 @@ Character::Character(GameObject* object, float x, float y) : Unit(object, x, y) 
 
 	talkWithTexture = getSingleTexture("GUI/talk");
 	talkWithSprite = sf::Sprite();
-	talkWithSprite.setTexture(*talkWithTexture->texture);
+	SingleTexture::SetTextureForSprite(&talkWithSprite, talkWithTexture);
 	talkWithSprite.setOrigin(talkWithTexture->cx, talkWithTexture->cy);
 	showHand = false;
 }
@@ -268,32 +268,32 @@ void Character::update(float dt) {
 	GameObject::update(dt);
 	textname.setPosition(position.x, position.y - height - 10);
 
-	sprite.setTexture(*idleTextures[direction * 4 + frame]->texture);
+	SingleTexture::SetTextureForSprite(&sprite, idleTextures[direction * 4 + frame]);
 	sprite.setPosition(position);
 
 	if (helmet != nullptr) {
-		helmetSprite.setTexture(*helmetIdleTextures[direction * 4 + frame]->texture);
+		SingleTexture::SetTextureForSprite(&helmetSprite, helmetIdleTextures[direction * 4 + frame]);
 		helmetSprite.setPosition(position);
 
 	}
 
 	if (armor != nullptr) {
-		armorSprite.setTexture(*armorIdleTextures[direction * 4 + frame]->texture);
+		SingleTexture::SetTextureForSprite(&armorSprite, armorIdleTextures[direction * 4 + frame]);
 		armorSprite.setPosition(position);
 	}
 
 	if (pants != nullptr) {
-		pantsSprite.setTexture(*pantsIdleTextures[direction * 4 + frame]->texture);
+		SingleTexture::SetTextureForSprite(&pantsSprite, pantsIdleTextures[direction * 4 + frame]);
 		pantsSprite.setPosition(position);
 	}
 
 	if (rightHand != nullptr) {
-		rightHandSprite.setTexture(*rightHandIdleTextures[direction * 4 + frame]->texture);
+		SingleTexture::SetTextureForSprite(&rightHandSprite, rightHandIdleTextures[direction * 4 + frame]);
 		rightHandSprite.setPosition(position);
 	}
 
 	if (leftHand != nullptr) {
-		leftHandSprite.setTexture(*leftHandIdleTextures[direction * 4 + frame]->texture);
+		SingleTexture::SetTextureForSprite(&leftHandSprite, leftHandIdleTextures[direction * 4 + frame]);
 		leftHandSprite.setPosition(position);
 	}
 

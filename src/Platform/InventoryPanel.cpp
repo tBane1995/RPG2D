@@ -25,12 +25,12 @@ InventoryPanel::InventoryPanel(Inventory* inventory, float position_x, float pos
 		float y = cam->position.y + position.y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
 		slotsSprites[i].setOrigin(slotSide / 2, slotSide / 2);
 		slotsSprites[i].setPosition(x, y);
-		slotsSprites[i].setTexture(*getSingleTexture("GUI/slot1")->texture);
+		SingleTexture::SetTextureForSprite(&slotsSprites[i], getSingleTexture("GUI/slot1"));
 	}
 
 	// SELECTOR
 	selector = sf::Sprite();
-	selector.setTexture(*getSingleTexture("GUI/selector")->texture);
+	SingleTexture::SetTextureForSprite(&selector, getSingleTexture("GUI/selector"));
 	selector.setOrigin(slotSide / 2, slotSide / 2);
 
 	drawSelector = false;
@@ -103,10 +103,10 @@ void InventoryPanel::update(int cursor) {
 				float x = cam->position.x + position.x - (itemsInRow / 2 - i % itemsInRow) * slotSide + slotSide / 2;
 				float y = cam->position.y + position.y - (itemsInCol / 2 - i / itemsInRow) * slotSide + slotSide / 2;
 
-				float twidth = item->texture->texture->getSize().x;
-				float theight = item->texture->texture->getSize().y;
+				float twidth = item->texture->getSize().x;
+				float theight = item->texture->getSize().y;
 					
-				itemsSprites[i].setTexture(*item->texture->texture);
+				SingleTexture::SetTextureForSprite(&itemsSprites[i], item->texture);
 				itemsSprites[i].setOrigin(twidth / 2, theight / 2);
 				itemsSprites[i].setPosition(x, y);
 				itemsSprites[i].setScale(64.0f / twidth, 64.0f / theight);
@@ -169,7 +169,7 @@ void updateInventoryPanel() {
 	drawItemStats = false;
 	
 	background = sf::Sprite();
-	background.setTexture(*getSingleTexture("GUI/infoPanel")->texture);
+	SingleTexture::SetTextureForSprite(&background, getSingleTexture("GUI/infoPanel"));
 	background.setPosition(cam->position.x, cam->position.y + 275);
 	background.setOrigin(300,75);
 
@@ -184,7 +184,7 @@ void updateInventoryPanel() {
 	{
 		drawItemStats = true;
 		itemSprite = sf::Sprite();
-		itemSprite.setTexture(*item->texture->texture);
+		SingleTexture::SetTextureForSprite(&itemSprite, item->texture);
 		itemSprite.setOrigin(32, 32);
 		itemSprite.setScale(2, 2);
 		itemSprite.setPosition(cam->position.x-300+80, cam->position.y+275);

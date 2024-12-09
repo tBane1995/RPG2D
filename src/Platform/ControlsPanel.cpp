@@ -14,40 +14,49 @@ ControlsPanel::ControlsPanel() {
     press.setFillColor(dialoguesColor);
     press.setOrigin(press.getLocalBounds().width / 2.f, press.getLocalBounds().height / 2.f);
 
+    SingleTexture* tex = getSingleTexture("GUI/bigPanel");
     panel = sf::Sprite();
-    panel.setTexture(*getSingleTexture("GUI/bigPanel")->texture);
     panel.setOrigin(300, 200);
+    SingleTexture::SetTextureForSprite(&panel, tex);
 
+    tex = getSingleTexture("GUI/smallButtons/smallbutton-ArrowUp");
     up = sf::Sprite();
-    up.setTexture(*getSingleTexture("GUI/smallButtons/smallbutton-ArrowUp")->texture);
+    SingleTexture::SetTextureForSprite(&up, tex);
     up.setOrigin(20, 20);
 
+    tex = getSingleTexture("GUI/smallButtons/smallbutton-ArrowDown");
     down = sf::Sprite() ;
-    down.setTexture(*getSingleTexture("GUI/smallButtons/smallbutton-ArrowDown")->texture);
+    SingleTexture::SetTextureForSprite(&down, tex);
     down.setOrigin(20, 20);
 
+    tex = getSingleTexture("GUI/smallButtons/smallbutton-ArrowLeft");
     left = sf::Sprite();
-    left.setTexture(*getSingleTexture("GUI/smallButtons/smallbutton-ArrowLeft")->texture);
+    SingleTexture::SetTextureForSprite(&left, tex);
     left.setOrigin(20, 20);
 
+    tex = getSingleTexture("GUI/smallButtons/smallbutton-ArrowRight");
     right = sf::Sprite();
-    right.setTexture(*getSingleTexture("GUI/smallButtons/smallbutton-ArrowRight")->texture);
+    SingleTexture::SetTextureForSprite(&right, tex);
     right.setOrigin(20, 20);
 
+    tex = getSingleTexture("GUI/spacebutton");
     space = sf::Sprite();
-    space.setTexture(*getSingleTexture("GUI/spacebutton")->texture);
+    SingleTexture::SetTextureForSprite(&space, tex);
     space.setOrigin(80, 20);
 
+    tex = getSingleTexture("GUI/smallButtons/smallbutton");
     e = sf::Sprite();
-    e.setTexture(*getSingleTexture("GUI/smallButtons/smallbutton")->texture);
+    SingleTexture::SetTextureForSprite(&e, tex);
     e.setOrigin(20, 20);
 
+    tex = getSingleTexture("GUI/smallButtons/smallbutton");
     h = sf::Sprite();
-    h.setTexture(*getSingleTexture("GUI/smallButtons/smallbutton")->texture);
+    SingleTexture::SetTextureForSprite(&h, tex);
     h.setOrigin(20, 20);
 
+    tex = getSingleTexture("GUI/smallButtons/smallbutton");
     j = sf::Sprite();
-    j.setTexture(*getSingleTexture("GUI/smallButtons/smallbutton")->texture);
+    SingleTexture::SetTextureForSprite(&j, tex);
     j.setOrigin(20, 20);
 
     uptext = sf::Text("W", basicFont, 16);

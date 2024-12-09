@@ -55,28 +55,34 @@ Scrollbar::Scrollbar(sf::Vector2f size, sf::Vector2f position, short min_value, 
     scroll_bottom.setFillColor(scroll_color);
 
     // BAR SPRITES
-    spr_bar_top = sf::Sprite(*getSingleTexture("GUI/scrollbar/bar_top")->texture);
+    spr_bar_top = sf::Sprite();
+    SingleTexture::SetTextureForSprite(&spr_bar_top, getSingleTexture("GUI/scrollbar/bar_top"));
     spr_bar_top.setScale(size.x/16.0f, size.x/16.0f);
     spr_bar_top.setPosition(p);
 
-    spr_bar_center = sf::Sprite(*getSingleTexture("GUI/scrollbar/bar_center")->texture);
+    spr_bar_center = sf::Sprite();
+    SingleTexture::SetTextureForSprite(&spr_bar_center, getSingleTexture("GUI/scrollbar/bar_center"));
     spr_bar_center.setScale(size.x/16.0f, (size.y-2.0f*size.x)/16.0f);
     spr_bar_center.setPosition(p.x, p.y + size.x);
 
-    spr_bar_bottom = sf::Sprite(*getSingleTexture("GUI/scrollbar/bar_bottom")->texture);
+    spr_bar_bottom = sf::Sprite();
+    SingleTexture::SetTextureForSprite(&spr_bar_bottom, getSingleTexture("GUI/scrollbar/bar_bottom"));
     spr_bar_bottom.setScale(size.x/16.0f, size.x/16.0f);
     spr_bar_bottom.setPosition(p.x, p.y + size.y - size.x);
 
     // SCROLL SPRITES
-    spr_scroll_top = sf::Sprite(*getSingleTexture("GUI/scrollbar/scroll_top")->texture);
+    spr_scroll_top = sf::Sprite();
+    SingleTexture::SetTextureForSprite(&spr_scroll_top, getSingleTexture("GUI/scrollbar/scroll_top"));
     spr_scroll_top.setScale(size.x/16.0f, size.x/16.0f);
     spr_scroll_top.setPosition(p.x, p.y+size.x);
 
-    spr_scroll_center = sf::Sprite(*getSingleTexture("GUI/scrollbar/scroll_center")->texture);
+    spr_scroll_center = sf::Sprite();
+    SingleTexture::SetTextureForSprite(&spr_scroll_center, getSingleTexture("GUI/scrollbar/scroll_center"));
     spr_scroll_center.setScale(size.x/16.0f, (getScrollSizeY()-2*size.x)/16.0f);
     spr_scroll_center.setPosition(p.x, p.y+size.x+size.x);
 
-    spr_scroll_bottom = sf::Sprite(*getSingleTexture("GUI/scrollbar/scroll_bottom")->texture);
+    spr_scroll_bottom = sf::Sprite();
+    SingleTexture::SetTextureForSprite(&spr_scroll_bottom, getSingleTexture("GUI/scrollbar/scroll_bottom"));
     spr_scroll_bottom.setScale(size.x/16.0f, size.x/16.0f);
     spr_scroll_bottom.setPosition(p.x, p.y + size.x + size.x + getScrollSizeY()-2*size.x);
 

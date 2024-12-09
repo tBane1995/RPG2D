@@ -14,9 +14,8 @@ Object::Object(std::string name, float width, float length, float height, bool c
 	last_action_time = currentTime;
 
 	sprite = sf::Sprite();
-	sprite.setTexture(*texture->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 	sprite.setOrigin(texture->cx, texture->cy);
-
 }
 
 Object::Object(GameObject* object, float x, float y) : GameObject(object, x, y) {
@@ -29,7 +28,7 @@ Object::Object(GameObject* object, float x, float y) : GameObject(object, x, y) 
 	last_action_time = currentTime;
 
 	sprite = sf::Sprite();
-	sprite.setTexture(*texture->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(position);
 
@@ -46,7 +45,7 @@ void Object::update(float dt) {
 
 		texture = textures[frame];
 
-		sprite.setTexture(*texture->texture);
+		SingleTexture::SetTextureForSprite(&sprite, texture);
 	}
 		
 

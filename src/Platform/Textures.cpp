@@ -1,5 +1,8 @@
 ﻿#include "Textures.h"
 #include <iostream>
+#include <fstream>
+#include "Utils.h"
+
 
 bool areImagesEqual(sf::Image& img1, sf::Image& img2) {
 	if (img1.getSize() != img2.getSize()) {
@@ -19,16 +22,132 @@ bool areImagesEqual(sf::Image& img1, sf::Image& img2) {
 
 Texture::Texture(std::string pathfile, TextureType type, float cx, float cy) {
 	name = "";
-
-	short i = int(pathfile.size()) - 5;
-	while (i >= 0)
+	if (pathfile != "")
 	{
-		name = pathfile[i--] + name;
+		name = pathfile.substr(0, pathfile.size() - 4);
 	}
-
+	
 	this->type = type;
 	this->cx = cx;
 	this->cy = cy;
+}
+
+SingleTexture::SingleTexture(std::string pathfile, float cx, float cy) : Texture(pathfile, TextureType::Single, cx, cy)
+{
+	TTextureEntry* Info = getSingleTextureInfo(pathfile);
+	if (Info)
+	{
+		texture = singleTextures[Info->MapIndex]->texture;
+		TextureAllocated = false;
+		IndexToMapFiles = Info->MapIndex;
+		this->Info = Info;
+	}
+	else
+	{
+		texture = new sf::Texture;
+		texture->loadFromFile("assets/" + pathfile);
+		texture->setRepeated(true);
+		TextureAllocated = true;
+		IndexToMapFiles = -1;
+		this->Info = nullptr;
+	}
+	//cout << "load texture: " << pathfile << " as: " << name << endl;
+}
+
+SingleTexture::SingleTexture(std::string name, sf::Image image) : Texture(name, TextureType::Single)
+{
+	TTextureEntry* Info = getSingleTextureInfo(name);
+	if (Info)
+	{
+		texture = singleTextures[Info->MapIndex]->texture;
+		TextureAllocated = false;
+		IndexToMapFiles = Info->MapIndex;
+		this->Info = Info;
+		cx = Info->Width / 2;
+		cy = Info->Height / 2;
+	}
+	else
+	{
+		texture = new sf::Texture;
+		texture->loadFromImage(image);
+		texture->setRepeated(true);
+		TextureAllocated = true;
+		IndexToMapFiles = -1;
+		this->Info = nullptr;
+		cx = texture->getSize().x / 2;
+		cy = texture->getSize().y / 2;
+	}
+
+	//cout << "load texture from set as: " << name << endl;
+}
+
+SingleTexture::~SingleTexture()
+{
+	if (TextureAllocated && texture)
+	{
+		delete texture;
+		texture = nullptr;
+	}
+}
+
+sf::Vector2u SingleTexture::getSize()
+{
+	if (Info)
+	{
+		return sf::Vector2u(Info->Width, Info->Height);
+	}
+	return texture->getSize();
+}
+
+sf::Vector2u SingleTexture::GetTexturePosInMap()
+{
+	if (Info)
+	{
+		return sf::Vector2u(Info->x, Info->y);
+	}
+	return sf::Vector2u(0, 0);
+}
+
+sf::Texture* SingleTexture::CutTexture()
+{
+	sf::Image Image, ImageMap;
+	int Left, Top;
+	int Width, Height;
+
+	if (Info)
+	{
+		Left = Info->x;
+		Top = Info->y;
+		Width = Info->Width;
+		Height = Info->Height;
+	}
+	else
+	{
+		Left = 0;
+		Top = 0;
+		Width = texture->getSize().x;
+		Height = texture->getSize().y;
+	}
+	ImageMap = texture->copyToImage();
+	Image.create(Width, Height, sf::Color::Transparent);
+	Image.copy(ImageMap, 0, 0, sf::IntRect(Left, Top, Width, Height));
+	sf::Texture* Tex = new sf::Texture();
+	Tex->loadFromImage(Image);
+	return Tex;
+}
+
+void SingleTexture::SetTextureForSprite(sf::Sprite* Sprite, SingleTexture* Texture)
+{
+	Sprite->setTexture(*Texture->texture);
+	if (Texture->Info)
+	{
+		TTextureEntry* Info = Texture->Info;
+		Sprite->setTextureRect(sf::IntRect(Info->x, Info->y, Info->Width, Info->Height));
+	}
+	else
+	{
+		Sprite->setTextureRect(sf::IntRect(0, 0, Texture->texture->getSize().x, Texture->texture->getSize().y));
+	}
 }
 
 std::vector < SingleTexture* > singleTextures;
@@ -37,9 +156,8 @@ void loadSingleTexture(std::string pathfile, float cx, float cy) {
 	singleTextures.push_back(new SingleTexture(pathfile, cx, cy));
 }
 
-void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
-
-
+void loadTextureSets(std::string pathfile, int tile_width, int tile_height)
+{
 	sf::Image image;
 	image.loadFromFile("assets/" + pathfile + ".png");
 
@@ -50,6 +168,7 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
 
 	int counter = 0;
 
+	// get All map textures to images
 	for (short y = 0; y < image_height; y += tile_height)
 		for (short x = 0; x < image_width; x += tile_width) {
 
@@ -61,7 +180,9 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
 			// searching - exist doubles or no
 			bool existed = false;
 
-			for (short i = 0; i < singleTextures.size(); i++) {
+			/*
+			for (short i = 0; i < singleTextures.size(); i++)
+			{
 				sf::Image img = singleTextures[i]->texture->copyToImage();
 
 				if (areImagesEqual(tile, img)) {
@@ -70,6 +191,9 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
 					break;
 				}
 			}
+			*/
+
+			existed = getSingleTextureInfo(pathfile + "_" + std::to_string(counter)) != nullptr;
 
 			// if no exist then add
 			if (existed == false) {
@@ -82,12 +206,32 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height) {
 			}
 
 		}
-
 }
 
-void loadTextures() {
+void loadTextures()
+{
 
 	singleTextures.clear();
+	TextureMapInfo.clear();
+
+	// najpierw ladujemy mapy
+	loadSingleTexture("TextureMapCharacter.png", 2048, 2048);
+	loadTextureMapInfo("assets/TextureMapCharacter.txt", 0);
+
+	loadSingleTexture("TextureMapCharacter1.png", 2048, 2048);
+	loadTextureMapInfo("assets/TextureMapCharacter1.txt", 1);
+
+	loadSingleTexture("TextureMapMain.png", 2048, 2048);
+	loadTextureMapInfo("assets/TextureMapMain.txt", 2);
+
+	loadSingleTexture("TextureMapMonsters.png", 2048, 2048);
+	loadTextureMapInfo("assets/TextureMapMonsters.txt", 3);
+
+	loadSingleTexture("TextureMapMonsters1.png", 2048, 2048);
+	loadTextureMapInfo("assets/TextureMapMonsters1.txt", 4);
+
+	loadSingleTexture("TextureMapMonsters2.png", 2048, 2048);
+	loadTextureMapInfo("assets/TextureMapMonsters2.txt", 5);
 
 	// NOISE //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -419,7 +563,6 @@ void loadTextures() {
 			loadSingleTexture("sets/body/" + set + "/attackRight" + std::to_string(i) + ".png", 32, 58);
 			loadSingleTexture("sets/body/" + set + "/attackBottom" + std::to_string(i) + ".png", 32, 58);
 			loadSingleTexture("sets/body/" + set + "/attackLeft" + std::to_string(i) + ".png", 32, 58);
-
 		}
 	}
 
@@ -493,14 +636,24 @@ void loadTextures() {
 }
 
 SingleTexture* getSingleTexture(std::string name) {
-
 	for (auto& t : singleTextures) {
 		if (t->name == name) {
 			return t;
 		}
 	}
 
-	std::cout << "error - get Texture - Texture: \"" << name << "\" not exists\n";
+	std::cout << __func__ << ": error - get Texture - Texture: \"" << name << "\" not exists\n";
+	return nullptr;
+}
+
+TTextureEntry* getSingleTextureInfo(std::string name) {
+	for (TTextureEntry& t : TextureMapInfo) {
+		if (t.Path == name) {
+			return &t;
+		}
+	}
+
+	std::cout << __func__ << ": error - get Texture - Texture: \"" << name << "\" not exists\n";
 	return nullptr;
 }
 
@@ -517,4 +670,39 @@ std::vector < SingleTexture* > getTexturesSet(std::string name) {
 		std::cout << "error - get Texture Set - Texture Set: \"" << name << "\" is empty\n";
 
 	return texture_set;
+}
+
+std::vector<TTextureEntry> TextureMapInfo;
+void loadTextureMapInfo(std::string Fname, int Index)
+{
+	std::ifstream ifs;
+	ifs.open(Fname, std::ios::in || std::ios::beg);
+	if (ifs)
+	{
+		while (!ifs.eof() && !ifs.fail())
+		{
+			TTextureEntry Item;
+			std::string Line;
+			std::getline(ifs, Line);
+			size_t StartPos = 0UL;
+			size_t Pos = Line.find(':');
+			if (Pos != std::string::npos)
+			{
+				// pomijamy czlon "assets\" w nazwie, zeby zachowac zgodnosc z dotychczasowym kodem bez wiekszych zmian
+				Item.Path = Line.substr(StartPos + 7, Pos - (StartPos + 7));
+				std::vector<std::string> Arr;
+				Explode(',', Line.substr(Pos + 1), Arr);
+				if (Arr.size() == 4)
+				{
+					Item.MapIndex = Index;
+					Item.x = std::atoi(Arr[0].c_str());
+					Item.y = std::atoi(Arr[1].c_str());
+					Item.Width = std::atoi(Arr[2].c_str());
+					Item.Height = std::atoi(Arr[3].c_str());
+					TextureMapInfo.push_back(Item);
+				}
+			}
+		}
+		ifs.close();
+	}
 }

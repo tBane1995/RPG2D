@@ -119,7 +119,7 @@ void createMenuBar() {
     bar.setFillColor(sf::Color(32, 32, 32));
 
     logo = sf::Sprite();
-    logo.setTexture(*getSingleTexture("GUI/icons/MapEditor_small_ico")->texture);
+    SingleTexture::SetTextureForSprite(&logo, getSingleTexture("GUI/icons/MapEditor_small_ico"));
     logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight/2.0f + cam->position.y);
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////

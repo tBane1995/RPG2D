@@ -10,15 +10,15 @@ FlatObject::FlatObject(std::string name, float width, float length, float height
 	type = GameObjectType::FlatObject;
 	this->texture = getSingleTexture(name);
 	sprite = sf::Sprite();
-	sprite.setTexture(*texture->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 	sprite.setOrigin(texture->cx, texture->cy);
 }
 
 FlatObject::FlatObject(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	type = GameObjectType::FlatObject;
-	this->texture = getSingleTexture(name);
+	texture = getSingleTexture(name);
 	sprite = sf::Sprite();
-	sprite.setTexture(*getSingleTexture(name)->texture);
+	SingleTexture::SetTextureForSprite(&sprite, texture);
 	sprite.setOrigin(texture->cx, texture->cy);
 	sprite.setPosition(position);
 
