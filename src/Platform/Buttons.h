@@ -27,7 +27,7 @@ public:
     std::function<void()> hover_func;
     std::function<void()> onclick_func;
     sf::Time clickTime;
-    SingleTexture* texture;
+    SingleTexture* texture = nullptr;
 
     Btn(float width = 64, float height = 64, sf::Vector2f position = sf::Vector2f(0, 0));
     Btn(Btn* btn);
@@ -80,7 +80,7 @@ public:
     std::function<void()> hover_func;
     std::function<void()> onclick_func;
     sf::Time clickTime;
-    SingleTexture* texture;
+    SingleTexture* texture = nullptr;
 
     ButtonWithImage();
     ButtonWithImage(ButtonWithImage* btn);

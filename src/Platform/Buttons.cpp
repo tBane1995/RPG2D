@@ -75,6 +75,7 @@ Btn::Btn(Btn* btn, sf::Vector2f position)
 Btn::Btn(SingleTexture* texture, sf::Vector2f position)
 {
     this->position = position;
+    this->texture = texture;
 
     sf::Vector2f size = sf::Vector2f(texture->getSize().x, texture->getSize().y);
     rect = sf::RectangleShape(size);
@@ -379,6 +380,7 @@ ButtonWithImage::ButtonWithImage(ButtonWithImage* btn, sf::Vector2f position)
 {
     this->position = position;
     this->sprite = btn->sprite;
+    this->texture = btn->texture;
     state = ButtonState::Idle;
     this->hover_func = btn->hover_func;
     this->onclick_func = btn->onclick_func;
@@ -390,6 +392,7 @@ ButtonWithImage::ButtonWithImage(ButtonWithImage* btn, sf::Vector2f position)
 ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
 {
     this->position = position;
+    this->texture = texture;
 
     sprite = sf::Sprite();
 
@@ -462,11 +465,22 @@ void ButtonWithImage::hover() {
 }
 
 void ButtonWithImage::click() {
-    float w = sprite.getTexture()->getSize().x;
-    float h = sprite.getTexture()->getSize().y;
+    float w = 0.0f;
+    float h = 0.0f;
     float x = sprite.getPosition().x;
     float y = sprite.getPosition().y;
 
+    if (texture)
+    {
+        w = texture->getSize().x;
+        h = texture->getSize().y;
+    }
+    else
+    {
+        w = sprite.getTexture()->getSize().x;
+        h = sprite.getTexture()->getSize().y;
+
+    }
     if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
         worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
 
