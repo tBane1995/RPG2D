@@ -1,4 +1,4 @@
-
+﻿
 #include "OpenFileDialog.h"
 #include "Buttons.h"
 #include "Scrollbar.h"
@@ -114,18 +114,17 @@ OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile
 
     /////////////////
 
-    border = sf::RectangleShape(sf::Vector2f(512.0f+2*borderWidth, rect_height));
-    border.setFillColor(panelColor_dark);
 
     rect = sf::RectangleShape(sf::Vector2f(512.0f, rect_height - 2.0f*borderWidth));
     rect.setFillColor(panelColor_normal);
+    rect.setOutlineThickness(borderWidth);
+    rect.setOutlineColor(panelColor_dark);
 
     // POSITIONING /////////////
     sf::Vector2f pos;
 
     // title bar
     sf::Vector2f p = sf::Vector2f(position.x - rect_width/2.0f, + position.y - rect_height/2.0f);
-    border.setPosition(p);
     rect.setPosition(p.x + cam->position.x+borderWidth, p.y + cam->position.y+borderWidth);
 
     titlebar.setPosition(p.x + cam->position.x+borderWidth, p.y + cam->position.y+borderWidth);
@@ -204,9 +203,13 @@ void OpenFileDialog::loadDirectory() {
 
 void OpenFileDialog::loadScrollbar() {
     sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * line_height + 1);
+    sf::Vector2f scrollbarPos;
+    scrollbarPos.x = position.x + rect_width / 2.0f - scrollbarSize.x + borderWidth;
+    scrollbarPos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + borderWidth;
     if (scrollbar != nullptr)
         delete scrollbar;
-    scrollbar = new Scrollbar(scrollbarSize,sf::Vector2f(0,0), 0, paths.size()-1, 0, 7);
+    scrollbar = new Scrollbar(scrollbarSize,scrollbarPos, 0, paths.size()-1, 0, 7);
+
 }
 
 void OpenFileDialog::createFilenamesTexts() {
@@ -241,7 +244,7 @@ void OpenFileDialog::setFilenamesTexts() {
             filenames[i]->generateRect();
 
             std::string extension = paths[i + short(scrollbar->scroll_value)].path().extension().string();
-            if (extension == "")
+            if(paths[i+short(scrollbar->scroll_value)].is_directory())
                 icons[i].setTexture(*getSingleTexture("GUI/icons/dictionary")->texture);
             else
                 icons[i].setTexture(*getSingleTexture("GUI/icons/file")->texture);
@@ -294,10 +297,7 @@ void OpenFileDialog::update(sf::Event& event) {
                                 selectedFilenameText->setWstring(L"");
                                 loadDirectory();
                                 loadScrollbar();
-                                sf::Vector2f pos;
-                                pos.x = position.x + rect_width / 2.0f - scrollbar->size.x;
-                                pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y;
-                                scrollbar->setPosition(pos);
+                               
                             }
 
                         }
@@ -320,7 +320,6 @@ void OpenFileDialog::update(sf::Event& event) {
 
 void OpenFileDialog::draw() {
     //main rect
-    window->draw(border);
     window->draw(rect);
 
     // tile bar

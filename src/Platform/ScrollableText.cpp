@@ -7,13 +7,11 @@
 
 ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::ScrollableText) {
 
-	border = sf::RectangleShape(sf::Vector2f(width, height));
-	border.setFillColor(panelColor_dark);
-	border.setPosition(cam->position.x-width/2.0f, cam->position.y-height/2.0f);
-
 	rect = sf::RectangleShape(sf::Vector2f(width-2*borderWidth, height-2*borderWidth));
 	rect.setFillColor(panelColor_normal);
 	rect.setPosition(cam->position.x - width/2.0f + borderWidth, cam->position.y - height/2.0f+borderWidth);
+	rect.setOutlineThickness(borderWidth);
+	rect.setOutlineColor(panelColor_dark);
 
 	sf::Vector2f scrollbar_size = sf::Vector2f(16, height - 2.0f * borderWidth);
 
@@ -21,7 +19,7 @@ ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::Scrollabl
 	textarea->setPosition(sf::Vector2f(- width/2.0f + borderWidth + margin, - height/2.0f + borderWidth + margin));
 
 	sf::Vector2f scrollbar_position = sf::Vector2f(width/2.0f-borderWidth-scrollbar_size.x, -height/2.0f + borderWidth);
-	float scroll_max = textarea->getSize().y + 2*textarea->getLineHeight();
+	float scroll_max = textarea->getSize().y + textarea->getLineHeight() + 2*margin;
 	float scroll_len = height;
 	scrollbar = new Scrollbar(scrollbar_size, scrollbar_position, 0, scroll_max, 0, scroll_len);
 	
@@ -63,7 +61,6 @@ void ScrollableText::update(sf::Event& event) {
 }
 
 void ScrollableText::draw() {
-	window->draw(border);
 	window->draw(rect);
 	scrollbar->draw();
 	window->draw(text_sprite);

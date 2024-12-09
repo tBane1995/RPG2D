@@ -121,8 +121,10 @@ void Scrollbar::setValue(short value) {
 }
 
 float Scrollbar::getScrollSizeY() {
-
-    return float(size.y-2*size.x) * float(scroll_length)/float(max_value - min_value + 1);
+    if (scroll_length > max_value - min_value + 1)
+        return size.y - 2*size.x;
+    else
+        return float(size.y-2*size.x) * float(scroll_length)/float(max_value - min_value + 1);
 }
 
 void Scrollbar::scrollPositioning() {

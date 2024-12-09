@@ -15,17 +15,15 @@ Confirm::Confirm(std::wstring text) : Dialog(DialogType::Confirm) {
 
 	short width = 256;
 	short height = 128;
-
-	border = sf::RectangleShape(sf::Vector2f(width, height));
-	border.setFillColor(panelColor_dark);
 	
 	rect = sf::RectangleShape(sf::Vector2f(width-2*borderWidth, height-2*borderWidth));
 	rect.setFillColor(panelColor_normal);
-	
+	rect.setOutlineThickness(borderWidth);
+	rect.setOutlineColor(panelColor_dark);
+
 	sf::Vector2f pos;
 	pos.x = position.x - width / 2.0f;
 	pos.y = position.y - height / 2.0f;
-	border.setPosition(pos);
 	rect.setPosition(pos.x+borderWidth, pos.y+borderWidth);
 
 	sf::Vector2f textpos = sf::Vector2f(pos.x + borderWidth + margin, pos.y + borderWidth + margin);
@@ -82,7 +80,6 @@ void Confirm::update(sf::Event& event) {
 }
 
 void Confirm::draw() {
-	window->draw(border);
 	window->draw(rect);
 	textarea->draw();
 	btn_yes->draw();

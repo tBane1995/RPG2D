@@ -12,7 +12,6 @@ class ScrollableText : public Dialog {
 public:
 
 	sf::Vector2f position;
-	sf::RectangleShape border;
 	sf::RectangleShape rect;
 	float width = 600;
 	float height = 400;
