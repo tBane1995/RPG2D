@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-enum class DialogType { Message, ScrollableText, OpenFile, Confirm };
+enum class DialogType { Message, ScrollableText, OpenFile, SaveFile, Confirm };
 
 class Dialog {
 public:

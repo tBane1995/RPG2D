@@ -48,12 +48,14 @@ bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_
 }
 
 
-OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile) {
+OpenFileDialog::OpenFileDialog(DialogType type, std::wstring title, std::string acceptable_extension) : Dialog(type) {
     rect_height = 0;
     rect_width = 512;
     margin_vert = 4;
     margin_hor = 4;
     line_height = 30;
+
+    this->acceptable_extensions = acceptable_extension;
 
     // TITLE BAR
     titlebar = sf::RectangleShape(sf::Vector2f(512, line_height));
@@ -101,7 +103,7 @@ OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile
     selectedFilenameText->setRectColor(sf::Color::Transparent);
     selectedFilenameText->generateRect();
 
-    selectButton = new ButtonWithText("select", 17);
+    selectButton = (type == DialogType::OpenFile) ? new ButtonWithText("open", 17) : new ButtonWithText("save", 17);
     cancelButton = new ButtonWithText("cancel", 17);
 
     submitbar = sf::RectangleShape(sf::Vector2f(rect_width, selectedFilenameRect.getSize().y + 3 * margin_vert + selectButton->rect.getSize().y));

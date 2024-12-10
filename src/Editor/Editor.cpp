@@ -513,7 +513,7 @@ void testOpenDialogBox() {
     
     cam = new Camera();
     
-    OpenFileDialog* openDial = new OpenFileDialog(L"Load Map");
+    OpenFileDialog* openDial = new OpenFileDialog(DialogType::OpenFile, L"Load Map");
     
     while (window->isOpen())
     {

@@ -176,7 +176,12 @@ void MapEditor() {
 
                     opendial->update(event);
 
-                    if (opendial->fileSelected) {
+                    if (opendial->cancelButton->state == ButtonState::Pressed) {
+                        delete opendial;
+                        dialogs.pop_back();
+                    }
+
+                    else if (opendial->fileSelected) {
 
                         dialogs.push_back(new Confirm(L"Plik "+ ConvertUtf8ToWide(opendial->getPathfile())+L" już istnieje. chcesz go zamienić ?"));
                     }

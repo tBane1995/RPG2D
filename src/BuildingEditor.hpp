@@ -190,7 +190,7 @@ void BuildingEditor() {
 
                 if (event.key.code == sf::Keyboard::F6) {
                     if (dialogs.empty()) {
-                        dialogs.push_back(new OpenFileDialog(L"Load Building"));
+                        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Building"));
                     }
                 }
 

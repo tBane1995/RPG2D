@@ -187,7 +187,7 @@ void createMenuBar() {
         
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
-        dialogs.push_back(new OpenFileDialog(L"Load Map"));
+        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Map"));
         };
 
     saveWorldBtn = new ButtonWithText("Save Map");
@@ -205,7 +205,7 @@ void createMenuBar() {
     loadBuildingBtn->onclick_func = []() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
-        dialogs.push_back(new OpenFileDialog(L"Load Building"));
+        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Building"));
         };
 
     saveBuildingBtn = new ButtonWithText("Save Building");

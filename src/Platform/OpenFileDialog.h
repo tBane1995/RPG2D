@@ -43,13 +43,15 @@ public:
     ButtonWithText* selectButton;
     ButtonWithText* cancelButton;
 
+    std::string acceptable_extensions;
+
     std::filesystem::path current_path;                     // current path of directory  
     std::vector < std::filesystem::directory_entry > paths; // list of paths
 
     Scrollbar* scrollbar = nullptr;
     bool fileSelected;      // if "submit button" pressed is true
 
-    OpenFileDialog(std::wstring title);
+    OpenFileDialog(DialogType type, std::wstring title, std::string acceptable_extension="");
     ~OpenFileDialog();
 
     void loadDirectory();
