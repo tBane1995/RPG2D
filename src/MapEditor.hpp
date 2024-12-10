@@ -164,7 +164,7 @@ void MapEditor() {
                                 dialogs.pop_back();
                             }
 
-                            if (confirm->value == ConfirmValue::False) {
+                            else if (confirm->value == ConfirmValue::False) {
                                 delete confirm;
                                 dialogs.pop_back();
                                 FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
@@ -183,7 +183,7 @@ void MapEditor() {
                         dialogs.pop_back();
                     }
 
-                    if (dial->selectButton->state == ButtonState::Pressed) {
+                    else if (dial->selectButton->state == ButtonState::Pressed) {
                         if (dial->fileSelected == true) {
                             dialogs.push_back(new Confirm(L"Plik " + ConvertUtf8ToWide(dial->getPathfile()) + L" już istnieje. Czy chcesz go zamienić?"));
                         }
