@@ -487,8 +487,8 @@ void ButtonWithImage::click() {
     }
     else
     {
-        w = sprite.getTexture()->getSize().x;
-        h = sprite.getTexture()->getSize().y;
+        w = sprite.getTextureRect().width;
+        h = sprite.getTextureRect().height;
 
     }
     if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
@@ -501,7 +501,8 @@ void ButtonWithImage::click() {
         GUIwasClicked = true;
         clickTime = currentTime;
 
-        if (onclick_func) {
+        if (onclick_func)
+        {
             onclick_func();
         }
 
