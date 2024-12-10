@@ -41,7 +41,7 @@ void TextArea::generateRect() {
 		size.x = line_length;
 		size.y = texts.size() * getLineHeight();
 	}
-	else if(!texts.empty()){
+	else if(!texts.empty() && texts[0].getString() !="") {
 		size.x = float(texts.front().getLocalBounds().getSize().x) + characterSize * 0.5f;
 		size.y = getLineHeight();
 	}

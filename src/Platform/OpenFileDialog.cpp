@@ -93,7 +93,7 @@ OpenFileDialog::OpenFileDialog(std::wstring title) : Dialog(DialogType::OpenFile
     size.x = rect_width - filenameInfo->getSize().x - 3 * margin_vert;
     size.y = line_height;
     selectedFilenameRect = sf::RectangleShape(size);
-    selectedFilenameRect.setFillColor(sf::Color(32, 32, 32));
+    selectedFilenameRect.setFillColor(panelColor_dark);
 
     selectedFilenameText = new TextArea(L"");
     selectedFilenameText->setCharacterSize(17);
@@ -353,8 +353,9 @@ void OpenFileDialog::draw() {
 
     // submit bar
     window->draw(submitbar);
-    window->draw(selectedFilenameRect);
+ 
     filenameInfo->draw();
+    window->draw(selectedFilenameRect);
     selectedFilenameText->draw();
     selectButton->draw();
     cancelButton->draw();

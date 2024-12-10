@@ -7,7 +7,7 @@
 #include "Textures.h"
 #include "Fonts.h"
 #include "Window.h"
-
+#include <iostream>
 
 
 // TO-DO - not working colors - are a nulls
@@ -469,6 +469,8 @@ void ButtonWithImage::click() {
 
     if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
         worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+
+        std::cout << "clicked on btn, stats: w=" << w << ", h=" << h << ", x=" << x << ", y=" << y << "\n";
 
         state = ButtonState::Pressed;
         changeColor();
