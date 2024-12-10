@@ -149,41 +149,62 @@ void MapEditor() {
 
             if (!dialogs.empty()) {
                 
-                if (dialogs.size()>=2 && dialogs.back()->type == DialogType::Confirm && dialogs[dialogs.size()-2]->type == DialogType::OpenFile) {
+                if (dialogs.size()>=2 && dialogs.back()->type == DialogType::Confirm) {
                     Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
                     confirm->update(event);
 
-                    if (confirm->value != ConfirmValue::Undefinded) {
-                        if (confirm->value == ConfirmValue::True) {
-                            FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs[dialogs.size()-2]);
-                            mapa->load(opendial->getPathfile());
-                            delete confirm;
-                            dialogs.pop_back();
-                            delete opendial;
-                            dialogs.pop_back();
-                        }
+                    if (dialogs[dialogs.size() - 2]->type == DialogType::SaveFile) {
+                        if (confirm->value != ConfirmValue::Undefinded) {
+                            if (confirm->value == ConfirmValue::True) {
+                                FileDialog* dial = dynamic_cast<FileDialog*>(dialogs[dialogs.size() - 2]);
+                                mapa->save(dial->getPathfile());
+                                delete confirm;
+                                dialogs.pop_back();
+                                delete dial;
+                                dialogs.pop_back();
+                            }
 
-                        if (confirm->value == ConfirmValue::False) {
-                            delete confirm;
-                            dialogs.pop_back();
-                            FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs.back());
-                            opendial->fileSelected = false;
+                            if (confirm->value == ConfirmValue::False) {
+                                delete confirm;
+                                dialogs.pop_back();
+                                FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
+                                dial->fileSelected = false;
+                            }
                         }
                     }
+
                 }
-                else if (dialogs.back()->type == DialogType::OpenFile) {
-                    FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs.back());
+                else if (dialogs.back()->type == DialogType::SaveFile) {
+                    FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
+                    dial->update(event);
 
-                    opendial->update(event);
-
-                    if (opendial->cancelButton->state == ButtonState::Pressed) {
-                        delete opendial;
+                    if (dial->cancelButton->state == ButtonState::Pressed) {
+                        delete dial;
                         dialogs.pop_back();
                     }
 
-                    else if (opendial->fileSelected) {
+                    if (dial->selectButton->state == ButtonState::Pressed) {
+                        if (dial->fileSelected == true) {
+                            dialogs.push_back(new Confirm(L"Plik " + ConvertUtf8ToWide(dial->getPathfile()) + L" już istnieje. Czy chcesz go zamienić?"));
+                        }
+                    }
 
-                        dialogs.push_back(new Confirm(L"Plik "+ ConvertUtf8ToWide(opendial->getPathfile())+L" już istnieje. chcesz go zamienić ?"));
+                }
+                else if (dialogs.back()->type == DialogType::OpenFile) {
+                    FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
+
+                    dial->update(event);
+
+                    if (dial->cancelButton->state == ButtonState::Pressed) {
+                        delete dial;
+                        dialogs.pop_back();
+                    }
+                    else if (dial->selectButton->state == ButtonState::Pressed) {
+                        if (dial->fileSelected == true) {
+                            mapa->load(dial->getPathfile());
+                            delete dial;
+                            dialogs.pop_back();
+                        }
                     }
 
                 }

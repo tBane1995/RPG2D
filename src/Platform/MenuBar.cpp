@@ -4,7 +4,7 @@
 #include "Camera.h"
 #include "Textures.h"
 #include "Map.h"
-#include "OpenFileDialog.h"
+#include "FileDialog.h"
 #include "RenderParameters.h"
 #include "Time.h"
 #include "BuildingsManager.h"
@@ -187,13 +187,12 @@ void createMenuBar() {
         
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
-        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Map", ".map"));
+        dialogs.push_back(new FileDialog(DialogType::OpenFile, L"Load Map", ".map"));
         };
 
     saveWorldBtn = new ButtonWithText("Save Map");
     saveWorldBtn->onclick_func = []() {
-        // TO-DO
-        mapa->save();
+        dialogs.push_back(new FileDialog(DialogType::SaveFile, L"Save Map", ".map"));
         };
 
     newBuildingBtn = new ButtonWithText("New Building");
@@ -205,11 +204,12 @@ void createMenuBar() {
     loadBuildingBtn->onclick_func = []() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
-        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Building"));
+        dialogs.push_back(new FileDialog(DialogType::OpenFile, L"Load Building", ".building"));
         };
 
     saveBuildingBtn = new ButtonWithText("Save Building");
     saveBuildingBtn->onclick_func = []() {
+        // TO-DO
         saveBuildingToFile();
         };
 

@@ -113,7 +113,7 @@ void BuildingEditor() {
 
             if (!dialogs.empty()) {
                 if (dialogs.back()->type == DialogType::OpenFile) {
-                    OpenFileDialog* opendial = dynamic_cast<OpenFileDialog*>(dialogs.back());
+                    FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs.back());
 
                     opendial->update(event);
 
@@ -190,7 +190,7 @@ void BuildingEditor() {
 
                 if (event.key.code == sf::Keyboard::F6) {
                     if (dialogs.empty()) {
-                        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Building"));
+                        dialogs.push_back(new FileDialog(DialogType::OpenFile, L"Load Building"));
                     }
                 }
 
