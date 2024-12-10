@@ -10,8 +10,8 @@
 #include "BuildingsManager.h"
 #include "ScrollableText.h"
 
-void OptionButton::update(float dt) {
-    ButtonWithText::update(dt);
+void OptionButton::update() {
+    ButtonWithText::update();
 
     if (checkbox)
         checkbox->update(dt);
@@ -427,12 +427,12 @@ void updateMenuBar() {
     logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
 
     for (auto& m : menu)
-        m->update(dt);
+        m->update();
 
     if (clickedMenuButton) {
 
         for (auto& o : clickedMenuButton->options)
-            o->update(dt);
+            o->update();
             
     }
 }

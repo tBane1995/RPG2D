@@ -348,8 +348,8 @@ void FileDialog::update(sf::Event& event) {
 
     setFilenamesTexts();
 
-    selectButton->update(dt);
-    cancelButton->update(dt);
+    selectButton->update();
+    cancelButton->update();
 }
 
 void FileDialog::draw() {

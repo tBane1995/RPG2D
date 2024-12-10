@@ -197,7 +197,7 @@ bool Btn::click() {
     return false;
 }
 
-void Btn::update(float dt) {
+void Btn::update() {
     rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 }
@@ -343,7 +343,7 @@ bool ButtonWithText::click() {
     return false;
 }
 
-void ButtonWithText::update(float dt) {
+void ButtonWithText::update() {
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
     text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
 }
@@ -509,7 +509,7 @@ void ButtonWithImage::click() {
     }
 }
 
-void ButtonWithImage::update(float dt) {
+void ButtonWithImage::update() {
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 }
 

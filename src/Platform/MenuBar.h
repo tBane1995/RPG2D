@@ -16,7 +16,7 @@ public:
         checkbox = nullptr;
     }
 
-    virtual void update(float dt);
+    virtual void update();
     virtual void draw();
 };
 
@@ -34,8 +34,8 @@ public:
 
     virtual void draw() override;
 
-    virtual void update(float dt) override {
-        ButtonWithText::update(dt);
+    virtual void update() override {
+        ButtonWithText::update();
     }
 };
 

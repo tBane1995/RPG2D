@@ -41,7 +41,7 @@ public:
     virtual bool hover();
     virtual bool click();
 
-    virtual void update(float dt);
+    virtual void update();
     virtual void draw();
 };
 
@@ -66,7 +66,7 @@ public:
     virtual bool hover();
     virtual bool click();
 
-    virtual void update(float dt);
+    virtual void update();
     virtual void draw();
 
 };
@@ -100,7 +100,7 @@ public:
     virtual void hover();
     virtual void click();
 
-    virtual void update(float dt);
+    virtual void update();
     virtual void draw();
 };
 
