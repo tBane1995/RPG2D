@@ -192,6 +192,8 @@ void createMenuBar() {
 
     saveWorldBtn = new ButtonWithText("Save Map");
     saveWorldBtn->onclick_func = []() {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
         dialogs.push_back(new FileDialog(DialogType::SaveFile, L"Save Map", ".map"));
         };
 
@@ -279,6 +281,8 @@ void createMenuBar() {
 
     instructionsMEBtn = new ButtonWithText("Instructions");
     instructionsMEBtn->onclick_func = []() {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
         dialogs.push_back(new ScrollableText(
             L"1. O programie\n"
             L"-Map Editor jest to program do edycji mapy świata gry RPG 2D. W tym programie możesz tworzyć oraz edytować mapę, dodawać oraz usuwać różne obiekty takie jak drzewa, skały, rośliny i potworki. Program jest intuicyjny oraz prosty w obsłudze.\n"
@@ -331,6 +335,8 @@ void createMenuBar() {
 
     instructionsBEBtn = new ButtonWithText("Instructions");
     instructionsBEBtn->onclick_func = []() {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
         dialogs.push_back(new ScrollableText(
             L"1. O programie\n"
             L"-Building Editor jest to program do edycji budynków do gry RPG 2D. W tym programie możesz tworzyć oraz edytować budynki, dodawać oraz usuwać różne obiekty takie jak ściany, podłogi, różne itemy oraz meble. Program jest intuicyjny oraz prosty w obsłudze.\n"
