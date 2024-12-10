@@ -155,7 +155,7 @@ void MapEditor() {
 
                     if (confirm->value != ConfirmValue::Undefinded) {
                         if (confirm->value == ConfirmValue::True) {
-                            OpenFileDialog* opendial = dynamic_cast<OpenFileDialog*>(dialogs[dialogs.size()-2]);
+                            FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs[dialogs.size()-2]);
                             mapa->load(opendial->getPathfile());
                             delete confirm;
                             dialogs.pop_back();
@@ -166,13 +166,13 @@ void MapEditor() {
                         if (confirm->value == ConfirmValue::False) {
                             delete confirm;
                             dialogs.pop_back();
-                            OpenFileDialog* opendial = dynamic_cast<OpenFileDialog*>(dialogs.back());
+                            FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs.back());
                             opendial->fileSelected = false;
                         }
                     }
                 }
                 else if (dialogs.back()->type == DialogType::OpenFile) {
-                    OpenFileDialog* opendial = dynamic_cast<OpenFileDialog*>(dialogs.back());
+                    FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs.back());
 
                     opendial->update(event);
 

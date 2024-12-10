@@ -57,7 +57,7 @@
 #include "Platform/Dialog.h"
 #include "Platform/Message.h"
 #include "Platform/ScrollableText.h"
-#include "Platform/OpenFileDialog.h"
+#include "Platform/FileDialog.h"
 #include "Platform/Confirm.h"
 #include "Platform/CheckBox.h"
 

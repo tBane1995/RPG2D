@@ -13,7 +13,7 @@ class TextArea;
 bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_entry second);
 
 
-class OpenFileDialog : public Dialog {
+class FileDialog : public Dialog {
 public:
     sf::Vector2f position = sf::Vector2f(0, 0);
 
@@ -51,8 +51,8 @@ public:
     Scrollbar* scrollbar = nullptr;
     bool fileSelected;      // if "submit button" pressed is true
 
-    OpenFileDialog(DialogType type, std::wstring title, std::string acceptable_extension="");
-    ~OpenFileDialog();
+    FileDialog(DialogType type, std::wstring title, std::string acceptable_extension="");
+    ~FileDialog();
 
     void loadDirectory();
     void loadScrollbar();

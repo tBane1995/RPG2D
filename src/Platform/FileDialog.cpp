@@ -1,5 +1,5 @@
 ﻿
-#include "OpenFileDialog.h"
+#include "FileDialog.h"
 #include "Buttons.h"
 #include "Scrollbar.h"
 #include "TextArea.h"
@@ -48,7 +48,7 @@ bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_
 }
 
 
-OpenFileDialog::OpenFileDialog(DialogType type, std::wstring title, std::string acceptable_extension) : Dialog(type) {
+FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptable_extension) : Dialog(type) {
     rect_height = 0;
     rect_width = 512;
     margin_vert = 4;
@@ -178,7 +178,7 @@ OpenFileDialog::OpenFileDialog(DialogType type, std::wstring title, std::string 
     fileSelected = false;
 }
 
-OpenFileDialog::~OpenFileDialog() {
+FileDialog::~FileDialog() {
     delete titleText;
     delete filenameInfo;
     delete selectedFilenameText;
@@ -191,7 +191,7 @@ OpenFileDialog::~OpenFileDialog() {
     delete scrollbar;
 }
 
-void OpenFileDialog::loadDirectory() {
+void FileDialog::loadDirectory() {
     paths.clear();
     if (std::filesystem::exists(current_path) && std::filesystem::is_directory(current_path)) {
 
@@ -231,7 +231,7 @@ void OpenFileDialog::loadDirectory() {
     paths.emplace(paths.begin(), current_path.parent_path());
 }
 
-void OpenFileDialog::loadScrollbar() {
+void FileDialog::loadScrollbar() {
     sf::Vector2f scrollbarSize = sf::Vector2f(16, 7 * line_height + 1);
     sf::Vector2f scrollbarPos;
     scrollbarPos.x = position.x + rect_width / 2.0f - scrollbarSize.x + borderWidth;
@@ -242,7 +242,7 @@ void OpenFileDialog::loadScrollbar() {
 
 }
 
-void OpenFileDialog::createFilenamesTexts() {
+void FileDialog::createFilenamesTexts() {
 
     float filename_rect_width = rect_width - scrollbar->size.x - 30 - 2 * margin_vert;
 
@@ -261,7 +261,7 @@ void OpenFileDialog::createFilenamesTexts() {
 
 }
 
-void OpenFileDialog::setFilenamesTexts() {
+void FileDialog::setFilenamesTexts() {
 
     std::cout << "scrollVal: " << scrollbar->scroll_value << "\n";
 
@@ -291,13 +291,13 @@ void OpenFileDialog::setFilenamesTexts() {
     }
 }
 
-std::string OpenFileDialog::getPathfile() {
+std::string FileDialog::getPathfile() {
     std::string pathfile = current_path.string() + "\\" + selectedFilenameText->texts[0].getString();
     std::cout << pathfile << "\n";
     return pathfile;
 }
 
-void OpenFileDialog::update(sf::Event& event) {
+void FileDialog::update(sf::Event& event) {
     scrollbar->update(event);
 
     selectButton->unclick();
@@ -352,7 +352,7 @@ void OpenFileDialog::update(sf::Event& event) {
     cancelButton->update(dt);
 }
 
-void OpenFileDialog::draw() {
+void FileDialog::draw() {
     //main rect
     window->draw(rect);
 
