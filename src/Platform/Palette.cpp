@@ -117,8 +117,8 @@ void PaletteButton::setGameObject(GameObject* object) {
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
 }
-void PaletteButton::update(float dt) {
-    ButtonWithImage::update(dt);
+void PaletteButton::update() {
+    ButtonWithImage::update();
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 }
 
@@ -1375,16 +1375,16 @@ void Palette::clickButtons() {
 
 void Palette::update(float dt) {
     for (auto& tool : toolsButtons)
-        tool->update(dt);
+        tool->update();
 
     for (auto& btn : groupButtons)
-        btn->update(dt);
+        btn->update();
 
     for (auto& btn : paletteButtons)
-        btn->update(dt);
+        btn->update();
 
-    buttonUp->update(dt);
-    buttonDown->update(dt);
+    buttonUp->update();
+    buttonDown->update();
 }
 
 void Palette::draw()

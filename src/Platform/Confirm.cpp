@@ -74,8 +74,8 @@ void Confirm::update(sf::Event& event) {
 
 	
 
-	btn_yes->update(dt);
-	btn_no->update(dt);
+	btn_yes->update();
+	btn_no->update();
 
 }
 
