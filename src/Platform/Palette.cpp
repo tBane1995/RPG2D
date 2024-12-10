@@ -61,8 +61,8 @@ void PaletteButton::setGameObject(GameObject* object) {
             sprite.setOrigin(8, 8);
             sprite.setScale(3.0f, 3.0f);
         }
-        else if (object->type != GameObjectType::ItemOnMap) {
-
+        else
+        {
             sf::Vector2f o; // origin
             o.x = CurrentTextureForObject->getSize().x / 2.0f;
             o.y = CurrentTextureForObject->getSize().y / 2.0f;
@@ -85,17 +85,20 @@ void PaletteButton::setGameObject(GameObject* object) {
 
             sprite.setScale(s);
         }
-        else {
-            // Items
-            sprite.setOrigin(28, 28);
-            sprite.setTextureRect(sf::IntRect(4, 4, 56, 56));
-        }
 
-        hover_func = [this, CurrentTextureForObject]() {
+        hover_func = [this]() {
             if (tip == nullptr || tip->btn != this) {
                 sf::Vector2f pos;
-                pos.x = this->position.x - CurrentTextureForObject->getSize().x / 2.0f;
-                pos.y = this->position.y + CurrentTextureForObject->getSize().y / 4.0f;
+                if (this->object->type != GameObjectType::Water) {
+                    pos.x = this->position.x - this->object->texture->getSize().x / 2.0f;
+                    pos.y = this->position.y + this->object->texture->getSize().y / 4.0f;
+                }
+                else
+                {
+                    WaterPrefab* o = dynamic_cast<WaterPrefab*>(this->object);
+                    pos.x = this->position.x - o->terrain->texture->getSize().x / 2.0f;
+                    pos.y = this->position.y + o->terrain->texture->getSize().y / 4.0f;
+                }
                 tip = new Tip(ConvertUtf8ToWide(this->object->name), pos, this);       // TO-DO delete convert and use std::wstring
             }
 
@@ -1384,8 +1387,8 @@ void Palette::update(float dt) {
     buttonDown->update(dt);
 }
 
-void Palette::draw() {
-
+void Palette::draw()
+{
     for (auto& tool : toolsButtons)
         tool->draw();
 
