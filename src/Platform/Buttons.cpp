@@ -442,11 +442,21 @@ void ButtonWithImage::unclick()
 void ButtonWithImage::hover() {
     if (state != ButtonState::Pressed) {
 
-        float w = sprite.getTexture()->getSize().x;
-        float h = sprite.getTexture()->getSize().y;
+        float w = 0;
+        float h = 0;
         float x = sprite.getPosition().x;
         float y = sprite.getPosition().y;
 
+        if (texture)
+        {
+            w = texture->getSize().x;
+            h = texture->getSize().y;
+        }
+        else
+        {
+            w = sprite.getTexture()->getSize().x;
+            h = sprite.getTexture()->getSize().y;
+        }
         if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
             worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
 
