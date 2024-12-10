@@ -102,7 +102,7 @@ void PaletteButton::setGameObject(GameObject* object) {
                 tip = new Tip(ConvertUtf8ToWide(this->object->name), pos, this);       // TO-DO delete convert and use std::wstring
             }
 
-            };
+        };
 
         onclick_func = [this]() {
             tool = toolType::AddGameObject;

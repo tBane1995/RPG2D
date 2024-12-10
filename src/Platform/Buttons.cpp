@@ -454,8 +454,8 @@ void ButtonWithImage::hover() {
         }
         else
         {
-            w = sprite.getTexture()->getSize().x;
-            h = sprite.getTexture()->getSize().y;
+            w = sprite.getTextureRect().width;
+            h = sprite.getTextureRect().height;
         }
         if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
             worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
