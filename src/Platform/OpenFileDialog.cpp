@@ -195,8 +195,32 @@ void OpenFileDialog::loadDirectory() {
     paths.clear();
     if (std::filesystem::exists(current_path) && std::filesystem::is_directory(current_path)) {
 
-        for (auto& entry : std::filesystem::directory_iterator(current_path)) {
-            paths.push_back(entry);
+        if (acceptable_extensions != "") {
+            
+            for (auto& entry : std::filesystem::directory_iterator(current_path)) {
+                if (entry.is_directory()) {
+                    paths.push_back(entry);
+                }
+                else {
+                    std::string extension = entry.path().extension().string();
+                    std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char c) { return std::tolower(c); });
+
+                    std::cout << extension << "\n";
+
+                    if (extension == acceptable_extensions) {
+                        paths.push_back(entry);
+                    }
+                }
+                    
+                
+                
+              
+            }
+                
+        }
+        else {
+            for (auto& entry : std::filesystem::directory_iterator(current_path))
+                paths.push_back(entry);
         }
     }
     std::sort(paths.begin(), paths.end(), sortkey);
@@ -262,16 +286,9 @@ void OpenFileDialog::setFilenamesTexts() {
         }
         else {
             filenames[i]->setWstring(L"");
-            icons[i].setTexture(*getSingleTexture("GUI/icons/empty")->texture);
+            SingleTexture::SetTextureForSprite(&icons[i], getSingleTexture("GUI/icons/empty"));
         }
-
-        std::cout << "i: " << i;
-        std::cout << "\t i+scrVal: " << i + scrollbar->scroll_value;
-        std::wcout << L"filename: " << filenames[i]->lines[0];
-        std::cout << "\n";
     }
-
-    std::cout << "\n\n\n\n";
 }
 
 std::string OpenFileDialog::getPathfile() {

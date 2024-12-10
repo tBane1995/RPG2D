@@ -187,7 +187,7 @@ void createMenuBar() {
         
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
-        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Map"));
+        dialogs.push_back(new OpenFileDialog(DialogType::OpenFile, L"Load Map", ".map"));
         };
 
     saveWorldBtn = new ButtonWithText("Save Map");
