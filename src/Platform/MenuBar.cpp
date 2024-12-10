@@ -105,6 +105,7 @@ ButtonWithText* instructionsMEBtn;
 ButtonWithText* instructionsBEBtn;
 ButtonWithText* aboutMEBtn;
 ButtonWithText* aboutBEBtn;
+ButtonWithText* selectLanguage;
 
 std::vector < MenuButton* > menu;
 MenuButton* clickedMenuButton;
@@ -375,6 +376,7 @@ void createMenuBar() {
         };
     aboutBEBtn = new ButtonWithText("About");
 
+    selectLanguage = new ButtonWithText("Select Language");
     
 }
 
@@ -402,6 +404,7 @@ void createMapEditorMenuBar() {
 
     menu[2]->addOption(instructionsMEBtn);
     menu[2]->addOption(aboutMEBtn);
+    menu[2]->addOption(selectLanguage);
 
     clickedMenuButton = nullptr;
 }
@@ -423,6 +426,7 @@ void createBuildingEditorMenuBar() {
 
     menu[2]->addOption(instructionsBEBtn);
     menu[2]->addOption(aboutBEBtn);
+    menu[2]->addOption(selectLanguage);
 
     clickedMenuButton = nullptr;
 }

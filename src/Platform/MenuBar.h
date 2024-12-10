@@ -67,6 +67,7 @@ extern ButtonWithText* instructionsMEBtn;
 extern ButtonWithText* instructionsBEBtn;
 extern ButtonWithText* aboutMEBtn;
 extern ButtonWithText* aboutBEBtn;
+extern ButtonWithText* selectLanguage;
 
 extern std::vector < MenuButton* > menu;
 extern MenuButton* clickedMenuButton;
