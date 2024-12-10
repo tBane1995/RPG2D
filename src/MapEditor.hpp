@@ -185,7 +185,10 @@ void MapEditor() {
 
                     else if (dial->selectButton->state == ButtonState::Pressed) {
                         if (dial->fileSelected == true) {
-                            dialogs.push_back(new Confirm(L"Plik " + ConvertUtf8ToWide(dial->getPathfile()) + L" już istnieje. Czy chcesz go zamienić?"));
+                            std::wstring filename = getShortName(ConvertUtf8ToWide(dial->getPathfile()));
+                            dialogs.push_back(new Confirm(L"Plik " + filename + L" już istnieje. Czy chcesz go zamienić?"));
+                            dial->selectButton->state = ButtonState::Idle;
+                            dial->selectButton->changeColor();
                         }
                     }
 

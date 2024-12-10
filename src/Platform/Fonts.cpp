@@ -94,7 +94,7 @@ std::vector < std::wstring > wrapText(std::wstring text, const sf::Font& font, s
 std::string getShortName(std::string fullname) {
 
 	std::string shortname = "";
-	for (int i = fullname.size() - 1; i >= 0 && fullname[i] != '/'; i--) {
+	for (int i = fullname.size() - 1; i >= 0 && fullname[i] != '/' && fullname[i] != '\\'; i--) {
 		shortname = fullname[i] + shortname;
 	}
 
@@ -104,7 +104,7 @@ std::string getShortName(std::string fullname) {
 std::wstring getShortName(std::wstring fullname) {
 
 	std::wstring shortname = L"";
-	for (int i = fullname.size() - 1; i >= 0 && fullname[i] != L'/'; i--) {
+	for (int i = fullname.size() - 1; i >= 0 && fullname[i] != L'/' && fullname[i] != L'\\'; i--) {
 		shortname = fullname[i] + shortname;
 	}
 
