@@ -63,11 +63,12 @@ extern OptionButton* collidersBtn;
 extern OptionButton* meshesBtn;
 extern OptionButton* monsterBasesBtn;
 
-extern ButtonWithText* instructionsMEBtn;
-extern ButtonWithText* instructionsBEBtn;
+extern ButtonWithText* instructionsMEBtn;   // instructions Map Editor Button
+extern ButtonWithText* instructionsBEBtn;   // instructions Building Editor Button
 extern ButtonWithText* aboutMEBtn;
 extern ButtonWithText* aboutBEBtn;
-extern ButtonWithText* selectLanguage;
+extern ButtonWithText* settingsMEBtn;
+extern ButtonWithText* settingsBEBtn;
 
 extern std::vector < MenuButton* > menu;
 extern MenuButton* clickedMenuButton;

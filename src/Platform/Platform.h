@@ -56,6 +56,7 @@
 #include "Platform/Scrollbar.h"
 #include "Platform/Dialog.h"
 #include "Platform/Message.h"
+#include "Platform/Panel.h"
 #include "Platform/ScrollableText.h"
 #include "Platform/FileDialog.h"
 #include "Platform/Confirm.h"

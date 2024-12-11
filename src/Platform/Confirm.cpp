@@ -24,7 +24,7 @@ Confirm::Confirm(std::wstring text) : Dialog(DialogType::Confirm) {
 	sf::Vector2f pos;
 	pos.x = position.x - width / 2.0f;
 	pos.y = position.y - height / 2.0f;
-	rect.setPosition(pos.x+borderWidth, pos.y+borderWidth);
+	rect.setPosition(cam->position.x+pos.x+borderWidth, cam->position.y+pos.y+borderWidth);
 
 	sf::Vector2f textpos = sf::Vector2f(pos.x + borderWidth + margin, pos.y + borderWidth + margin);
 	textarea = new TextArea(text, textpos, width-2*borderWidth-2*margin);

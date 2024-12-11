@@ -105,7 +105,8 @@ ButtonWithText* instructionsMEBtn;
 ButtonWithText* instructionsBEBtn;
 ButtonWithText* aboutMEBtn;
 ButtonWithText* aboutBEBtn;
-ButtonWithText* selectLanguage;
+ButtonWithText* settingsMEBtn;
+ButtonWithText* settingsBEBtn;
 
 std::vector < MenuButton* > menu;
 MenuButton* clickedMenuButton;
@@ -374,9 +375,36 @@ void createMenuBar() {
             L"-Colliders- wyświetl Collidery obiektów\n"
         ));
         };
-    aboutBEBtn = new ButtonWithText("About");
 
-    selectLanguage = new ButtonWithText("Select Language");
+    aboutMEBtn = new ButtonWithText("About");
+    aboutMEBtn->onclick_func = []() {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
+        dialogs.push_back(new Panel());
+        };
+
+    aboutBEBtn = new ButtonWithText("About");
+    aboutBEBtn->onclick_func = []() {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
+        dialogs.push_back(new Panel());
+        };
+    
+
+
+    settingsMEBtn = new ButtonWithText("Settings");
+    settingsMEBtn->onclick_func = []() {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
+        dialogs.push_back(new Panel());
+        };
+
+    settingsBEBtn = new ButtonWithText("Settings");
+    settingsBEBtn->onclick_func = []() {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
+        dialogs.push_back(new Panel());
+        };
     
 }
 
@@ -404,7 +432,7 @@ void createMapEditorMenuBar() {
 
     menu[2]->addOption(instructionsMEBtn);
     menu[2]->addOption(aboutMEBtn);
-    menu[2]->addOption(selectLanguage);
+    menu[2]->addOption(settingsMEBtn);
 
     clickedMenuButton = nullptr;
 }
@@ -426,12 +454,17 @@ void createBuildingEditorMenuBar() {
 
     menu[2]->addOption(instructionsBEBtn);
     menu[2]->addOption(aboutBEBtn);
-    menu[2]->addOption(selectLanguage);
+    menu[2]->addOption(settingsBEBtn);
 
     clickedMenuButton = nullptr;
 }
 
 void updateMenuBar() {
+
+    sf::ContextSettings settings = window->getSettings();
+    settings.antialiasingLevel;
+    settings.depthBits;
+    settings.stencilBits;
 
 	bar.setPosition( -screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
     logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);

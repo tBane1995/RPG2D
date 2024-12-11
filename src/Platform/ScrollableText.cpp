@@ -5,13 +5,7 @@
 #include "Scrollbar.h"
 #include "Camera.h"
 
-ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::ScrollableText) {
-
-	rect = sf::RectangleShape(sf::Vector2f(width-2*borderWidth, height-2*borderWidth));
-	rect.setFillColor(panelColor_normal);
-	rect.setPosition(cam->position.x - width/2.0f + borderWidth, cam->position.y - height/2.0f+borderWidth);
-	rect.setOutlineThickness(borderWidth);
-	rect.setOutlineColor(panelColor_dark);
+ScrollableText::ScrollableText(std::wstring text) : Panel(DialogType::ScrollableText) {
 
 	sf::Vector2f scrollbar_size = sf::Vector2f(16, height - 2.0f * borderWidth);
 
@@ -39,6 +33,11 @@ ScrollableText::ScrollableText(std::wstring text) : Dialog(DialogType::Scrollabl
 	textpos.y = cam->position.y + position.y - height / 2.0f + borderWidth + margin - (textarea->texts[0].getPosition().y - textarea->rect.getPosition().y);
 	text_sprite.setPosition(textpos);
 	// TO-DO
+}
+
+ScrollableText::~ScrollableText() {
+	delete textarea;
+	delete scrollbar;
 }
 
 void ScrollableText::update(sf::Event& event) {

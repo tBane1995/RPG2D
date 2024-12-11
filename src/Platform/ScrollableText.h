@@ -4,18 +4,15 @@
 #include <string>
 #include <vector>
 #include "Dialog.h"
+#include "Panel.h"
 
 class TextArea;
 class Scrollbar;
+class Panel;
 
-class ScrollableText : public Dialog {
+class ScrollableText : public Panel {
 public:
 
-	sf::Vector2f position;
-	sf::RectangleShape rect;
-	float width = 600;
-	float height = 400;
-	float margin = 8;
 	TextArea* textarea;
 	Scrollbar* scrollbar;
 	sf::RenderTexture text_texture;
@@ -23,10 +20,7 @@ public:
 
 	ScrollableText(std::wstring text);
 
-	~ScrollableText() {
-		delete textarea;
-		delete scrollbar;
-	}
+	~ScrollableText();
 
 	virtual void update(sf::Event& event) override;
 	virtual void draw() override;
