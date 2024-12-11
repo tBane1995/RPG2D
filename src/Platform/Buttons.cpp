@@ -372,6 +372,9 @@ ButtonWithImage::ButtonWithImage(ButtonWithImage* btn) {
     this->hover_func = btn->hover_func;
     this->onclick_func = btn->onclick_func;
 
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+
+
     clickTime = currentTime;
     changeColor();
 }
@@ -385,8 +388,11 @@ ButtonWithImage::ButtonWithImage(ButtonWithImage* btn, sf::Vector2f position)
     this->hover_func = btn->hover_func;
     this->onclick_func = btn->onclick_func;
 
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+
     clickTime = currentTime;
     changeColor();
+    
 }
 
 ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
@@ -403,6 +409,8 @@ ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
         sprite.setOrigin(texture->getSize().x / 2.0f, texture->getSize().y / 2.0f);
     }
 
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+    
     hover_func = { };
     onclick_func = { };
 
@@ -414,6 +422,8 @@ void ButtonWithImage::setTexture(SingleTexture* texture) {
     sprite = sf::Sprite();
     SingleTexture::SetTextureForSprite(&sprite, texture);
     sprite.setOrigin(texture->getSize().x / 2, texture->getSize().y / 2);
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+    changeColor();
     this->texture = texture;
 }
 
@@ -511,7 +521,9 @@ void ButtonWithImage::click() {
 }
 
 void ButtonWithImage::update() {
+
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+
 }
 
 void ButtonWithImage::draw() {
