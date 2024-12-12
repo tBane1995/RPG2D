@@ -513,6 +513,7 @@ void Building::loadTexture2(std::ifstream& file) {
     if ((size.x / 2 - 1) > 2 && (size.x / 4 - 1) % 2 == 1) {
         sf::Texture win_tex = *windows->texture;
         sf::Image window_image;
+        window_image.create(32, 32, sf::Color::Transparent);
         window_image.copy(ImageMap, 0, 0, sf::IntRect(windows->GetTexturePosInMap().x, windows->GetTexturePosInMap().y, windows->getSize().x, windows->getSize().y));
 
         short left_window_pos;
