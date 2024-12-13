@@ -9,6 +9,7 @@
 class ButtonWithText;
 class Scrollbar;
 class TextArea;
+class EditableTextArea;
 
 bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_entry second);
 
@@ -31,14 +32,12 @@ public:
     // filenames 
     sf::RectangleShape filenamesRect;
     sf::Sprite icons[7];
-    sf::RectangleShape filenamesRects[7];
     TextArea* filenames[7];
 
     // submit bar
     sf::RectangleShape submitbar;
     TextArea* filenameInfo;
-    sf::RectangleShape selectedFilenameRect;
-    TextArea* selectedFilenameText;
+    EditableTextArea* selectedFilename;
 
     ButtonWithText* selectButton;
     ButtonWithText* cancelButton;

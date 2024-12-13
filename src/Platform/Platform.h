@@ -52,6 +52,7 @@
 #include "Platform/BrushSizes.h"
 
 #include "Platform/TextArea.h"
+#include "Platform/EditableTextArea.h"
 #include "Platform/Buttons.h"
 #include "Platform/Scrollbar.h"
 #include "Platform/Dialog.h"

@@ -24,11 +24,11 @@ Tip::Tip(std::wstring tip, ButtonWithImage* btn) {
 		
 
 	text = new TextArea(tip, position);
-	text->rect.setOutlineThickness(2.0f);
-	text->rect.setOutlineColor(sf::Color::Black);
+	text->background.setOutlineThickness(2.0f);
+	text->background.setOutlineColor(sf::Color::Black);
 	
-	if (this->position.x + text->rect.getSize().x >= screenWidth / 2.0f) {
-		this->position.x = screenWidth/2.0f - text->rect.getSize().x;
+	if (this->position.x + text->background.getSize().x >= screenWidth / 2.0f) {
+		this->position.x = screenWidth/2.0f - text->background.getSize().x;
 		text->setPosition(this->position);
 	}
 }
@@ -42,11 +42,11 @@ Tip::Tip(std::wstring tip, sf::Vector2f position, ButtonWithImage* btn) {
 	this->position = position;
 
 	text = new TextArea(tip, position);
-	text->rect.setOutlineThickness(2.0f);
-	text->rect.setOutlineColor(sf::Color::Black);
+	text->background.setOutlineThickness(2.0f);
+	text->background.setOutlineColor(sf::Color::Black);
 
-	if (this->position.x + text->rect.getSize().x >= screenWidth / 2.0f) {
-		this->position.x = screenWidth/2.0f - text->rect.getSize().x;
+	if (this->position.x + text->background.getSize().x >= screenWidth / 2.0f) {
+		this->position.x = screenWidth/2.0f - text->background.getSize().x;
 		text->setPosition(this->position);
 	}
 }

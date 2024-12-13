@@ -29,6 +29,10 @@ Confirm::Confirm(std::wstring text) : Dialog(DialogType::Confirm) {
 	sf::Vector2f textpos = sf::Vector2f(pos.x + borderWidth + margin, pos.y + borderWidth + margin);
 	textarea = new TextArea(text, textpos, width-2*borderWidth-2*margin);
 
+	textarea->setTextColor(textColor);
+	textarea->setBackgroundColor(sf::Color::Transparent);
+	textarea->setRectColor(panelColor_medium);
+
 	btn_yes = new ButtonWithText("tak", 17);
 	btn_yes->setPosition(sf::Vector2f(position.x - 64 - btn_yes->rect.getSize().x / 2.0f, position.y + 16));
 

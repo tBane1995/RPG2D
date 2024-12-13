@@ -11,23 +11,33 @@ public:
 	float characterSize = 16;
 	float line_length;
 	std::vector < std::wstring > lines;
-	std::vector < sf::Text > texts;
-	sf::RectangleShape rect;
+	std::vector < sf::Text > texts;		// texts
+	sf::RectangleShape background;		// texts background
+	sf::RectangleShape rect;			// rectangle field
 	sf::Color text_color;
+	sf::Color background_color;
+	sf::Color rect_color;
 
-	TextArea(std::wstring s, sf::Vector2f position = sf::Vector2f(0, 0), float line_length = 0.0f);
+	TextArea(std::wstring s, sf::Vector2f position = sf::Vector2f(0, 0), float line_length = 0.0f, sf::Vector2f size = sf::Vector2f(0, 0));
 	~TextArea();
 
-	void setRectColor(sf::Color color);
 	void setTextColor(sf::Color color);
+	void setBackgroundColor(sf::Color color);
+	void setRectColor(sf::Color color);
+
 	float getLineHeight();
+
 	void generateText();
-	void generateRect();
+	void generateBackground();
+	void generateRect(sf::Vector2f size=sf::Vector2f(0,0));
+
+	void setCharacterSize(short val);
+	void setBackgroundSize(sf::Vector2f size);
 	void setRectSize(sf::Vector2f size);
 
 	void setWstring(std::wstring s);
 	void setPosition(sf::Vector2f position);
-	void setCharacterSize(short val);
+	
 	sf::Vector2f getSize();
 
 	void update();

@@ -23,14 +23,14 @@ ScrollableText::ScrollableText(std::wstring text) : Panel(DialogType::Scrollable
 	text_texture.setView(v);
 	text_texture.setSmooth(true);
 	text_texture.clear(sf::Color::Transparent);
-	text_texture.draw(textarea->rect);
+	text_texture.draw(textarea->background);
 	for (auto& text : textarea->texts)
 		text_texture.draw(text);
 	text_texture.display();
 	text_sprite = sf::Sprite(text_texture.getTexture());
 	sf::Vector2f textpos;
-	textpos.x = cam->position.x + position.x - width / 2.0f + borderWidth + margin - (textarea->texts[0].getPosition().x-textarea->rect.getPosition().x);
-	textpos.y = cam->position.y + position.y - height / 2.0f + borderWidth + margin - (textarea->texts[0].getPosition().y - textarea->rect.getPosition().y);
+	textpos.x = cam->position.x + position.x - width / 2.0f + borderWidth + margin - (textarea->texts[0].getPosition().x-textarea->background.getPosition().x);
+	textpos.y = cam->position.y + position.y - height / 2.0f + borderWidth + margin - (textarea->texts[0].getPosition().y - textarea->background.getPosition().y);
 	text_sprite.setPosition(textpos);
 	// TO-DO
 }
@@ -52,7 +52,7 @@ void ScrollableText::update(sf::Event& event) {
 	sf::View v = sf::View(sf::FloatRect(sf::Vector2f(cam->position.x - width / 2.0f + borderWidth + margin, cam->position.y - height / 2.0f + borderWidth + margin), sf::Vector2f(width - 2 * (borderWidth + margin)-scrollbar->size.x, height - 2 * (borderWidth + margin))));
 	text_texture.setView(v);
 	text_texture.clear(sf::Color::Transparent);
-	text_texture.draw(textarea->rect);
+	text_texture.draw(textarea->background);
 	for (auto& text : textarea->texts)
 		text_texture.draw(text);
 	text_texture.display();

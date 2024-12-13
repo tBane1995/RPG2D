@@ -6,11 +6,11 @@
 Message::Message(std::wstring message) : Dialog(DialogType::Message) {
 	text = new TextArea(message, cam->position, 400.0f - 2*margin);
 		
-	float width = text->rect.getSize().x;
+	float width = text->getSize().x;
 	if (width < 400)
 		width = 400;
 
-	float height = text->rect.getSize().y;
+	float height = text->getSize().y;
 	if (height < 250)
 		height = 250;
 

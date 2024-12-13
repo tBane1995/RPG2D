@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "Theme.h"
 
-TextArea::TextArea(std::wstring s, sf::Vector2f position, float line_length) {
+TextArea::TextArea(std::wstring s, sf::Vector2f position, float line_length, sf::Vector2f size) {
 	this->s = s;
 	this->position = position;
 	this->line_length = line_length;
@@ -12,10 +12,12 @@ TextArea::TextArea(std::wstring s, sf::Vector2f position, float line_length) {
 	lines = wrapText(s, basicFont, characterSize, this->line_length);
 	
 	text_color = textColor;
-	rect.setFillColor(panelColor_normal);
+	background_color = panelColor_medium;
+	rect_color = panelColor_dark;
 
 	generateText();
-	generateRect();
+	generateBackground();
+	generateRect(size);
 }
 
 TextArea::~TextArea() {
@@ -29,8 +31,14 @@ void TextArea::setTextColor(sf::Color color) {
 		t.setFillColor(text_color);
 }
 
+void TextArea::setBackgroundColor(sf::Color color) {
+	background_color = color;
+	background.setFillColor(background_color);
+}
+
 void TextArea::setRectColor(sf::Color color) {
-	rect.setFillColor(color);
+	rect_color = color;
+	rect.setFillColor(rect_color);;
 }
 
 float TextArea::getLineHeight() {
@@ -55,9 +63,11 @@ void TextArea::generateText() {
 		texts.push_back(t);
 		i += 1.0f;
 	}
+
+	generateBackground();
 }
 
-void TextArea::generateRect() {
+void TextArea::generateBackground() {
 	sf::Vector2f size;
 	if (texts.size() > 0 && line_length > 0.0f) {
 		size.x = line_length;
@@ -72,9 +82,33 @@ void TextArea::generateRect() {
 		size.y = 0;
 	}
 			
-	rect.setSize(size);
-	rect.setPosition(position.x+cam->position.x, position.y+cam->position.y);
+	background.setSize(size);
+	background.setFillColor(background_color);
+	background.setPosition(position.x+cam->position.x, position.y+cam->position.y);
 
+}
+
+void TextArea::generateRect(sf::Vector2f size) {
+	if (size == sf::Vector2f(0, 0)) {
+		rect.setSize(background.getSize());
+	}else
+		rect.setSize(size);
+
+	rect.setFillColor(rect_color);
+	rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+}
+
+void TextArea::setCharacterSize(short val) {
+
+	characterSize = val;
+
+	generateText();
+	generateBackground();
+}
+
+void TextArea::setBackgroundSize(sf::Vector2f size) {
+	background.setSize(size);
 }
 
 void TextArea::setRectSize(sf::Vector2f size) {
@@ -92,17 +126,10 @@ void TextArea::setWstring(std::wstring s) {
 void TextArea::setPosition(sf::Vector2f position) {
 	this->position = position;
 
+	background.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+	generateText();
 	rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
-	generateText();
 
-}
-
-void TextArea::setCharacterSize(short val) {
-
-	characterSize = val;
-
-	generateText();
-	generateRect();
 }
 
 sf::Vector2f TextArea::getSize() {
@@ -116,6 +143,7 @@ void TextArea::update() {
 
 void TextArea::draw() {
 	window->draw(rect);
+	window->draw(background);
 	for (auto& t : texts)
 		window->draw(t);
 }
