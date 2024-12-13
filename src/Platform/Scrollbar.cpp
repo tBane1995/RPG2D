@@ -94,6 +94,7 @@ void Scrollbar::setPosition(sf::Vector2f pos) {
     sf::Vector2f p;
     p.x += cam->position.x + position.x;
     p.y += cam->position.y + position.y;
+
     // BAR RECT
     bar_top.setPosition(position);
     bar_center.setPosition(p.x, p.y + size.x);
@@ -129,7 +130,7 @@ float Scrollbar::getScrollSizeY() {
     if (scroll_length > max_value - min_value + 1)
         return size.y - 2*size.x;
     else
-        return float(size.y-2*size.x) * float(scroll_length)/float(max_value - min_value + 1);
+        return round(float(size.y - 2 * size.x) * float(scroll_length) / float(max_value - min_value + 1));
 }
 
 void Scrollbar::scrollPositioning() {
