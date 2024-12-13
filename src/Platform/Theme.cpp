@@ -10,7 +10,7 @@ sf::Color panelColor_normal;
 sf::Color panelColor_light;
 sf::Color panelColor_medium;
 sf::Color panelColor_dark;
-sf::Color textColor = sf::Color::White;
+sf::Color textColor;
 
 
 void initTheme() {
@@ -25,5 +25,6 @@ void initTheme() {
 	panelColor_light = sf::Color(80, 80, 80);
 	panelColor_medium = sf::Color(48, 48, 48);
 	panelColor_dark = sf::Color(32, 32, 32);
+
 	textColor = sf::Color::White;
 }

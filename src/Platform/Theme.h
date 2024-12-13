@@ -13,8 +13,6 @@ extern sf::Color panelColor_light;
 extern sf::Color panelColor_medium;
 extern sf::Color panelColor_dark;
 
-
+extern sf::Color textColor;
 
 void initTheme();
-
-extern sf::Color textColor;

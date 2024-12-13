@@ -66,7 +66,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
     titleText->setCharacterSize(17);
     titleText->generateRect();
     titleText->setRectColor(sf::Color::Transparent);
-    titleText->setTextColor(dialoguesColor);
+    titleText->setTextColor(textColor);
 
     ////////////////////////////////////
     // FILENAMES AND SCROLLBAR
@@ -87,7 +87,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
 
     filenameInfo = new TextArea(L"File name: ");
     filenameInfo->setCharacterSize(17);
-    filenameInfo->setTextColor(dialoguesColor);
+    filenameInfo->setTextColor(textColor);
     filenameInfo->setRectColor(sf::Color::Transparent);
     filenameInfo->generateRect();
 
@@ -99,7 +99,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
 
     selectedFilenameText = new TextArea(L"");
     selectedFilenameText->setCharacterSize(17);
-    selectedFilenameText->setTextColor(dialoguesColor);
+    selectedFilenameText->setTextColor(textColor);
     selectedFilenameText->setRectColor(sf::Color::Transparent);
     selectedFilenameText->generateRect();
 
@@ -254,7 +254,7 @@ void FileDialog::createFilenamesTexts() {
         filenames[i]->setCharacterSize(17);
         filenames[i]->generateRect();
         filenames[i]->setRectColor(sf::Color::Transparent);
-        filenames[i]->setTextColor(dialoguesColor);
+        filenames[i]->setTextColor(textColor);
 
         icons[i] = sf::Sprite();
     }
