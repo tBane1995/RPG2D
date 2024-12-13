@@ -144,7 +144,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
         pos.y = position.y - rect_height / 2.0f + titlebar.getSize().y + borderWidth + i * line_height;
 
         icons[i].setPosition(pos.x + cam->position.x, pos.y + cam->position.y);
-        filenames[i]->setPosition(sf::Vector2f(pos.x + 30, pos.y));
+        filenames[i]->setPosition(sf::Vector2f(pos.x + 30, pos.y+line_height/8.0f));
     }
 
     pos.x = position.x + rect_width/2.0f + borderWidth - scrollbar->size.x;
