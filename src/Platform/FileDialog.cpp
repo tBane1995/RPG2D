@@ -67,7 +67,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
     titleText->setCharacterSize(17);
     titleText->setTextColor(textColor);
     titleText->setBackgroundColor(sf::Color::Transparent);
-    titleText->setRectColor(panelColor_medium);
+    titleText->setRectColor(sf::Color::Transparent);
     titleText->setRectSize(titlebar.getSize());
 
     ////////////////////////////////////
@@ -131,7 +131,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
     rect.setPosition(p.x + cam->position.x+borderWidth, p.y + cam->position.y+borderWidth);
 
     titlebar.setPosition(p.x + cam->position.x+borderWidth, p.y + cam->position.y+borderWidth);
-    titleText->setPosition(sf::Vector2f(p.x + borderWidth, p.y + borderWidth));
+    titleText->setPosition(sf::Vector2f(p.x + borderWidth+margin_hor, p.y + borderWidth + margin_vert));
 
     // filenames and scrollbar
     pos.x = cam->position.x + position.x - rect_width/2.0f + borderWidth;
