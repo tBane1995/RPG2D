@@ -10,6 +10,10 @@ Dialog::~Dialog() {
 
 }
 
+void Dialog::update() {
+
+}
+
 void Dialog::update(sf::Event& event) {
 
 }

@@ -60,6 +60,7 @@ public:
 
     std::string getPathfile();
 
+    void update();
     void update(sf::Event& event);
     void draw();
 };

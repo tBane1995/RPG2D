@@ -293,6 +293,11 @@ std::string FileDialog::getPathfile() {
     return pathfile;
 }
 
+void FileDialog::update() {
+
+    selectedFilename->update();
+}
+
 void FileDialog::update(sf::Event& event) {
     scrollbar->update(event);
     selectedFilename->update(event);

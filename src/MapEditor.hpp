@@ -347,6 +347,9 @@ void MapEditor() {
 
 
         // UPDATE ////////////////////////////////////////////////////////////////////////
+        if (!dialogs.empty())
+            dialogs.back()->update();
+
         updateShaders();
 
         mapa->mapVisiblings();
