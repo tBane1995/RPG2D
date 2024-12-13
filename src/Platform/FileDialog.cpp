@@ -59,7 +59,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
 
     // TITLE BAR
     titlebar = sf::RectangleShape(sf::Vector2f(512, line_height));
-    titlebar.setFillColor(sf::Color(48, 48, 48));
+    titlebar.setFillColor(panelColor_medium);
     rect_height += titlebar.getSize().y;
 
     titleText = new TextArea(title);
@@ -107,7 +107,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
     cancelButton = new ButtonWithText("cancel", 17);
 
     submitbar = sf::RectangleShape(sf::Vector2f(rect_width, selectedFilenameRect.getSize().y + 3 * margin_vert + selectButton->rect.getSize().y));
-    submitbar.setFillColor(sf::Color::Transparent);
+    submitbar.setFillColor(panelColor_medium);
 
     rect_height += submitbar.getSize().y;
 

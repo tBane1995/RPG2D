@@ -10,9 +10,31 @@ TextArea::TextArea(std::wstring s, sf::Vector2f position, float line_length) {
 
 	// format the text (add enters)
 	lines = wrapText(s, basicFont, characterSize, this->line_length);
-		
+	
+	text_color = textColor;
+	rect.setFillColor(panelColor_normal);
+
 	generateText();
 	generateRect();
+}
+
+TextArea::~TextArea() {
+
+}
+
+void TextArea::setTextColor(sf::Color color) {
+	this->text_color = color;
+
+	for (auto& t : texts)
+		t.setFillColor(text_color);
+}
+
+void TextArea::setRectColor(sf::Color color) {
+	rect.setFillColor(color);
+}
+
+float TextArea::getLineHeight() {
+	return characterSize * 1.3f;
 }
 
 void TextArea::generateText() {
@@ -22,7 +44,7 @@ void TextArea::generateText() {
 	for (auto& line : lines) {
 		sf::Text t;
 		t.setFont(basicFont);
-		t.setFillColor(textColor);
+		t.setFillColor(text_color);
 		t.setCharacterSize(characterSize);
 		t.setString(line);
 
@@ -52,7 +74,11 @@ void TextArea::generateRect() {
 			
 	rect.setSize(size);
 	rect.setPosition(position.x+cam->position.x, position.y+cam->position.y);
-	rect.setFillColor(panelColor_normal);
+
+}
+
+void TextArea::setRectSize(sf::Vector2f size) {
+	rect.setSize(size);
 }
 
 void TextArea::setWstring(std::wstring s) {
@@ -68,6 +94,23 @@ void TextArea::setPosition(sf::Vector2f position) {
 
 	rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 	generateText();
+
+}
+
+void TextArea::setCharacterSize(short val) {
+
+	characterSize = val;
+
+	generateText();
+	generateRect();
+}
+
+sf::Vector2f TextArea::getSize() {
+	return rect.getSize();
+}
+
+
+void TextArea::update() {
 
 }
 
