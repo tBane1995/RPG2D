@@ -624,8 +624,6 @@ void loadTextures()
 	loadSingleTexture("plants/grass_1.png", 32, 46);
 
 	// BUILDING PARTS
-	loadSingleTexture("buildings/parts/door_close.png", 32, 70);
-	loadSingleTexture("buildings/parts/door_open.png", 32, 70);
 	loadSingleTexture("buildings/parts/logo.png", 16, 16);
 	loadSingleTexture("buildings/parts/roof.png", 32, 32);
 	loadSingleTexture("buildings/parts/window.png", 16, 16);

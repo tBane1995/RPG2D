@@ -3,5 +3,6 @@
 void initPlatform()
 {
     initTheme();
+    loadFonts();
     initButtonsGlobalVariables();
 }

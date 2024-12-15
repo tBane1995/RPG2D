@@ -19,8 +19,6 @@ Plant* grass;
 
 void MapEditor() {
 
-    std::cout << "hello world\n";    // TO-DO - to delete
-
     window->setTitle("Map Editor");
 
     // load the icon for windows

@@ -6,7 +6,6 @@
 
 class TextArea {
 public:
-	std::wstring s;
 	sf::Vector2f position;
 	float characterSize = 16;
 	float line_length;
@@ -18,7 +17,7 @@ public:
 	sf::Color background_color;
 	sf::Color rect_color;
 
-	TextArea(std::wstring s, sf::Vector2f position = sf::Vector2f(0, 0), float line_length = 0.0f, sf::Vector2f size = sf::Vector2f(0, 0));
+	TextArea(std::wstring text, sf::Vector2f position = sf::Vector2f(0, 0), float line_length = 0.0f, sf::Vector2f size = sf::Vector2f(0, 0));
 	~TextArea();
 
 	void setTextColor(sf::Color color);

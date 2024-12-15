@@ -48,18 +48,10 @@ void EditableTextArea::update(sf::Event& event) {
 
 				isSelected = true;
 				cursorState = CursorState::ShowCursor;
-				last_action_time = currentTime;
-				std::string t = texts.back().getString() + "|";
-				texts.back().setString(t);
 			}
 			else {
 				isSelected = false;
-				if (cursorState == CursorState::ShowCursor) {
-					std::string t = texts.back().getString();
-					t = t.substr(0, t.length() - 1);
-					texts.back().setString(t);
-				}
-
+				cursorState = CursorState::HideCursor;
 			}
 				
 		}

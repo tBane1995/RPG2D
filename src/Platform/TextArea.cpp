@@ -3,13 +3,12 @@
 #include "Camera.h"
 #include "Theme.h"
 
-TextArea::TextArea(std::wstring s, sf::Vector2f position, float line_length, sf::Vector2f size) {
-	this->s = s;
+TextArea::TextArea(std::wstring text, sf::Vector2f position, float line_length, sf::Vector2f size) {
 	this->position = position;
 	this->line_length = line_length;
 
 	// format the text (add enters)
-	lines = wrapText(s, basicFont, characterSize, this->line_length);
+	lines = wrapText(text, basicFont, characterSize, this->line_length);
 	
 	text_color = textColor;
 	background_color = panelColor_medium;

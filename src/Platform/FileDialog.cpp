@@ -94,7 +94,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
     filenameInfo->setRectColor(sf::Color::Transparent);
     filenameInfo->generateRect();
 
-    selectedFilename = new EditableTextArea(L"xxx");
+    selectedFilename = new EditableTextArea(L"");
     selectedFilename->setCharacterSize(17);
     sf::Vector2f size;
     size.x = rect_width - filenameInfo->getSize().x - 3 * margin_vert;

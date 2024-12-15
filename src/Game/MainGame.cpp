@@ -505,53 +505,6 @@ void testGLSL() {
 
 }
 
-
-
-void testOpenDialogBox() {
-
-    //window->setFramerateLimit(4);
-    
-    cam = new Camera();
-    
-    OpenFileDialog* openDial = new OpenFileDialog(L"Load Map");
-    
-    while (window->isOpen())
-    {
-        prevTime = currentTime;
-        currentTime = timeClock.getElapsedTime();
-        dt = currentTime.asSeconds() - prevTime.asSeconds();
-
-        mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
-        worldMousePosition = window->mapPixelToCoords(mousePosition);
-
-        GUIwasHover = false;
-        GUIwasClicked = false;
-
-        sf::Event event;
-        while (window->pollEvent(event)) {
-
-            if (openDial) {
-                openDial->update(event);
-
-                
-                if (openDial->fileSelected) {
-                    std::cout << openDial->getPathfile() << "\n";
-                    delete openDial;
-                    openDial = nullptr;
-                }
-                
-            }
-        }
-
-        // RENDER
-        window->clear();
-        if(openDial)
-            openDial->draw();
-        window->display();
-    }
-
-}
-
 class Line {
 public:
     sf::Vector2f start;
