@@ -114,10 +114,9 @@ void TextArea::setRectSize(sf::Vector2f size) {
 	rect.setSize(size);
 }
 
-void TextArea::setWstring(std::wstring s) {
+void TextArea::setWstring(std::wstring text) {
 
-	this->s = s;
-	lines = wrapText(this->s, basicFont, characterSize, this->line_length);
+	lines = wrapText(text, basicFont, characterSize, line_length);
 
 	generateText();
 }

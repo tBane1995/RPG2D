@@ -9,36 +9,15 @@
 
 EditableTextArea::EditableTextArea(std::wstring text) : TextArea(text) {
 
+	editable_text = text;
 	isSelected = false;
-
+	cursor_position = editable_text.size();
 	last_action_time = currentTime;
 	cursorState = CursorState::ShowCursor;
-	std::string t = texts.back().getString() + "|";
-	texts.back().setString(t);
 }
 
 EditableTextArea::~EditableTextArea() {
 
-}
-
-void EditableTextArea::update() {
-	if (isSelected) {
-		if ((currentTime - last_action_time).asSeconds() > 0.25f) {
-			last_action_time = currentTime;
-
-			if (cursorState == CursorState::ShowCursor) {
-				cursorState = CursorState::HideCursor;
-				std::string t = texts.back().getString();
-				t = t.substr(0, t.length() - 1);
-				texts.back().setString(t);
-			}
-			else {
-				cursorState = CursorState::ShowCursor;
-				std::string t = texts.back().getString() + "|";
-				texts.back().setString(t);
-			}
-		}
-	}
 }
 
 void EditableTextArea::update(sf::Event& event) {
@@ -48,40 +27,67 @@ void EditableTextArea::update(sf::Event& event) {
 
 				isSelected = true;
 				cursorState = CursorState::ShowCursor;
+				cursor_position = editable_text.size();
 			}
 			else {
 				isSelected = false;
 				cursorState = CursorState::HideCursor;
 			}
-				
+
 		}
 	}
-	else if (event.type == sf::Event::KeyPressed) {
-		
-		if (isSelected) {
 
-			char sign;
+	if (isSelected) {
 
-			// LETTERS
-			if (event.key.code >= sf::Keyboard::A && event.key.code <= sf::Keyboard::Z) {
-				
-				if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-					sign = 'A' + event.key.code - sf::Keyboard::A;
-				else
-					sign = 'a' + event.key.code - sf::Keyboard::A;
+
+		if (event.type == sf::Event::TextEntered) {
+			if (isSelected) {
+
+				if (event.text.unicode < 128) {
+
+					if (event.text.unicode == '\b') {
+						if (editable_text.size() > 0) {
+							editable_text.erase(cursor_position - 1, 1);
+							cursor_position -= 1;
+						}
+
+					}
+					else if (event.text.unicode != 13) {
+						editable_text.insert(cursor_position, 1, char(event.text.unicode));
+						cursor_position += 1;
+
+					}
+				}
 			}
+		}
+		else if (event.type == sf::Event::KeyPressed) {
+			if (event.key.code == sf::Keyboard::Left) {
+				cursor_position -= 1;
+			}
+			else if (event.key.code == sf::Keyboard::Right) {
+				cursor_position += 1;
+			}
+		}
 
-			if (event.key.code == sf::Keyboard::Space)
-				sign = ' ';
+	}
+}
 
-			if (event.key.code == sf::Keyboard::BackSpace)
-				sign = '\b';
+void EditableTextArea::update() {
+	if (isSelected) {
+		if ((currentTime - last_action_time).asSeconds() > 0.25f) {
+			last_action_time = currentTime;
 
-			std::string t = texts.back().getString();
-			if (sign != '\b')
-				(cursorState == CursorState::ShowCursor) ? t.insert(t.length() - 1, 1, sign) : t = t + sign;
-	
-			texts.back().setString(t);
+			if (cursorState == CursorState::ShowCursor) {
+				cursorState = CursorState::HideCursor;
+				std::wstring text = editable_text;
+				text.insert(cursor_position, 1, '|');
+				setWstring(text);
+
+			}
+			else {
+				cursorState = CursorState::ShowCursor;
+				setWstring(editable_text);
+			}
 		}
 	}
 }

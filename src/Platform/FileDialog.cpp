@@ -326,7 +326,7 @@ void FileDialog::update(sf::Event& event) {
 
                             if (!paths[i + short(scrollbar->scroll_value)].is_directory()) {
                                 std::cout << "is file";
-                                selectedFilename->setWstring(filenames[i]->s);
+                                selectedFilename->setWstring(filenames[i]->lines[0]);
                             }
                             else {
                                 current_path = std::filesystem::path(paths[i + short(scrollbar->scroll_value)].path().wstring());
