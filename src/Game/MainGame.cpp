@@ -572,6 +572,8 @@ int main()
     //convertPNGsToSet();
     std::cout << "hello world, current working directory is: " << std::filesystem::current_path() << std::endl;    // TO-DO - test / to delete
 
+    initPlatform();
+
     // LOADS
 	loadFonts();
 	loadTextures();	// TO-DO "FROM FILE"
