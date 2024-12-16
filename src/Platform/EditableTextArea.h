@@ -19,6 +19,8 @@ public:
 	EditableTextArea(std::wstring text = L"");
 	~EditableTextArea();
 	
+	void setPosition(sf::Vector2f position);
+	void cursorPositioning();
 	void handleEvent(sf::Event& event);
 	void update();
 	void draw();

@@ -1,4 +1,4 @@
-#include "EditableTextArea.h"
+﻿#include "EditableTextArea.h"
 #include <iostream>
 #include "Camera.h"
 #include "Fonts.h"
@@ -6,25 +6,53 @@
 #include "Mouse.h"
 #include "Textures.h"
 #include "Time.h"
+#include "Theme.h"
 
 EditableTextArea::EditableTextArea(std::wstring text) : TextArea(text) {
 
-	cursor = sf::RectangleShape(sf::Vector2f(2, getLineHeight()));
-	cursor.setFillColor(sf::Color::Red);
-
-	sf::Vector2f pos;
-	pos.x = texts[0].getPosition().x + texts[0].getGlobalBounds().getSize().x;
-	pos.y = texts[0].getPosition().y;
-	cursor.setPosition(pos);
-
 	isSelected = false;
+
+	cursor = sf::RectangleShape(sf::Vector2f(2, getLineHeight()));
+	cursor.setFillColor(textColor);
 	cursor_position = lines[0].size();
+
 	last_action_time = currentTime;
-	cursorState = CursorState::ShowCursor;
+	cursorState = CursorState::HideCursor;
+
 }
 
 EditableTextArea::~EditableTextArea() {
 
+}
+
+void EditableTextArea::setPosition(sf::Vector2f position) {
+	this->position = position;
+
+	background.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+	generateText();
+	rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+	cursorPositioning();
+}
+
+void EditableTextArea::cursorPositioning() {
+	sf::Vector2f pos = texts[0].getPosition(); // Startowa pozycja tekstu
+
+	// Przejdź przez każdy znak przed kursorem
+	for (size_t i = 0; i < cursor_position; ++i) {
+		char currentChar = lines[0][i];
+		char nextChar = (i + 1 < lines[0].size()) ? lines[0][i + 1] : 0;
+
+		// Pobierz szerokość znaku z Glyph
+		sf::Glyph glyph = texts[0].getFont()->getGlyph(currentChar, texts[0].getCharacterSize(), false);
+		pos.x += glyph.advance; // Dodaj szerokość znaku (advance)
+
+		// Dodaj kerning między aktualnym znakiem a następnym znakiem
+		pos.x += texts[0].getFont()->getKerning(currentChar, nextChar, texts[0].getCharacterSize());
+	}
+
+	// Ustaw kursor na precyzyjnie obliczoną pozycję
+	cursor.setPosition(pos);
 }
 
 void EditableTextArea::handleEvent(sf::Event& event) {
@@ -35,6 +63,7 @@ void EditableTextArea::handleEvent(sf::Event& event) {
 				isSelected = true;
 				cursorState = CursorState::ShowCursor;
 				cursor_position = lines[0].size();
+				cursorPositioning();
 			}
 			else {
 				isSelected = false;
@@ -46,13 +75,7 @@ void EditableTextArea::handleEvent(sf::Event& event) {
 
 	if (isSelected) {
 
-		if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
-
-			lines[0].insert(cursor_position, 1, ' ');
-			cursor_position += 1;
-			generateText();
-		}
-		else if (event.type == sf::Event::TextEntered) {
+		if (event.type == sf::Event::TextEntered) {
 
 			if (event.text.unicode < 128) {
 
@@ -63,33 +86,39 @@ void EditableTextArea::handleEvent(sf::Event& event) {
 					}
 
 				}
+				else if (event.text.unicode == 32) {
+					lines[0].insert(cursor_position, 1, ' ');
+					cursor_position += 1;
+				}
 				else if (event.text.unicode != 13) {
 					lines[0].insert(cursor_position, 1, char(event.text.unicode));
 					cursor_position += 1;
 				}
 
+				generateText();
+				cursorPositioning();
 			}
-
-			generateText();
 		}
 		else if (event.type == sf::Event::KeyPressed) {
 			if (event.key.code == sf::Keyboard::Left) {
-				if (cursor_position > 0)
+				if (cursor_position > 0) {
 					cursor_position -= 1;
+					cursorPositioning();
+				}
+
 			}
 			else if (event.key.code == sf::Keyboard::Right) {
-				if (cursor_position < lines[0].size())
+				if (cursor_position < lines[0].size()) {
 					cursor_position += 1;
+					cursorPositioning();
+				}
+
 			}
+
+
 		}
 
-		std::wstring text_before_cursor = lines[0].substr(0, cursor_position);
-		TextArea text = TextArea(text_before_cursor);
 
-		sf::Vector2f pos;
-		pos.x = texts[0].getPosition().x + text.texts[0].getGlobalBounds().getSize().x;
-		pos.y = texts[0].getPosition().y;
-		cursor.setPosition(pos);
 	}
 }
 
@@ -116,6 +145,7 @@ void EditableTextArea::draw() {
 	for (auto& t : texts)
 		window->draw(t);
 
-	window->draw(cursor);
-	
+	if (cursorState == CursorState::ShowCursor)
+		window->draw(cursor);
+
 }
