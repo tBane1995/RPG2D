@@ -10,7 +10,7 @@ enum class CursorState { ShowCursor, HideCursor };
 
 class EditableTextArea : public TextArea {
 public:
-	std::wstring editable_text;
+	sf::RectangleShape cursor;
 	short cursor_position;
 	bool isSelected;
 	sf::Time last_action_time;
@@ -19,7 +19,7 @@ public:
 	EditableTextArea(std::wstring text = L"");
 	~EditableTextArea();
 	
-	void update(sf::Event& event);
+	void handleEvent(sf::Event& event);
 	void update();
 	void draw();
 
