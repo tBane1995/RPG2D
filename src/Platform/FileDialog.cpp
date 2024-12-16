@@ -308,7 +308,13 @@ void FileDialog::update(sf::Event& event) {
     selectButton->hover();
     cancelButton->hover();
 
-    if (event.type == sf::Event::MouseButtonReleased) {
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Enter) {
+            selectButton->state = ButtonState::Pressed;
+            fileSelected = true;
+        }
+    }
+    else if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
 
             selectButton->click();

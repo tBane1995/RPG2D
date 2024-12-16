@@ -181,13 +181,11 @@ void MapEditor() {
                         dialogs.pop_back();
                     }
 
-                    else if (dial->selectButton->state == ButtonState::Pressed) {
-                        if (dial->fileSelected == true) {
-                            std::wstring filename = getShortName(ConvertUtf8ToWide(dial->getPathfile()));
-                            dialogs.push_back(new Confirm(L"Plik " + filename + L" już istnieje. Czy chcesz go zamienić?"));
-                            dial->selectButton->state = ButtonState::Idle;
-                            dial->selectButton->changeColor();
-                        }
+                    else if (dial->fileSelected == true) {
+                        std::wstring filename = getShortName(ConvertUtf8ToWide(dial->getPathfile()));
+                        dialogs.push_back(new Confirm(L"Plik " + filename + L" już istnieje. Czy chcesz go zamienić?"));
+                        dial->selectButton->state = ButtonState::Idle;
+                        dial->selectButton->changeColor();
                     }
 
                 }
@@ -200,12 +198,11 @@ void MapEditor() {
                         delete dial;
                         dialogs.pop_back();
                     }
-                    else if (dial->selectButton->state == ButtonState::Pressed) {
-                        if (dial->fileSelected == true) {
+                    else if (dial->fileSelected == true) {
+                            dial->selectButton->state == ButtonState::Idle;
                             mapa->load(dial->getPathfile());
                             delete dial;
                             dialogs.pop_back();
-                        }
                     }
 
                 }
