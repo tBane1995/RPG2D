@@ -28,10 +28,12 @@ void EditableTextArea::update(sf::Event& event) {
 				isSelected = true;
 				cursorState = CursorState::ShowCursor;
 				cursor_position = editable_text.size();
+				std::cout << "TextArea is selected\n";
 			}
 			else {
 				isSelected = false;
 				cursorState = CursorState::HideCursor;
+				std::cout << "TextArea is no selected\n";
 			}
 
 		}
@@ -42,6 +44,8 @@ void EditableTextArea::update(sf::Event& event) {
 
 		if (event.type == sf::Event::TextEntered) {
 			if (isSelected) {
+
+				
 
 				if (event.text.unicode < 128) {
 
