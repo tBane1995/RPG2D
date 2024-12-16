@@ -21,6 +21,8 @@ Player::Player() : GameObject("hero", 0, 0, 24, 12, 64, true, ColliderType::Elip
 	// TO-DO - to delete
 	position.x = 1543;
 	position.y = 800;
+	position.x = 280;
+	position.y = 64;
 	//
 
 	isVisible = true;

@@ -2,7 +2,7 @@
 
 bool renderBorders = true;
 bool renderCoords = true;
-bool renderTilesBorders = false;
+bool renderTilesBorders = true;
 bool renderActionRange = false;
 bool renderViewRange = false;
 bool renderColliders = false;

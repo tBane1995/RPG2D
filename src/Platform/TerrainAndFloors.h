@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include <iostream>
 #include "GameObjects.h"
 #include "Textures.h"
 
@@ -45,8 +46,8 @@ public:
 	short width, height;		// normal is a 16x16
 	sf::Vector2i coords;		// multiply by 16x16
 	sf::VertexArray vertexes;	// vertexes of tiles
-	SingleTexture* tileset;			// main texture
-	std::vector < short > tiles;// tile values
+	SingleTexture* tileset;		// main texture
+	std::vector<short> tiles;	// tile values
 
 	Terrain(short x, short y, short width, short height);
 
@@ -60,8 +61,23 @@ private:
 	{
 		// draw tiles - terrain
 		states.transform *= getTransform();
-		states.texture = &*tileset->texture;	// TO-DO
+		states.texture = tileset->texture;	// TO-DO
 		target.draw(vertexes, states);
+		static bool first = true;
+		if (first)
+		{
+			first = false;
+			std::cout << "coords: " << coords.x << "x" << coords.y << "    size: " << width << "x" << height << std::endl;
+			for (int i = 0; i < vertexes.getVertexCount(); i += 4)
+			{
+				std::cout << i / 4 << ":  Tile: " << tiles[i/4] << ":  ";
+				std::cout << "(" << vertexes[i + 0].position.x << ", " << vertexes[i + 0].position.y << "  tex: " << vertexes[i + 0].texCoords.x << "x" << vertexes[i + 0].texCoords.y << ")  ";
+				std::cout << "(" << vertexes[i + 1].position.x << ", " << vertexes[i + 1].position.y << "  tex: " << vertexes[i + 1].texCoords.x << "x" << vertexes[i + 1].texCoords.y << ")  ";
+				std::cout << "(" << vertexes[i + 2].position.x << ", " << vertexes[i + 2].position.y << "  tex: " << vertexes[i + 2].texCoords.x << "x" << vertexes[i + 2].texCoords.y << ")  ";
+				std::cout << "(" << vertexes[i + 3].position.x << ", " << vertexes[i + 3].position.y << "  tex: " << vertexes[i + 3].texCoords.x << "x" << vertexes[i + 3].texCoords.y << ")";
+				std::cout << std::endl;
+			}
+		}
 	}
 };
 
