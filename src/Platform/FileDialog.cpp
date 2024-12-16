@@ -300,7 +300,7 @@ void FileDialog::update() {
 
 void FileDialog::update(sf::Event& event) {
     scrollbar->update(event);
-    selectedFilename->update(event);
+    selectedFilename->handleEvent(event);
 
     selectButton->unclick();
     cancelButton->unclick();

@@ -88,6 +88,9 @@ std::vector < std::wstring > wrapText(std::wstring text, const sf::Font& font, s
         wrappedText.push_back(currentLine);
     }
 
+    if (wrappedText.size() == 0)
+        wrappedText.push_back(L"");
+
     return wrappedText;
 }
 

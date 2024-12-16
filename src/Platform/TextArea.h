@@ -7,7 +7,7 @@
 class TextArea {
 public:
 	sf::Vector2f position;
-	float characterSize = 16;
+	float characterSize = 17;
 	float line_length;
 	std::vector < std::wstring > lines;
 	std::vector < sf::Text > texts;		// texts
