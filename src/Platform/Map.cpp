@@ -36,7 +36,7 @@ Chunk::Chunk(short x, short y)
     borders = new Borders();
 
     short frameWidth = 2;
-    frame = sf::RectangleShape(sf::Vector2f(256 - 2 * frameWidth, 256 - 2 * frameWidth));
+    frame = sf::RectangleShape(sf::Vector2f(256, 256));
     frame.setPosition(x * 256, y * 256);
     frame.setFillColor(sf::Color::Transparent);
     frame.setOutlineColor(sf::Color(128, 48, 48, 128));
@@ -56,109 +56,175 @@ Chunk::~Chunk()
 {
     // Usuń i zwolnij pamięć dla wszystkich elementów w wektorach
     for (auto& nature : _natures)
-        delete nature;
+    {
+        if (nature) delete nature;
+    }
     _natures.clear();
 
     for (auto& object : _objects)
-        delete object;
+    {
+        if (object)
+        {
+            delete object;
+        }
+    }
     _objects.clear();
 
     for (auto& item : _items)
-        delete item;
+    {
+        if (item)
+        {
+            delete item;
+        }
+    }
     _items.clear();
 
     for (auto& inventory : _inventories)
-        delete inventory;
+    {
+        if (inventory)
+        {
+            delete inventory;
+        }
+    }
     _inventories.clear();
 
     for (auto& flat : _flatObjects)
-        delete flat;
+    {
+        if (flat)
+        {
+            delete flat;
+        }
+    }
     _flatObjects.clear();
 
     for (auto& monster : _monsters)
-        delete monster;
+    {
+        if (monster)
+        {
+            delete monster;
+        }
+    }
     _monsters.clear();
 
     for (auto& smallObject : _smallObjects)
-        delete smallObject;
+    {
+        if (smallObject)
+        {
+            delete smallObject;
+        }
+    }
     _smallObjects.clear();
 
     for (auto& door : _doors)
-        delete door;
+    {
+        if (door)
+        {
+            delete door;
+        }
+    }
     _doors.clear();
 
     for (auto& character : _characters)
-        delete character;
+    {
+        if (character)
+        {
+            delete character;
+        }
+    }
     _characters.clear();
 
     for (auto& building : _buildings)
-        delete building;
+    {
+        if (building)
+        {
+            delete building;
+        }
+    }
     _buildings.clear();
 
 
-
-    delete terrain;
-    delete water;
+    if (terrain)
+    {
+        delete terrain;
+    }
+    if (water)
+    {
+        delete water;
+    }
+    if (borders)
+    {
+        delete borders;
+    }
 }
 
 void Chunk::addGameObjectsToMainLists() {
     // Add all GameObjects of Chunk to Main Lists
 
-    for (auto& nature : _natures) {
+    for (auto& nature : _natures)
+    {
         nature->isInTheMainList = true;
         gameObjects.push_back(nature);
         natures.push_back(nature);
     }
 
-    for (auto& object : _objects) {
+    for (auto& object : _objects)
+    {
         object->isInTheMainList = true;
         gameObjects.push_back(object);
         objects.push_back(object);
     }
 
-    for (auto& item : _items) {
+    for (auto& item : _items)
+    {
         item->isInTheMainList = true;
         gameObjects.push_back(item);
         itemsOnMap.push_back(item);
     }
 
-    for (auto& inventory : _inventories) {
+    for (auto& inventory : _inventories)
+    {
         inventory->isInTheMainList = true;
         gameObjects.push_back(inventory);
         inventoriesOnMap.push_back(inventory);
     }
 
-    for (auto& flat : _flatObjects) {
+    for (auto& flat : _flatObjects)
+    {
         flat->isInTheMainList = true;
         gameObjects.push_back(flat);
         flatObjects.push_back(flat);
     }
 
-    for (auto& monster : _monsters) {
+    for (auto& monster : _monsters)
+    {
         monster->isInTheMainList = true;
         gameObjects.push_back(monster);
         monsters.push_back(monster);
     }
 
-    for (auto& smallObject : _smallObjects) {
+    for (auto& smallObject : _smallObjects)
+    {
         smallObject->isInTheMainList = true;
         gameObjects.push_back(smallObject);
         smallObjects.push_back(smallObject);
     }
 
-    for (auto& door : _doors) {
+    for (auto& door : _doors)
+    {
         door->isInTheMainList = true;
         gameObjects.push_back(door);
         doors.push_back(door);
     }
 
-    for (auto& character : _characters) {
+    for (auto& character : _characters)
+    {
         character->isInTheMainList = true;
         gameObjects.push_back(character);
         characters.push_back(character);
     }
 
-    for (auto& building : _buildings) {
+    for (auto& building : _buildings)
+    {
         building->isInTheMainList = true;
         gameObjects.push_back(building);
         buildings.push_back(building);
@@ -167,26 +233,28 @@ void Chunk::addGameObjectsToMainLists() {
         doors.push_back(building->_door);
         gameObjects.push_back(building->_door);
 
-        for (auto& item : building->_items) {
+        for (auto& item : building->_items)
+        {
             item->isInTheMainList = true;
             itemsOnMap.push_back(item);
             gameObjects.push_back(item);
         }
 
 
-        for (auto& furniture : building->_furnitures) {
+        for (auto& furniture : building->_furnitures)
+        {
             furniture->isInTheMainList = true;
             furnitures.push_back(furniture);
             gameObjects.push_back(furniture);
         }
 
 
-        for (auto& wall : building->_walls) {
+        for (auto& wall : building->_walls)
+        {
             wall->isInTheMainList = true;
             walls.push_back(wall);
             gameObjects.push_back(wall);
         }
-
     }
 }
 
@@ -195,56 +263,65 @@ void Chunk::removeGameObjectsFromMainLists()
 
     // delete natures ////////////////////////////////////////////////////////////
     for (auto& nature : _natures)
+    {
         nature->isInTheMainList = false;
-
+    }
     std::erase_if(natures, [](const auto& nature) { return !nature->isInTheMainList; });
 
     // delete objects ////////////////////////////////////////////////////////////
     for (auto& object : _objects)
+    {
         object->isInTheMainList = false;
-
+    }
     std::erase_if(objects, [](const auto& object) { return !object->isInTheMainList; });
 
     // delete items ////////////////////////////////////////////////////////////
     for (auto& item : _items)
+    {
         item->isInTheMainList = false;
-
+    }
     std::erase_if(itemsOnMap, [](const auto& item) { return !item->isInTheMainList; });
 
     // delete inventories ////////////////////////////////////////////////////////////
     for (auto& inventory : _inventories)
+    {
         inventory->isInTheMainList = false;
-
+    }
     std::erase_if(inventoriesOnMap, [](const auto& inventory) { return !inventory->isInTheMainList; });
 
     // delete flatObjects ////////////////////////////////////////////////////////////
     for (auto& flat : _flatObjects)
+    {
         flat->isInTheMainList = false;
-
+    }
     std::erase_if(flatObjects, [](const auto& flat) { return !flat->isInTheMainList; });
 
     // delete monsters ////////////////////////////////////////////////////////////
     for (auto& monster : _monsters)
+    {
         monster->isInTheMainList = false;
-
+    }
     std::erase_if(monsters, [](const auto& monster) { return !monster->isInTheMainList; });
 
     // delete smallObjects ////////////////////////////////////////////////////////////
     for (auto& object : _smallObjects)
+    {
         object->isInTheMainList = false;
-
+    }
     std::erase_if(smallObjects, [](const auto& object) { return !object->isInTheMainList; });
 
     // delete doors ////////////////////////////////////////////////////////////
     for (auto& door : _doors)
+    {
         door->isInTheMainList = false;
-
+    }
     std::erase_if(doors, [](const auto& door) { return !door->isInTheMainList; });
 
     // delete characters ////////////////////////////////////////////////////////////
     for (auto& character : _characters)
+    {
         character->isInTheMainList = false;
-
+    }
     std::erase_if(characters, [](const auto& character) { return !character->isInTheMainList; });
 
     // delete buildings ////////////////////////////////////////////////////////////
@@ -257,20 +334,23 @@ void Chunk::removeGameObjectsFromMainLists()
 
         // delete building - items
         for (auto& item : building->_items)
+        {
             item->isInTheMainList = false;
-
+        }
         std::erase_if(itemsOnMap, [](const auto& item) { return !item->isInTheMainList; });
 
         // delete building - furnitures
         for (auto& furniture : building->_furnitures)
+        {
             furniture->isInTheMainList = false;
-
+        }
         std::erase_if(furnitures, [](const auto& furniture) { return !furniture->isInTheMainList; });
 
         // delete building - walls
         for (auto& wall : building->_walls)
+        {
             wall->isInTheMainList = false;
-
+        }
         std::erase_if(walls, [](const auto& wall) { return !wall->isInTheMainList; });
 
     }
@@ -284,11 +364,13 @@ void Chunk::removeGameObjectsFromMainLists()
 
 void Chunk::deleteGameObject(GameObject* object)
 {
-
     if (object == nullptr)
+    {
         return;
+    }
 
-    if (object->type == GameObjectType::Nature) {
+    if (object->type == GameObjectType::Nature)
+    {
         auto it = std::find(_natures.begin(), _natures.end(), object);
         if (it != _natures.end())
             _natures.erase(it);
@@ -360,7 +442,10 @@ void Chunk::draw()
     window->draw(*water);
 
     if (renderTilesBorders == true)
+    {
         window->draw(*borders);
+        drawAllStatistics();
+    }
 }
 
 void Chunk::drawAllStatistics() {
@@ -380,8 +465,10 @@ Mapa::Mapa()
     width = 32;
     height = 32;
 
-    for (short y = 0; y < height; y++) {
-        for (short x = 0; x < width; x++) {
+    for (short y = 0; y < height; y++)
+    {
+        for (short x = 0; x < width; x++)
+        {
             Chunk* ch = new Chunk(x, y);
             chunks.push_back(ch);
         }
@@ -390,12 +477,13 @@ Mapa::Mapa()
 
 Chunk* Mapa::getChunk(short x, short y)
 {
-    for (auto& chunk : chunks) {
-        if (short(chunk->coords.x) == x && short(chunk->coords.y) == y) {
+    for (auto& chunk : chunks)
+    {
+        if (short(chunk->coords.x) == x && short(chunk->coords.y) == y)
+        {
             //cout << chunk->coords.x << " " << chunk->coords.y << "\n";
             return chunk;
         }
-
     }
 
     return nullptr;
@@ -481,8 +569,12 @@ void Mapa::save(std::string filename) {
 
 void Mapa::load(std::string filename) {
     // clearing chunks
-    for (auto& chunk : chunks) {
-        delete chunk;
+    for (auto& chunk : chunks)
+    {
+        if (chunk)
+        {
+            delete chunk;
+        }
     }
 
     chunks.clear();
@@ -493,8 +585,10 @@ void Mapa::load(std::string filename) {
     short width = 32;
     short height = 32;
 
-    for (short y = 0; y < height; y++) {
-        for (short x = 0; x < width; x++) {
+    for (short y = 0; y < height; y++)
+    {
+        for (short x = 0; x < width; x++)
+        {
             Chunk* ch = new Chunk(x, y);
             chunks.push_back(ch);
         }
@@ -515,9 +609,10 @@ void Mapa::load(std::string filename) {
     Chunk* chunk = nullptr;
 
     // loading
-    while (std::getline(file, line)) {
-
-        if (line.empty()) {
+    while (std::getline(file, line))
+    {
+        if (line.empty())
+        {
             //cout << "empty line\n";
             continue;
         }
@@ -525,20 +620,22 @@ void Mapa::load(std::string filename) {
         std::istringstream lineStream(line);
         lineStream >> objectType;
 
-        if (objectType == "Chunk") {
-
+        if (objectType == "Chunk")
+        {
             // load Chunk
             std::regex chunk_regex(R"(Chunk y=([0-9]+) x=([0-9]+))");
             std::smatch chunk_match;
 
-            if (std::regex_search(line, chunk_match, chunk_regex)) {
+            if (std::regex_search(line, chunk_match, chunk_regex))
+            {
                 int chunk_y = std::stoi(chunk_match[1]);
                 int chunk_x = std::stoi(chunk_match[2]);
 
                 // get chunk
                 chunk = getChunk(chunk_x, chunk_y);
 
-                if (chunk == nullptr) {
+                if (chunk == nullptr)
+                {
                     chunk = new Chunk(chunk_x, chunk_y);
                     chunks.push_back(chunk);
                 }
@@ -550,8 +647,8 @@ void Mapa::load(std::string filename) {
                 int y = 0;
                 int x;
 
-                while (std::getline(file, _line) && _line[0] >= '0' && _line[0] <= '9') {
-
+                while (std::getline(file, _line) && _line[0] >= '0' && _line[0] <= '9')
+                {
                     std::istringstream iss(_line);
                     int val;
                     x = 0;
@@ -573,20 +670,22 @@ void Mapa::load(std::string filename) {
                 }
 
                 // predefine tiles
-                std::vector < short > tiles(256, 0);
+                std::vector<short> tiles(256, 0);
 
-                if (correct_data == true) {
+                if (correct_data == true)
+                {
                     file.seekg(pos); // wczytanie pozycji linii
 
                     // load tiles
                     short y = 0;
-                    while (y < 16 && std::getline(file, line)) {
-
+                    while (y < 16 && std::getline(file, line))
+                    {
                         std::istringstream tileStream(line);
                         short value;
                         short x = 0;
 
-                        while (tileStream >> value) {
+                        while (tileStream >> value)
+                        {
                             tiles[y * 16 + x] = value;
                             x += 1;
                         }
@@ -595,17 +694,19 @@ void Mapa::load(std::string filename) {
                     }
 
                     // set the tiles
-                    for (short i = 0; i < tiles.size(); i++) {
-
+                    for (short i = 0; i < tiles.size(); i++)
+                    {
                         chunk->terrain->edit(i % 16, i / 16, tiles[i]);
 
                         // TO-DO
-                        if (tiles[i] == 0 || (tiles[i] >= countOfBasicTerrain && tiles[i] < countOfBasicTerrain + 16)) {
+                        if (tiles[i] == 0 || (tiles[i] >= countOfBasicTerrain && tiles[i] < countOfBasicTerrain + 16))
+                        {
                             chunk->water->edit(i % 16, i / 16, tiles[i]);
                         }
                         else
+                        {
                             chunk->water->edit(i % 16, i / 16, -1);
-
+                        }
                     }
 
 

@@ -44,8 +44,8 @@ void FloorPrefab::draw() {
 
 
 
-Terrain::Terrain(short x, short y, short width, short height ) {
-
+Terrain::Terrain(short x, short y, short width, short height )
+{
 	coords.x = x;
 	coords.y = y;
 
@@ -63,6 +63,7 @@ Terrain::Terrain(short x, short y, short width, short height ) {
 
 	// TERRAIN - GRASS
 	for (short y = 0; y < height; y++)
+	{
 		for (short x = 0; x < width; x++) {
 
 			sf::Vertex* quad = &vertexes[(y * width + x) * 4];
@@ -71,13 +72,13 @@ Terrain::Terrain(short x, short y, short width, short height ) {
 			coord_y = (coords.y + y);
 
 			quad[0].position = sf::Vector2f(coord_x * tileSide, coord_y * tileSide);
-			quad[1].position = sf::Vector2f((coord_x+1) * tileSide, coord_y * tileSide);
-			quad[2].position = sf::Vector2f((coord_x+1) * tileSide, (coord_y+1) * tileSide);
-			quad[3].position = sf::Vector2f(coord_x * tileSide, (coord_y+1) * tileSide);
-	
+			quad[1].position = sf::Vector2f((coord_x + 1) * tileSide - 1, coord_y * tileSide);
+			quad[2].position = sf::Vector2f((coord_x + 1) * tileSide - 1, (coord_y + 1) * tileSide - 1);
+			quad[3].position = sf::Vector2f(coord_x * tileSide, (coord_y + 1) * tileSide - 1);
+
 			edit(x, y, 2);
 		}
-
+	}
 }
 
 void Terrain::edit(short x, short y, short value) {
@@ -95,13 +96,12 @@ void Terrain::edit(short x, short y, short value) {
 	short tu = (short(global_x * tileSide) % 64) + (value * 64);
 	short tv = (short(global_y * tileSide) % 64);
 
-	//cout << "tu: " << tu << ", tv: " << tv << "\n";
+	//std::cout << "tu: " << tu << ", tv: " << tv << ", tileSide: " << tileSide << std::endl;
 
-	quad[0].texCoords = sf::Vector2f(tu+1, tv+1);
-	quad[1].texCoords = sf::Vector2f(tu+tileSide-1, tv+1);
+	quad[0].texCoords = sf::Vector2f(tu, tv);
+	quad[1].texCoords = sf::Vector2f(tu+tileSide-1, tv);
 	quad[2].texCoords = sf::Vector2f(tu+tileSide-1, tv+tileSide-1);
-	quad[3].texCoords = sf::Vector2f(tu+1, tv+tileSide-1);
-
+	quad[3].texCoords = sf::Vector2f(tu, tv+tileSide-1);
 }
 
 void Terrain::edit(sf::Vector2f worldMousePosition, short value) {
