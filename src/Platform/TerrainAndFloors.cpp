@@ -97,10 +97,10 @@ void Terrain::edit(short x, short y, short value) {
 
 	//std::cout << "tu: " << tu << ", tv: " << tv << ", tileSide: " << tileSide << std::endl;
 
-	quad[0].texCoords = sf::Vector2f(tu, tv);
-	quad[1].texCoords = sf::Vector2f(tu+tileSide, tv);
-	quad[2].texCoords = sf::Vector2f(tu+tileSide, tv+tileSide);
-	quad[3].texCoords = sf::Vector2f(tu, tv+tileSide);
+	quad[0].texCoords = sf::Vector2f(tu+1, tv+1);
+	quad[1].texCoords = sf::Vector2f(tu+tileSide-1, tv+1);
+	quad[2].texCoords = sf::Vector2f(tu+tileSide-1, tv+tileSide-1);
+	quad[3].texCoords = sf::Vector2f(tu+1, tv+tileSide-1);
 }
 
 void Terrain::edit(sf::Vector2f worldMousePosition, short value) {
