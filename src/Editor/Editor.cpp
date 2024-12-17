@@ -682,6 +682,8 @@ int main()
     //convertPNGsToSet();
     //moveThePixelsToUpForSprites();
     
+    initPlatform();
+
     // LOADS
 	loadFonts();
 	loadTextures();	// TO-DO "FROM FILE"

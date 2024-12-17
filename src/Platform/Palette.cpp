@@ -266,35 +266,35 @@ void Palette::setTerrainObjectsToPalette() {
     id += 8;    // skip the SET - WATER_SANDS
 
     // SET - SANDS_GRASS
+    availableGameObjects.push_back(terrainGameObjects[id]);
+    availableGameObjects.push_back(terrainGameObjects[id + 1]);
+    availableGameObjects.push_back(terrainGameObjects[id + 1]);
+    availableGameObjects.push_back(terrainGameObjects[id + 1]);
     availableGameObjects.push_back(terrainGameObjects[id + 2]);
+
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
+
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
+
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[2]);
     availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 5]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 7]);
-
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-
-    availableGameObjects.push_back(terrainGameObjects[id + 8]);
-    availableGameObjects.push_back(terrainGameObjects[id + 9]);
-    availableGameObjects.push_back(terrainGameObjects[id + 9]);
-    availableGameObjects.push_back(terrainGameObjects[id + 9]);
-    availableGameObjects.push_back(terrainGameObjects[id + 10]);
 
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
@@ -303,7 +303,7 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(nullptr);
 
     // SET - GRASS_SANDS
-    id += 11;
+    id += 8;
     availableGameObjects.push_back(terrainGameObjects[id + 0]);
     availableGameObjects.push_back(terrainGameObjects[id + 1]);
     availableGameObjects.push_back(terrainGameObjects[id + 1]);
@@ -314,25 +314,25 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(terrainGameObjects[1]);
     availableGameObjects.push_back(terrainGameObjects[1]);
     availableGameObjects.push_back(terrainGameObjects[1]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
     availableGameObjects.push_back(terrainGameObjects[1]);
     availableGameObjects.push_back(terrainGameObjects[1]);
     availableGameObjects.push_back(terrainGameObjects[1]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
     availableGameObjects.push_back(terrainGameObjects[1]);
     availableGameObjects.push_back(terrainGameObjects[1]);
     availableGameObjects.push_back(terrainGameObjects[1]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
+    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 8]);
 
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
@@ -341,7 +341,7 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(nullptr);
 
     // SET - GRASS_GRAVEL
-    id += 9;
+    id += 8;
     availableGameObjects.push_back(terrainGameObjects[id + 0]);
     availableGameObjects.push_back(terrainGameObjects[id + 1]);
     availableGameObjects.push_back(terrainGameObjects[id + 1]);
@@ -352,25 +352,25 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(terrainGameObjects[3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
     availableGameObjects.push_back(terrainGameObjects[3]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
+    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 8]);
 
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
@@ -379,7 +379,7 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(nullptr);
 
     // SET - GRAVEL_GRASS
-    id += 9;
+    id += 8;
     availableGameObjects.push_back(terrainGameObjects[id + 0]);
     availableGameObjects.push_back(terrainGameObjects[id + 1]);
     availableGameObjects.push_back(terrainGameObjects[id + 1]);
@@ -387,30 +387,28 @@ void Palette::setTerrainObjectsToPalette() {
     availableGameObjects.push_back(terrainGameObjects[id + 2]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
     availableGameObjects.push_back(terrainGameObjects[id + 3]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[2]);
-    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[4]);
+    availableGameObjects.push_back(terrainGameObjects[id + 4]);
 
+    availableGameObjects.push_back(terrainGameObjects[id + 5]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
+    availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 6]);
     availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 7]);
-    availableGameObjects.push_back(terrainGameObjects[id + 8]);
-
-
 }
 
 void Palette::setFloorsObjectsToPalette() {
