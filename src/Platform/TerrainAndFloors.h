@@ -63,6 +63,7 @@ private:
 		states.transform *= getTransform();
 		states.texture = tileset->texture;	// TO-DO
 		target.draw(vertexes, states);
+		/*
 		static bool first = true;
 		if (first)
 		{
@@ -78,6 +79,7 @@ private:
 				std::cout << std::endl;
 			}
 		}
+		*/
 	}
 };
 

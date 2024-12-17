@@ -699,6 +699,7 @@ void Mapa::load(std::string filename) {
                         chunk->terrain->edit(i % 16, i / 16, tiles[i]);
 
                         // TO-DO
+//                        std::cout << "Set tiles in load map: i=" << i << ",  tile: " << tiles[i] << ",  countOfBasicTerrain=" << countOfBasicTerrain << std::endl;
                         if (tiles[i] == 0 || (tiles[i] >= countOfBasicTerrain && tiles[i] < countOfBasicTerrain + 16))
                         {
                             chunk->water->edit(i % 16, i / 16, tiles[i]);
@@ -809,8 +810,6 @@ void Mapa::load(std::string filename) {
             }
 
         }
-
-
     }
 
     file.close();

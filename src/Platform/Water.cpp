@@ -100,6 +100,25 @@ void Water::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	states.texture = &(*getSingleTexture("tiles/0_tileset")->texture);
 	states.shader = &(*getShader("shaders/lake")->shader);
 	target.draw(vertexes, states);
+	/*
+	static bool first = true;
+	if (first)
+	{
+		first = false;
+		std::cout << "WATER! " << "coords: " << coords.x << "x" << coords.y << "    size: " << width << "x" << height << std::endl;
+		for (int i = 0; i < vertexes.getVertexCount(); i += 6)
+		{
+			std::cout << "WATER! " << i / 6 << ":  Tile: " << tiles[i / 6] << ":  ";
+			std::cout << "(" << vertexes[i + 0].position.x << ", " << vertexes[i + 0].position.y << "  tex: " << vertexes[i + 0].texCoords.x << "x" << vertexes[i + 0].texCoords.y << ")  ";
+			std::cout << "(" << vertexes[i + 1].position.x << ", " << vertexes[i + 1].position.y << "  tex: " << vertexes[i + 1].texCoords.x << "x" << vertexes[i + 1].texCoords.y << ")  ";
+			std::cout << "(" << vertexes[i + 2].position.x << ", " << vertexes[i + 2].position.y << "  tex: " << vertexes[i + 2].texCoords.x << "x" << vertexes[i + 2].texCoords.y << ")  ";
+			std::cout << "(" << vertexes[i + 3].position.x << ", " << vertexes[i + 3].position.y << "  tex: " << vertexes[i + 3].texCoords.x << "x" << vertexes[i + 3].texCoords.y << ")  ";
+			std::cout << "(" << vertexes[i + 4].position.x << ", " << vertexes[i + 4].position.y << "  tex: " << vertexes[i + 4].texCoords.x << "x" << vertexes[i + 4].texCoords.y << ")  ";
+			std::cout << "(" << vertexes[i + 5].position.x << ", " << vertexes[i + 5].position.y << "  tex: " << vertexes[i + 5].texCoords.x << "x" << vertexes[i + 5].texCoords.y << ")";
+			std::cout << std::endl;
+		}
+	}
+	*/
 }
 
 

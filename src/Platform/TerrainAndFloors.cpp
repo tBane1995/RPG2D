@@ -53,7 +53,6 @@ Terrain::Terrain(short x, short y, short width, short height )
 	this->height = height;
 
 	tileset = getSingleTexture("tiles/0_tileset");
-
 	tiles.resize(width * height, 2);
 
 	vertexes.setPrimitiveType(sf::Quads);
@@ -252,14 +251,20 @@ void createTerrainPrefabs() {
 	sets_names.push_back("tiles/set_2_gravel_grass");
 
 	short id = countOfBasicTerrain;
-
-	for (auto& texture : singleTextures) {
-		for (auto& name : sets_names) {
-			if (texture->name.find(name) != std::string::npos) {
-
-				TerrainPrefab* tpref = new TerrainPrefab(texture->name, id);
-				terrainGameObjects.push_back(tpref);
-				//cout << tpref->name << "\t" << id << "\n";
+	for (auto& texture : singleTextures)
+	{
+		for (auto& name : sets_names)
+		{
+			if (texture->name.find(name) != std::string::npos)
+			{
+				// Skip 5 tile in order because this is duplicate of basic terrain
+				int TexIndex = (id - countOfBasicTerrain) % 9;
+				if (TexIndex != 4)
+				{
+					TerrainPrefab* tpref = new TerrainPrefab(texture->name, id);
+					terrainGameObjects.push_back(tpref);
+					std::cout << "Terrain prefabs: " << texture->name << "    " << tpref->name << "\t" << id << "\t" << TexIndex << std::endl;
+				}
 				id += 1;
 			}
 		}
@@ -268,7 +273,7 @@ void createTerrainPrefabs() {
 
 	// create tileset
 	sf::RenderTexture rtex;
-	rtex.create(id * 64, 64);
+	rtex.create((id - sets_names.size()) * 64, 64);
 	rtex.clear(sf::Color::Transparent);
 
 	short offsetX = 0;
@@ -284,7 +289,6 @@ void createTerrainPrefabs() {
 
 	sf::Texture tileset = rtex.getTexture();
 	*getSingleTexture("tiles/0_tileset")->texture = tileset;
-
 }
 
 void createFloorsPrefabs() {
