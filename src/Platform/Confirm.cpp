@@ -64,11 +64,11 @@ void Confirm::update(sf::Event& event) {
 	if (event.type == sf::Event::MouseButtonReleased) {
 		if (event.mouseButton.button == sf::Mouse::Left) {
 
-			if (btn_yes->click()) {
+			if (btn_yes->state == ButtonState::Pressed) {
 				value = ConfirmValue::True;
 			}
 
-			if (btn_no->click()) {
+			if (btn_no->state == ButtonState::Pressed) {
 				value = ConfirmValue::False;
 			}
 

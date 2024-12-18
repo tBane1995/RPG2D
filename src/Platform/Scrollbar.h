@@ -43,8 +43,8 @@ public:
     float getScrollSizeY();
     void scrollPositioning();
     bool isSelected();
+    void handleEvent(sf::Event& event);
     void update();
-    void update(sf::Event& event);
     void draw();
 };
 

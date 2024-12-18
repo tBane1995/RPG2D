@@ -174,7 +174,7 @@ void MapEditor() {
                 }
                 else if (dialogs.back()->type == DialogType::SaveFile) {
                     FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
-                    dial->update(event);
+                    dial->handleEvent(event);
 
                     if (dial->cancelButton->state == ButtonState::Pressed) {
                         delete dial;
@@ -192,7 +192,7 @@ void MapEditor() {
                 else if (dialogs.back()->type == DialogType::OpenFile) {
                     FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
 
-                    dial->update(event);
+                    dial->handleEvent(event);
 
                     if (dial->cancelButton->state == ButtonState::Pressed) {
                         delete dial;
@@ -482,12 +482,12 @@ void MapEditorEventLeftClick() {
 
         for (auto& m : menu) {
 
-            if (m->click())
+            if (m->state == ButtonState::Pressed)
                 clickOnMenu = true;
 
             if (m->isOpen) {
                 for (auto& o : m->options)
-                    if (o->click())
+                    if (o->state == ButtonState::Pressed)
                         clickOnMenu = true;
             }
         }
@@ -501,7 +501,7 @@ void MapEditorEventLeftClick() {
     else {
 
         for (auto& m : menu) {
-            if (m->click())
+            if (m->state == ButtonState::Pressed)
                 tool = toolType::Cursor;
         }
 

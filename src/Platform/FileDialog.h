@@ -62,7 +62,7 @@ public:
 
     std::string getPathfile();
 
+    void handleEvent(sf::Event& event);
     void update();
-    void update(sf::Event& event);
     void draw();
 };

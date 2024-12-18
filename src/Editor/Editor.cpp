@@ -531,7 +531,7 @@ void testOpenDialogBox() {
         while (window->pollEvent(event)) {
 
             if (openDial) {
-                openDial->update(event);
+                openDial->handleEvent(event);
 
                 
                 if (openDial->state == FileDialogState::FileSelected) {

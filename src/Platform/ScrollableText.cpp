@@ -42,7 +42,7 @@ ScrollableText::~ScrollableText() {
 
 void ScrollableText::update(sf::Event& event) {
 
-	scrollbar->update(event);
+	scrollbar->handleEvent(event);
 
 	sf::Vector2f position;
 	position.x = textarea->position.x;

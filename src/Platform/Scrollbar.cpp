@@ -165,11 +165,7 @@ bool Scrollbar::isSelected() {
         return false;
 }
 
-void Scrollbar::update() {
-    scrollPositioning();
-}
-
-void Scrollbar::update(sf::Event& event) {
+void Scrollbar::handleEvent(sf::Event& event) {
     
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
@@ -201,7 +197,10 @@ void Scrollbar::update(sf::Event& event) {
         scrollPositioning();
     }
     
+}
 
+void Scrollbar::update() {
+    scrollPositioning();    // TO-DO
 }
 
 void Scrollbar::draw() {

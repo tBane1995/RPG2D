@@ -294,20 +294,10 @@ std::string FileDialog::getPathfile() {
     return pathfile;
 }
 
-void FileDialog::update() {
 
-    selectedFilename->update();
-}
-
-void FileDialog::update(sf::Event& event) {
-    scrollbar->update(event);
+void FileDialog::handleEvent(sf::Event& event) {
+    scrollbar->handleEvent(event);
     selectedFilename->handleEvent(event);
-
-    selectButton->unclick();
-    cancelButton->unclick();
-
-    selectButton->hover();
-    cancelButton->hover();
 
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Enter) {
@@ -318,8 +308,8 @@ void FileDialog::update(sf::Event& event) {
     else if (event.type == sf::Event::MouseButtonReleased) {
         if (event.mouseButton.button == sf::Mouse::Left) {
 
-            selectButton->click();
-            cancelButton->click();
+            selectButton->handleEvent(event);
+            cancelButton->handleEvent(event);
 
             if (selectButton->state == ButtonState::Pressed) {
                 state = FileDialogState::FileSelected;
@@ -356,10 +346,16 @@ void FileDialog::update(sf::Event& event) {
     }
 
     setFilenamesTexts();
+}
+
+void FileDialog::update() {
 
     selectButton->update();
     cancelButton->update();
+    scrollbar->update();
+    selectedFilename->update();
 }
+
 
 void FileDialog::draw() {
     //main rect

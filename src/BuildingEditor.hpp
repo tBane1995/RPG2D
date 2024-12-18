@@ -115,7 +115,7 @@ void BuildingEditor() {
                 if (dialogs.back()->type == DialogType::OpenFile) {
                     FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs.back());
 
-                    opendial->update(event);
+                    opendial->handleEvent(event);
 
                     if (opendial->state == FileDialogState::FileSelected) {
                         loadBuildingFromFile(opendial->getPathfile());
@@ -306,12 +306,12 @@ void BuildingEditorEventLeftClick() {
         
         for (auto& m : menu) {
 
-            if (m->click())
+            if (m->state == ButtonState::Pressed)
                 clickOnMenu = true;
 
             if (m->isOpen) {
                 for (auto& o : m->options)
-                    if (o->click())
+                    if (o->state == ButtonState::Pressed)
                         clickOnMenu = true;
             }
         }
@@ -326,7 +326,7 @@ void BuildingEditorEventLeftClick() {
 
 
         for (auto& m : menu) {
-            if (m->click())
+            if (m->state == ButtonState::Pressed)
                 tool = toolType::Cursor;
         }
 
