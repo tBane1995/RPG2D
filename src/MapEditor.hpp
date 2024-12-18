@@ -166,7 +166,7 @@ void MapEditor() {
                                 delete confirm;
                                 dialogs.pop_back();
                                 FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
-                                dial->fileSelected = false;
+                                dial->state = FileDialogState::Idle;
                             }
                         }
                     }
@@ -181,7 +181,7 @@ void MapEditor() {
                         dialogs.pop_back();
                     }
 
-                    else if (dial->fileSelected == true) {
+                    else if (dial->state == FileDialogState::FileSelected) {
                         std::wstring filename = getShortName(ConvertUtf8ToWide(dial->getPathfile()));
                         dialogs.push_back(new Confirm(L"Plik " + filename + L" już istnieje. Czy chcesz go zamienić?"));
                         dial->selectButton->state = ButtonState::Idle;
@@ -198,7 +198,7 @@ void MapEditor() {
                         delete dial;
                         dialogs.pop_back();
                     }
-                    else if (dial->fileSelected == true) {
+                    else if (dial->state == FileDialogState::FileSelected) {
                             dial->selectButton->state == ButtonState::Idle;
                             mapa->load(dial->getPathfile());
                             delete dial;

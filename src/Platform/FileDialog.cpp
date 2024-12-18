@@ -50,6 +50,9 @@ bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_
 
 
 FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptable_extension) : Dialog(type) {
+
+    state = FileDialogState::Idle;
+
     rect_height = 0;
     rect_width = 512;
     margin_vert = 4;
@@ -171,9 +174,7 @@ FileDialog::FileDialog(DialogType type, std::wstring title, std::string acceptab
 
     pos.x = pos.x - selectButton->rect.getSize().x - margin_hor;
     selectButton->setPosition(pos);
-    ///////////////////////////
 
-    fileSelected = false;
 }
 
 FileDialog::~FileDialog() {
@@ -311,7 +312,7 @@ void FileDialog::update(sf::Event& event) {
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Enter) {
             selectButton->state = ButtonState::Pressed;
-            fileSelected = true;
+            state = FileDialogState::FileSelected;
         }
     }
     else if (event.type == sf::Event::MouseButtonReleased) {
@@ -321,7 +322,7 @@ void FileDialog::update(sf::Event& event) {
             cancelButton->click();
 
             if (selectButton->state == ButtonState::Pressed) {
-                fileSelected = true;
+                state = FileDialogState::FileSelected;
             }
             else {
                 for (short i = 0; i < 7; i++) {

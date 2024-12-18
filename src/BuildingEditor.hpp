@@ -117,7 +117,7 @@ void BuildingEditor() {
 
                     opendial->update(event);
 
-                    if (opendial->fileSelected) {
+                    if (opendial->state == FileDialogState::FileSelected) {
                         loadBuildingFromFile(opendial->getPathfile());
                         delete dialogs.back();
                         dialogs.pop_back();

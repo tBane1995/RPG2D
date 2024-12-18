@@ -13,10 +13,13 @@ class EditableTextArea;
 
 bool sortkey(std::filesystem::directory_entry first, std::filesystem::directory_entry second);
 
+enum class FileDialogState { Idle, Canceled, FileSelected };
 
 class FileDialog : public Dialog {
 public:
     sf::Vector2f position = sf::Vector2f(0, 0);
+       
+    FileDialogState state;
 
     sf::RectangleShape rect;        // main big panel
     float rect_width;
@@ -48,7 +51,6 @@ public:
     std::vector < std::filesystem::directory_entry > paths; // list of paths
 
     Scrollbar* scrollbar = nullptr;
-    bool fileSelected;      // if "submit button" pressed is true
 
     FileDialog(DialogType type, std::wstring title, std::string acceptable_extension="");
     ~FileDialog();

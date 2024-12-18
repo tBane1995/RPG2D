@@ -534,7 +534,7 @@ void testOpenDialogBox() {
                 openDial->update(event);
 
                 
-                if (openDial->fileSelected) {
+                if (openDial->state == FileDialogState::FileSelected) {
                     std::cout << openDial->getPathfile() << "\n";
                     delete openDial;
                     openDial = nullptr;
