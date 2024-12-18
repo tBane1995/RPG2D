@@ -141,40 +141,30 @@ void Btn::changeColor() {
 }
 
 void Btn::unclick() {
-    if ((currentTime - clickTime).asSeconds() > 0.1f) {
-        state = ButtonState::Idle;
-        changeColor();
-    }
+    state = ButtonState::Idle;
+    changeColor();
+}
+
+void Btn::hover() {
+    state = ButtonState::Hover;
+    changeColor();
+    GUIwasHover = true;
+}
+
+void Btn::click() {
+
+    state = ButtonState::Pressed;
+    changeColor();
+    GUIwasClicked = true;
+    clickTime = currentTime;
+
+    if (onclick_func)
+        onclick_func();
 
 }
 
-bool Btn::hover() {
-    if (state != ButtonState::Pressed) {
+void Btn::handleEvent(sf::Event& event) {
 
-        float w = rect.getSize().x;
-        float h = rect.getSize().y;
-        float x = rect.getPosition().x;
-        float y = rect.getPosition().y;
-
-        if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
-            worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
-
-            state = ButtonState::Hover;
-            changeColor();
-            GUIwasHover = true;
-            return true;
-        }
-    }
-    else {
-        // GUI WAS PRESSED
-        GUIwasHover = true;
-        return true;
-    }
-
-    return false;
-}
-
-bool Btn::click() {
     float w = rect.getSize().x;
     float h = rect.getSize().y;
     float x = rect.getPosition().x;
@@ -183,21 +173,29 @@ bool Btn::click() {
     if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
         worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
 
-        state = ButtonState::Pressed;
-        changeColor();
-        GUIwasClicked = true;
-        clickTime = currentTime;
+        if (event.type == sf::Event::MouseButtonReleased)
+            if (event.mouseButton.button == sf::Mouse::Left)
+                click();
 
-        if (onclick_func)
-            onclick_func();
-
-        return true;
     }
-
-    return false;
 }
 
 void Btn::update() {
+
+    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+        unclick();
+    }
+
+    float w = rect.getSize().x;
+    float h = rect.getSize().y;
+    float x = rect.getPosition().x;
+    float y = rect.getPosition().y;
+
+    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
+        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+        hover();
+    }
+
     rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 }
@@ -286,64 +284,60 @@ void ButtonWithText::changeColor() {
 }
 
 void ButtonWithText::unclick() {
-    if ((currentTime - clickTime).asSeconds() > 0.1f) {
-        state = ButtonState::Idle;
-        changeColor();
-    }
+    state = ButtonState::Idle;
+    changeColor();
+}
+
+void ButtonWithText::hover() {
+    state = ButtonState::Hover;
+    changeColor();
+    GUIwasHover = true;
 
 }
 
-bool ButtonWithText::hover() {
-    if (state != ButtonState::Pressed) {
+void ButtonWithText::click() {
 
-        float x1 = rect.getPosition().x;
-        float x2 = x1 + rect.getSize().x;
-        float y1 = rect.getPosition().y;
-        float y2 = y1 + rect.getSize().y;
+    state = ButtonState::Pressed;
+    changeColor();
+    GUIwasClicked = true;
+    clickTime = currentTime;
 
-        if (worldMousePosition.x > x1 && worldMousePosition.x < x2 &&
-            worldMousePosition.y > y1 && worldMousePosition.y < y2) {
-
-            state = ButtonState::Hover;
-            changeColor();
-            GUIwasHover = true;
-            return true;
-        }
-    }
-    else {
-        // GUI WAS PRESSED
-        GUIwasHover = true;
-        return true;
-    }
-
-    return false;
+    if (onclick_func)
+        onclick_func();
 }
 
-bool ButtonWithText::click() {
+void ButtonWithText::handleEvent(sf::Event& event) {
 
-    float x1 = rect.getPosition().x;
-    float x2 = x1 + rect.getSize().x;
-    float y1 = rect.getPosition().y;
-    float y2 = y1 + rect.getSize().y;
+    float w = rect.getSize().x;
+    float h = rect.getSize().y;
+    float x = rect.getPosition().x;
+    float y = rect.getPosition().y;
 
-    if (worldMousePosition.x > x1 && worldMousePosition.x < x2 &&
-        worldMousePosition.y > y1 && worldMousePosition.y < y2) {
+    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
+        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
 
-        state = ButtonState::Pressed;
-        changeColor();
-        GUIwasClicked = true;
-        clickTime = currentTime;
+        if (event.type == sf::Event::MouseButtonReleased)
+            if (event.mouseButton.button == sf::Mouse::Left)
+                click();
 
-        if (onclick_func)
-            onclick_func();
-
-        return true;
     }
-
-    return false;
 }
 
 void ButtonWithText::update() {
+    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+        unclick();
+    }
+
+    float w = rect.getSize().x;
+    float h = rect.getSize().y;
+    float x = rect.getPosition().x;
+    float y = rect.getPosition().y;
+
+    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
+        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+        hover();
+    }
+
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
     text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
 }
@@ -443,48 +437,31 @@ void ButtonWithImage::changeColor()
 
 void ButtonWithImage::unclick()
 {
-    if ((currentTime - clickTime).asSeconds() > 0.1f) {
-        state = ButtonState::Idle;
-        changeColor();
-    }
+    state = ButtonState::Idle;
+    changeColor();
 }
 
 void ButtonWithImage::hover() {
-    if (state != ButtonState::Pressed) {
+    state = ButtonState::Hover;
+    changeColor();
+    GUIwasHover = true;
 
-        float w = 0;
-        float h = 0;
-        float x = sprite.getPosition().x;
-        float y = sprite.getPosition().y;
-
-        if (texture)
-        {
-            w = texture->getSize().x;
-            h = texture->getSize().y;
-        }
-        else
-        {
-            w = sprite.getTextureRect().width;
-            h = sprite.getTextureRect().height;
-        }
-        if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
-            worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
-
-            state = ButtonState::Hover;
-            changeColor();
-            GUIwasHover = true;
-
-            if (hover_func)
-                hover_func();
-        }
-    }
-    else {
-        // GUI WAS PRESSED
-        GUIwasHover = true;
-    }
+    if (hover_func)
+        hover_func();
 }
 
 void ButtonWithImage::click() {
+    state = ButtonState::Pressed;
+    changeColor();
+    GUIwasClicked = true;
+    clickTime = currentTime;
+
+    if (onclick_func)
+        onclick_func();
+}
+
+void ButtonWithImage::handleEvent(sf::Event& event) {
+
     float w = 0.0f;
     float h = 0.0f;
     float x = sprite.getPosition().x;
@@ -492,8 +469,8 @@ void ButtonWithImage::click() {
 
     if (texture)
     {
-        w = texture->getSize().x;
-        h = texture->getSize().y;
+        w = texture->texture->getSize().x;
+        h = texture->texture->getSize().y;
     }
     else
     {
@@ -501,29 +478,48 @@ void ButtonWithImage::click() {
         h = sprite.getTextureRect().height;
 
     }
+
     if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
         worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
 
-        std::cout << "clicked on btn, stats: w=" << w << ", h=" << h << ", x=" << x << ", y=" << y << "\n";
-
-        state = ButtonState::Pressed;
-        changeColor();
-        GUIwasClicked = true;
-        clickTime = currentTime;
-
-        if (onclick_func)
-        {
-            onclick_func();
-        }
-
+        if (event.type == sf::Event::MouseButtonReleased)
+            if (event.mouseButton.button == sf::Mouse::Left)
+                click();
 
     }
 }
 
 void ButtonWithImage::update() {
 
-    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+        unclick();
+    }
 
+    float w = 0.0f;
+    float h = 0.0f;
+    float x = sprite.getPosition().x;
+    float y = sprite.getPosition().y;
+
+    if (texture)
+    {
+        w = texture->texture->getSize().x;
+        h = texture->texture->getSize().y;
+    }
+    else
+    {
+        w = sprite.getTextureRect().width;
+        h = sprite.getTextureRect().height;
+
+    }
+
+    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
+        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+
+        hover();
+
+    }
+
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 }
 
 void ButtonWithImage::draw() {

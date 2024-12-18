@@ -38,9 +38,10 @@ public:
     virtual void setPosition(sf::Vector2f position);
     virtual void changeColor();
     virtual void unclick();
-    virtual bool hover();
-    virtual bool click();
+    virtual void hover();
+    virtual void click();
 
+    virtual void handleEvent(sf::Event& event);
     virtual void update();
     virtual void draw();
 };
@@ -63,9 +64,10 @@ public:
     virtual void changeColor();
 
     virtual void unclick();
-    virtual bool hover();
-    virtual bool click();
+    virtual void hover();
+    virtual void click();
 
+    virtual void handleEvent(sf::Event& event);
     virtual void update();
     virtual void draw();
 
@@ -100,6 +102,7 @@ public:
     virtual void hover();
     virtual void click();
 
+    virtual void handleEvent(sf::Event& event);
     virtual void update();
     virtual void draw();
 };
