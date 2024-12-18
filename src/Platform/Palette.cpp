@@ -110,13 +110,28 @@ void PaletteButton::setGameObject(GameObject* object) {
             };
     }
     else {
-        hover_func = { };
-        onclick_func = { };
+        hover_func = [this]() {};
+        onclick_func = [this]() { std::cout << "selected nullptr object\n"; };
     }
 
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
 }
+
+void PaletteButton::handleEvent(sf::Event& event) {
+    // TO-DO
+
+    ButtonWithImage::handleEvent(event);
+
+    if (ButtonWithImage::state == ButtonState::Pressed) {
+        if (object != nullptr)
+            std::cout << "kliknieto: " << object->name << "\n";
+        else
+            std::cout << "kliknieto: nullptr\n";
+    }
+    
+}
+
 void PaletteButton::update() {
     ButtonWithImage::update();
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
@@ -210,7 +225,7 @@ void Palette::deleteGroupButtons() {
 void Palette::createPaletteButtons(short size_x, short size_y) {
 
     deletePaletteButtons();
-
+    
     size.x = size_x;
     size.y = size_y;
 
@@ -1327,51 +1342,23 @@ void Palette::createGroupButtons() {
     }
 }
 
-void Palette::unclickButtons() {
+
+void Palette::handleEvent(sf::Event& event) {
     for (auto& tool : toolsButtons)
-        tool->unclick();
+        tool->handleEvent(event);
 
     for (auto& btn : groupButtons)
-        btn->unclick();
+        btn->handleEvent(event);
 
     for (auto& btn : paletteButtons)
-        btn->unclick();
+        btn->handleEvent(event);
 
-    buttonUp->unclick();
-    buttonDown->unclick();
+    buttonUp->handleEvent(event);
+    buttonDown->handleEvent(event);
 }
 
-void Palette::hoverButtons() {
-    for (auto& tool : toolsButtons)
-        tool->hover();
 
-    for (auto& btn : groupButtons)
-        btn->hover();
-
-    for (auto& btn : paletteButtons)
-        btn->hover();
-
-    buttonUp->hover();
-    buttonDown->hover();
-}
-
-void Palette::clickButtons() {
-
-    for (auto& tool : toolsButtons)
-        tool->click();
-
-    for (auto& btn : groupButtons)
-        btn->click();
-
-    for (auto& btn : paletteButtons)
-        btn->click();
-
-    buttonUp->click();
-    buttonDown->click();
-
-}
-
-void Palette::update(float dt) {
+void Palette::update() {
     for (auto& tool : toolsButtons)
         tool->update();
 

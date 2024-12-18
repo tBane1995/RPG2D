@@ -39,6 +39,7 @@ public:
 
     void setGameObject(GameObject* object);
 
+    virtual void handleEvent(sf::Event& event) override;
     virtual void update() override;
     virtual void draw() override;
 };
@@ -129,11 +130,8 @@ public:
             scroll += 1;
     }
 
-    void unclickButtons();
-    void hoverButtons();
-    void clickButtons();
-
-    void update(float dt);
+    void handleEvent(sf::Event& event);
+    void update();
     void draw();
 };
 

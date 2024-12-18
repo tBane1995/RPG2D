@@ -12,7 +12,7 @@ void addPrefabToLists();
 void editTiles();
 void MapEditorUnclickButtons();
 void MapEditorHoverButtons();
-void MapEditorEventLeftClick();
+void MapEditorEventLeftClick(sf::Event& event);
 void MapEditorEventRightClick();
 
 Plant* grass;
@@ -116,17 +116,32 @@ void MapEditor() {
         mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
         worldMousePosition = window->mapPixelToCoords(mousePosition);
 
+        if (dialogs.empty()) {
+            float moveSpeed = 300.0f * dt;
+
+            // moving the view
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+                cam->move(0.0f, -moveSpeed);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+                cam->move(0.0f, moveSpeed);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                cam->move(-moveSpeed, 0.0f);
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+                cam->move(moveSpeed, 0.0f);
+        }
+
+        palette->update();
+
         GUIwasHover = false;
         GUIwasClicked = false;
 
         if (dialogs.empty()) {
-            if (clickedMenuButton == nullptr) {
-                palette->unclickButtons();
-                palette->hoverButtons();
-            }
 
-            MapEditorUnclickButtons();
-            MapEditorHoverButtons();
+            //MapEditorUnclickButtons();
+            //MapEditorHoverButtons();
         }
 
         if (tip!=nullptr && tip->btn!=nullptr && tip->btn->state != ButtonState::Hover) {
@@ -223,12 +238,14 @@ void MapEditor() {
 
             }
 
+
             if (event.type == sf::Event::MouseButtonReleased) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     
                     if (dialogs.empty()) {
                         
-                        MapEditorEventLeftClick();
+                        MapEditorEventLeftClick(event);
+                        palette->handleEvent(event);
 
                         if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
                             selection_state = false;
@@ -307,21 +324,6 @@ void MapEditor() {
         
 
         if (dialogs.empty()) {
-            float moveSpeed = 300.0f * dt;
-
-            // moving the view
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-                cam->move(0.0f, -moveSpeed);
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-                cam->move(0.0f, moveSpeed);
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-                cam->move(-moveSpeed, 0.0f);
-
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-                cam->move(moveSpeed, 0.0f);
-
             // drawing a terrain
             if (!GUIwasHover) {
                 if (prefabToPaint != nullptr) {
@@ -356,7 +358,6 @@ void MapEditor() {
 
         if (dialogs.empty()) {
             updateMenuBar();
-            palette->update(dt);
             painterUpdate();
         }
         
@@ -475,7 +476,7 @@ void MapEditorHoverButtons() {
 
 }
 
-void MapEditorEventLeftClick() {
+void MapEditorEventLeftClick(sf::Event& event) {
 
     if (clickedMenuButton != nullptr) {
         bool clickOnMenu = false;
@@ -504,8 +505,6 @@ void MapEditorEventLeftClick() {
             if (m->state == ButtonState::Pressed)
                 tool = toolType::Cursor;
         }
-
-        palette->clickButtons();
 
         if (!GUIwasHover) {
 

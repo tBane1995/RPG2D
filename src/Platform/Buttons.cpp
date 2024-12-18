@@ -456,8 +456,10 @@ void ButtonWithImage::click() {
     GUIwasClicked = true;
     clickTime = currentTime;
 
-    if (onclick_func)
+    if (onclick_func) {
         onclick_func();
+    }
+        
 }
 
 void ButtonWithImage::handleEvent(sf::Event& event) {
@@ -469,23 +471,23 @@ void ButtonWithImage::handleEvent(sf::Event& event) {
 
     if (texture)
     {
-        w = texture->texture->getSize().x;
-        h = texture->texture->getSize().y;
+        w = texture->getSize().x;
+        h = texture->getSize().y;
     }
     else
     {
         w = sprite.getTextureRect().width;
         h = sprite.getTextureRect().height;
-
     }
 
     if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
         worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
 
         if (event.type == sf::Event::MouseButtonReleased)
-            if (event.mouseButton.button == sf::Mouse::Left)
+            if (event.mouseButton.button == sf::Mouse::Left) {
                 click();
 
+            }
     }
 }
 
@@ -502,8 +504,8 @@ void ButtonWithImage::update() {
 
     if (texture)
     {
-        w = texture->texture->getSize().x;
-        h = texture->texture->getSize().y;
+        w = texture->getSize().x;
+        h = texture->getSize().y;
     }
     else
     {

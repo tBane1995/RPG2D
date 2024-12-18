@@ -88,12 +88,7 @@ void BuildingEditor() {
         GUIwasClicked = false;
 
         if (dialogs.empty()) {
-            if (clickedMenuButton == nullptr) {
-                palette->unclickButtons();
-                palette->hoverButtons();
-            }
             
-
             BuildingEditorUnclickButtons();
             BuildingEditorHoverButtons();
         }
@@ -233,7 +228,7 @@ void BuildingEditor() {
 
         if (dialogs.empty()) {
             updateMenuBar();
-            palette->update(dt);
+            palette->update();
             painterUpdate();
         }
 
@@ -329,8 +324,6 @@ void BuildingEditorEventLeftClick() {
             if (m->state == ButtonState::Pressed)
                 tool = toolType::Cursor;
         }
-
-        palette->clickButtons();
 
         if (!GUIwasHover) {
 
