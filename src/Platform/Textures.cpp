@@ -167,7 +167,7 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height)
 	//cout << image_width << "x" << image_height << "\n";
 
 	int counter = 0;
-
+	int TexIndex = 0;
 	// get All map textures to images
 	for (short y = 0; y < image_height; y += tile_height)
 		for (short x = 0; x < image_width; x += tile_width) {
@@ -194,17 +194,19 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height)
 			*/
 
 			existed = getSingleTextureInfo(pathfile + "_" + std::to_string(counter)) != nullptr;
+			if (pathfile.find("tiles/") == 0 && counter == 4)
+			{
+				existed = true;
+			}
 
 			// if no exist then add
 			if (existed == false) {
-				SingleTexture* new_texture = new SingleTexture(pathfile + "_" + std::to_string(counter), tile);
+				SingleTexture* new_texture = new SingleTexture(pathfile + "_" + std::to_string(TexIndex), tile);
 				//cout << "created texture: " << pathfile + "_" + std::to_string(counter) << "\n";
 				singleTextures.push_back(new_texture);
-
-				counter += 1;
-
+				TexIndex += 1;
 			}
-
+			counter += 1;
 		}
 }
 

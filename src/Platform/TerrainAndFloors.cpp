@@ -259,12 +259,9 @@ void createTerrainPrefabs() {
 			{
 				// Skip 5 tile in order because this is duplicate of basic terrain
 				int TexIndex = (id - countOfBasicTerrain) % 9;
-				if (TexIndex != 4)
-				{
-					TerrainPrefab* tpref = new TerrainPrefab(texture->name, id);
-					terrainGameObjects.push_back(tpref);
-					std::cout << "Terrain prefabs: " << texture->name << "    " << tpref->name << "\t" << id << "\t" << TexIndex << std::endl;
-				}
+				TerrainPrefab* tpref = new TerrainPrefab(texture->name, id);
+				terrainGameObjects.push_back(tpref);
+				std::cout << "Terrain prefabs: " << texture->name << "    " << tpref->name << "\t" << id << "\t" << TexIndex << std::endl;
 				id += 1;
 			}
 		}
