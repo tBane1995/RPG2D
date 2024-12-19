@@ -10,8 +10,6 @@ void painterUpdate();
 void painterDraw();
 void addPrefabToLists();
 void editTiles();
-void MapEditorUnclickButtons();
-void MapEditorHoverButtons();
 void MapEditorEventLeftClick(sf::Event& event);
 void MapEditorEventRightClick();
 
@@ -77,8 +75,9 @@ void MapEditor() {
     selectedGameObjects.clear();
     selection_state = false;
 
-    createMapEditorMenuBar();
+    
     palette = new Palette(PaletteType::MapEditor);
+    menu_bar = new MenuBar(MenuBarType::MapEditor);
     tip = nullptr;
 
     mapa = new Mapa();
@@ -134,6 +133,7 @@ void MapEditor() {
         }
 
         palette->update();
+        menu_bar->update();
 
         GUIwasHover = false;
         GUIwasClicked = false;
@@ -246,6 +246,7 @@ void MapEditor() {
                         
                         MapEditorEventLeftClick(event);
                         palette->handleEvent(event);
+                        menu_bar->handleEvent(event);
 
                         if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
                             selection_state = false;
@@ -266,7 +267,7 @@ void MapEditor() {
 
                     if (dialogs.empty()) {
                         if (GUIwasHover != true) {
-                            if (clickedMenuButton == nullptr) {
+                            if (menu_bar->clickedMenuButton == nullptr) {
                                 startMousePosition = sf::Mouse::getPosition(*window);
                                 startWorldMousePosition = window->mapPixelToCoords(mousePosition);
 
@@ -329,7 +330,7 @@ void MapEditor() {
                 if (prefabToPaint != nullptr) {
 
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                        if (clickedMenuButton == nullptr) {
+                        if (menu_bar->clickedMenuButton == nullptr) {
                             if (tool == toolType::Brush || tool == toolType::RectBrush) {
                                 if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Water)
                                     editTiles();
@@ -357,7 +358,6 @@ void MapEditor() {
         sortGameObjects();
 
         if (dialogs.empty()) {
-            updateMenuBar();
             painterUpdate();
         }
         
@@ -393,8 +393,8 @@ void MapEditor() {
 
         drawGameObjects();
         painterDraw();
-        drawMenuBar();
         palette->draw();
+        menu_bar->draw();
         for (auto& dial : dialogs)
             dial->draw();
 
@@ -450,34 +450,9 @@ void editTiles() {
     
 }
 
-void MapEditorUnclickButtons() {
-
-    for (auto& m : menu) {
-        m->unclick();
-
-        if (m->isOpen) {
-            for (auto& o : m->options)
-                o->unclick();
-        }
-    }
-
-}
-
-void MapEditorHoverButtons() {
-
-    for (auto& m : menu) {
-        m->hover();
-
-        if (m->isOpen) {
-            for (auto& o : m->options)
-                o->hover();
-        }
-    }
-
-}
 
 void MapEditorEventLeftClick(sf::Event& event) {
-
+    /*
     if (clickedMenuButton != nullptr) {
         bool clickOnMenu = false;
 
@@ -535,13 +510,14 @@ void MapEditorEventLeftClick(sf::Event& event) {
 
         }
     }   // CLICKED MENU BUTTON
+    */
 }
 
 void MapEditorEventRightClick() {
     
-    if (clickedMenuButton != nullptr) {
-        clickedMenuButton->isOpen = false;
-        clickedMenuButton = nullptr;
+    if (menu_bar->clickedMenuButton != nullptr) {
+        menu_bar->clickedMenuButton->isOpen = false;
+        menu_bar->clickedMenuButton = nullptr;
 
     }else if (prefabToPaint == nullptr) {
 

@@ -39,42 +39,56 @@ public:
     }
 };
 
-extern sf::Sprite logo;
-extern sf::RectangleShape bar;
+enum class MenuBarType { MapEditor, BuildingEditor };
 
-extern MenuButton* fileBtn;
-extern MenuButton* renderBtn;
-extern MenuButton* helpBtn;
+class MenuBar {
+public:
 
-extern ButtonWithText* newWorldBtn;
-extern ButtonWithText* loadWorldBtn;
-extern ButtonWithText* saveWorldBtn;
+    MenuBarType type;
 
-extern ButtonWithText* newBuildingBtn;
-extern ButtonWithText* loadBuildingBtn;
-extern ButtonWithText* saveBuildingBtn;
+    sf::Sprite logo;
+    sf::RectangleShape bar;
 
-extern OptionButton* bordersBtn;
-extern OptionButton* coordsBtn;
-extern OptionButton* tilesBordersBtn;
-extern OptionButton* actionRangeBtn;
-extern OptionButton* viewRangeBtn;
-extern OptionButton* collidersBtn;
-extern OptionButton* meshesBtn;
-extern OptionButton* monsterBasesBtn;
+    MenuButton* fileBtn;
+    MenuButton* renderBtn;
+    MenuButton* helpBtn;
 
-extern ButtonWithText* instructionsMEBtn;   // instructions Map Editor Button
-extern ButtonWithText* instructionsBEBtn;   // instructions Building Editor Button
-extern ButtonWithText* aboutMEBtn;
-extern ButtonWithText* aboutBEBtn;
-extern ButtonWithText* settingsMEBtn;
-extern ButtonWithText* settingsBEBtn;
+    ButtonWithText* newWorldBtn;
+    ButtonWithText* loadWorldBtn;
+    ButtonWithText* saveWorldBtn;
 
-extern std::vector < MenuButton* > menu;
-extern MenuButton* clickedMenuButton;
+    ButtonWithText* newBuildingBtn;
+    ButtonWithText* loadBuildingBtn;
+    ButtonWithText* saveBuildingBtn;
 
-void createMenuBar();
-void createMapEditorMenuBar();
-void createBuildingEditorMenuBar();
-void updateMenuBar();
-void drawMenuBar();
+    OptionButton* bordersBtn;
+    OptionButton* coordsBtn;
+    OptionButton* tilesBordersBtn;
+    OptionButton* actionRangeBtn;
+    OptionButton* viewRangeBtn;
+    OptionButton* collidersBtn;
+    OptionButton* meshesBtn;
+    OptionButton* monsterBasesBtn;
+
+    ButtonWithText* instructionsMEBtn;
+    ButtonWithText* instructionsBEBtn;
+    ButtonWithText* aboutMEBtn;
+    ButtonWithText* aboutBEBtn;
+    ButtonWithText* settingsMEBtn;
+    ButtonWithText* settingsBEBtn;
+
+    std::vector < MenuButton* > menu;
+    MenuButton* clickedMenuButton;
+
+    MenuBar(MenuBarType type);
+    ~MenuBar();
+    void createButtons();
+    void createMenu();
+    void handleEvent(sf::Event& event);
+    void update();
+    void draw();
+
+
+};
+
+extern MenuBar* menu_bar;

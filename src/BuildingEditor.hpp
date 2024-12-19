@@ -4,9 +4,7 @@
 enum class buildingEditorStates { start, editor };
 buildingEditorStates buildingEditorState;
 
-void BuildingEditorUnclickButtons();
-void BuildingEditorHoverButtons();
-void BuildingEditorEventLeftClick();
+void BuildingEditorEventLeftClick(sf::Event& event);
 void BuildingEditorEventRightClick();
 
 void BuildingEditor() {
@@ -67,8 +65,9 @@ void BuildingEditor() {
     selectedGameObjects.clear();
     selection_state = false;
 
-    createBuildingEditorMenuBar();
+    
     palette = new Palette(PaletteType::BuildingEditor);
+    menu_bar = new MenuBar(MenuBarType::BuildingEditor);
     tip = nullptr;
 
     loadBuildingFromFile();
@@ -84,15 +83,12 @@ void BuildingEditor() {
         mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
         worldMousePosition = window->mapPixelToCoords(mousePosition);
 
+        palette->update();
+        menu_bar->update();
+
         GUIwasHover = false;
         GUIwasClicked = false;
 
-        if (dialogs.empty()) {
-            
-            BuildingEditorUnclickButtons();
-            BuildingEditorHoverButtons();
-        }
-        
         if (tip != nullptr && tip->btn != nullptr && tip->btn->state != ButtonState::Hover) {
             delete tip;
             tip = nullptr;
@@ -130,7 +126,9 @@ void BuildingEditor() {
             if (event.type == sf::Event::MouseButtonReleased) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (dialogs.empty()) {
-                        BuildingEditorEventLeftClick();
+                        BuildingEditorEventLeftClick(event);
+                        palette->handleEvent(event);
+                        menu_bar->handleEvent(event);
 
                         if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
                             selection_state = false;
@@ -149,7 +147,7 @@ void BuildingEditor() {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     if (dialogs.empty()) {
                         if (!GUIwasHover) {
-                            if (clickedMenuButton == nullptr) {
+                            if (menu_bar->clickedMenuButton == nullptr) {
                                 startMousePosition = sf::Mouse::getPosition(*window);
                                 startWorldMousePosition = window->mapPixelToCoords(mousePosition);
 
@@ -227,7 +225,6 @@ void BuildingEditor() {
         sortGameObjects();
 
         if (dialogs.empty()) {
-            updateMenuBar();
             palette->update();
             painterUpdate();
         }
@@ -256,8 +253,8 @@ void BuildingEditor() {
         
         drawGameObjects();
         painterDraw();
-        drawMenuBar();
         palette->draw();
+        menu_bar->draw();
         for(auto& dial : dialogs)
             dial->draw();
 
@@ -268,34 +265,10 @@ void BuildingEditor() {
     }
 }
 
-void BuildingEditorUnclickButtons() {
 
-    for (auto& m : menu) {
-        m->unclick();
+void BuildingEditorEventLeftClick(sf::Event& event) {
 
-        if (m->isOpen) {
-            for (auto& o : m->options)
-                o->unclick();
-        }
-    }
-    
-}
-
-void BuildingEditorHoverButtons() {
-  
-    for (auto& m : menu) {
-        m->hover();
-
-        if (m->isOpen) {
-            for (auto& o : m->options)
-                o->hover();
-        }
-    }
-}
-
-void BuildingEditorEventLeftClick() {
-
-    
+    /*
     if (clickedMenuButton != nullptr) {
         bool clickOnMenu = false;
         
@@ -356,15 +329,15 @@ void BuildingEditorEventLeftClick() {
 
         }
     }
-
+    */
     
 
 }
 
 void BuildingEditorEventRightClick() {
-    if (clickedMenuButton != nullptr) {
-        clickedMenuButton->isOpen = false;
-        clickedMenuButton = nullptr;
+    if (menu_bar->clickedMenuButton != nullptr) {
+        menu_bar->clickedMenuButton->isOpen = false;
+        menu_bar->clickedMenuButton = nullptr;
 
     }
     else if (prefabToPaint == nullptr) {

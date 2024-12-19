@@ -313,8 +313,8 @@ void ButtonWithText::handleEvent(sf::Event& event) {
     float x = rect.getPosition().x;
     float y = rect.getPosition().y;
 
-    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
-        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+    if (worldMousePosition.x > x && worldMousePosition.x < x + w &&
+        worldMousePosition.y > y && worldMousePosition.y < y + h) {
 
         if (event.type == sf::Event::MouseButtonReleased)
             if (event.mouseButton.button == sf::Mouse::Left)
@@ -333,8 +333,8 @@ void ButtonWithText::update() {
     float x = rect.getPosition().x;
     float y = rect.getPosition().y;
 
-    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
-        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+    if (worldMousePosition.x > x && worldMousePosition.x < x + w &&
+        worldMousePosition.y > y && worldMousePosition.y < y + h) {
         hover();
     }
 

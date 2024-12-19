@@ -77,41 +77,9 @@ void MenuButton::draw() {
             o->draw();
 }
 
-sf::Sprite logo;
-sf::RectangleShape bar;
+MenuBar::MenuBar(MenuBarType type) {
 
-MenuButton* fileBtn;
-MenuButton* renderBtn;
-MenuButton* helpBtn;
-
-ButtonWithText* newWorldBtn;
-ButtonWithText* loadWorldBtn;
-ButtonWithText* saveWorldBtn;
-
-ButtonWithText* newBuildingBtn;
-ButtonWithText* loadBuildingBtn;
-ButtonWithText* saveBuildingBtn;
-
-OptionButton* bordersBtn;
-OptionButton* coordsBtn;
-OptionButton* tilesBordersBtn;
-OptionButton* actionRangeBtn;
-OptionButton* viewRangeBtn;
-OptionButton* collidersBtn;
-OptionButton* meshesBtn;
-OptionButton* monsterBasesBtn;
-
-ButtonWithText* instructionsMEBtn;
-ButtonWithText* instructionsBEBtn;
-ButtonWithText* aboutMEBtn;
-ButtonWithText* aboutBEBtn;
-ButtonWithText* settingsMEBtn;
-ButtonWithText* settingsBEBtn;
-
-std::vector < MenuButton* > menu;
-MenuButton* clickedMenuButton;
-
-void createMenuBar() {
+    this->type = type;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -122,17 +90,25 @@ void createMenuBar() {
 
     logo = sf::Sprite();
     SingleTexture::SetTextureForSprite(&logo, getSingleTexture("GUI/icons/MapEditor_small_ico"));
-    logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight/2.0f + cam->position.y);
+    logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    createButtons();
+    createMenu();
+    clickedMenuButton = nullptr;
+}
 
+MenuBar::~MenuBar() {
+
+}
+
+void MenuBar::createButtons() {
     sf::Vector2f position;
 
     fileBtn = new MenuButton("FILE");
     position.x = -screenWidth / 2 + logo.getLocalBounds().getSize().x;
     position.y = -screenHeight / 2;
     fileBtn->setPosition(position);
-    fileBtn->onclick_func = []() {
+    fileBtn->onclick_func = [this]() {
         if (clickedMenuButton != nullptr)
             clickedMenuButton->isOpen = false;
 
@@ -148,7 +124,7 @@ void createMenuBar() {
     position.x = -screenWidth / 2 + logo.getLocalBounds().getSize().x + fileBtn->rect.getLocalBounds().width;
     position.y = -screenHeight / 2;
     renderBtn->setPosition(position);
-    renderBtn->onclick_func = []() {
+    renderBtn->onclick_func = [this]() {
         if (clickedMenuButton != nullptr)
             clickedMenuButton->isOpen = false;
 
@@ -164,7 +140,7 @@ void createMenuBar() {
     position.x = -screenWidth / 2 + logo.getLocalBounds().getSize().x + fileBtn->rect.getLocalBounds().width + renderBtn->rect.getLocalBounds().width;
     position.y = -screenHeight / 2;
     helpBtn->setPosition(position);
-    helpBtn->onclick_func = []() {
+    helpBtn->onclick_func = [this]() {
         if (clickedMenuButton != nullptr)
             clickedMenuButton->isOpen = false;
 
@@ -180,39 +156,38 @@ void createMenuBar() {
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     newWorldBtn = new ButtonWithText("New Map");
-    newWorldBtn->onclick_func = []() {
+    newWorldBtn->onclick_func = [this]() {
         mapa = new Mapa();
         };
 
     loadWorldBtn = new ButtonWithText("Load Map");
-    loadWorldBtn->onclick_func = []() {
-        
+    loadWorldBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new FileDialog(DialogType::OpenFile, L"Load Map", ".map"));
         };
 
     saveWorldBtn = new ButtonWithText("Save Map");
-    saveWorldBtn->onclick_func = []() {
+    saveWorldBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new FileDialog(DialogType::SaveFile, L"Save Map", ".map"));
         };
 
     newBuildingBtn = new ButtonWithText("New Building");
-    newBuildingBtn->onclick_func = []() {
+    newBuildingBtn->onclick_func = [this]() {
         createNewBuilding();
         };
 
     loadBuildingBtn = new ButtonWithText("Load Building");
-    loadBuildingBtn->onclick_func = []() {
+    loadBuildingBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new FileDialog(DialogType::OpenFile, L"Load Building", ".building"));
         };
 
     saveBuildingBtn = new ButtonWithText("Save Building");
-    saveBuildingBtn->onclick_func = []() {
+    saveBuildingBtn->onclick_func = [this]() {
         // TO-DO
         saveBuildingToFile();
         };
@@ -220,7 +195,7 @@ void createMenuBar() {
     bordersBtn = new OptionButton("Map Borders");
     bordersBtn->checkbox = new CheckBox();
     bordersBtn->checkbox->value = renderBorders;
-    bordersBtn->onclick_func = []() {
+    bordersBtn->onclick_func = [this]() {
         (renderBorders) ? renderBorders = false : renderBorders = true;
         bordersBtn->checkbox->value = renderBorders;
         };
@@ -228,7 +203,7 @@ void createMenuBar() {
     coordsBtn = new OptionButton("Map Coords");
     coordsBtn->checkbox = new CheckBox();
     coordsBtn->checkbox->value = renderCoords;
-    coordsBtn->onclick_func = []() {
+    coordsBtn->onclick_func = [this]() {
         (renderCoords) ? renderCoords = false : renderCoords = true;
         coordsBtn->checkbox->value = renderCoords;
         };
@@ -236,7 +211,7 @@ void createMenuBar() {
     tilesBordersBtn = new OptionButton("Tiles Borders");
     tilesBordersBtn->checkbox = new CheckBox();
     tilesBordersBtn->checkbox->value = renderTilesBorders;
-    tilesBordersBtn->onclick_func = []() {
+    tilesBordersBtn->onclick_func = [this]() {
         (renderTilesBorders) ? renderTilesBorders = false : renderTilesBorders = true;
         tilesBordersBtn->checkbox->value = renderTilesBorders;
         };
@@ -244,7 +219,7 @@ void createMenuBar() {
     actionRangeBtn = new OptionButton("Action Range");
     actionRangeBtn->checkbox = new CheckBox();
     actionRangeBtn->checkbox->value = renderActionRange;
-    actionRangeBtn->onclick_func = []() {
+    actionRangeBtn->onclick_func = [this]() {
         (renderActionRange) ? renderActionRange = false : renderActionRange = true;
         actionRangeBtn->checkbox->value = renderActionRange;
         };
@@ -252,7 +227,7 @@ void createMenuBar() {
     viewRangeBtn = new OptionButton("View Range");
     viewRangeBtn->checkbox = new CheckBox();
     viewRangeBtn->checkbox->value = renderViewRange;
-    viewRangeBtn->onclick_func = []() {
+    viewRangeBtn->onclick_func = [this]() {
         (renderViewRange) ? renderViewRange = false : renderViewRange = true;
         viewRangeBtn->checkbox->value = renderViewRange;
         };
@@ -260,7 +235,7 @@ void createMenuBar() {
     collidersBtn = new OptionButton("Colliders");
     collidersBtn->checkbox = new CheckBox();
     collidersBtn->checkbox->value = renderColliders;
-    collidersBtn->onclick_func = []() {
+    collidersBtn->onclick_func = [this]() {
         (renderColliders) ? renderColliders = false : renderColliders = true;
         collidersBtn->checkbox->value = renderColliders;
         };
@@ -268,7 +243,7 @@ void createMenuBar() {
     meshesBtn = new OptionButton("Meshes");
     meshesBtn->checkbox = new CheckBox();
     meshesBtn->checkbox->value = renderMeshes;
-    meshesBtn->onclick_func = []() {
+    meshesBtn->onclick_func = [this]() {
         (renderMeshes) ? renderMeshes = false : renderMeshes = true;
         meshesBtn->checkbox->value = renderMeshes;
         };
@@ -276,13 +251,13 @@ void createMenuBar() {
     monsterBasesBtn = new OptionButton("Monsters Bases");
     monsterBasesBtn->checkbox = new CheckBox();
     monsterBasesBtn->checkbox->value = renderMonsterBases;
-    monsterBasesBtn->onclick_func = []() {
+    monsterBasesBtn->onclick_func = [this]() {
         (renderMonsterBases) ? renderMonsterBases = false : renderMonsterBases = true;
         monsterBasesBtn->checkbox->value = renderMonsterBases;
         };
 
     instructionsMEBtn = new ButtonWithText("Instructions");
-    instructionsMEBtn->onclick_func = []() {
+    instructionsMEBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new ScrollableText(
@@ -298,7 +273,7 @@ void createMenuBar() {
             L"-F5 - zapisz mapę\n"
             L"-F6 - wczytaj mapę\n"
             L"\n"
-            L"3. Paleta\n"  
+            L"3. Paleta\n"
             L"-W programie paleta służy do wybierania prefabrykatów lub narzędzi\n"
             L"a) Grupy Obiektów:\n"
             L"-Teren - wybór rodzaju terenu np. plaża, trawa lub wyżyna\n"
@@ -336,7 +311,7 @@ void createMenuBar() {
     aboutMEBtn = new ButtonWithText("About");
 
     instructionsBEBtn = new ButtonWithText("Instructions");
-    instructionsBEBtn->onclick_func = []() {
+    instructionsBEBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new ScrollableText(
@@ -377,114 +352,121 @@ void createMenuBar() {
         };
 
     aboutMEBtn = new ButtonWithText("About");
-    aboutMEBtn->onclick_func = []() {
+    aboutMEBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new Panel());
         };
 
     aboutBEBtn = new ButtonWithText("About");
-    aboutBEBtn->onclick_func = []() {
+    aboutBEBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new Panel());
         };
-    
+
 
 
     settingsMEBtn = new ButtonWithText("Settings");
-    settingsMEBtn->onclick_func = []() {
+    settingsMEBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new Panel());
         };
 
     settingsBEBtn = new ButtonWithText("Settings");
-    settingsBEBtn->onclick_func = []() {
+    settingsBEBtn->onclick_func = [this]() {
         clickedMenuButton->isOpen = false;
         clickedMenuButton = nullptr;
         dialogs.push_back(new Panel());
         };
-    
+
 }
 
-void createMapEditorMenuBar() {
-       
-    createMenuBar();
 
-    menu.clear();
-    menu.push_back(fileBtn);
-    menu.push_back(renderBtn);
-    menu.push_back(helpBtn);
+void MenuBar::createMenu() {
+    if (type == MenuBarType::MapEditor) {
+        menu.clear();
+        menu.push_back(fileBtn);
+        menu.push_back(renderBtn);
+        menu.push_back(helpBtn);
 
-    menu[0]->addOption(newWorldBtn);
-    menu[0]->addOption(loadWorldBtn);
-    menu[0]->addOption(saveWorldBtn);
+        menu[0]->addOption(newWorldBtn);
+        menu[0]->addOption(loadWorldBtn);
+        menu[0]->addOption(saveWorldBtn);
 
-    menu[1]->addOption(bordersBtn);
-    menu[1]->addOption(coordsBtn);
-    menu[1]->addOption(tilesBordersBtn);
-    menu[1]->addOption(actionRangeBtn);
-    menu[1]->addOption(viewRangeBtn);
-    menu[1]->addOption(collidersBtn);
-    menu[1]->addOption(meshesBtn);
-    menu[1]->addOption(monsterBasesBtn);
+        menu[1]->addOption(bordersBtn);
+        menu[1]->addOption(coordsBtn);
+        menu[1]->addOption(tilesBordersBtn);
+        menu[1]->addOption(actionRangeBtn);
+        menu[1]->addOption(viewRangeBtn);
+        menu[1]->addOption(collidersBtn);
+        menu[1]->addOption(meshesBtn);
+        menu[1]->addOption(monsterBasesBtn);
 
-    menu[2]->addOption(instructionsMEBtn);
-    menu[2]->addOption(aboutMEBtn);
-    menu[2]->addOption(settingsMEBtn);
+        menu[2]->addOption(instructionsMEBtn);
+        menu[2]->addOption(aboutMEBtn);
+        menu[2]->addOption(settingsMEBtn);
+    }
+    else if (type == MenuBarType::BuildingEditor) {
+        menu.clear();
+        menu.push_back(fileBtn);
+        menu.push_back(renderBtn);
+        menu.push_back(helpBtn);
 
-    clickedMenuButton = nullptr;
+        menu[0]->addOption(newBuildingBtn);
+        menu[0]->addOption(loadBuildingBtn);
+        menu[0]->addOption(saveBuildingBtn);
+
+        menu[1]->addOption(collidersBtn);
+
+        menu[2]->addOption(instructionsBEBtn);
+        menu[2]->addOption(aboutBEBtn);
+        menu[2]->addOption(settingsBEBtn);
+    }
 }
 
-void createBuildingEditorMenuBar() {
+void MenuBar::handleEvent(sf::Event& event) {
+    for (auto& m : menu)
+        m->handleEvent(event);
 
-    createMenuBar();
+    if (clickedMenuButton) {
 
-    menu.clear();
-    menu.push_back(fileBtn);
-    menu.push_back(renderBtn);
-    menu.push_back(helpBtn);
+        for (auto& o : clickedMenuButton->options) {
+            o->handleEvent(event);
+        }
 
-    menu[0]->addOption(newBuildingBtn);
-    menu[0]->addOption(loadBuildingBtn);
-    menu[0]->addOption(saveBuildingBtn);
 
-    menu[1]->addOption(collidersBtn);
-
-    menu[2]->addOption(instructionsBEBtn);
-    menu[2]->addOption(aboutBEBtn);
-    menu[2]->addOption(settingsBEBtn);
-
-    clickedMenuButton = nullptr;
+    }
 }
 
-void updateMenuBar() {
+void MenuBar::update() {
 
-    sf::ContextSettings settings = window->getSettings();
-    settings.antialiasingLevel;
-    settings.depthBits;
-    settings.stencilBits;
-
-	bar.setPosition( -screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
+    bar.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
     logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
 
     for (auto& m : menu)
         m->update();
 
     if (clickedMenuButton) {
-
         for (auto& o : clickedMenuButton->options)
             o->update();
-            
     }
 }
 
-void drawMenuBar() {
+void MenuBar::draw() {
 
-	window->draw(bar);
+    window->draw(bar);
     window->draw(logo);
 
     for (auto& m : menu)
         m->draw();
+
+    if (clickedMenuButton) {
+        for (auto& o : clickedMenuButton->options)
+            o->draw();
+    }
 }
+
+MenuBar* menu_bar = nullptr;
+
