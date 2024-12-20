@@ -132,11 +132,11 @@ void MapEditor() {
                 cam->move(moveSpeed, 0.0f);
         }
 
-        palette->update();
-        menu_bar->update();
-
         GUIwasHover = false;
         GUIwasClicked = false;
+
+        palette->update();
+        menu_bar->update();
 
         if (dialogs.empty()) {
 
@@ -164,7 +164,7 @@ void MapEditor() {
                 
                 if (dialogs.size()>=2 && dialogs.back()->type == DialogType::Confirm) {
                     Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
-                    confirm->update(event);
+                    confirm->handleEvent(event);
 
                     if (dialogs[dialogs.size() - 2]->type == DialogType::SaveFile) {
                         if (confirm->value != ConfirmValue::Undefinded) {
@@ -227,7 +227,7 @@ void MapEditor() {
                 }
                 else if (dialogs.back()->type == DialogType::Confirm) {
                     Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
-                    confirm->update(event);
+                    confirm->handleEvent(event);
 
                     if (confirm->value != ConfirmValue::Undefinded) {
                         delete dialogs.back();

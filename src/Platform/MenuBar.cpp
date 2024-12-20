@@ -444,8 +444,11 @@ void MenuBar::handleEvent(sf::Event& event) {
     }
 
     if (clicked_in_menu == false) {
-        clickedMenuButton->isOpen = false;
-        clickedMenuButton = nullptr;
+        if (clickedMenuButton != nullptr) {
+            clickedMenuButton->isOpen = false;
+            clickedMenuButton = nullptr;
+        }
+
     }
 
 }

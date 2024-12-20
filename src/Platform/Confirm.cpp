@@ -53,34 +53,20 @@ Confirm::~Confirm() {
 		delete btn_no;
 }
 
-void Confirm::update(sf::Event& event) {
+void Confirm::handleEvent(sf::Event& event) {
+	btn_yes->handleEvent(event);
+	btn_no->handleEvent(event);
 
-	btn_yes->unclick();
-	btn_no->unclick();
+	if (btn_yes->state == ButtonState::Pressed)
+		value = ConfirmValue::True;
 
-	btn_yes->hover();
-	btn_no->hover();
+	if (btn_no->state == ButtonState::Pressed)
+		value = ConfirmValue::False;
+}
 
-	if (event.type == sf::Event::MouseButtonReleased) {
-		if (event.mouseButton.button == sf::Mouse::Left) {
-
-			if (btn_yes->state == ButtonState::Pressed) {
-				value = ConfirmValue::True;
-			}
-
-			if (btn_no->state == ButtonState::Pressed) {
-				value = ConfirmValue::False;
-			}
-
-		}
-	}
-
-
-	
-
+void Confirm::update() {
 	btn_yes->update();
 	btn_no->update();
-
 }
 
 void Confirm::draw() {

@@ -27,6 +27,7 @@ public:
 
 	Confirm(std::wstring text);
 	~Confirm();
-	void update(sf::Event& event);
+	void handleEvent(sf::Event& event);
+	void update();
 	void draw();
 };
