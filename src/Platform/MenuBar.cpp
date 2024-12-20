@@ -427,17 +427,27 @@ void MenuBar::createMenu() {
 }
 
 void MenuBar::handleEvent(sf::Event& event) {
-    for (auto& m : menu)
+    bool clicked_in_menu = false;
+
+    for (auto& m : menu) {
         m->handleEvent(event);
+        if (m->state == ButtonState::Pressed)
+            clicked_in_menu = true;
+    }
 
     if (clickedMenuButton) {
-
         for (auto& o : clickedMenuButton->options) {
             o->handleEvent(event);
+            if (o->state == ButtonState::Pressed)
+                clicked_in_menu = true;
         }
-
-
     }
+
+    if (clicked_in_menu == false) {
+        clickedMenuButton->isOpen = false;
+        clickedMenuButton = nullptr;
+    }
+
 }
 
 void MenuBar::update() {
