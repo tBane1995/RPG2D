@@ -49,6 +49,8 @@ public:
     void addGameObjectsToMainLists();
     void removeGameObjectsFromMainLists();
     void deleteGameObject(GameObject* object);
+    void addBuildingToMainLists(Building* building);
+    void removeBuildingFromMainLists(Building* building);
 
 	void update()
     {
@@ -91,7 +93,7 @@ public:
 
     void draw();
     void drawStatistics();
-
+    void ReloadBuildings();
 };
 
 extern Mapa* mapa;

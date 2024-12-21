@@ -225,36 +225,7 @@ void Chunk::addGameObjectsToMainLists() {
 
     for (auto& building : _buildings)
     {
-        building->isInTheMainList = true;
-        gameObjects.push_back(building);
-        buildings.push_back(building);
-
-        building->_door->isInTheMainList = true;
-        doors.push_back(building->_door);
-        gameObjects.push_back(building->_door);
-
-        for (auto& item : building->_items)
-        {
-            item->isInTheMainList = true;
-            itemsOnMap.push_back(item);
-            gameObjects.push_back(item);
-        }
-
-
-        for (auto& furniture : building->_furnitures)
-        {
-            furniture->isInTheMainList = true;
-            furnitures.push_back(furniture);
-            gameObjects.push_back(furniture);
-        }
-
-
-        for (auto& wall : building->_walls)
-        {
-            wall->isInTheMainList = true;
-            walls.push_back(wall);
-            gameObjects.push_back(wall);
-        }
+        addBuildingToMainLists(building);
     }
 }
 
@@ -325,38 +296,11 @@ void Chunk::removeGameObjectsFromMainLists()
     std::erase_if(characters, [](const auto& character) { return !character->isInTheMainList; });
 
     // delete buildings ////////////////////////////////////////////////////////////
-    for (auto& building : _buildings) {
-        building->isInTheMainList = false;
-
-        // delete building - doors
-        building->_door->isInTheMainList = false;
-        std::erase_if(doors, [](const auto& door) { return !door->isInTheMainList; });
-
-        // delete building - items
-        for (auto& item : building->_items)
-        {
-            item->isInTheMainList = false;
-        }
-        std::erase_if(itemsOnMap, [](const auto& item) { return !item->isInTheMainList; });
-
-        // delete building - furnitures
-        for (auto& furniture : building->_furnitures)
-        {
-            furniture->isInTheMainList = false;
-        }
-        std::erase_if(furnitures, [](const auto& furniture) { return !furniture->isInTheMainList; });
-
-        // delete building - walls
-        for (auto& wall : building->_walls)
-        {
-            wall->isInTheMainList = false;
-        }
-        std::erase_if(walls, [](const auto& wall) { return !wall->isInTheMainList; });
-
+    for (auto& building : _buildings)
+    {
+        removeBuildingFromMainLists(building);
     }
-
     std::erase_if(buildings, [](const auto& building) { return !building->isInTheMainList; });
-
 
     // delete GameObjects  /////////////////////////////////////////////////////////////////////
     std::erase_if(gameObjects, [](const auto& go) { return !go->isInTheMainList; });
@@ -432,6 +376,70 @@ void Chunk::deleteGameObject(GameObject* object)
         if (it != _buildings.end())
             _buildings.erase(it);
     }
+}
+
+void Chunk::addBuildingToMainLists(Building* building)
+{
+    building->isInTheMainList = true;
+    gameObjects.push_back(building);
+    buildings.push_back(building);
+
+    building->_door->isInTheMainList = true;
+    doors.push_back(building->_door);
+    gameObjects.push_back(building->_door);
+
+    for (auto& item : building->_items)
+    {
+        item->isInTheMainList = true;
+        itemsOnMap.push_back(item);
+        gameObjects.push_back(item);
+    }
+
+
+    for (auto& furniture : building->_furnitures)
+    {
+        furniture->isInTheMainList = true;
+        furnitures.push_back(furniture);
+        gameObjects.push_back(furniture);
+    }
+
+
+    for (auto& wall : building->_walls)
+    {
+        wall->isInTheMainList = true;
+        walls.push_back(wall);
+        gameObjects.push_back(wall);
+    }
+}
+
+void Chunk::removeBuildingFromMainLists(Building* building)
+{
+    building->isInTheMainList = false;
+
+    // delete building - doors
+    building->_door->isInTheMainList = false;
+    std::erase_if(doors, [](const auto& door) { return !door->isInTheMainList; });
+
+    // delete building - items
+    for (auto& item : building->_items)
+    {
+        item->isInTheMainList = false;
+    }
+    std::erase_if(itemsOnMap, [](const auto& item) { return !item->isInTheMainList; });
+
+    // delete building - furnitures
+    for (auto& furniture : building->_furnitures)
+    {
+        furniture->isInTheMainList = false;
+    }
+    std::erase_if(furnitures, [](const auto& furniture) { return !furniture->isInTheMainList; });
+
+    // delete building - walls
+    for (auto& wall : building->_walls)
+    {
+        wall->isInTheMainList = false;
+    }
+    std::erase_if(walls, [](const auto& wall) { return !wall->isInTheMainList; });
 }
 
 void Chunk::draw()
@@ -825,8 +833,8 @@ void Mapa::mapVisiblings()
     float height = screenHeight * 2.0f;
     bool prevVisible;
 
-    for (auto& chunk : chunks) {
-
+    for (auto& chunk : chunks)
+    {
         chunk_position.x = (chunk->terrain->coords.x * tileSide) + 8 * tileSide;
         chunk_position.y = (chunk->terrain->coords.y * tileSide) + 8 * tileSide;
 
@@ -840,7 +848,6 @@ void Mapa::mapVisiblings()
         else if (prevVisible == true && chunk->visible == false) {
             chunk->removeGameObjectsFromMainLists();
         }
-
     }
 }
 
@@ -926,6 +933,39 @@ void Mapa::draw() {
 void Mapa::drawStatistics() {
     for (auto& chunk : chunks) {
         chunk->drawAllStatistics();
+    }
+}
+
+void Mapa::ReloadBuildings()
+{
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            Chunk* chunk = getChunk(x, y);
+            std::vector<Building*> Buildings;
+            for (int i = chunk->_buildings.size() - 1; i >= 0; --i)
+            {
+                Buildings.push_back(chunk->_buildings[i]);
+                chunk->_buildings.erase(chunk->_buildings.begin() + i);
+            }
+            for (int i = Buildings.size() - 1; i >= 0; --i)
+            {
+                std::string Name = Buildings[i]->name;
+                int X = Buildings[i]->position.x;
+                int Y = Buildings[i]->position.y;
+
+                chunk->removeBuildingFromMainLists(Buildings[i]);
+                std::erase_if(buildings, [](const auto& building) { return !building->isInTheMainList; });
+                // delete GameObjects  /////////////////////////////////////////////////////////////////////
+                std::erase_if(gameObjects, [](const auto& go) { return !go->isInTheMainList; });
+                // free memory
+                delete Buildings[i];
+                Building* building = new Building(Name, X, Y);
+                chunk->_buildings.push_back(building);
+                chunk->addBuildingToMainLists(building);
+            }
+        }
     }
 }
 

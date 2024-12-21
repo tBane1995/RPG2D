@@ -76,5 +76,4 @@
 #include "Platform/StatsPanel.h"
 
 
-
 void initPlatform();

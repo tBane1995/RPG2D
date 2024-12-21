@@ -13,6 +13,7 @@
 #include "Windows.h"
 #include "Camera.h"
 #include "GameObjectsManager.h"
+#include "GameStates.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -79,8 +80,13 @@ void Building::deleteGameObject(GameObject* object) {
 
 }
 
-bool Building::playerInside() {
+bool Building::playerInside()
+{
 
+    if (DebugMode)
+    {
+        return true;
+    }
     short x3, y3, rx3, ry3;
     x3 = player->position.x;
     y3 = player->position.y;

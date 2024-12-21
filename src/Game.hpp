@@ -738,7 +738,17 @@ void gameEvents() {
                  
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::R) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        mapa->ReloadBuildings();
+        std::cout << "Buildings reloaded" << std::endl;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        DebugMode = !DebugMode;
+        std::cout << "Debug mode is now: " << std::boolalpha << DebugMode << std::endl;
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)/* || sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)*/) {
         cursor = 0;
         inventory = new InventoryPanel(player->bag);
         gameState = gameStates::inventory;
