@@ -18,7 +18,11 @@ Panel::~Panel() {
 
 }
 
-void Panel::update(sf::Event& event) {
+void Panel::handleEvent(sf::Event& event) {
+
+}
+
+void Panel::update() {
 
 }
 

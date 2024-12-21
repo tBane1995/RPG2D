@@ -5,11 +5,16 @@
 extern sf::Vector2i mousePosition;
 extern sf::Vector2f worldMousePosition;
 
-extern sf::Time startClickTime;				// TO-DO selecting
+extern sf::Time mouse_start_time;
 
 extern sf::Vector2i startMousePosition;
 extern sf::Vector2f startWorldMousePosition;
-extern bool selection_state;
+
 extern sf::RectangleShape selectArea;
+
+extern float mouseDoubleClickTime;
+
+enum class MouseState { Idle, Click, Selecting };
+extern MouseState mouse_state;
 
 void mouseSelection();

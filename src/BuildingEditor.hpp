@@ -63,7 +63,6 @@ void BuildingEditor() {
 
     prefabToPaint = nullptr;
     selectedGameObjects.clear();
-    selection_state = false;
 
     
     palette = new Palette(PaletteType::BuildingEditor);
@@ -117,7 +116,7 @@ void BuildingEditor() {
                 }
                 else if (dialogs.back()->type == DialogType::ScrollableText) {
                     ScrollableText* scrolltext = dynamic_cast<ScrollableText*>(dialogs.back());
-                    scrolltext->update(event);
+                    scrolltext->handleEvent(event);
                 }
 
 
@@ -131,7 +130,7 @@ void BuildingEditor() {
                         menu_bar->handleEvent(event);
 
                         if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                            selection_state = false;
+                            mouse_state = MouseState::Idle;
                         }
                     }
                 }
@@ -152,7 +151,7 @@ void BuildingEditor() {
                                 startWorldMousePosition = window->mapPixelToCoords(mousePosition);
 
                                 if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                                    selection_state = true;
+                                    mouse_state = MouseState::Selecting;
                                 }
                             }
 

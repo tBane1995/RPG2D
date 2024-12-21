@@ -50,20 +50,18 @@ void MapEditor() {
                 break;
             }
         }
-            window->setView(cam->view);
-            welcomeText->setPosition(cam->position.x, cam->position.y - 50);
-            pressText->setPosition(cam->position.x, cam->position.y + 50);
+        window->setView(cam->view);
+        welcomeText->setPosition(cam->position.x, cam->position.y - 50);
+        pressText->setPosition(cam->position.x, cam->position.y + 50);
 
-            window->clear(sf::Color::Black);
-            window->draw(*welcomeText);
-            window->draw(*pressText);
-            window->display();
-        
+        window->clear(sf::Color::Black);
+        window->draw(*welcomeText);
+        window->draw(*pressText);
+        window->display();
+
     }
-    
-    mapEditorState = MapEditorStates::Editor;
 
-    initPlatform();
+    mapEditorState = MapEditorStates::Editor;
 
     clearAllMainListsOfGameObjects();
 
@@ -73,9 +71,8 @@ void MapEditor() {
 
     prefabToPaint = nullptr;
     selectedGameObjects.clear();
-    selection_state = false;
+    mouse_state = MouseState::Idle;
 
-    
     palette = new Palette(PaletteType::MapEditor);
     menu_bar = new MenuBar(MenuBarType::MapEditor);
     tip = nullptr;
@@ -83,28 +80,10 @@ void MapEditor() {
     mapa = new Mapa();
     mapa->load();
     mapa->mapVisiblings();
-    
-    // TO-DO - TEST CREATE PLANTS
-    grass = new Plant("grass", 32, 16, 32);
-    grass->setPosition(sf::Vector2f(256*4,256*4));
-    std::vector < Plant* > plants;
-
-    for (int y = 0; y < 256; y += 64)
-        for (int x = 0; x < 256; x += 64) {
-            plants.push_back(new Plant(grass, 256 * 4 + x, 256 * 4 + y));
-            plants.push_back(new Plant(grass, 256 * 4 + x + 32, 256 * 4 + y + 32));
-        }
-            
-
-    for (auto& p : plants)
-        gameObjects.push_back(p);
 
     updateGameObjects();
-    
-    // TO-DO - TEST CONFIRM DIALOG    
-    Confirm* conf = new Confirm(L"To jest testowe okno potwierdzenia. W tym oknie można wybrać opcje tak lub nie.");
-    dialogs.push_back(conf);
-    //
+
+    dialogs.push_back(new Panel());
 
     while (window->isOpen()) {
 
@@ -138,51 +117,52 @@ void MapEditor() {
         palette->update();
         menu_bar->update();
 
-        if (dialogs.empty()) {
 
-            //MapEditorUnclickButtons();
-            //MapEditorHoverButtons();
-        }
+        for (auto& dialog : dialogs)
+            dialog->update();
 
-        if (tip!=nullptr && tip->btn!=nullptr && tip->btn->state != ButtonState::Hover) {
+
+        if (tip != nullptr && tip->btn != nullptr && tip->btn->state != ButtonState::Hover) {
             delete tip;
             tip = nullptr;
         }
-            
+
+
+
 
         // events
         sf::Event event;
         while (window->pollEvent(event)) {
 
-            std::cout << "cursor on " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
+            //std::cout << "cursor on " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
 
             if (event.type == sf::Event::Closed) {
                 window->close();
             }
+            else if (!dialogs.empty()) {
 
-            if (!dialogs.empty()) {
-                
-                if (dialogs.size()>=2 && dialogs.back()->type == DialogType::Confirm) {
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
+
+                    delete dialogs.back();
+                    dialogs.pop_back();
+                }
+                else if (dialogs.size() >= 2 && dialogs.back()->type == DialogType::Confirm && dialogs[dialogs.size() - 2]->type == DialogType::SaveFile) {
                     Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
+                    FileDialog* dial = dynamic_cast<FileDialog*>(dialogs[dialogs.size() - 2]);
                     confirm->handleEvent(event);
 
-                    if (dialogs[dialogs.size() - 2]->type == DialogType::SaveFile) {
-                        if (confirm->value != ConfirmValue::Undefinded) {
-                            if (confirm->value == ConfirmValue::True) {
-                                FileDialog* dial = dynamic_cast<FileDialog*>(dialogs[dialogs.size() - 2]);
-                                mapa->save(dial->getPathfile());
-                                delete confirm;
-                                dialogs.pop_back();
-                                delete dial;
-                                dialogs.pop_back();
-                            }
-
-                            else if (confirm->value == ConfirmValue::False) {
-                                delete confirm;
-                                dialogs.pop_back();
-                                FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
-                                dial->state = FileDialogState::Idle;
-                            }
+                    if (confirm->value != ConfirmValue::Undefinded) {
+                        if (confirm->value == ConfirmValue::True) {
+                            mapa->save(dial->getPathfile());
+                            delete confirm;
+                            delete dial;
+                            dialogs.pop_back();
+                            dialogs.pop_back();
+                        }
+                        else if (confirm->value == ConfirmValue::False) {
+                            dial->state = FileDialogState::Idle;
+                            delete confirm;
+                            dialogs.pop_back();
                         }
                     }
 
@@ -191,14 +171,14 @@ void MapEditor() {
                     FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
                     dial->handleEvent(event);
 
-                    if (dial->cancelButton->state == ButtonState::Pressed) {
+                    if (dial->state == FileDialogState::Canceled) {
                         delete dial;
                         dialogs.pop_back();
                     }
-
                     else if (dial->state == FileDialogState::FileSelected) {
                         std::wstring filename = getShortName(ConvertUtf8ToWide(dial->getPathfile()));
-                        dialogs.push_back(new Confirm(L"Plik " + filename + L" już istnieje. Czy chcesz go zamienić?"));
+                        dialogs.push_back(new Confirm(L"Plik " + getShortName(filename) + L" już istnieje. Czy chcesz go zamienić?"));
+                        dial->state = FileDialogState::Idle;
                         dial->selectButton->state = ButtonState::Idle;
                         dial->selectButton->changeColor();
                     }
@@ -206,7 +186,6 @@ void MapEditor() {
                 }
                 else if (dialogs.back()->type == DialogType::OpenFile) {
                     FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
-
                     dial->handleEvent(event);
 
                     if (dial->cancelButton->state == ButtonState::Pressed) {
@@ -214,16 +193,16 @@ void MapEditor() {
                         dialogs.pop_back();
                     }
                     else if (dial->state == FileDialogState::FileSelected) {
-                            dial->selectButton->state == ButtonState::Idle;
-                            mapa->load(dial->getPathfile());
-                            delete dial;
-                            dialogs.pop_back();
+                        dial->selectButton->state == ButtonState::Idle;
+                        mapa->load(dial->getPathfile());
+                        delete dial;
+                        dialogs.pop_back();
                     }
 
                 }
                 else if (dialogs.back()->type == DialogType::ScrollableText) {
                     ScrollableText* scrolltext = dynamic_cast<ScrollableText*>(dialogs.back());
-                    scrolltext->update(event);
+                    scrolltext->handleEvent(event);
                 }
                 else if (dialogs.back()->type == DialogType::Confirm) {
                     Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
@@ -234,81 +213,60 @@ void MapEditor() {
                         dialogs.pop_back();
                     }
                 }
-                
 
             }
+            else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+
+                mouse_state = MouseState::Click;
+
+                palette->handleEvent(event);
+                menu_bar->handleEvent(event);
+
+                if (!GUIwasHover && !GUIwasClicked)
+                    if (tool == toolType::AddGameObject) {
+                        addPrefabsToMapAndLists();
+                    }
 
 
-            if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    
-                    if (dialogs.empty()) {
-                        
-                        MapEditorEventLeftClick(event);
-                        palette->handleEvent(event);
-                        menu_bar->handleEvent(event);
+                mouse_state = MouseState::Idle;
 
-                        if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                            selection_state = false;
+
+
+            }
+            else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Right) {
+
+                MapEditorEventRightClick();
+            }
+            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+
+                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                    if (!GUIwasHover && !GUIwasClicked) {   // TO-DO - now not nowork
+
+                        if (mouse_state == MouseState::Idle) {
+
+                            mouse_state = MouseState::Selecting;
+                            mouse_start_time = currentTime;
+                            startMousePosition = mousePosition;
+                            startWorldMousePosition = worldMousePosition;
+
                         }
                     }
-
                 }
 
-                if (event.mouseButton.button == sf::Mouse::Right) {
-                    if (dialogs.empty()) {
-                        MapEditorEventRightClick();
-                    }
-                }
             }
-                
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
+            else if (event.type == sf::Event::KeyPressed) {
 
-                    if (dialogs.empty()) {
-                        if (GUIwasHover != true) {
-                            if (menu_bar->clickedMenuButton == nullptr) {
-                                startMousePosition = sf::Mouse::getPosition(*window);
-                                startWorldMousePosition = window->mapPixelToCoords(mousePosition);
-
-                                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                                    selection_state = true;
-                                }
-                            }
-                        }
-                    }
-                    
-                }
-            }
-
-            if (event.type == sf::Event::KeyPressed) {
-                    
                 if (event.key.code == sf::Keyboard::Escape) {
-                    
-                    if (dialogs.empty()) {
-                        window->close();
-                        exit(0);
-                    }
-                    else {
-                        delete dialogs.back();
-                        dialogs.pop_back();
-                    }
+                    window->close();
+                    exit(0);
                 }
 
                 if (event.key.code == sf::Keyboard::F5) {
-                    // TO-DO
-                    if (dialogs.empty()) {
-                        mapa->save();
-                    }
+                    mapa->save();
                 }
 
                 if (event.key.code == sf::Keyboard::F6) {
                     mapa->load();
-                    /*
-                    if (loadDialogBox == nullptr) {
-                        loadDialogBox = new OpenDialogBox("Load Map");
-                    }
-                    */
                 }
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && event.key.code == sf::Keyboard::Z) {
@@ -322,24 +280,17 @@ void MapEditor() {
             }
         } // events
 
-        
-
+        // drawing a terrain
         if (dialogs.empty()) {
-            // drawing a terrain
-            if (!GUIwasHover) {
+            if (!GUIwasHover && !GUIwasClicked) {
                 if (prefabToPaint != nullptr) {
-
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                        if (menu_bar->clickedMenuButton == nullptr) {
-                            if (tool == toolType::Brush || tool == toolType::RectBrush) {
-                                if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Water)
-                                    editTiles();
-                            }
+                        if (tool == toolType::Brush || tool == toolType::RectBrush) {
+                            if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Water)
+                                editTiles();
                         }
-
                     }
                 }
-
             }
         }
 
@@ -351,18 +302,21 @@ void MapEditor() {
         updateShaders();
 
         mapa->mapVisiblings();
-        mapa->update(); 
+        mapa->update();
 
         cam->update();
+        if (mouse_state == MouseState::Selecting)
+            selectGameObjects();
         updateGameObjects();
         sortGameObjects();
+        painterUpdate();
 
-        if (dialogs.empty()) {
-            painterUpdate();
-        }
-        
-        if(tip!=nullptr)    
+
+
+        if (tip != nullptr)
             tip->update();
+
+
 
         // RENDER ////////////////////////////////////////////////////////////////////////////
 
@@ -371,24 +325,24 @@ void MapEditor() {
 
         mapa->draw();
         mapa->drawStatistics();
-        
+
         for (auto& building : buildings) {
             window->draw(*building->floors);
             building->draw();
         }
-        
+
         for (auto& go : gameObjects) {
             if (go->type != GameObjectType::FlatObject)
-            if (go->isVisible) {
-                if (go->mouseIsHover || go->isSelected) {
-                    // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
-                    go->drawAllStatistics();
+                if (go->isVisible) {
+                    if (go->mouseIsHover || go->isSelected) {
+                        // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
+                        go->drawAllStatistics();
+                    }
+                    else {
+                        // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
+                        go->drawStatistics();
+                    }
                 }
-                else {
-                    // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
-                    go->drawStatistics();
-                }
-            }
         }
 
         drawGameObjects();
@@ -398,9 +352,9 @@ void MapEditor() {
         for (auto& dial : dialogs)
             dial->draw();
 
-        if(tip!=nullptr)
+        if (tip != nullptr)
             tip->draw();
-        
+
         window->display();
 
     }

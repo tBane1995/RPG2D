@@ -15,6 +15,7 @@ public:
 
 	Panel(DialogType dialog_type = DialogType::Panel, sf::Vector2f size = sf::Vector2f(600, 400));
 	~Panel();
-	virtual void update(sf::Event& event);
+	virtual void handleEvent(sf::Event& event);
+	virtual void update();
 	virtual void draw();
 };

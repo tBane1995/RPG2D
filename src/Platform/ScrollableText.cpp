@@ -40,7 +40,7 @@ ScrollableText::~ScrollableText() {
 	delete scrollbar;
 }
 
-void ScrollableText::update(sf::Event& event) {
+void ScrollableText::handleEvent(sf::Event& event) {
 
 	scrollbar->handleEvent(event);
 
@@ -56,6 +56,10 @@ void ScrollableText::update(sf::Event& event) {
 	for (auto& text : textarea->texts)
 		text_texture.draw(text);
 	text_texture.display();
+
+}
+
+void ScrollableText::update() {
 
 }
 
