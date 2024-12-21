@@ -24,6 +24,14 @@ void Wall::draw() {
 		GameObject::draw();
 
 	window->draw(sprite);
+/*
+	sf::RectangleShape Rect(sf::Vector2f(sprite.getLocalBounds().width, sprite.getLocalBounds().height));
+	Rect.setPosition(sprite.getPosition());
+	Rect.setOutlineColor(sf::Color::Red);
+	Rect.setOutlineThickness(1.0f);
+	Rect.setFillColor(sf::Color::Transparent);
+	window->draw(Rect);
+*/
 }
 
 std::vector < Wall* > walls;

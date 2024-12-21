@@ -1,6 +1,7 @@
 ﻿#include "Textures.h"
 #include <iostream>
 #include <fstream>
+#include <initializer_list>
 #include "Utils.h"
 
 
@@ -180,28 +181,50 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height)
 			// searching - exist doubles or no
 			bool existed = false;
 
-			/*
-			for (short i = 0; i < singleTextures.size(); i++)
-			{
-				sf::Image img = singleTextures[i]->texture->copyToImage();
-
-				if (areImagesEqual(tile, img)) {
-					existed = true;
-					//cout << "exits now\n";
-					break;
-				}
-			}
-			*/
-
 			existed = getSingleTextureInfo(pathfile + "_" + std::to_string(counter)) != nullptr;
 			if (pathfile.find("tiles/") == 0 && counter == 4)
 			{
 				existed = true;
 			}
 
+			if (!existed)
+			{
+				if (pathfile.find("walls/") == 0)
+				{
+					std::initializer_list<short> Duplicates{ 2,3,6,7,8,9,10,11,13,14,15,16,18,19,22,25,26,27,28,29 };
+					for (const short* it = Duplicates.begin(); it != Duplicates.end(); ++it)
+					{
+						if (*it == counter)
+						{
+							existed = true;
+							break;
+						}
+					}
+				}
+			}
+			/*
+			existed = false;
+			for (short i = 6; i < singleTextures.size(); i++)
+			{
+				if (singleTextures[i]->texture->getSize().x < 256)
+				{
+					sf::Image img = singleTextures[i]->texture->copyToImage();
+
+					if (areImagesEqual(tile, img))
+					{
+						existed = true;
+						img.saveToFile(pathfile + "_" + std::to_string(counter) + ".png");
+						std::cout << "exists: " << pathfile + "_" + std::to_string(counter) + ".png" << std::endl;
+						break;
+					}
+				}
+			}
+			*/
+
 			// if no exist then add
 			if (existed == false) {
 				SingleTexture* new_texture = new SingleTexture(pathfile + "_" + std::to_string(TexIndex), tile);
+				//tile.saveToFile(pathfile + "_" + std::to_string(TexIndex) + "_" + std::to_string(counter) + ".png");
 				//cout << "created texture: " << pathfile + "_" + std::to_string(counter) << "\n";
 				singleTextures.push_back(new_texture);
 				TexIndex += 1;
