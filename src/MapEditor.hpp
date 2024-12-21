@@ -6,11 +6,10 @@
 enum class MapEditorStates { Start, Editor };
 MapEditorStates mapEditorState;
 
-void painterUpdate();
-void painterDraw();
-void addPrefabToLists();
 void editTiles();
-void MapEditorEventLeftClick(sf::Event& event);
+bool unselectGameObjects();
+bool deleteChosenGameObject();
+void unselectPaletteButton();
 void MapEditorEventRightClick();
 
 Plant* grass;
@@ -405,144 +404,94 @@ void editTiles() {
 }
 
 
-void MapEditorEventLeftClick(sf::Event& event) {
-    /*
-    if (clickedMenuButton != nullptr) {
-        bool clickOnMenu = false;
+bool unselectGameObjects() {
+    if (!selectedGameObjects.empty()) {
+        for (auto& sgo : selectedGameObjects)
+            sgo->isSelected = false;
 
-        for (auto& m : menu) {
-
-            if (m->state == ButtonState::Pressed)
-                clickOnMenu = true;
-
-            if (m->isOpen) {
-                for (auto& o : m->options)
-                    if (o->state == ButtonState::Pressed)
-                        clickOnMenu = true;
-            }
-        }
-
-        if (clickOnMenu == false) {
-            clickedMenuButton->isOpen = false;
-            clickedMenuButton = nullptr;
-        }
-            
+        selectedGameObjects.clear();
+        return true;
     }
-    else {
+    else
+        return false;
 
-        for (auto& m : menu) {
-            if (m->state == ButtonState::Pressed)
-                tool = toolType::Cursor;
-        }
-
-        if (!GUIwasHover) {
-
-            if (tool == toolType::Cursor) {
-
-                float x = selectArea.getPosition().x;
-                float y = selectArea.getPosition().y;
-                float w = selectArea.getSize().x;
-                float h = selectArea.getSize().y;
-
-                if (w < 16) w = 16;
-                if (h < 16) h = 16;
-
-                selectGameObjects(x, y, w, h);
-
-            }
-
-            if (!prefabsToPaint.empty()) {
-
-                if (tool == toolType::AddGameObject) {
-                    addPrefabsToMapAndLists();
-                }
-
-                if (tool == toolType::Rectangle || tool == toolType::Elipse) {
-                    editTiles();
-                }
-            }
-
-        }
-    }   // CLICKED MENU BUTTON
-    */
 }
 
-void MapEditorEventRightClick() {
-    
-    if (menu_bar->clickedMenuButton != nullptr) {
-        menu_bar->clickedMenuButton->isOpen = false;
-        menu_bar->clickedMenuButton = nullptr;
+bool deleteChosenGameObject() {
+    bool was_delete = false;
 
-    }else if (prefabToPaint == nullptr) {
+    ////////////////////////////////////////////////////////
 
-        if (!selectedGameObjects.empty()) {
-            selectGameObjects(0, 0, 0, 0);
-            return;
+    for (auto it = buildings.begin(); it != buildings.end(); ) {
+        Building* b = *it;
+
+        if (b->mouseIsHover == true) {
+
+            deleteGameObjectFromMainLists(b);   // erase
+
+            Chunk* chunk = mapa->getChunk(b->position);  // erase
+            if (chunk != nullptr) {
+                chunk->deleteGameObject(b);
+            }
+
+            delete b;
+            was_delete = true;
+            break;
         }
+        else
+            it++;
+    }
 
-        bool was_delete = false;
+    if (was_delete == false) {
+        for (auto it = gameObjects.begin(); it != gameObjects.end(); ) {
+            GameObject* go = *it;
 
-        ////////////////////////////////////////////////////////
-        
-        for (auto it = buildings.begin(); it != buildings.end(); ) {
-            Building* b = *it;
+            if (go->type != GameObjectType::Building && go->mouseIsHover == true) {
 
-            if (b->mouseIsHover == true) {
+                deleteGameObjectFromMainLists(go);  // erase
 
-                deleteGameObjectFromMainLists(b);   // erase
+                Chunk* chunk = nullptr;
 
-                Chunk* chunk = mapa->getChunk(b->position);  // erase
+                if (go->type == GameObjectType::Monster)
+                    chunk = mapa->getChunk(dynamic_cast<Monster*>(go)->base);
+                else
+                    chunk = mapa->getChunk(go->position);
+
                 if (chunk != nullptr) {
-                    chunk->deleteGameObject(b);
+                    chunk->deleteGameObject(go);    // erase
                 }
-                    
-                delete b;
+
+                delete go;      // delete
+
                 was_delete = true;
                 break;
             }
             else
                 it++;
         }
-       
-        if (was_delete == false) {
-            for (auto it = gameObjects.begin(); it != gameObjects.end(); ) {
-                GameObject* go = *it;
+    }
 
-                if (go->type != GameObjectType::Building && go->mouseIsHover == true) {
+    return was_delete;
+}
 
-                    deleteGameObjectFromMainLists(go);  // erase
+void unselectPaletteButton() {
+    palette->selectedPaletteButton = nullptr;
+    palette->selectedToolButton = palette->btnToolsCursor;
+    tool = toolType::Cursor;
+    prefabToPaint = nullptr;
+}
 
-                    Chunk* chunk = nullptr;
-
-                    if (go->type == GameObjectType::Monster)
-                        chunk = mapa->getChunk(dynamic_cast<Monster*>(go)->base);
-                    else
-                        chunk = mapa->getChunk(go->position);
-
-                    if (chunk != nullptr) {
-                        chunk->deleteGameObject(go);    // erase
-                    }
-
-                    delete go;      // delete
-                    
-                    was_delete = true;
-                    break;
-                }
-                else
-                    it++;
-            }
-        }
-
-
-        
-
+void MapEditorEventRightClick() {
+    if (unselectGameObjects()) {
+        std::cout << "unselect GameObjects\n";
+    }
+    else if (deleteChosenGameObject()) {
+        std::cout << "delete chosen GameObject\n";
     }
     else {
-        palette->selectedPaletteButton = nullptr;
-        palette->selectedToolButton = palette->btnToolsCursor;
-        tool = toolType::Cursor;
-        prefabToPaint = nullptr;
-
+        unselectPaletteButton();
+        std::cout << "unselect Palette Button\n";
     }
 }
+
 #endif
