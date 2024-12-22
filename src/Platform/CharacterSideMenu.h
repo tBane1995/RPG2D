@@ -12,23 +12,23 @@
 #include "Character.h"
 #include "Textures.h"
 
-enum class CharacterMenuState { Idle, Close };
+enum class CharacterSideMenuState { Idle, Close };
 
-class CharacterMenu {
+class CharacterSideMenu {
 public:
 	Character* character;
-	CharacterMenuState state;
+	CharacterSideMenuState state;
 
 	ButtonWithImage* btn_info;
 	ButtonWithImage* btn_remove;
 	ButtonWithImage* btn_cancel;
 
-	CharacterMenu(Character* character);
-	~CharacterMenu();
+	CharacterSideMenu(Character* character);
+	~CharacterSideMenu();
 	void update();
 	void handleEvent(sf::Event& event);
 	void draw();
 
 };
 
-extern CharacterMenu* character_menu;
+extern CharacterSideMenu* character_side_menu;

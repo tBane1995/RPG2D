@@ -115,8 +115,8 @@ void MapEditor() {
 
         palette->update();
         menu_bar->update();
-        if (character_menu != nullptr)
-            character_menu->update();
+        if (character_side_menu != nullptr)
+            character_side_menu->update();
 
         for (auto& dialog : dialogs)
             dialog->update();
@@ -221,11 +221,11 @@ void MapEditor() {
 
                 palette->handleEvent(event);
                 menu_bar->handleEvent(event);
-                if (character_menu != nullptr) {
-                    character_menu->handleEvent(event);
-                    if (character_menu->state == CharacterMenuState::Close) {
-                        delete character_menu;
-                        character_menu = nullptr;
+                if (character_side_menu != nullptr) {
+                    character_side_menu->handleEvent(event);
+                    if (character_side_menu->state == CharacterSideMenuState::Close) {
+                        delete character_side_menu;
+                        character_side_menu = nullptr;
                     }
 
                 }
@@ -360,8 +360,8 @@ void MapEditor() {
         painterDraw();
         palette->draw();
         menu_bar->draw();
-        if (character_menu != nullptr)
-            character_menu->draw();
+        if (character_side_menu != nullptr)
+            character_side_menu->draw();
 
         for (auto& dial : dialogs)
             dial->draw();
@@ -510,12 +510,12 @@ void MapEditorEventRightClick() {
 
         unselectGameObjects();
 
-        if (character_menu != nullptr) {
-            delete character_menu;
-            character_menu = nullptr;
+        if (character_side_menu != nullptr) {
+            delete character_side_menu;
+            character_side_menu = nullptr;
         }
 
-        character_menu = new CharacterMenu(clicked_character);
+        character_side_menu = new CharacterSideMenu(clicked_character);
         selectedGameObjects.push_back(clicked_character);
         clicked_character->isSelected = true;
 
