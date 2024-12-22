@@ -331,6 +331,10 @@ void loadTextures()
 	loadSingleTexture("GUI/icons/file.png", 15, 15);
 	loadSingleTexture("GUI/icons/empty.png", 15, 15);
 
+	loadSingleTexture("GUI/character_menu/btn_info.png", 16, 16);
+	loadSingleTexture("GUI/character_menu/btn_remove.png", 16, 16);
+	loadSingleTexture("GUI/character_menu/btn_cancel.png", 16, 16);
+
 	// TILES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	loadSingleTexture("tiles/0_tileset.png", 0, 0);
 	loadSingleTexture("tiles/tile_0_water.png", 32, 32);

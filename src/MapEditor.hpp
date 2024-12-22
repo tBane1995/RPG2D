@@ -115,7 +115,8 @@ void MapEditor() {
 
         palette->update();
         menu_bar->update();
-
+        if (character_menu != nullptr)
+            character_menu->update();
 
         for (auto& dialog : dialogs)
             dialog->update();
@@ -220,6 +221,17 @@ void MapEditor() {
 
                 palette->handleEvent(event);
                 menu_bar->handleEvent(event);
+                if (character_menu != nullptr) {
+                    character_menu->handleEvent(event);
+                    if (character_menu->state == CharacterMenuState::Close) {
+                        delete character_menu;
+                        character_menu = nullptr;
+                    }
+
+                }
+
+
+
 
                 if (!GUIwasHover && !GUIwasClicked)
                     if (tool == toolType::AddGameObject) {
@@ -348,6 +360,9 @@ void MapEditor() {
         painterDraw();
         palette->draw();
         menu_bar->draw();
+        if (character_menu != nullptr)
+            character_menu->draw();
+
         for (auto& dial : dialogs)
             dial->draw();
 
@@ -482,7 +497,30 @@ void unselectPaletteButton() {
 }
 
 void MapEditorEventRightClick() {
-    if (unselectGameObjects()) {
+
+    Character* clicked_character = nullptr;
+
+    for (auto& character : characters)
+        if (pointInEllipse(worldMousePosition.x, worldMousePosition.y, character->position.x, character->position.y, character->colliders[0]->width / 2.0f, character->colliders[0]->length / 2.0f)) {
+            clicked_character = character;
+            break;
+        }
+
+    if (clicked_character != nullptr) {
+
+        unselectGameObjects();
+
+        if (character_menu != nullptr) {
+            delete character_menu;
+            character_menu = nullptr;
+        }
+
+        character_menu = new CharacterMenu(clicked_character);
+        selectedGameObjects.push_back(clicked_character);
+        clicked_character->isSelected = true;
+
+    }
+    else if (unselectGameObjects()) {
         std::cout << "unselect GameObjects\n";
     }
     else if (deleteChosenGameObject()) {
@@ -493,5 +531,4 @@ void MapEditorEventRightClick() {
         std::cout << "unselect Palette Button\n";
     }
 }
-
 #endif

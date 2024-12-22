@@ -182,6 +182,9 @@ void Btn::handleEvent(sf::Event& event) {
 
 void Btn::update() {
 
+    rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+
     if ((currentTime - clickTime).asSeconds() > 0.1f) {
         unclick();
     }
@@ -196,8 +199,7 @@ void Btn::update() {
         hover();
     }
 
-    rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
-    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+    
 }
 
 void Btn::draw() {
@@ -324,6 +326,10 @@ void ButtonWithText::handleEvent(sf::Event& event) {
 }
 
 void ButtonWithText::update() {
+
+    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
+
     if ((currentTime - clickTime).asSeconds() > 0.1f) {
         unclick();
     }
@@ -338,8 +344,7 @@ void ButtonWithText::update() {
         hover();
     }
 
-    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
-    text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
+    
 }
 
 void ButtonWithText::draw() {
@@ -493,6 +498,8 @@ void ButtonWithImage::handleEvent(sf::Event& event) {
 
 void ButtonWithImage::update() {
 
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+
     if ((currentTime - clickTime).asSeconds() > 0.1f) {
         unclick();
     }
@@ -521,7 +528,7 @@ void ButtonWithImage::update() {
 
     }
 
-    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+    
 }
 
 void ButtonWithImage::draw() {
