@@ -74,6 +74,7 @@ void MapEditor() {
 
     palette = new Palette(PaletteType::MapEditor);
     menu_bar = new MenuBar(MenuBarType::MapEditor);
+    character_side_menu = nullptr;
     tip = nullptr;
 
     mapa = new Mapa();
