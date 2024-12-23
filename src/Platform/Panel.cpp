@@ -3,7 +3,7 @@
 #include "Window.h"
 #include "Camera.h"
 
-Panel::Panel(DialogType dialog_type, sf::Vector2f size) : Dialog(dialog_type) {
+Panel::Panel(sf::Vector2f size, DialogType dialog_type) : Dialog(dialog_type) {
 
 	this->size = size;
 

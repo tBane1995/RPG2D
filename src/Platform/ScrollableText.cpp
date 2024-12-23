@@ -5,7 +5,7 @@
 #include "Scrollbar.h"
 #include "Camera.h"
 
-ScrollableText::ScrollableText(std::wstring text) : Panel(DialogType::ScrollableText) {
+ScrollableText::ScrollableText(std::wstring text) : Panel(sf::Vector2f(600,400), DialogType::ScrollableText) {
 
 	sf::Vector2f scrollbar_size = sf::Vector2f(16, size.y - 2.0f * borderWidth);
 

@@ -13,7 +13,7 @@ public:
 	sf::Vector2f size;
 	float margin = 8;
 
-	Panel(DialogType dialog_type = DialogType::Panel, sf::Vector2f size = sf::Vector2f(600, 400));
+	Panel(sf::Vector2f size = sf::Vector2f(600, 400), DialogType dialog_type = DialogType::Panel);
 	~Panel();
 	virtual void handleEvent(sf::Event& event);
 	virtual void update();
