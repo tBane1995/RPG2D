@@ -72,7 +72,7 @@ void MapEditor() {
     selectedGameObjects.clear();
     mouse_state = MouseState::Idle;
 
-    palette = new Palette(PaletteType::MapEditor);
+    palette = new Palette(PaletteType::BuildingEditor);
     menu_bar = new MenuBar(MenuBarType::MapEditor);
     character_side_menu = nullptr;
     tip = nullptr;
