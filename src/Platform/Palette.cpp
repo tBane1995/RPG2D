@@ -1342,6 +1342,27 @@ void Palette::createGroupButtons() {
     }
 }
 
+void Palette::scrollUp() {
+    if (scroll > 0)
+        scroll -= 1;
+}
+
+void Palette::scrollDown() {
+
+    short maxScroll = availableGameObjects.size() - size.x * size.y;
+    if (maxScroll < 0)
+        maxScroll = 0;
+
+    if (scroll * size.x < maxScroll)
+        scroll += 1;
+}
+
+void Palette::unselectPaletteButton() {
+    selectedPaletteButton = nullptr;
+    selectedToolButton = btnToolsCursor;
+    tool = toolType::Cursor;
+    prefabToPaint = nullptr;
+}
 
 void Palette::handleEvent(sf::Event& event) {
     for (auto& tool : toolsButtons)

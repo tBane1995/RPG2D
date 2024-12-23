@@ -45,7 +45,7 @@ Building::Building(int width, int height) : GameObject("empty", 0, 0) {
 Building::Building(std::string name) : GameObject(name, 0, 0)
 {
     type = GameObjectType::Building;
-    load();
+    load(true); // load with positioning
     loadTexture();
 }
 
@@ -588,14 +588,15 @@ void Building::loadTexture() {
     sprite.setPosition(position);
 
 }
-void Building::load() {
+void Building::load(bool positioning) {
 
     // DELETE OLD GAMEOBJECTS
+
     if (_door != nullptr) {
         delete _door;
         _door = nullptr;
     }
-      
+
     if (floors != nullptr) {
         delete floors;
         floors = nullptr;
@@ -639,6 +640,10 @@ void Building::load() {
     std::cout << "load building: \n";
 
     size = sf::Vector2i(16, 16);
+    if (positioning == true) {
+        position.x = size.x * 16 / 2;
+        position.y = size.y * 16;
+    }
 
     colliders.push_back(new Collider(size.x * 16, size.y * 16, position, 0, 0, ColliderType::Rectangle));
     colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
@@ -664,13 +669,18 @@ void Building::load() {
         if (objectType == "name") {
             getline(lineStream, objectName, '"');
             getline(lineStream, objectName, '"');
-            std::cout << "name \"" << objectName << "\"\n";
+            //std::cout << "name \"" << objectName << "\"\n";
 
         }
 
         if (objectType == "size") {
             lineStream >> size.x >> size.y;
-            std::cout << "size " << size.x << " " << size.y << "\n";
+            //std::cout << "size " << size.x << " " << size.y << "\n";
+
+            if (positioning == true) {
+                position.x = size.x * 16 / 2;
+                position.y = size.y * 16;
+            }
 
             if (!colliders.empty()) {
                 delete colliders[0];
@@ -738,7 +748,7 @@ void Building::load() {
 
         }
 
-        if (line.find("// FLOORS") != std::string::npos && line.find("// FLOORS")==0) {  // TO-DO
+        if (line.find("// FLOORS") != std::string::npos && line.find("// FLOORS" == 0)) {  // TO-DO
             std::cout << "load the floors\n";
 
             if (floors != nullptr)

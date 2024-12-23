@@ -46,7 +46,7 @@ public:
     bool isPart(GameObject* object);
 
     void loadTexture();
-    void load();
+    void load(bool positioning=true);
     void save(std::string filename);
 
     void update(float dt);
