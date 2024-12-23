@@ -35,63 +35,24 @@ public:
     short x1, x2, y1, y2; // corners of building
 
     Building(int width, int height);
+    Building(std::string name);
+    Building(std::string name, float x, float y);
+    ~Building();
 
-    // FOR BUILDING EDITOR
-    Building(std::string name) : GameObject(name, 0, 0)
-    {
-        type = GameObjectType::Building;
-        loadWithPositioning();
-    }
-
-    // NORMAL INIT FOR GAME/MAP EDITOR
-    Building(std::string name, float x, float y) : GameObject(name, x, y)
-    {
-        type = GameObjectType::Building;
-        load();
-    }
-
-    virtual ~Building();
-
-    void calculateCorners()
-    {
-        x1 = position.x - size.x / 2 * 16;
-        x2 = position.x + size.x / 2 * 16;
-        y1 = position.y - size.y * 16;
-        y2 = position.y;
-    }
-
-    virtual void mouseHovering() override;
+    void calculateCorners();
+    void mouseHovering();
     void deleteGameObject(GameObject* object);
     bool playerInside();
-
-    void loadName(std::ifstream& file);
-    void loadTexture2(std::ifstream& file);
-    void loadSize(std::ifstream& file);
-    void loadCollider();
-    void loadDoor(std::ifstream& file);
-    void loadWalls(std::ifstream& file);
-    void loadWindows(std::ifstream& file);
-    void loadFloors(std::ifstream& file);
-    void loadGameObjects(std::ifstream& file);
-    void load();
-    void loadWithPositioning();
-    void save(std::string filename);
     bool isPart(GameObject* object);
 
-    virtual void update(float dt) override {
-        calculateCorners();
-        mouseHovering();
-    }
+    void loadTexture();
+    void load();
+    void save(std::string filename);
 
-    virtual void updateStatistic(float dt) override
-    {
-    }
-
-    virtual void draw() override;
-
-    virtual void drawAllStatistics() override
-    {
-    }
+    void update(float dt);
+    void updateStatistic(float dt);
+    void draw();
+    void drawAllStatistics();
 };
 
 extern std::vector < Building* > buildings;
