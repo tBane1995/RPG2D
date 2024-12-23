@@ -738,7 +738,7 @@ void Building::load() {
 
         }
 
-        if (line.find("// FLOORS") != std::string::npos) {  // TO-DO
+        if (line.find("// FLOORS") != std::string::npos && line.find("// FLOORS")==0) {  // TO-DO
             std::cout << "load the floors\n";
 
             if (floors != nullptr)
