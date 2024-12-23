@@ -89,6 +89,10 @@ void Building::deleteGameObject(GameObject* object) {
     if (object == nullptr)
         return;
 
+    if (object->type == GameObjectType::Door) {
+        _door = nullptr;
+    }
+
     if (object->type == GameObjectType::Wall) {
         auto it = std::find(_walls.begin(), _walls.end(), object);
         if (it != _walls.end())
