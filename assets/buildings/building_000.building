@@ -1,6 +1,6 @@
 name "testBuilding"
 size 16 16
-door "door_0"
+door "doors/wooden_door"
 top_walls "walls/wooden_wall"
 walls "walls/wooden_wall"
 bottom_walls "walls/wooden_wall"
@@ -63,7 +63,6 @@ Wall "walls/set_wooden_wall_3" 240 176
 Wall "walls/set_wooden_wall_3" 240 144
 Wall "walls/set_wooden_wall_3" 240 112
 Wall "walls/set_wooden_wall_3" 240 80
-Wall "walls/set_wooden_wall_3" 240 32
 Wall "walls/set_wooden_wall_3" 240 48
 Wall "walls/set_wooden_wall_3" 16 48
 Wall "walls/set_wooden_wall_3" 16 80

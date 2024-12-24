@@ -4,8 +4,7 @@
 enum class buildingEditorStates { start, editor };
 buildingEditorStates buildingEditorState;
 
-void BuildingEditorEventLeftClick(sf::Event& event);
-void BuildingEditorEventRightClick();
+bool BuildingEditor_deleteChosenGameObject();
 
 void BuildingEditor() {
 
@@ -43,19 +42,21 @@ void BuildingEditor() {
                 break;
             }
         }
-            window->setView(cam->view);
-            welcomeText->setPosition(cam->position.x, cam->position.y - 50);
-            pressText->setPosition(cam->position.x, cam->position.y + 50);
+        window->setView(cam->view);
+        welcomeText->setPosition(cam->position.x, cam->position.y - 50);
+        pressText->setPosition(cam->position.x, cam->position.y + 50);
 
-            window->clear(sf::Color::Black);
-            window->draw(*welcomeText);
-            window->draw(*pressText);
-            window->display();
+        window->clear(sf::Color::Black);
+        window->draw(*welcomeText);
+        window->draw(*pressText);
+        window->display();
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
 
     buildingEditorState = buildingEditorStates::editor;
+
+    clearAllMainListsOfGameObjects();
 
     createTerrainPrefabs();
     createFloorsPrefabs();
@@ -63,31 +64,36 @@ void BuildingEditor() {
 
     prefabToPaint = nullptr;
     selectedGameObjects.clear();
-    selection_state = false;
+    mouse_state = MouseState::Idle;
 
-    
-    palette = new Palette(PaletteType::BuildingEditor);
     menu_bar = new MenuBar(MenuBarType::BuildingEditor);
+    palette = new Palette(PaletteType::BuildingEditor);
     tip = nullptr;
 
-    loadBuildingFromFile();
+    loadBuildingFromFile(); // load building
+    terrain = new Terrain(0, 0, building->size.x, building->size.y);
     cam->setPosition(building->size.x * 16 / 2 + 160, building->size.y * 16 / 2);
-
-    updateGameObjects();
 
     while (window->isOpen()) {
 
         prevTime = currentTime;
         currentTime = timeClock.getElapsedTime();
+        dt = currentTime.asSeconds() - prevTime.asSeconds();
 
         mousePosition = sf::Mouse::getPosition(*window);	// Pobierz aktualną pozycję myszy względem bieżącego okna
         worldMousePosition = window->mapPixelToCoords(mousePosition);
 
-        palette->update();
-        menu_bar->update();
-
         GUIwasHover = false;
         GUIwasClicked = false;
+
+        palette->update();
+        menu_bar->update();
+        if (character_side_menu != nullptr)
+            character_side_menu->update();
+
+        for (auto& dialog : dialogs)
+            dialog->update();
+
 
         if (tip != nullptr && tip->btn != nullptr && tip->btn->state != ButtonState::Hover) {
             delete tip;
@@ -98,136 +104,211 @@ void BuildingEditor() {
         sf::Event event;
         while (window->pollEvent(event)) {
 
+            //std::cout << "cursor on " << worldMousePosition.x << " " << worldMousePosition.y << "\n";
+
             if (event.type == sf::Event::Closed) {
                 window->close();
             }
+            else if (!dialogs.empty()) {
 
-            if (!dialogs.empty()) {
-                if (dialogs.back()->type == DialogType::OpenFile) {
-                    FileDialog* opendial = dynamic_cast<FileDialog*>(dialogs.back());
+                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape) {
 
-                    opendial->handleEvent(event);
+                    delete dialogs.back();
+                    dialogs.pop_back();
+                }
+                else if (dialogs.size() >= 2 && dialogs.back()->type == DialogType::Confirm && dialogs[dialogs.size() - 2]->type == DialogType::SaveFile) {
+                    Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
+                    FileDialog* dial = dynamic_cast<FileDialog*>(dialogs[dialogs.size() - 2]);
+                    confirm->handleEvent(event);
 
-                    if (opendial->state == FileDialogState::FileSelected) {
-                        loadBuildingFromFile(opendial->getPathfile());
-                        delete dialogs.back();
+                    if (confirm->value != ConfirmValue::Undefinded) {
+                        if (confirm->value == ConfirmValue::True) {
+                            saveBuildingToFile();
+                            delete confirm;
+                            delete dial;
+                            dialogs.pop_back();
+                            dialogs.pop_back();
+                        }
+                        else if (confirm->value == ConfirmValue::False) {
+                            dial->state = FileDialogState::Idle;
+                            delete confirm;
+                            dialogs.pop_back();
+                        }
+                    }
+
+                }
+                else if (dialogs.back()->type == DialogType::SaveFile) {
+                    FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
+                    dial->handleEvent(event);
+
+                    if (dial->state == FileDialogState::Canceled) {
+                        delete dial;
+                        dialogs.pop_back();
+                    }
+                    else if (dial->state == FileDialogState::FileSelected) {
+                        std::wstring filename = getShortName(ConvertUtf8ToWide(dial->getPathfile()));
+                        dialogs.push_back(new Confirm(L"Plik " + getShortName(filename) + L" już istnieje. Czy chcesz go zamienić?"));
+                        dial->state = FileDialogState::Idle;
+                        dial->selectButton->state = ButtonState::Idle;
+                        dial->selectButton->changeColor();
+                    }
+
+                }
+                else if (dialogs.back()->type == DialogType::OpenFile) {
+                    FileDialog* dial = dynamic_cast<FileDialog*>(dialogs.back());
+                    dial->handleEvent(event);
+
+                    if (dial->cancelButton->state == ButtonState::Pressed) {
+                        delete dial;
+                        dialogs.pop_back();
+                    }
+                    else if (dial->state == FileDialogState::FileSelected) {
+                        dial->selectButton->state == ButtonState::Idle;
+                        loadBuildingFromFile(dial->getPathfile());
+
+                        if (terrain != nullptr)
+                            delete terrain;
+
+                        terrain = new Terrain(0, 0, building->size.x, building->size.y);
+                        cam->setPosition(building->size.x * 16 / 2 + 160, building->size.y * 16 / 2);
+
+                        delete dial;
                         dialogs.pop_back();
                     }
 
                 }
                 else if (dialogs.back()->type == DialogType::ScrollableText) {
                     ScrollableText* scrolltext = dynamic_cast<ScrollableText*>(dialogs.back());
-                    scrolltext->update(event);
+                    scrolltext->handleEvent(event);
                 }
+                else if (dialogs.back()->type == DialogType::Confirm) {
+                    Confirm* confirm = dynamic_cast<Confirm*>(dialogs.back());
+                    confirm->handleEvent(event);
 
-
-            }
-            
-            if (event.type == sf::Event::MouseButtonReleased) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (dialogs.empty()) {
-                        BuildingEditorEventLeftClick(event);
-                        palette->handleEvent(event);
-                        menu_bar->handleEvent(event);
-
-                        if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                            selection_state = false;
-                        }
-                    }
-                }
-
-                if (event.mouseButton.button == sf::Mouse::Right) {
-                    if (dialogs.empty()) {
-                        BuildingEditorEventRightClick();
-                    }
-                }
-            }
-
-            if (event.type == sf::Event::MouseButtonPressed) {
-                if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (dialogs.empty()) {
-                        if (!GUIwasHover) {
-                            if (menu_bar->clickedMenuButton == nullptr) {
-                                startMousePosition = sf::Mouse::getPosition(*window);
-                                startWorldMousePosition = window->mapPixelToCoords(mousePosition);
-
-                                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                                    selection_state = true;
-                                }
-                            }
-
-                        }
-                    }
-
-                }
-            }
-
-            if (event.type == sf::Event::KeyPressed) {
-
-                if (event.key.code == sf::Keyboard::Escape) {
-                    if (dialogs.empty()) {
-                        window->close();
-                        exit(0);
-                    }
-                    else {
+                    if (confirm->value != ConfirmValue::Undefinded) {
                         delete dialogs.back();
                         dialogs.pop_back();
                     }
                 }
 
-                if (event.key.code == sf::Keyboard::F5) {
-                    if (dialogs.empty()) {
-                        saveBuildingToFile();
+            }
+            else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
+
+                mouse_state = MouseState::Click;
+
+                palette->handleEvent(event);
+                menu_bar->handleEvent(event);
+                if (character_side_menu != nullptr) {
+                    character_side_menu->handleEvent(event);
+                    if (character_side_menu->state == CharacterSideMenuState::Close) {
+                        delete character_side_menu;
+                        character_side_menu = nullptr;
+                    }
+
+                }
+
+
+
+
+                if (!GUIwasHover && !GUIwasClicked)
+                    if (tool == toolType::AddGameObject) {
+                        addPrefabsToBuildingAndLists();
+                    }
+
+
+                mouse_state = MouseState::Idle;
+
+
+
+            }
+            else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Right) {
+
+                if (unselectGameObjects()) {
+                    std::cout << "unselect GameObjects\n";
+                }
+                else if (BuildingEditor_deleteChosenGameObject()) {
+                    std::cout << "delete chosen GameObject\n";
+                }
+                else {
+                    palette->unselectPaletteButton();
+                    std::cout << "unselect Palette Button\n";
+                }
+
+
+            }
+            else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+
+                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                    if (!GUIwasHover && !GUIwasClicked) {   // TO-DO - now not nowork
+
+                        if (mouse_state == MouseState::Idle) {
+
+                            mouse_state = MouseState::Selecting;
+                            mouse_start_time = currentTime;
+                            startMousePosition = mousePosition;
+                            startWorldMousePosition = worldMousePosition;
+
+                        }
                     }
                 }
 
+            }
+            else if (event.type == sf::Event::KeyPressed) {
+
+                if (event.key.code == sf::Keyboard::Escape) {
+                    window->close();
+                    exit(0);
+                }
+
+                if (event.key.code == sf::Keyboard::F5) {
+                    saveBuildingToFile();
+                }
+
                 if (event.key.code == sf::Keyboard::F6) {
-                    if (dialogs.empty()) {
-                        dialogs.push_back(new FileDialog(DialogType::OpenFile, L"Load Building"));
-                    }
+                    dialogs.push_back(new FileDialog(DialogType::OpenFile, L"Load Building"));
                 }
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl) && event.key.code == sf::Keyboard::Z) {
                     // TO-DO - UNDO ACTION
                 }
+
+                if (event.key.code == sf::Keyboard::Space) {
+                    // DO NOTHING
+                }
+
             }
-
-            
-
         } // events
 
-        // UPDATE ///////////////////////////////////////////////////////////////////////
-
-        // calculate delta time
-        dt = currentTime.asSeconds() - prevTime.asSeconds();
-
+        // drawing a terrain
         if (dialogs.empty()) {
-            if (!GUIwasHover) {
+            if (!GUIwasHover && !GUIwasClicked) {
                 if (prefabToPaint != nullptr) {
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                         if (tool == toolType::Brush || tool == toolType::RectBrush) {
-                            if (prefabToPaint->type == GameObjectType::Floor) {
+                            if (prefabToPaint->type == GameObjectType::Floor)
                                 for (auto& prefab : prefabsToPaint) {
-                                    building->floors->edit(prefab->position, dynamic_cast<FloorPrefab*>(prefabToPaint)->id);  // TO-DP
+                                    building->floors->edit(prefab->position, dynamic_cast<FloorPrefab*>(prefabToPaint)->id);
                                 }
-                            }
                         }
                     }
                 }
             }
         }
-        
-        for (auto& go : gameObjects)
-            go->updateStatistic(dt);
+
+        // UPDATE ///////////////////////////////////////////////////////////////////////
+        if (!dialogs.empty())
+            dialogs.back()->update();
+
+        updateShaders();
 
         cam->update();
+
+        if (mouse_state == MouseState::Selecting)
+            selectGameObjects();
+
         updateGameObjects();
         sortGameObjects();
-
-        if (dialogs.empty()) {
-            palette->update();
-            painterUpdate();
-        }
+        painterUpdate();
 
         if (tip != nullptr)
             tip->update();
@@ -237,25 +318,29 @@ void BuildingEditor() {
         window->clear(sf::Color::Black);
         window->setView(cam->view);
         window->draw(*terrain);
-        
+
         window->draw(*building->floors);
 
         for (auto& go : gameObjects) {
-            if (go->mouseIsHover || go->isSelected) {
-                // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
-                go->drawAllStatistics();
-            }
-            else {
-                // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
-                go->drawStatistics();
-            }
+            if (go->type != GameObjectType::FlatObject)
+                if (go->isVisible) {
+                    if (go->mouseIsHover || go->isSelected) {
+                        // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
+                        go->drawAllStatistics();
+                    }
+                    else {
+                        // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
+                        go->drawStatistics();
+                    }
+                }
         }
-        
+
         drawGameObjects();
         painterDraw();
         palette->draw();
         menu_bar->draw();
-        for(auto& dial : dialogs)
+
+        for (auto& dial : dialogs)
             dial->draw();
 
         if (tip != nullptr)
@@ -265,114 +350,27 @@ void BuildingEditor() {
     }
 }
 
+bool BuildingEditor_deleteChosenGameObject() {
+    bool was_delete = false;
 
-void BuildingEditorEventLeftClick(sf::Event& event) {
+    for (auto it = gameObjects.begin(); it != gameObjects.end(); ) {
+        GameObject* go = *it;
 
-    /*
-    if (clickedMenuButton != nullptr) {
-        bool clickOnMenu = false;
-        
-        for (auto& m : menu) {
+        if (go->type != GameObjectType::Building && go->mouseIsHover == true) {
 
-            if (m->state == ButtonState::Pressed)
-                clickOnMenu = true;
 
-            if (m->isOpen) {
-                for (auto& o : m->options)
-                    if (o->state == ButtonState::Pressed)
-                        clickOnMenu = true;
-            }
+            building->deleteGameObject(go);
+            deleteGameObjectFromMainLists(go);  // erase
+            delete go;      // delete
+
+            was_delete = true;
+            break;
         }
-
-        if (clickOnMenu == false) {
-            clickedMenuButton->isOpen = false;
-            clickedMenuButton = nullptr;
-        }
-
+        else
+            it++;
     }
-    else {
 
-
-        for (auto& m : menu) {
-            if (m->state == ButtonState::Pressed)
-                tool = toolType::Cursor;
-        }
-
-        if (!GUIwasHover) {
-
-            if (tool == toolType::Cursor) {
-
-                short x = selectArea.getPosition().x;
-                short y = selectArea.getPosition().y;
-                short w = selectArea.getSize().x;
-                short h = selectArea.getSize().y;
-
-                if (w < 16) w = 16;
-                if (h < 16) h = 16;
-
-                selectGameObjects(x, y, w, h);
-
-            }
-
-            if (!prefabsToPaint.empty()) {
-
-                if (tool == toolType::AddGameObject) {
-                    addPrefabsToBuildingAndLists();
-                }
-
-                if (tool == toolType::Rectangle || tool == toolType::Elipse) {
-                    for (auto& prefab : prefabsToPaint) {
-                        building->floors->edit(prefab->position, dynamic_cast<FloorPrefab*>(prefabToPaint)->id);
-                    }
-                }
-            }
-
-        }
-    }
-    */
-    
-
-}
-
-void BuildingEditorEventRightClick() {
-    if (menu_bar->clickedMenuButton != nullptr) {
-        menu_bar->clickedMenuButton->isOpen = false;
-        menu_bar->clickedMenuButton = nullptr;
-
-    }
-    else if (prefabToPaint == nullptr) {
-
-        if (!selectedGameObjects.empty()) {
-            selectGameObjects(0, 0, 0, 0);
-            return;
-        }
-
-        bool was_delete = false;
-
-        for (auto it = gameObjects.begin(); it != gameObjects.end(); ) {
-            GameObject* go = *it;
-
-            if (go->mouseIsHover == true) {
-                deleteGameObjectFromMainLists(go);
-                building->deleteGameObject(go);
-                delete go;
-                was_delete = true;
-                break;
-            }
-            else
-                ++it;
-        }
-
-
-    }
-    else {
-
-        palette->selectedPaletteButton = nullptr;
-        palette->selectedToolButton = palette->btnToolsCursor;
-        tool = toolType::Cursor;
-        prefabToPaint = nullptr; 
-    }
-        
+    return was_delete;
 }
 
 #endif

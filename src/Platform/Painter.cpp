@@ -31,7 +31,7 @@ void painterUpdate() {
         clearPrefabsFromPainter();
         return;
     }
-    else if (tool == toolType::Cursor && selection_state == true) {
+    else if (tool == toolType::Cursor && mouse_state == MouseState::Selecting) {
         mouseSelection();
     }
     else if (prefabToPaint != nullptr) {
@@ -42,14 +42,14 @@ void painterUpdate() {
 
             // RECTANGLE    ///////////////////////////////////////////////////////////////////////////////////////////////
             if (tool == toolType::Rectangle) {
-                if (selection_state == true) {
+                if (mouse_state == MouseState::Selecting) {
                     generateRectangle();
                 }
             }
 
             // ELIPSE   ///////////////////////////////////////////////////////////////////////////////////////////////////
             if (tool == toolType::Elipse) {
-                if (selection_state == true) {
+                if (mouse_state == MouseState::Selecting) {
                     generateElipse();
                 }
             }
@@ -108,7 +108,7 @@ void painterUpdate() {
 
 void painterDraw() {
 
-    if (tool == toolType::Cursor && selection_state == true) {
+    if (tool == toolType::Cursor && mouse_state == MouseState::Selecting) {
         window->draw(selectArea);
 
     }

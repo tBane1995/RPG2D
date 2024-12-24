@@ -22,6 +22,7 @@ public:
 
 	~ScrollableText();
 
-	virtual void update(sf::Event& event) override;
+	virtual void handleEvent(sf::Event& event) override;
+	virtual void update() override;
 	virtual void draw() override;
 };

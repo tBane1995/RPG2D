@@ -14,6 +14,7 @@
 #include "Monsters.h"
 #include "Camera.h"
 #include "Time.h"
+#include "Mouse.h"
 
 std::vector < GameObject* > selectedGameObjects;
 
@@ -50,6 +51,18 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
         }
             
     }
+}
+
+void selectGameObjects() {
+    float x = selectArea.getPosition().x;
+    float y = selectArea.getPosition().y;
+    float w = selectArea.getSize().x;
+    float h = selectArea.getSize().y;
+
+    if (w < 16) w = 16;
+    if (h < 16) h = 16;
+
+    selectGameObjects(x, y, w, h);
 }
 
 void deleteGameObjectFromMainLists(GameObject* object) {

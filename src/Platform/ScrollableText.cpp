@@ -5,7 +5,7 @@
 #include "Scrollbar.h"
 #include "Camera.h"
 
-ScrollableText::ScrollableText(std::wstring text) : Panel(DialogType::ScrollableText) {
+ScrollableText::ScrollableText(std::wstring text) : Panel(sf::Vector2f(600,400), DialogType::ScrollableText) {
 
 	sf::Vector2f scrollbar_size = sf::Vector2f(16, size.y - 2.0f * borderWidth);
 
@@ -40,7 +40,7 @@ ScrollableText::~ScrollableText() {
 	delete scrollbar;
 }
 
-void ScrollableText::update(sf::Event& event) {
+void ScrollableText::handleEvent(sf::Event& event) {
 
 	scrollbar->handleEvent(event);
 
@@ -56,6 +56,10 @@ void ScrollableText::update(sf::Event& event) {
 	for (auto& text : textarea->texts)
 		text_texture.draw(text);
 	text_texture.display();
+
+}
+
+void ScrollableText::update() {
 
 }
 

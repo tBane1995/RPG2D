@@ -115,20 +115,10 @@ public:
     void createToolsButtons();
     void createGroupButtons();
 
-    void scrollUp() {
-        if (scroll > 0)
-            scroll -= 1;
-    }
+    void scrollUp();
+    void scrollDown();
 
-    void scrollDown() {
-
-        short maxScroll = availableGameObjects.size() - size.x * size.y;
-        if (maxScroll < 0)
-            maxScroll = 0;
-
-        if (scroll * size.x < maxScroll)
-            scroll += 1;
-    }
+    void unselectPaletteButton();
 
     void handleEvent(sf::Event& event);
     void update();

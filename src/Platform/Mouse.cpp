@@ -3,12 +3,16 @@
 sf::Vector2i mousePosition;
 sf::Vector2f worldMousePosition;
 
-sf::Time startClickTime;				// TO-DO selecting
+sf::Time mouse_start_time;				// TO-DO selecting
 
 sf::Vector2i startMousePosition;
 sf::Vector2f startWorldMousePosition;
-bool selection_state;
+
 sf::RectangleShape selectArea;
+
+float mouseDoubleClickTime = 0.1f;
+
+MouseState mouse_state = MouseState::Idle;
 
 void mouseSelection() {
     float start_x = std::min(startWorldMousePosition.x, worldMousePosition.x);

@@ -27,13 +27,37 @@ Building::Building(int width, int height) : GameObject("empty", 0, 0) {
     position.x = size.x * 16 / 2;
     position.y = size.y * 16;
 
+    if (floors != nullptr)
+        delete floors;
+
     floors = new Floors(position.x / 16 - size.x / 2, position.y / 16 - size.y, size.x, size.y);
 
-    loadCollider();
+    if (!colliders.empty()) {
+        for (auto& col : colliders)
+            delete col;
+        colliders.clear();
+    }
+
+    colliders.push_back(new Collider(size.x * 16, size.y * 16, position, 0, 0, ColliderType::Rectangle));
+    colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
 }
 
-Building::~Building()
+Building::Building(std::string name) : GameObject(name, 0, 0)
 {
+    type = GameObjectType::Building;
+    load(true); // load with positioning
+    loadTexture();
+}
+
+Building::Building(std::string name, float x, float y) : GameObject(name, x, y)
+{
+    type = GameObjectType::Building;
+    load();
+    loadTexture();
+}
+
+Building::~Building() {
+
     delete _door;
     delete floors;
 
@@ -47,18 +71,27 @@ Building::~Building()
         delete wall;
 }
 
-void Building::mouseHovering()
+void Building::calculateCorners()
 {
+    x1 = position.x - size.x / 2 * 16;
+    x2 = position.x + size.x / 2 * 16;
+    y1 = position.y - size.y * 16;
+    y2 = position.y;
+}
+void Building::mouseHovering() {
     if (worldMousePosition.x > x1 && worldMousePosition.x < x2 && worldMousePosition.y > y1 && worldMousePosition.y < y2)
         mouseIsHover = true;
     else
         mouseIsHover = false;
 }
-
 void Building::deleteGameObject(GameObject* object) {
 
     if (object == nullptr)
         return;
+
+    if (object->type == GameObjectType::Door) {
+        _door = nullptr;
+    }
 
     if (object->type == GameObjectType::Wall) {
         auto it = std::find(_walls.begin(), _walls.end(), object);
@@ -79,14 +112,8 @@ void Building::deleteGameObject(GameObject* object) {
     }
 
 }
+bool Building::playerInside() {
 
-bool Building::playerInside()
-{
-
-    if (DebugMode)
-    {
-        return true;
-    }
     short x3, y3, rx3, ry3;
     x3 = player->position.x;
     y3 = player->position.y;
@@ -98,13 +125,26 @@ bool Building::playerInside()
     else
         return false;
 }
+bool Building::isPart(GameObject* object) {
+    if (object == nullptr)
+        return false;
 
-void Building::loadName(std::ifstream& file) {
-    std::string line;
-    std::getline(file, line);
+    for (auto& item : _items)
+        if (object == item)
+            return true;
+
+    for (auto& furniture : _furnitures)
+        if (object == furniture)
+            return true;
+
+    for (auto& wall : _walls)
+        if (object == wall)
+            return true;
+
+    return false;
 }
 
-void Building::loadTexture2(std::ifstream& file) {
+void Building::loadTexture() {
 
     // check the size
     //cout << size.x << " " << size.y << "\n";
@@ -517,22 +557,24 @@ void Building::loadTexture2(std::ifstream& file) {
 
     // RENDER WINDOWS
     if ((size.x / 2 - 1) > 2 && (size.x / 4 - 1) % 2 == 1) {
-        sf::Texture win_tex = *windows->texture;
-        sf::Image window_image;
-        window_image.create(32, 32, sf::Color::Transparent);
-        window_image.copy(ImageMap, 0, 0, sf::IntRect(windows->GetTexturePosInMap().x, windows->GetTexturePosInMap().y, windows->getSize().x, windows->getSize().y));
+        if (windows != nullptr) {
+            sf::Texture win_tex = *windows->texture;
+            sf::Image window_image;
+            window_image.create(32, 32, sf::Color::Transparent);
+            window_image.copy(ImageMap, 0, 0, sf::IntRect(windows->GetTexturePosInMap().x, windows->GetTexturePosInMap().y, windows->getSize().x, windows->getSize().y));
 
-        short left_window_pos;
-        short right_window_pos;
-        short pos_y = house_image.getSize().y - 64;
+            short left_window_pos;
+            short right_window_pos;
+            short pos_y = house_image.getSize().y - 64;
 
-        for (short i = 1; i < size.x / 4 - 1; i += 2) {
+            for (short i = 1; i < size.x / 4 - 1; i += 2) {
 
-            left_window_pos = tile_width / 2.0f + i * 32;
-            right_window_pos = tile_width / 2.0f + (size.x / 4 + i + 1) * 32;
+                left_window_pos = tile_width / 2.0f + i * 32;
+                right_window_pos = tile_width / 2.0f + (size.x / 4 + i + 1) * 32;
 
-            house_image.copy(window_image, left_window_pos, pos_y, sf::IntRect(0, 0, 0, 0));
-            house_image.copy(window_image, right_window_pos, pos_y, sf::IntRect(0, 0, 0, 0));
+                house_image.copy(window_image, left_window_pos, pos_y, sf::IntRect(0, 0, 0, 0));
+                house_image.copy(window_image, right_window_pos, pos_y, sf::IntRect(0, 0, 0, 0));
+            }
         }
     }
 
@@ -550,125 +592,72 @@ void Building::loadTexture2(std::ifstream& file) {
     sprite.setPosition(position);
 
 }
+void Building::load(bool positioning) {
 
+    // DELETE OLD GAMEOBJECTS
 
-void Building::loadSize(std::ifstream& file) {
+    if (_door != nullptr) {
+        delete _door;
+        _door = nullptr;
+    }
 
-    std::string line;
-    std::string objectType;
+    if (floors != nullptr) {
+        delete floors;
+        floors = nullptr;
+    }
 
-    std::getline(file, line);
-    std::istringstream lineStream(line);
-    lineStream >> objectType;
-    lineStream >> size.x >> size.y;
-
-}
-
-void Building::loadCollider()
-{
     if (!colliders.empty()) {
-        delete colliders[0];
+        for (auto& col : colliders)
+            delete col;
         colliders.clear();
     }
 
+    for (auto& item : _items)
+        delete item;
 
-    colliders.push_back(new Collider(size.x * 16, size.y * 16, position, 0, 0, ColliderType::Rectangle));
-    colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
-}
+    _items.clear();
 
-void Building::loadDoor(std::ifstream& file) {
-    std::string line;
-    std::getline(file, line);
-    if (_door != nullptr)
-        delete _door;
-    _door = new Door(getPrefab("doors/wooden_door"), position.x, position.y);
-}
+    for (auto& furniture : _furnitures)
+        delete furniture;
 
-void Building::loadWalls(std::ifstream& file)
-{
-    std::string line;
-    std::string fragment;
+    _furnitures.clear();
 
-    // top_walls
-    std::getline(file, line);
+    for (auto& wall : _walls)
+        delete wall;
 
-    size_t  start = line.find("\"");
-    size_t end = line.find_last_of("\"");
-    if (start != std::string::npos && end != std::string::npos && start < end)
-        fragment = line.substr(start + 1, end - start - 1);
+    _walls.clear();
 
-    if (fragment == "")
-        fragment = "walls/wooden_wall";
+    // LOAD THE BUILDING
 
-    top_walls = getSingleTexture(fragment);
-    if (top_walls == nullptr)
-        top_walls = getSingleTexture("walls/wooden_wall");
+    std::string filename = name;
+    std::ifstream file(filename);
 
-    // walls
-    std::getline(file, line);
-
-    start = line.find("\"");
-    end = line.find_last_of("\"");
-    if (start != std::string::npos && end != std::string::npos && start < end)
-        fragment = line.substr(start + 1, end - start - 1);
-
-    walls = getSingleTexture(fragment);
-    if (walls == nullptr)
-        walls = getSingleTexture("walls/stone_wall");
-
-    // bottom_walls
-    std::getline(file, line);
-
-    start = line.find("\"");
-    end = line.find_last_of("\"");
-    if (start != std::string::npos && end != std::string::npos && start < end)
-        fragment = line.substr(start + 1, end - start - 1);
-
-    bottom_walls = getSingleTexture(fragment);
-    if (bottom_walls == nullptr)
-        bottom_walls = getSingleTexture("walls/stone_wall");
-}
-
-void Building::loadWindows(std::ifstream& file) {
-
-    std::string line;
-    std::string fragment;
-
-    std::getline(file, line);
-
-    size_t start = line.find("\"");
-    size_t end = line.find_last_of("\"");
-
-    if (start != std::string::npos && end != std::string::npos && start < end)
-        fragment = line.substr(start + 1, end - start - 1);
-
-    windows = getSingleTexture(fragment);
-
-    if (windows == nullptr)
-        windows = getSingleTexture("buildings/parts/window");
-}
-
-void Building::loadFloors(std::ifstream& file) {
-
-    if (floors != nullptr)
-        delete floors;
-
-    floors = new Floors(position.x / 16 - size.x / 2, position.y / 16 - size.y, size.x, size.y);
-
-    short value;
-    for (short y = 0; y < size.y; y++) {
-        for (short x = 0; x < size.x; x++) {
-            file >> value;
-            floors->edit(x, y, value);
-        }
+    if (!file.is_open()) {
+        std::cout << "cant open building script: " << filename << "\n";
+        return;
     }
-}
-
-void Building::loadGameObjects(std::ifstream& file) {
 
     std::string line;
     std::string objectType;
     std::string objectName;
+
+    std::cout << "load building: \n";
+
+    size = sf::Vector2i(16, 16);
+    if (positioning == true) {
+        position.x = size.x * 16 / 2;
+        position.y = size.y * 16;
+    }
+
+    colliders.push_back(new Collider(size.x * 16, size.y * 16, position, 0, 0, ColliderType::Rectangle));
+    colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
+
+    floors = new Floors(position.x / 16 - size.x / 2, position.y / 16 - size.y, size.x, size.y);
+    _door = new Door(getPrefab("doors/wooden_door"), position.x, position.y);
+    top_walls = getSingleTexture("walls/wooden_wall");
+    walls = getSingleTexture("walls/stone_wall");
+    bottom_walls = getSingleTexture("walls/stone_wall");
+    windows = nullptr;
 
     while (std::getline(file, line)) {
 
@@ -678,7 +667,111 @@ void Building::loadGameObjects(std::ifstream& file) {
 
         std::istringstream lineStream(line);
         lineStream >> objectType;
-        //cout << line << "\n";
+
+        std::cout << "objectType: " << objectType << "\n";
+
+        if (objectType == "name") {
+            getline(lineStream, objectName, '"');
+            getline(lineStream, objectName, '"');
+            //std::cout << "name \"" << objectName << "\"\n";
+
+        }
+
+        if (objectType == "size") {
+            lineStream >> size.x >> size.y;
+            //std::cout << "size " << size.x << " " << size.y << "\n";
+
+            if (positioning == true) {
+                position.x = size.x * 16 / 2;
+                position.y = size.y * 16;
+            }
+
+            if (!colliders.empty()) {
+                delete colliders[0];
+                colliders.clear();
+            }
+
+            colliders.push_back(new Collider(size.x * 16, size.y * 16, position, 0, 0, ColliderType::Rectangle));
+            colliders[0]->shape->setPosition(position.x, position.y - size.y / 2 * 16);
+        }
+
+        if (objectType == "door") {
+            getline(lineStream, objectName, '"');
+            getline(lineStream, objectName, '"');
+            std::cout << "door \"" << objectName << "\"\n";
+
+            GameObject* prefab = getPrefab(objectName);
+            if (prefab != nullptr) {
+                _door = new Door(prefab, position.x, position.y);
+
+            }
+
+        }
+
+        if (objectType == "top_walls") {
+
+            getline(lineStream, objectName, '"');
+            getline(lineStream, objectName, '"');
+            std::cout << "top_walls \"" << objectName << "\"\n";
+
+            SingleTexture* tex = getSingleTexture(objectName);
+            if (tex != nullptr)
+                top_walls = tex;
+        }
+
+        if (objectType == "walls") {
+
+            getline(lineStream, objectName, '"');
+            getline(lineStream, objectName, '"');
+            std::cout << "walls \"" << objectName << "\"\n";
+
+            SingleTexture* tex = getSingleTexture(objectName);
+            if (tex != nullptr)
+                walls = tex;
+        }
+
+        if (objectType == "bottom_walls") {
+
+            getline(lineStream, objectName, '"');
+            getline(lineStream, objectName, '"');
+            std::cout << "bottom_walls \"" << objectName << "\"\n";
+
+            SingleTexture* tex = getSingleTexture(objectName);
+            if (tex != nullptr)
+                bottom_walls = tex;
+        }
+
+        if (objectType == "windows") {
+            getline(lineStream, objectName, '"');
+            getline(lineStream, objectName, '"');
+            std::cout << "windows \"" << objectName << "\"\n";
+
+            SingleTexture* tex = getSingleTexture(objectName);
+            if (tex != nullptr)
+                windows = tex;
+
+        }
+
+        if (line.find("// FLOORS") != std::string::npos && line.find("// FLOORS" == 0)) {  // TO-DO
+            std::cout << "load the floors\n";
+
+            if (floors != nullptr)
+                delete floors;
+
+
+            floors = new Floors(position.x / 16 - size.x / 2, position.y / 16 - size.y, size.x, size.y);
+
+            short value;
+            for (short y = 0; y < size.y; y++) {
+                for (short x = 0; x < size.x; x++) {
+                    file >> value;
+                    std::cout << value << " ";
+                    floors->edit(x, y, value);
+                }
+
+                std::cout << "\n";
+            }
+        }
 
         if (objectType == "Item") {
 
@@ -742,73 +835,10 @@ void Building::loadGameObjects(std::ifstream& file) {
         }
 
     }
-}
-
-void Building::load() {
-    std::string filename = name;
-    std::ifstream file(filename);
-
-    if (!file.is_open()) {
-        std::cout << "cant open building script: " << filename << "\n";
-        return;
-    }
-
-    loadName(file);
-    loadSize(file);
-    loadCollider();
-    loadDoor(file);
-    loadWalls(file);
-    loadWindows(file);
-    loadTexture2(file);
-
-    std::string line;
-
-    std::getline(file, line);
-    std::getline(file, line);
-
-    loadFloors(file);
-    loadGameObjects(file);
 
     file.close();
 }
-
-void Building::loadWithPositioning()
-{
-    std::string filename = name;
-    std::ifstream file(filename);
-
-    if (!file.is_open()) {
-        std::cout << "cant open building script: " << filename << "\n";
-        return;
-    }
-
-    loadName(file);
-
-    loadSize(file);
-
-    position.x = size.x * 16 / 2;
-    position.y = size.y * 16;
-
-    loadCollider();
-    loadDoor(file);
-    loadWalls(file);
-    loadWindows(file);
-
-    loadTexture2(file);
-
-    std::string line;
-
-    std::getline(file, line);
-    std::getline(file, line);
-
-    loadFloors(file);
-    loadGameObjects(file);
-
-    file.close();
-}
-
-void Building::save(std::string filename)
-{
+void Building::save(std::string filename) {
     std::ofstream file(filename);
 
     if (!file.is_open()) {
@@ -862,27 +892,15 @@ void Building::save(std::string filename)
     file.close();
 }
 
-bool Building::isPart(GameObject* object) {
-    if (object == nullptr)
-        return false;
-
-    for (auto& item : _items)
-        if (object == item)
-            return true;
-
-    for (auto& furniture : _furnitures)
-        if (object == furniture)
-            return true;
-
-    for (auto& wall : _walls)
-        if (object == wall)
-            return true;
-
-    return false;
+void Building::update(float dt) {
+    calculateCorners();
+    mouseHovering();
 }
-
-void Building::draw()
+void Building::updateStatistic(float dt)
 {
+
+}
+void Building::draw() {
     if (isSelected == true) {
         window->draw(*colliders[0]->shape);
     }
@@ -898,6 +916,9 @@ void Building::draw()
             window->draw(sprite);
         }
     }
+}
+void Building::drawAllStatistics()
+{
 }
 
 std::vector < Building* > buildings;

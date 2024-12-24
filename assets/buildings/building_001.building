@@ -1,6 +1,6 @@
 name "testBuilding"
 size 24 16
-door "door_0"
+door "doors/wooden_door"
 top_walls "walls/wooden_wall"
 walls "walls/stone_wall"
 bottom_walls "walls/stone_wall_overgrown"
