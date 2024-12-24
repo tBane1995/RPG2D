@@ -705,8 +705,8 @@ int main()
     
     // PROGRAMS
 	//game();
-    //MapEditor();
-    BuildingEditor();
+    MapEditor();
+    //BuildingEditor();
     //MeshEditor();
 
     return 0;
