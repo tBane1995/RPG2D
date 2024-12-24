@@ -191,7 +191,7 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height)
 			{
 				if (pathfile.find("walls/") == 0)
 				{
-					std::initializer_list<short> Duplicates{ 2,3,6,7,8,9,10,11,13,14,15,16,18,19,22,25,26,27,28,29 };
+					std::initializer_list<short> Duplicates{ 2,3,6,7,8,9,10,11,13,14,15,16,17,18,19,22,25,26,27,28,29 };
 					for (const short* it = Duplicates.begin(); it != Duplicates.end(); ++it)
 					{
 						if (*it == counter)
@@ -224,10 +224,15 @@ void loadTextureSets(std::string pathfile, int tile_width, int tile_height)
 			// if no exist then add
 			if (existed == false) {
 				SingleTexture* new_texture = new SingleTexture(pathfile + "_" + std::to_string(TexIndex), tile);
-				//tile.saveToFile(pathfile + "_" + std::to_string(TexIndex) + "_" + std::to_string(counter) + ".png");
-				//cout << "created texture: " << pathfile + "_" + std::to_string(counter) << "\n";
+				tile.saveToFile(pathfile + "_" + std::to_string(TexIndex) + "_" + std::to_string(counter) + ".png");
+				std::cout << "created texture: " << pathfile + "_" + std::to_string(counter) << "\n";
 				singleTextures.push_back(new_texture);
 				TexIndex += 1;
+			}
+			else
+			{
+				tile.saveToFile(pathfile + "_DUPLICATE_" + std::to_string(TexIndex) + "_" + std::to_string(counter) + ".png");
+				std::cout << "created texture: " << pathfile + "_" + std::to_string(counter) << "\n";
 			}
 			counter += 1;
 		}
