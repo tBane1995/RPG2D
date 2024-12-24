@@ -564,11 +564,11 @@ void Palette::setWallsObjectsToPalette() {
     availableGameObjects.push_back(getPrefab("walls/set_mud_wall_7"));
     availableGameObjects.push_back(getPrefab("walls/set_mud_wall_8"));
 
-    availableGameObjects.push_back(getPrefab("walls/mud_wall"));
-    availableGameObjects.push_back(getPrefab("walls/mud_wall"));
+    availableGameObjects.push_back(getPrefab("walls/mud_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/mud_wall_overgrown"));
     availableGameObjects.push_back(getPrefab("walls/empty_wall"));
-    availableGameObjects.push_back(getPrefab("walls/mud_wall"));
-    availableGameObjects.push_back(getPrefab("walls/mud_wall"));
+    availableGameObjects.push_back(getPrefab("walls/mud_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/mud_wall_overgrown"));
 
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
@@ -648,11 +648,11 @@ void Palette::setWallsObjectsToPalette() {
     availableGameObjects.push_back(getPrefab("walls/set_wooden_wall_7"));
     availableGameObjects.push_back(getPrefab("walls/set_wooden_wall_8"));
 
-    availableGameObjects.push_back(getPrefab("walls/wooden_wall"));
-    availableGameObjects.push_back(getPrefab("walls/wooden_wall"));
-    availableGameObjects.push_back(getPrefab("walls/empty_wall"));
-    availableGameObjects.push_back(getPrefab("walls/wooden_wall"));
-    availableGameObjects.push_back(getPrefab("walls/wooden_wall"));
+    availableGameObjects.push_back(getPrefab("walls/wooden_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/wooden_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/empty_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/wooden_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/wooden_wall_overgrown"));
 
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
@@ -690,11 +690,11 @@ void Palette::setWallsObjectsToPalette() {
     availableGameObjects.push_back(getPrefab("walls/set_brick_wall_7"));
     availableGameObjects.push_back(getPrefab("walls/set_brick_wall_8"));
 
-    availableGameObjects.push_back(getPrefab("walls/brick_wall"));
-    availableGameObjects.push_back(getPrefab("walls/brick_wall"));
-    availableGameObjects.push_back(getPrefab("walls/empty_wall"));
-    availableGameObjects.push_back(getPrefab("walls/brick_wall"));
-    availableGameObjects.push_back(getPrefab("walls/brick_wall"));
+    availableGameObjects.push_back(getPrefab("walls/brick_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/brick_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/empty_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/brick_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/brick_wall_overgrown"));
 
     availableGameObjects.push_back(nullptr);
     availableGameObjects.push_back(nullptr);
@@ -732,11 +732,11 @@ void Palette::setWallsObjectsToPalette() {
     availableGameObjects.push_back(getPrefab("walls/set_mulch_wall_7"));
     availableGameObjects.push_back(getPrefab("walls/set_mulch_wall_8"));
 
-    availableGameObjects.push_back(getPrefab("walls/mulch_wall"));
-    availableGameObjects.push_back(getPrefab("walls/mulch_wall"));
-    availableGameObjects.push_back(getPrefab("walls/empty_wall"));
-    availableGameObjects.push_back(getPrefab("walls/mulch_wall"));
-    availableGameObjects.push_back(getPrefab("walls/mulch_wall"));
+    availableGameObjects.push_back(getPrefab("walls/mulch_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/mulch_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/empty_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/mulch_wall_overgrown"));
+    availableGameObjects.push_back(getPrefab("walls/mulch_wall_overgrown"));
 }
 
 void Palette::setMonstersObjectsToPalette() {

@@ -100,11 +100,15 @@ void loadPrefabs() {
     prefabs.push_back(wall);
 
     prefabs.push_back(new Wall("walls/mud_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/mud_wall_overgrown", 32, 32, 32));
     prefabs.push_back(new Wall("walls/stone_wall", 32, 32, 32));
     prefabs.push_back(new Wall("walls/stone_wall_overgrown", 32, 32, 32));
     prefabs.push_back(new Wall("walls/wooden_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/wooden_wall_overgrown", 32, 32, 32));
     prefabs.push_back(new Wall("walls/brick_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/brick_wall_overgrown", 32, 32, 32));
     prefabs.push_back(new Wall("walls/mulch_wall", 32, 32, 32));
+    prefabs.push_back(new Wall("walls/mulch_wall_overgrown", 32, 32, 32));
 
     std::vector < std::string > walls_names;
     walls_names.push_back("walls/set_mud_wall");

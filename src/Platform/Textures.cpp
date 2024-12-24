@@ -551,11 +551,15 @@ void loadTextures()
 	// WALLS
 	loadSingleTexture("walls/empty_wall.png", 16, 16);
 	loadSingleTexture("walls/mud_wall.png", 16, 16);
+	loadSingleTexture("walls/mud_wall_overgrown.png", 16, 16);
 	loadSingleTexture("walls/stone_wall.png", 16, 16);
 	loadSingleTexture("walls/stone_wall_overgrown.png", 16, 16);
 	loadSingleTexture("walls/wooden_wall.png", 16, 16);
+	loadSingleTexture("walls/wooden_wall_overgrown.png", 16, 16);
 	loadSingleTexture("walls/brick_wall.png", 16, 16);
+	loadSingleTexture("walls/brick_wall_overgrown.png", 16, 16);
 	loadSingleTexture("walls/mulch_wall.png", 16, 16);
+	loadSingleTexture("walls/mulch_wall_overgrown.png", 16, 16);
 
 	loadTextureSets("walls/set_mud_wall", 32, 32);
 	loadTextureSets("walls/set_stone_wall", 32, 32);
