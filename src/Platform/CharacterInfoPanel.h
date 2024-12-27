@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Theme.h"
 #include "TextArea.h"
 #include "Fonts.h"
@@ -12,7 +12,6 @@
 class CharacterInfoPanel : public Panel {
 public:
 	Character* _character;
-
 
 	class CharacterInfoPage {
 	public:
@@ -197,7 +196,7 @@ public:
 			sf::Vector2f start_pos;
 			start_pos.x = parent->position.x - float(btn_size.x * 4 + btn_margin * 3) / 2.0f + btn_size.x / 2.0f;
 			start_pos.y = parent->position.y - parent->rect.getSize().y / 2.0f;
-			start_pos.y += margin + parent->menu[0]->texture->texture->getSize().y;
+			start_pos.y += margin + parent->menu[0]->texture->getSize().y;
 			start_pos.y += margin + preview_size.y + margin + btn_size.y / 2.0f;
 
 			for (short i = 0; i < sets.size(); i++) {
@@ -225,7 +224,8 @@ public:
 			for (auto& btn : buttons)
 				btn->update();
 
-			preview.setTexture(*parent->_character->sprite.getTexture());	// TO-DO
+			
+			preview.setTexture(*parent->_character->sprite.getTexture()); // TO-DO - problem przypisaniem sprajta
 		}
 
 		void draw() {
