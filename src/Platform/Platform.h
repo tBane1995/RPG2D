@@ -68,6 +68,7 @@
 #include "Platform/Tools.h"
 #include "Platform/Palette.h"
 #include "Platform/Painter.h"
+#include "Platform/CharacterInfoPanel.h"
 #include "Platform/CharacterSideMenu.h"
 
 #include "Platform/ControlsPanel.h"

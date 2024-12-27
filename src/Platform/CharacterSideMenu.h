@@ -11,12 +11,11 @@
 #include "Buttons.h"
 #include "Character.h"
 #include "Textures.h"
-
 enum class CharacterSideMenuState { Idle, Close };
 
 class CharacterSideMenu {
 public:
-	Character* character;
+	Character* _character;
 	CharacterSideMenuState state;
 
 	ButtonWithImage* btn_info;
@@ -25,9 +24,9 @@ public:
 
 	CharacterSideMenu(Character* character);
 	~CharacterSideMenu();
-	void update();
-	void handleEvent(sf::Event& event);
-	void draw();
+	virtual void update();
+	virtual void handleEvent(sf::Event& event);
+	virtual void draw();
 
 };
 

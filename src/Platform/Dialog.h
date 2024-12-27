@@ -11,8 +11,8 @@ public:
 
 	Dialog(DialogType type);
 	virtual ~Dialog();
+	virtual void handleEvent(sf::Event& event);
 	virtual void update();
-	virtual void update(sf::Event& event);
 	virtual void draw();
 };
 

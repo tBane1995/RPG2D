@@ -10,11 +10,11 @@ Dialog::~Dialog() {
 
 }
 
-void Dialog::update() {
+void Dialog::handleEvent(sf::Event& event) {
 
 }
 
-void Dialog::update(sf::Event& event) {
+void Dialog::update() {
 
 }
 

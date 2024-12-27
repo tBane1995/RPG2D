@@ -15,4 +15,6 @@ extern sf::Color panelColor_dark;
 
 extern sf::Color textColor;
 
+extern float margin;
+
 void initTheme();

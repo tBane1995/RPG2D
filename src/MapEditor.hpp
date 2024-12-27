@@ -214,6 +214,9 @@ void MapEditor() {
                         dialogs.pop_back();
                     }
                 }
+                else if (dialogs.back()->type == DialogType::Panel) {
+                    dialogs.back()->handleEvent(event);
+                }
 
             }
             else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {

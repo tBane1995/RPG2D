@@ -275,6 +275,10 @@ void loadTextures()
 	loadSingleTexture("GUI/slot2.png", 32, 32);
 	loadSingleTexture("GUI/selector.png", 40, 40);
 
+	loadSingleTexture("GUI/corner.png", 4, 4);
+	loadSingleTexture("GUI/border_horizontal.png", 3, 3);
+	loadSingleTexture("GUI/border_vertical.png", 3, 3);
+
 	loadSingleTexture("GUI/infoPanel.png", 300, 75);
 	loadSingleTexture("GUI/bigPanel.png", 300, 200);
 
@@ -339,6 +343,8 @@ void loadTextures()
 	loadSingleTexture("GUI/character_menu/btn_info.png", 16, 16);
 	loadSingleTexture("GUI/character_menu/btn_remove.png", 16, 16);
 	loadSingleTexture("GUI/character_menu/btn_cancel.png", 16, 16);
+	loadSingleTexture("GUI/character_menu/menu_slot.png", 28, 20);
+
 
 	// TILES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	loadSingleTexture("tiles/0_tileset.png", 0, 0);
@@ -574,14 +580,17 @@ void loadTextures()
 	bodySets.push_back("boy-redhaired");		// face without beard
 	bodySets.push_back("boy-blackhaired");		// face without beard
 	bodySets.push_back("boy-brownhaired");		// face without beard
+	bodySets.push_back("boy-greyhaired");		// face without beard
 
 	bodySets.push_back("man-redhaired");		// face have a beard
 	bodySets.push_back("man-blackhaired");		// face have a beard
 	bodySets.push_back("man-brownhaired");		// face have a beard
+	bodySets.push_back("man-greyhaired");		// face have a beard
 
 	bodySets.push_back("woman-redhaired");		// face with long hair
 	bodySets.push_back("woman-blackhaired");	// face with long hair
 	bodySets.push_back("woman-brownhaired");	// face with long hair
+	bodySets.push_back("woman-greyhaired");	// face with long hair
 
 
 	for (auto& set : bodySets) {

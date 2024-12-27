@@ -1,11 +1,13 @@
 #include "CharacterSideMenu.h"
 #include "GameObjectsManager.h"
 #include "Map.h"
+#include "CharacterInfoPanel.h"
 
 CharacterSideMenu::CharacterSideMenu(Character* character) {
-	this->character = character;
+	_character = character;
 
 	state = CharacterSideMenuState::Idle;
+
 
 	float menu_hgh = 3 * 32 + 2 * 8;
 
@@ -15,19 +17,18 @@ CharacterSideMenu::CharacterSideMenu(Character* character) {
 
 	btn_info = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_info"), sf::Vector2f(pos.x, pos.y + 0));
 	btn_info->onclick_func = [this]() {
-		dialogs.push_back(new Panel(sf::Vector2f(400, 400)));
+		dialogs.push_back(new CharacterInfoPanel(_character));
 		state = CharacterSideMenuState::Close;
 		};
 
-
 	btn_remove = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_remove"), sf::Vector2f(pos.x, pos.y + 32 + 8));
 	btn_remove->onclick_func = [this]() {
-		deleteGameObjectFromMainLists(this->character);
+		deleteGameObjectFromMainLists(_character);
 		Chunk* chunk = nullptr;
-		chunk = mapa->getChunk(this->character->position);
+		chunk = mapa->getChunk(_character->position);
 		if (chunk != nullptr)
-			chunk->deleteGameObject(this->character);
-		delete this->character;
+			chunk->deleteGameObject(_character);
+		delete _character;
 		state = CharacterSideMenuState::Close;
 		};
 
@@ -48,8 +49,8 @@ void CharacterSideMenu::update() {
 	float menu_hgh = 3 * 32 + 2 * 8;
 
 	sf::Vector2f pos;
-	pos.x = character->position.x + character->colliders[0]->width / 2.0f + 16.0f - cam->position.x + 32.0f;
-	pos.y = character->position.y - character->height - cam->position.y - menu_hgh / 2.0f;
+	pos.x = _character->position.x + _character->colliders[0]->width / 2.0f + 16.0f - cam->position.x + 32.0f;
+	pos.y = _character->position.y - _character->height - cam->position.y - menu_hgh / 2.0f;
 
 	btn_info->setPosition(sf::Vector2f(pos.x, pos.y + 0));
 	btn_remove->setPosition(sf::Vector2f(pos.x, pos.y + 32 + 8));

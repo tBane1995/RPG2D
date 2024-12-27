@@ -21,8 +21,12 @@ Message::Message(std::wstring message) : Dialog(DialogType::Message) {
 	rect.setPosition(cam->position.x-width/2.0f, cam->position.y-height/2.0f);
 }
 
-void Message::update(sf::Event& event) {
+void Message::handleEvent(sf::Event& event) {
 	text->update();
+}
+
+void Message::update() {
+
 }
 
 void Message::draw() {

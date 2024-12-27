@@ -11,7 +11,7 @@ sf::Color panelColor_light;
 sf::Color panelColor_medium;
 sf::Color panelColor_dark;
 sf::Color textColor;
-
+float margin;
 
 void initTheme() {
 
@@ -27,4 +27,6 @@ void initTheme() {
 	panelColor_dark = sf::Color(32, 32, 32);
 
 	textColor = sf::Color::White;
+
+	margin = 8;
 }

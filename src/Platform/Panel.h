@@ -11,7 +11,6 @@ public:
 	sf::Vector2f position;
 	sf::RectangleShape rect;
 	sf::Vector2f size;
-	float margin = 8;
 
 	Panel(sf::Vector2f size = sf::Vector2f(600, 400), DialogType dialog_type = DialogType::Panel);
 	~Panel();
