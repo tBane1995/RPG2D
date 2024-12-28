@@ -225,7 +225,7 @@ public:
 				btn->update();
 
 			
-			preview.setTexture(*parent->_character->sprite.getTexture()); // TO-DO - problem przypisaniem sprajta
+			preview.setTexture(*parent->_character->sprite.getTexture());
 			preview.setTextureRect(parent->_character->sprite.getTextureRect());
 			preview.setOrigin(parent->_character->sprite.getOrigin());
 		}
