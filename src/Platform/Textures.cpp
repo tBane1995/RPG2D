@@ -344,6 +344,11 @@ void loadTextures()
 	loadSingleTexture("GUI/character_menu/btn_remove.png", 16, 16);
 	loadSingleTexture("GUI/character_menu/btn_cancel.png", 16, 16);
 	loadSingleTexture("GUI/character_menu/menu_slot.png", 28, 20);
+	loadSingleTexture("GUI/character_menu/layout_slot.png", 40, 40);
+	loadSingleTexture("GUI/character_menu/direction_top.png", 32, 32);
+	loadSingleTexture("GUI/character_menu/direction_bottom.png", 32, 32);
+	loadSingleTexture("GUI/character_menu/direction_left.png", 32, 32);
+	loadSingleTexture("GUI/character_menu/direction_right.png", 32, 32);
 
 
 	// TILES //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

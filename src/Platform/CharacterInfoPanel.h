@@ -8,6 +8,7 @@
 #include "Character.h"
 #include "Panel.h"
 #include "Textures.h"
+#include <iostream>
 
 class CharacterInfoPanel : public Panel {
 public:
@@ -88,6 +89,11 @@ public:
 			stats_names.push_back(new TextArea(L"VIEW RANGE"));
 			stats_values.push_back(new TextArea(std::to_wstring(parent->_character->VIEW_RANGE)));
 
+			//
+			stats_names.push_back(new TextArea(L""));
+			stats_values.push_back(new TextArea(L""));
+			//
+
 			stats_names.push_back(new TextArea(L"ATTACK"));
 			stats_values.push_back(new TextArea(L"0"));
 
@@ -136,19 +142,22 @@ public:
 	class Layout : public CharacterInfoPage {
 	public:
 
-		class LayoutButton : public ButtonWithImage {
+
+		class DirectionButton : public ButtonWithImage {
 		public:
-			sf::RectangleShape rect;
-			std::string body_name;
+			sf::Sprite slot;
 
-			LayoutButton(SingleTexture* texture, sf::Vector2f position, std::string body_name = "sets/body/hero") : ButtonWithImage(texture, position) {
+			DirectionButton(SingleTexture* texture, sf::Vector2f position, CharacterInfoPanel* parent, short direction) : ButtonWithImage(texture, position) {
+				
+				slot = sf::Sprite();
+				SingleTexture* tex_slot = getSingleTexture("GUI/character_menu/layout_slot");
+				SingleTexture::SetTextureForSprite(&slot, tex_slot);
+				slot.setOrigin(tex_slot->cx, tex_slot->cy);
+				slot.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 
-				this->body_name = body_name;
-
-				rect = sf::RectangleShape(sf::Vector2f(texture->getSize()));
-				rect.setFillColor(panelColor_medium);
-				rect.setOrigin(texture->texture->getSize().x / 2.0f, texture->getSize().y / 2.0f);
-				rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+				onclick_func = [this, parent, direction]() {
+					parent->_character->direction = direction;
+					};
 			}
 
 			void handleEvent(sf::Event& event) {
@@ -156,17 +165,48 @@ public:
 			}
 
 			void update() {
-				rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+				slot.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 				ButtonWithImage::update();
 			}
 
 			void draw() {
-				window->draw(rect);
+				window->draw(slot);
 				window->draw(sprite);
 			}
 		};
 
-		std::vector < LayoutButton* > buttons;
+		class LayoutButton : public ButtonWithImage {
+		public:
+			sf::Sprite slot;
+			std::string body_name;
+
+			LayoutButton(SingleTexture* texture, sf::Vector2f position, std::string body_name = "sets/body/hero") : ButtonWithImage(texture, position) {
+
+				this->body_name = body_name;
+
+				slot = sf::Sprite();
+				SingleTexture* tex_slot = getSingleTexture("GUI/character_menu/layout_slot");
+				SingleTexture::SetTextureForSprite(&slot, tex_slot);
+				slot.setOrigin(tex_slot->cx, tex_slot->cy);
+				slot.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+			}
+
+			void handleEvent(sf::Event& event) {
+				ButtonWithImage::handleEvent(event);
+			}
+
+			void update() {
+				slot.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+				ButtonWithImage::update();
+			}
+
+			void draw() {
+				window->draw(slot);
+				window->draw(sprite);
+			}
+		};
+
+		std::vector < ButtonWithImage* > buttons;
 		sf::Sprite preview;
 
 		Layout(CharacterInfoPanel* parent) : CharacterInfoPage(parent) {
@@ -180,13 +220,14 @@ public:
 
 			// some parameters
 			sf::Vector2f preview_size(128, 128);
-			sf::Vector2f btn_size(64, 64);
-			float btn_margin = 8;
+			float preview_margin = margin;
+			sf::Vector2f btn_size(80, 80);
+			float btn_margin = 0;
 
 			// create Preview
 			sf::Vector2f preview_pos;
 			preview_pos.x = parent->position.x;
-			preview_pos.y = parent->position.y - parent->rect.getSize().y / 2.0f + margin + parent->menu[0]->texture->getSize().y + margin + preview_size.y / 2.0f;
+			preview_pos.y = parent->position.y - parent->rect.getSize().y / 2.0f + preview_margin + parent->menu[0]->texture->getSize().y + preview_margin + preview_size.y / 2.0f;
 			preview.setTexture(*parent->_character->sprite.getTexture());
 			preview.setOrigin(32, 32);
 			preview.setScale(2.0f, 2.0f);
@@ -196,13 +237,33 @@ public:
 			sf::Vector2f start_pos;
 			start_pos.x = parent->position.x - float(btn_size.x * 4 + btn_margin * 3) / 2.0f + btn_size.x / 2.0f;
 			start_pos.y = parent->position.y - parent->rect.getSize().y / 2.0f;
-			start_pos.y += margin + parent->menu[0]->texture->getSize().y;
-			start_pos.y += margin + preview_size.y + margin + btn_size.y / 2.0f;
+			start_pos.y += preview_margin + parent->menu[0]->texture->getSize().y;
+			start_pos.y += preview_margin + preview_size.y + preview_margin + btn_size.y / 2.0f;
 
+			// direction Buttons
+			sf::Vector2f btn_pos;
+			btn_pos.y = start_pos.y;
+			
+			btn_pos.x = start_pos.x + (0) * (btn_size.x + btn_margin);
+			DirectionButton* left = new DirectionButton(getSingleTexture("GUI/character_menu/direction_left"), btn_pos, parent, 3);
+			buttons.push_back(left);
+
+			btn_pos.x = start_pos.x + (1) * (btn_size.x + btn_margin);
+			DirectionButton* bottom = new DirectionButton(getSingleTexture("GUI/character_menu/direction_bottom"), btn_pos, parent, 2);
+			buttons.push_back(bottom);
+
+			btn_pos.x = start_pos.x + (2) * (btn_size.x + btn_margin);
+			DirectionButton* top = new DirectionButton(getSingleTexture("GUI/character_menu/direction_top"), btn_pos, parent, 0);
+			buttons.push_back(top);
+
+			btn_pos.x = start_pos.x + (3) * (btn_size.x + btn_margin);
+			DirectionButton* right = new DirectionButton(getSingleTexture("GUI/character_menu/direction_right"), btn_pos, parent, 1);
+			buttons.push_back(right);
+
+			// layout buttons
 			for (short i = 0; i < sets.size(); i++) {
-				sf::Vector2f btn_pos;
 				btn_pos.x = start_pos.x + (i % 4) * (btn_size.x + btn_margin);
-				btn_pos.y = start_pos.y + (i / 4) * (btn_size.y + btn_margin);
+				btn_pos.y = start_pos.y + (i / 4) * (btn_size.y + btn_margin) + (btn_size.y);
 				std::string body_name = "sets/body/" + sets[i].path().filename().string();
 				SingleTexture* tex = getSingleTexture(body_name + "/attackBottom0");
 				LayoutButton* btn = new LayoutButton(tex, btn_pos, body_name);
@@ -213,6 +274,8 @@ public:
 					};
 				buttons.push_back(btn);
 			}
+
+			std::cout << buttons.back()->position.y - buttons.front()->position.y << "\n";
 		}
 
 		void handleEvent(sf::Event& event) {
@@ -283,7 +346,7 @@ public:
 	sf::Sprite left_corner;
 	sf::Sprite right_corner;
 
-	CharacterInfoPanel(Character* character) : Panel(sf::Vector2f(352, 500)) {
+	CharacterInfoPanel(Character* character) : Panel(sf::Vector2f(352, 536)) {
 
 		_character = character;
 
