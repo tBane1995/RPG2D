@@ -346,7 +346,7 @@ public:
 	sf::Sprite left_corner;
 	sf::Sprite right_corner;
 
-	CharacterInfoPanel(Character* character) : Panel(sf::Vector2f(352, 536)) {
+	CharacterInfoPanel(Character* character) : Panel(sf::Vector2f(400, 536)) {
 
 		_character = character;
 
