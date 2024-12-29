@@ -360,32 +360,32 @@ public:
 		pos.y = position.y - size.y / 2.0f + btn_hgh / 2.0f + margin;
 
 		// create menu buttons
-		ButtonWithImage* menu_statistics = new ButtonWithImage(menu_button_texture, sf::Vector2f(pos.x, pos.y));
+		ButtonWithImage* menu_statistics = new ButtonWithImage(getSingleTexture("GUI/character_menu/menu_statistics"), sf::Vector2f(pos.x, pos.y));
 		menu_statistics->onclick_func = [this]() {
 			active_page = pages[0];
 			};
 
-		ButtonWithImage* menu_layout = new ButtonWithImage(menu_button_texture, sf::Vector2f(pos.x + btn_wdt, pos.y));
+		ButtonWithImage* menu_layout = new ButtonWithImage(getSingleTexture("GUI/character_menu/menu_layout"), sf::Vector2f(pos.x + btn_wdt, pos.y));
 		menu_layout->onclick_func = [this]() {
 			active_page = pages[1];
 			};
 
-		ButtonWithImage* menu_equipment = new ButtonWithImage(menu_button_texture, sf::Vector2f(pos.x + 2 * btn_wdt, pos.y));
+		ButtonWithImage* menu_equipment = new ButtonWithImage(getSingleTexture("GUI/character_menu/menu_equipment"), sf::Vector2f(pos.x + 2 * btn_wdt, pos.y));
 		menu_equipment->onclick_func = [this]() {
 			active_page = pages[2];
 			};
 
-		ButtonWithImage* menu_inventory = new ButtonWithImage(menu_button_texture, sf::Vector2f(pos.x + 3 * btn_wdt, pos.y));
+		ButtonWithImage* menu_inventory = new ButtonWithImage(getSingleTexture("GUI/character_menu/menu_inventory"), sf::Vector2f(pos.x + 3 * btn_wdt, pos.y));
 		menu_inventory->onclick_func = [this]() {
 			active_page = pages[3];
 			};
 
-		ButtonWithImage* menu_dialogues = new ButtonWithImage(menu_button_texture, sf::Vector2f(pos.x + 4 * btn_wdt, pos.y));
+		ButtonWithImage* menu_dialogues = new ButtonWithImage(getSingleTexture("GUI/character_menu/menu_dialogues"), sf::Vector2f(pos.x + 4 * btn_wdt, pos.y));
 		menu_dialogues->onclick_func = [this]() {
 			active_page = pages[4];
 			};
 
-		ButtonWithImage* menu_quests = new ButtonWithImage(menu_button_texture, sf::Vector2f(pos.x + 5 * btn_wdt, pos.y));
+		ButtonWithImage* menu_quests = new ButtonWithImage(getSingleTexture("GUI/character_menu/menu_quests"), sf::Vector2f(pos.x + 5 * btn_wdt, pos.y));
 		menu_quests->onclick_func = [this]() {
 			active_page = pages[5];
 			};
