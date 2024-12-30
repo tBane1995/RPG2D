@@ -8,8 +8,8 @@
 
 
 // TO-DO
-enum class attribute { ATTACK, DEFEND, HP, MP, HP_max, MP_max, STRENGTH, DEXTERITY, INTELLIGENCE };
-enum class itemType { herb, potion, food, weapon, helmet, armor, pants, shield, other };
+enum class Attribute { ATTACK, DEFEND, HP, MP, HP_max, MP_max, STRENGTH, DEXTERITY, INTELLIGENCE };
+enum class ItemType { herb, potion, food, weapon, helmet, armor, pants, shield, other };
 
 class SingleTexture;
 
@@ -17,11 +17,11 @@ class Item {
 public:
 	std::string name;
 	SingleTexture* texture;
-	itemType type;
-	std::map < attribute, short > attributes;		// TO-DO
+	ItemType type;
+	std::map < Attribute, short > attributes;		// TO-DO
 	std::wstring description;
 
-	Item(std::string name, itemType type, std::wstring description);
+	Item(std::string name, ItemType type, std::wstring description);
 };
 
 extern std::vector < Item* > items;

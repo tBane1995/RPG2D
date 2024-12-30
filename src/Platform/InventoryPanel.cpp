@@ -230,12 +230,12 @@ void useItem() {
 
 	Item* item = inventory->sortedItems[cursor+inventory->scroll*itemsInRow];
 
-    if (item->type == itemType::herb || item->type == itemType::potion || item->type == itemType::food) {
-        player->heal(item->attributes[attribute::HP]);
+    if (item->type == ItemType::herb || item->type == ItemType::potion || item->type == ItemType::food) {
+        player->heal(item->attributes[Attribute::HP]);
 		inventory->inventory->removeItem(item);
     }
 
-    if (item->type == itemType::helmet) {
+    if (item->type == ItemType::helmet) {
 
         if (player->helmet == item)
             player->helmet = nullptr;
@@ -245,7 +245,7 @@ void useItem() {
         player->loadHelmet();
     }
 
-    if (item->type == itemType::armor) {
+    if (item->type == ItemType::armor) {
         
         if (player->armor == item)
             player->armor = nullptr;
@@ -255,7 +255,7 @@ void useItem() {
         player->loadArmor();
     }
 
-    if (item->type == itemType::pants) {
+    if (item->type == ItemType::pants) {
 
         if (player->pants == item)
             player->pants = nullptr;
@@ -265,7 +265,7 @@ void useItem() {
         player->loadPants();
     }
 
-	if (item->type == itemType::weapon) {
+	if (item->type == ItemType::weapon) {
 
 		if (player->rightHand == item)
 			player->rightHand = nullptr;
@@ -275,7 +275,7 @@ void useItem() {
 		player->loadRightHand();
 	}
 
-	if (item->type == itemType::shield) {
+	if (item->type == ItemType::shield) {
 
 		if (player->leftHand == item)
 			player->leftHand = nullptr;

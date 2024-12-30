@@ -327,16 +327,16 @@ int Player::takeDamage(short damage) {
 	short defend = 0;
 
 	if (armor != nullptr)
-		defend += armor->attributes[attribute::DEFEND];
+		defend += armor->attributes[Attribute::DEFEND];
 
 	if (helmet != nullptr)
-		defend += helmet->attributes[attribute::DEFEND];
+		defend += helmet->attributes[Attribute::DEFEND];
 
 	if (pants != nullptr)
-		defend += pants->attributes[attribute::DEFEND];
+		defend += pants->attributes[Attribute::DEFEND];
 
 	if (leftHand != nullptr)
-		defend += leftHand->attributes[attribute::DEFEND];
+		defend += leftHand->attributes[Attribute::DEFEND];
 
 	short dam = damage - defend;
 
@@ -354,7 +354,7 @@ int Player::getDamage() {
 	int damage = STRENGTH * 2;
 
 	if (rightHand != nullptr)
-		damage += rightHand->attributes[attribute::ATTACK];
+		damage += rightHand->attributes[Attribute::ATTACK];
 
 	damage = damage * (rand() % 50 + 75) / 100;		// 75% - 125% 
 

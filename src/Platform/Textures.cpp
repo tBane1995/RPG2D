@@ -351,6 +351,7 @@ void loadTextures()
 	loadSingleTexture("GUI/character_menu/menu_dialogues.png", 32, 20);
 	loadSingleTexture("GUI/character_menu/menu_quests.png", 32, 20);
 	loadSingleTexture("GUI/character_menu/layout_slot.png", 40, 40);
+	loadSingleTexture("GUI/character_menu/item_slot.png", 32, 32);
 	loadSingleTexture("GUI/character_menu/direction_top.png", 32, 32);
 	loadSingleTexture("GUI/character_menu/direction_bottom.png", 32, 32);
 	loadSingleTexture("GUI/character_menu/direction_left.png", 32, 32);

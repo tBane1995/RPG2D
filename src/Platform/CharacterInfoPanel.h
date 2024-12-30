@@ -8,11 +8,14 @@
 #include "Character.h"
 #include "Panel.h"
 #include "Textures.h"
+#include "Items.h"
+#include "Scrollbar.h"
 #include <iostream>
 
 class CharacterInfoPanel : public Panel {
 public:
 	Character* _character;
+
 
 	class CharacterInfoPage {
 	public:
@@ -105,10 +108,13 @@ public:
 
 			sf::Vector2f pos;
 
+			float panel_height = parent->rect.getSize().y;
+			float corner_size = parent->corner_part_size.y;
+			float menu_height = parent->menu[0]->texture->getSize().y;
+
 			for (int i = 0; i < stats_names.size(); i++) {
 
-				pos.y = parent->position.y - parent->rect.getSize().y / 2.0f + margin + parent->menu[0]->texture->getSize().y + i * stats_names[0]->getLineHeight();
-
+				pos.y = parent->position.y - panel_height / 2.0f + margin + corner_size + menu_height + i * stats_names[0]->getLineHeight();
 				stats_names[i]->setBackgroundColor(panelColor_normal);
 				pos.x = parent->position.x - parent->rect.getSize().x / 2.0f + margin;
 				stats_names[i]->setPosition(sf::Vector2f(pos.x, pos.y));
@@ -142,15 +148,14 @@ public:
 	class Layout : public CharacterInfoPage {
 	public:
 
-
 		class DirectionButton : public ButtonWithImage {
 		public:
 			sf::Sprite slot;
 
 			DirectionButton(SingleTexture* texture, sf::Vector2f position, CharacterInfoPanel* parent, short direction) : ButtonWithImage(texture, position) {
-				
-				slot = sf::Sprite();
+
 				SingleTexture* tex_slot = getSingleTexture("GUI/character_menu/layout_slot");
+				slot = sf::Sprite();
 				SingleTexture::SetTextureForSprite(&slot, tex_slot);
 				slot.setOrigin(tex_slot->cx, tex_slot->cy);
 				slot.setPosition(position.x + cam->position.x, position.y + cam->position.y);
@@ -184,8 +189,9 @@ public:
 
 				this->body_name = body_name;
 
-				slot = sf::Sprite();
+
 				SingleTexture* tex_slot = getSingleTexture("GUI/character_menu/layout_slot");
+				slot = sf::Sprite();
 				SingleTexture::SetTextureForSprite(&slot, tex_slot);
 				slot.setOrigin(tex_slot->cx, tex_slot->cy);
 				slot.setPosition(position.x + cam->position.x, position.y + cam->position.y);
@@ -219,7 +225,11 @@ public:
 			std::sort(sets.begin(), sets.end(), [](const auto& a, const auto& b) { return a.path().filename().string() < b.path().filename().string(); });
 
 			// some parameters
-			sf::Vector2f preview_size(128, 128);
+			float panel_height = parent->rect.getSize().y;
+			float corner_size = parent->corner_part_size.y;
+			float menu_height = parent->menu[0]->texture->getSize().y;
+
+			sf::Vector2f preview_size(parent->_character->texture->getSize().x * 2.0f, parent->_character->texture->getSize().y * 2.0f);
 			float preview_margin = margin;
 			sf::Vector2f btn_size(80, 80);
 			float btn_margin = 0;
@@ -227,8 +237,9 @@ public:
 			// create Preview
 			sf::Vector2f preview_pos;
 			preview_pos.x = parent->position.x;
-			preview_pos.y = parent->position.y - parent->rect.getSize().y / 2.0f + preview_margin + parent->menu[0]->texture->getSize().y + preview_margin + preview_size.y / 2.0f;
+			preview_pos.y = parent->position.y - panel_height / 2.0f + preview_margin + menu_height + preview_margin + preview_size.y / 2.0f;
 			preview.setTexture(*parent->_character->sprite.getTexture());
+			preview.setTextureRect(parent->_character->sprite.getTextureRect());
 			preview.setOrigin(32, 32);
 			preview.setScale(2.0f, 2.0f);
 			preview.setPosition(preview_pos.x + cam->position.x, preview_pos.y + cam->position.y);
@@ -236,14 +247,12 @@ public:
 			// create Buttons
 			sf::Vector2f start_pos;
 			start_pos.x = parent->position.x - float(btn_size.x * 4 + btn_margin * 3) / 2.0f + btn_size.x / 2.0f;
-			start_pos.y = parent->position.y - parent->rect.getSize().y / 2.0f;
-			start_pos.y += preview_margin + parent->menu[0]->texture->getSize().y;
-			start_pos.y += preview_margin + preview_size.y + preview_margin + btn_size.y / 2.0f;
+			start_pos.y = parent->position.y - panel_height / 2.0f + corner_size + menu_height + preview_margin + preview_size.y + preview_margin + btn_size.y / 2.0f;
 
-			// direction Buttons
+			// direction buttons
 			sf::Vector2f btn_pos;
 			btn_pos.y = start_pos.y;
-			
+
 			btn_pos.x = start_pos.x + (0) * (btn_size.x + btn_margin);
 			DirectionButton* left = new DirectionButton(getSingleTexture("GUI/character_menu/direction_left"), btn_pos, parent, 3);
 			buttons.push_back(left);
@@ -262,6 +271,7 @@ public:
 
 			// layout buttons
 			for (short i = 0; i < sets.size(); i++) {
+
 				btn_pos.x = start_pos.x + (i % 4) * (btn_size.x + btn_margin);
 				btn_pos.y = start_pos.y + (i / 4) * (btn_size.y + btn_margin) + (btn_size.y);
 				std::string body_name = "sets/body/" + sets[i].path().filename().string();
@@ -274,8 +284,6 @@ public:
 					};
 				buttons.push_back(btn);
 			}
-
-			std::cout << buttons.back()->position.y - buttons.front()->position.y << "\n";
 		}
 
 		void handleEvent(sf::Event& event) {
@@ -287,10 +295,8 @@ public:
 			for (auto& btn : buttons)
 				btn->update();
 
-			
 			preview.setTexture(*parent->_character->sprite.getTexture());
 			preview.setTextureRect(parent->_character->sprite.getTextureRect());
-			preview.setOrigin(32,32);
 		}
 
 		void draw() {
@@ -304,10 +310,154 @@ public:
 
 	class Equipment : public CharacterInfoPage {
 	public:
-		Equipment(CharacterInfoPanel* parent) : CharacterInfoPage(parent) { }
-		void handleEvent(sf::Event& event) { }
-		void update() { }
-		void draw() { }
+
+		class Slot : public ButtonWithImage {
+		public:
+			Item* _item;
+			sf::Sprite sprite;
+
+			Slot(SingleTexture* texture, sf::Vector2f position) : ButtonWithImage(texture, position) {
+				_item = nullptr;
+
+				sprite = sf::Sprite();
+				sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+			}
+
+			~Slot();
+
+			void setItem(Item* item) {
+				_item = item;
+
+				sprite = sf::Sprite();
+
+				sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+				if (_item != nullptr) {
+					SingleTexture::SetTextureForSprite(&sprite, _item->texture);
+					sprite.setOrigin(32, 32);
+					// TO-DO
+					//sprite.setOrigin(24, 24);
+					//sprite.setTextureRect(sf::IntRect(8, 8, 48, 48));
+				}
+
+
+
+			}
+
+			void draw() {
+				ButtonWithImage::draw();
+				window->draw(sprite);
+			}
+		};
+
+		sf::Sprite preview;
+		std::vector < Slot* > slots;
+		Scrollbar* scrollbar;
+
+		Equipment(CharacterInfoPanel* parent) : CharacterInfoPage(parent) {
+			slots.clear();
+
+			// some parameters
+			float panel_height = parent->rect.getSize().y;
+			float corner_size = parent->corner_part_size.y;
+			float menu_height = parent->menu[0]->texture->getSize().y;
+
+			SingleTexture* slot_texture = getSingleTexture("GUI/character_menu/item_slot");
+			sf::Vector2f preview_size(parent->_character->texture->getSize().x * 2.0f, parent->_character->texture->getSize().y * 2.0f);
+			float preview_margin = margin;
+			sf::Vector2f slot_size(slot_texture->getSize());
+			float border_width = 6;
+
+			// create Preview
+			sf::Vector2f preview_pos;
+			preview_pos.x = parent->position.x;
+			preview_pos.y = parent->position.y - panel_height / 2.0f + preview_margin + menu_height + preview_margin + preview_size.y / 2.0f;
+			preview.setTexture(*parent->_character->sprite.getTexture());
+			preview.setTextureRect(parent->_character->sprite.getTextureRect());
+			preview.setOrigin(32, 32);
+			preview.setScale(2.0f, 2.0f);
+			preview.setPosition(preview_pos.x + cam->position.x, preview_pos.y + cam->position.y);
+
+			// create Slots
+			for (short y = 0; y < 6; y += 1) {
+				for (short x = 0; x < 6; x += 1) {
+					sf::Vector2f pos;
+					pos.x = parent->position.x - parent->rect.getSize().x / 2.0f + slot_size.x / 2.0f + x * slot_size.x + border_width;
+					pos.y = parent->position.y - panel_height / 2.0f + corner_size + menu_height + preview_margin + preview_size.y + preview_margin + slot_size.y / 2.0f + y * slot_size.y;
+					Slot* slot = new Slot(slot_texture, pos);
+					slot->onclick_func = [slot, parent]() {
+						if (slot->_item != nullptr) {
+
+							// TO-DO - it is under rewrite to parent->_character->useItem();
+							if (slot->_item->type == ItemType::helmet) {
+								parent->_character->helmet = slot->_item;
+							}
+
+							if (slot->_item->type == ItemType::armor) {
+								parent->_character->armor = slot->_item;
+							}
+
+							if (slot->_item->type == ItemType::pants) {
+								parent->_character->pants = slot->_item;
+							}
+
+							if (slot->_item->type == ItemType::weapon) {
+								parent->_character->rightHand = slot->_item;
+							}
+
+							if (slot->_item->type == ItemType::shield) {
+								parent->_character->leftHand = slot->_item;
+							}
+
+							//////////////////
+						}
+
+						};
+					slots.push_back(slot);
+				}
+			}
+
+			setItemsToSlots();
+
+			sf::Vector2f scrollbar_size(16, 6 * 64);
+			sf::Vector2f scrollbar_position;
+			scrollbar_position.x = parent->position.x + parent->rect.getSize().x / 2.0f - 16 - border_width;
+			scrollbar_position.y = slots.front()->position.y - slots.front()->texture->getSize().y / 2.0f;
+			scrollbar = new Scrollbar(scrollbar_size, scrollbar_position, 0, 8, 0, 8);
+		}
+
+		void setItemsToSlots() {
+			std::vector < Item* > items_list;
+			for (Item* item : items) {
+				if (item->type == ItemType::helmet || item->type == ItemType::armor || item->type == ItemType::pants || item->type == ItemType::weapon || item->type == ItemType::shield)
+					items_list.push_back(item);
+			}
+
+			for (int i = 0; i < 36; i++) {
+				if (i < items_list.size()) {
+					slots[i]->setItem(items_list[i]);
+				}
+			}
+		}
+
+		void handleEvent(sf::Event& event) {
+			scrollbar->handleEvent(event);
+			setItemsToSlots();
+		}
+
+		void update() {
+			scrollbar->update();
+			preview.setTexture(*parent->_character->sprite.getTexture());
+		}
+
+		void draw() {
+			for (auto& slot : slots) {
+				slot->draw();
+			}
+
+			scrollbar->draw();
+			window->draw(preview);
+		}
 	};
 
 	class Inventory : public CharacterInfoPage {
@@ -334,7 +484,8 @@ public:
 		void draw() { }
 	};
 
-
+	sf::Vector2f border_part_size = sf::Vector2f(6, 6);
+	sf::Vector2f corner_part_size = sf::Vector2f(8, 8);
 
 	std::vector < ButtonWithImage* > menu;
 	std::vector < CharacterInfoPage* > pages;
@@ -342,11 +493,14 @@ public:
 
 	sf::Sprite left_border;
 	sf::Sprite right_border;
+	sf::Sprite top_border;
 	sf::Sprite bottom_border;
-	sf::Sprite left_corner;
-	sf::Sprite right_corner;
+	sf::Sprite top_left_corner;
+	sf::Sprite top_right_corner;
+	sf::Sprite bottom_left_corner;
+	sf::Sprite bottom_right_corner;
 
-	CharacterInfoPanel(Character* character) : Panel(sf::Vector2f(400, 536)) {
+	CharacterInfoPanel(Character* character) : Panel(sf::Vector2f(412 + 16, 596)) {
 
 		_character = character;
 
@@ -356,8 +510,8 @@ public:
 		float btn_hgh = menu_button_texture->getSize().y;
 
 		sf::Vector2f pos;
-		pos.x = position.x - size.x / 2.0f + btn_wdt / 2.0f + margin;
-		pos.y = position.y - size.y / 2.0f + btn_hgh / 2.0f + margin;
+		pos.x = position.x - size.x / 2.0f + btn_wdt / 2.0f + margin + corner_part_size.x;
+		pos.y = position.y - size.y / 2.0f + btn_hgh / 2.0f + margin + corner_part_size.y;
 
 		// create menu buttons
 		ButtonWithImage* menu_statistics = new ButtonWithImage(getSingleTexture("GUI/character_menu/menu_statistics"), sf::Vector2f(pos.x, pos.y));
@@ -409,22 +563,26 @@ public:
 		active_page = pages[0];
 
 		// generate border
-		sf::Vector2f border_part_size = sf::Vector2f(6, 6);
-		sf::Vector2f corner_part_size = sf::Vector2f(8, 8);
 		float border_wdt = size.x - 2 * margin - 2.0f * corner_part_size.x;
-		float border_hgh = size.y - 2 * margin - btn_hgh - corner_part_size.y;
+		float border_hgh = size.y - 2 * margin - corner_part_size.y;
 
 		SingleTexture::SetTextureForSprite(&left_border, getSingleTexture("GUI/border_vertical"));
 		pos.x = position.x + cam->position.x - size.x / 2.0f + margin;
-		pos.y = position.y + cam->position.y - size.y / 2.0f + margin + btn_hgh;
+		pos.y = position.y + cam->position.y - size.y / 2.0f + margin + corner_part_size.y;
 		left_border.setScale(1.0f, border_hgh / border_part_size.y);
 		left_border.setPosition(pos);
 
 		SingleTexture::SetTextureForSprite(&right_border, getSingleTexture("GUI/border_vertical"));
 		pos.x = position.x + cam->position.x + size.x / 2.0f - margin - border_part_size.x;
-		pos.y = position.y + cam->position.y - size.y / 2.0f + margin + btn_hgh;
+		pos.y = position.y + cam->position.y - size.y / 2.0f + margin + corner_part_size.y;
 		right_border.setScale(1.0f, border_hgh / border_part_size.y);
 		right_border.setPosition(pos);
+
+		SingleTexture::SetTextureForSprite(&top_border, getSingleTexture("GUI/border_horizontal"));
+		pos.x = position.x + cam->position.x - size.x / 2.0f + margin + corner_part_size.x;
+		pos.y = position.y + cam->position.y - size.y / 2.0f + margin;
+		top_border.setScale(border_wdt / border_part_size.x, 1.0f);
+		top_border.setPosition(pos);
 
 		SingleTexture::SetTextureForSprite(&bottom_border, getSingleTexture("GUI/border_horizontal"));
 		pos.x = position.x + cam->position.x - size.x / 2.0f + margin + corner_part_size.x;
@@ -432,15 +590,25 @@ public:
 		bottom_border.setScale(border_wdt / border_part_size.x, 1.0f);
 		bottom_border.setPosition(pos);
 
-		SingleTexture::SetTextureForSprite(&left_corner, getSingleTexture("GUI/corner"));
+		SingleTexture::SetTextureForSprite(&top_left_corner, getSingleTexture("GUI/corner"));
+		pos.x = position.x + cam->position.x - size.x / 2.0f + margin;
+		pos.y = position.y + cam->position.y - size.y / 2.0f + margin;
+		top_left_corner.setPosition(pos);
+
+		SingleTexture::SetTextureForSprite(&top_right_corner, getSingleTexture("GUI/corner"));
+		pos.x = position.x + cam->position.x + size.x / 2.0f - margin - corner_part_size.x;
+		pos.y = position.y + cam->position.y - size.y / 2.0f + margin;
+		top_right_corner.setPosition(pos);
+
+		SingleTexture::SetTextureForSprite(&bottom_left_corner, getSingleTexture("GUI/corner"));
 		pos.x = position.x + cam->position.x - size.x / 2.0f + margin;
 		pos.y = position.y + cam->position.y + size.y / 2.0f - margin - corner_part_size.y;
-		left_corner.setPosition(pos);
+		bottom_left_corner.setPosition(pos);
 
-		SingleTexture::SetTextureForSprite(&right_corner, getSingleTexture("GUI/corner"));
+		SingleTexture::SetTextureForSprite(&bottom_right_corner, getSingleTexture("GUI/corner"));
 		pos.x = position.x + cam->position.x + size.x / 2.0f - margin - corner_part_size.x;
 		pos.y = position.y + cam->position.y + size.y / 2.0f - margin - corner_part_size.y;
-		right_corner.setPosition(pos);
+		bottom_right_corner.setPosition(pos);
 	}
 
 	~CharacterInfoPanel() {
@@ -473,13 +641,17 @@ public:
 		for (auto& m : menu)
 			m->draw();
 
-		active_page->draw();
-
 		window->draw(left_border);
 		window->draw(right_border);
+		window->draw(top_border);
 		window->draw(bottom_border);
-		window->draw(left_corner);
-		window->draw(right_corner);
+		window->draw(top_left_corner);
+		window->draw(top_right_corner);
+		window->draw(bottom_left_corner);
+		window->draw(bottom_right_corner);
+
+		active_page->draw();
+
 	}
 
 };
