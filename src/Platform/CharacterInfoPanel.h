@@ -335,7 +335,7 @@ public:
 				if (_item != nullptr) {
 					SingleTexture::SetTextureForSprite(&sprite, _item->texture);
 					sprite.setOrigin(32, 32);
-					// Adding padding of 8px for each side. That makes 16px less for both x and y axis and this is 16/64px = 1/4px = 25% less
+					// Dodanie paddingu 8px dla każdej strony itemu. Daje to 16px mniej dla każdego wymiaru x i y. Czyli jest to o 16/64px = 1/4px = 25% mniejszy rozmiar.
 					sprite.setScale(sf::Vector2f(0.75, 0.75));
 					// TO-DO
 					//sprite.setOrigin(24, 24);
