@@ -39,4 +39,11 @@ public:
 	}
 
 	void ConvertTileMapToPolyMap(int sx, int sy, int w, int h, float BlockSize, int Pitch);
+	void RemoveInnerEdges();
+	void SortCounterClockWise(std::vector<std::pair<int, int>>& Vertices, std::vector<int>& Indices);
+	void RemoveIndices(std::vector<int>& Indices);
+private:
+	bool FindNonDuplicatePixelInOutline(int& x, int& y, std::vector<std::pair<int, int>>& Vertices, std::vector<int>& Indices);
+	bool IsNonDuplicatePixelInOutline(int x, int y, std::vector<int>& Indices);
+	bool HasPixelEdge(int x, int y);
 };

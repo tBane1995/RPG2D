@@ -1,7 +1,8 @@
 # add the library that runs
 file(GLOB GenerateOutlines_SOURCES LIST_DIRECTORIES false *.cpp)
+file(GLOB GenerateOutlines_HEADERS LIST_DIRECTORIES false *.h)
 
-add_executable(GenerateOutlines ${GenerateOutlines_SOURCES})
+add_executable(GenerateOutlines ${GenerateOutlines_SOURCES} ${GenerateOutlines_HEADERS})
 target_include_directories(GenerateOutlines PUBLIC ${CMAKE_CURRENT_BINARY_DIR} "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/dependencies/SFML/include>" "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/tools>")
 set_target_properties(GenerateOutlines PROPERTIES
                       LINKER_LANGUAGE CXX

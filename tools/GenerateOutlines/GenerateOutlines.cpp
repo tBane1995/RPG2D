@@ -6,19 +6,30 @@
 #include <windows.h>
 #include "ShapeOutline.h"
 
+std::string OnlyOutline;
 bool HasImageTransparentFrame(sf::Image& Im);
 void ProcessImage(const sf::Image& Src, std::string InputFilename);
 
 int main(int argc, char* argv[])
 {
-    if (argc < 2)
+    std::string fname = "";// "f:/repos/games/RPG2D/out/build/x64-Debug/attackBottom0.png";
+    if (argc > 1)
+    {
+        fname = argv[1];
+    }
+    if (argc > 2)
+    {
+        OnlyOutline = argv[1];
+        fname = argv[2];
+    }
+    if (fname.length() == 0)
     {
         std::cerr << "Syntax: " << argv[0] << " filename.[png|jpg]" << std::endl;
         return -1;
     }
 
     sf::Image Im, Process;
-    if (!Im.loadFromFile(argv[1]))
+    if (!Im.loadFromFile(fname)) //argv[1]))
     {
         std::cerr << "ERROR: Cannot load file " << argv[1] << std::endl;
         std::cerr << "Syntax: " << argv[0] << " filename.[png|jpg]" << std::endl;
@@ -29,11 +40,11 @@ int main(int argc, char* argv[])
     {
         Process.create(Im.getSize().x + 2, Im.getSize().y + 2, sf::Color::Transparent);
         Process.copy(Im, 1, 1);
-        ProcessImage(Process, argv[1]);
+        ProcessImage(Process, fname);
     }
     else
     {
-        ProcessImage(Im, argv[1]);
+        ProcessImage(Im, fname);
     }
 
     return 0;
@@ -81,6 +92,15 @@ void ProcessImage(const sf::Image& Src, std::string InputFilename)
     }
 
     Shape.ConvertTileMapToPolyMap(0, 0, SrcSize.x, SrcSize.y, 1.0f, SrcSize.x);
+    if (OnlyOutline == "/OnlyOutline")
+    {
+        std::cout << "Detecting outline..." << std::endl;
+        std::vector<std::pair<int, int>> Vertices;
+        std::vector<int> Indices;
+        Shape.SortCounterClockWise(Vertices, Indices);
+        Shape.RemoveIndices(Indices);
+    }
+
     sf::Image OutputImage;
     OutputImage.create(SrcSize.x, SrcSize.y, sf::Color::Transparent);
     for (int y = 0; y < SrcSize.y; ++y)
