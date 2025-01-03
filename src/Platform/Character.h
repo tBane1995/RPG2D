@@ -70,7 +70,7 @@ public:
 	void loadPants();
 	void loadLeftHand();
 	void loadRightHand();
-
+	//void loadAppearance();
 
 	virtual void update(float dt) override;
 	virtual void draw() override;
