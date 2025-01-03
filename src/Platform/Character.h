@@ -44,6 +44,7 @@ public:
 	SingleTexture* rightHandAttackTextures[16];
 
 	// SPRITES
+	sf::Sprite bodySprite;
 	sf::Sprite helmetSprite;
 	sf::Sprite armorSprite;
 	sf::Sprite pantsSprite;
@@ -70,7 +71,7 @@ public:
 	void loadPants();
 	void loadLeftHand();
 	void loadRightHand();
-	//void loadAppearance();
+	void loadAppearance();
 
 	virtual void update(float dt) override;
 	virtual void draw() override;

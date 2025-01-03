@@ -20,6 +20,7 @@ Character::Character(std::string name, std::string bodySet) : Unit(name, bodySet
 	loadPants();
 	loadLeftHand();
 	loadRightHand();
+	loadAppearance();
 
 	dialogue = nullptr;
 
@@ -46,7 +47,8 @@ Character::Character(GameObject* object, float x, float y) : Unit(object, x, y) 
 	loadPants();
 	loadLeftHand();
 	loadRightHand();
-		
+	loadAppearance();
+
 	dialogue = dynamic_cast <Character*>(object)->dialogue;
 
 	talkWithTexture = getSingleTexture("GUI/talk");
@@ -83,8 +85,7 @@ void Character::loadBody() {
 
 	}
 
-	sprite = sf::Sprite();
-	sprite.setOrigin(32, 58);
+	bodySprite = sf::Sprite();
 
 }
 
@@ -120,7 +121,6 @@ void Character::loadHelmet() {
 	}
 
 	helmetSprite = sf::Sprite();
-	helmetSprite.setOrigin(32, 58);
 
 }
 
@@ -155,7 +155,6 @@ void Character::loadArmor() {
 	}
 
 	armorSprite = sf::Sprite();
-	armorSprite.setOrigin(32, 58);
 }
 
 void Character::loadPants() {
@@ -189,7 +188,6 @@ void Character::loadPants() {
 	}
 
 	pantsSprite = sf::Sprite();
-	pantsSprite.setOrigin(32, 58);
 
 }
 
@@ -224,7 +222,6 @@ void Character::loadLeftHand() {
 	}
 
 	leftHandSprite = sf::Sprite();
-	leftHandSprite.setOrigin(32, 58);
 
 }
 
@@ -259,42 +256,81 @@ void Character::loadRightHand() {
 	}
 
 	rightHandSprite = sf::Sprite();
-	rightHandSprite.setOrigin(32, 58);
 
 }
 
+void Character::loadAppearance() {
+	sf::RenderTexture* tex = new sf::RenderTexture();
+	tex->create(64, 64);
+	tex->clear(sf::Color::Transparent);
+
+	switch (direction) {
+	case 0: // TOP
+		tex->draw(rightHandSprite);
+		tex->draw(leftHandSprite);
+		tex->draw(bodySprite);
+		tex->draw(helmetSprite);
+		tex->draw(pantsSprite);
+		tex->draw(armorSprite);
+		break;
+	case 1: // RIGHT
+		tex->draw(leftHandSprite);
+		tex->draw(bodySprite);
+		tex->draw(helmetSprite);
+		tex->draw(pantsSprite);
+		tex->draw(armorSprite);
+		tex->draw(rightHandSprite);
+		break;
+	case 2: // BOTTOM
+		tex->draw(bodySprite);
+		tex->draw(helmetSprite);
+		tex->draw(pantsSprite);
+		tex->draw(armorSprite);
+		tex->draw(leftHandSprite);
+		tex->draw(rightHandSprite);
+		break;
+	case 3: // LEFT
+		tex->draw(rightHandSprite);
+		tex->draw(bodySprite);
+		tex->draw(helmetSprite);
+		tex->draw(pantsSprite);
+		tex->draw(armorSprite);
+		tex->draw(leftHandSprite);
+		break;
+	default:
+		break;
+	}
+
+	tex->display();
+	sprite.setTexture(tex->getTexture());
+	sprite.setOrigin(32, 58);
+}
+
 void Character::update(float dt) {
+
 	calculateCurrentFrame(dt);
 	GameObject::update(dt);
 	textname.setPosition(position.x, position.y - height - 10);
 
-	SingleTexture::SetTextureForSprite(&sprite, idleTextures[direction * 4 + frame]);
-	sprite.setPosition(position);
-
+	SingleTexture::SetTextureForSprite(&bodySprite, idleTextures[direction * 4 + frame]);
 	if (helmet != nullptr) {
 		SingleTexture::SetTextureForSprite(&helmetSprite, helmetIdleTextures[direction * 4 + frame]);
-		helmetSprite.setPosition(position);
-
 	}
 
 	if (armor != nullptr) {
 		SingleTexture::SetTextureForSprite(&armorSprite, armorIdleTextures[direction * 4 + frame]);
-		armorSprite.setPosition(position);
 	}
 
 	if (pants != nullptr) {
 		SingleTexture::SetTextureForSprite(&pantsSprite, pantsIdleTextures[direction * 4 + frame]);
-		pantsSprite.setPosition(position);
 	}
 
 	if (rightHand != nullptr) {
 		SingleTexture::SetTextureForSprite(&rightHandSprite, rightHandIdleTextures[direction * 4 + frame]);
-		rightHandSprite.setPosition(position);
 	}
 
 	if (leftHand != nullptr) {
 		SingleTexture::SetTextureForSprite(&leftHandSprite, leftHandIdleTextures[direction * 4 + frame]);
-		leftHandSprite.setPosition(position);
 	}
 
 	viewRangeArea.setPosition(position);
@@ -328,52 +364,12 @@ void Character::update(float dt) {
 
 	}
 
+	loadAppearance();
+	sprite.setPosition(position);
 }
-
 void Character::draw() {
 
-	if (direction == 0) {
-		// TOP
-		window->draw(rightHandSprite);
-		window->draw(leftHandSprite);
-		window->draw(sprite);
-		window->draw(helmetSprite);
-		window->draw(pantsSprite);
-		window->draw(armorSprite);
-
-	}
-
-	if (direction == 1) {
-		// RIGHT
-
-		window->draw(leftHandSprite);
-		window->draw(sprite);
-		window->draw(helmetSprite);
-		window->draw(pantsSprite);
-		window->draw(armorSprite);
-		window->draw(rightHandSprite);
-	}
-
-	if (direction == 2) {
-		// BOTTOM
-		window->draw(sprite);
-		window->draw(helmetSprite);
-		window->draw(pantsSprite);
-		window->draw(armorSprite);
-		window->draw(leftHandSprite);
-		window->draw(rightHandSprite);
-	}
-
-	if (direction == 3) {
-		// LEFT
-		window->draw(rightHandSprite);
-		window->draw(sprite);
-		window->draw(helmetSprite);
-		window->draw(pantsSprite);
-		window->draw(armorSprite);
-		window->draw(leftHandSprite);
-
-	}
+	window->draw(sprite);
 		
 	if (showHand == true)
 		window->draw(talkWithSprite);
