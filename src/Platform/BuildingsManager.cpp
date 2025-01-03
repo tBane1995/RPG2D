@@ -426,20 +426,20 @@ void Building::loadTexture() {
 
     rtex.draw(beam);
 
-    // bottom tile
+    // create tile and set texture uv
     sf::VertexArray tile(sf::Quads, 4);
+    tile[0].texCoords = sf::Vector2f(0, 0);
+    tile[1].texCoords = sf::Vector2f(tile_width, 0);
+    tile[2].texCoords = sf::Vector2f(tile_width, tile_height);
+    tile[3].texCoords = sf::Vector2f(0, tile_height);
+
+    // bottom tile
     pos.x = size.x / 2.0f * 16.0f;
     pos.y = (walls_height + size.x / 8.0f) * 32.0f;
     tile[0].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_border - tile_height / 8.0f);
     tile[1].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_border - tile_height / 8.0f);
     tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height / 2.0f - tile_border - tile_height / 8.0f);
     tile[3].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_height / 2.0f - tile_border - tile_height / 8.0f);
-
-    for (short i = 0; i < 4; i++)
-        beam[i].color = sf::Color(128, 128, 128);
-
-    for (short i = 0; i < 4; i++)
-        tile[i].texCoords = beam[i].position;
 
     rtex.draw(tile, rstate);
 
@@ -452,9 +452,6 @@ void Building::loadTexture() {
         tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height - tile_border - tile_height / 8.0f);
         tile[3].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_height - tile_border - tile_height / 8.0f);
 
-        for (short i = 0; i < 4; i++)
-            tile[i].texCoords = beam[i].position;
-
         rtex.draw(tile, rstate);
     }
 
@@ -465,9 +462,6 @@ void Building::loadTexture() {
     tile[1].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_border - tile_height / 8.0f);
     tile[2].position = sf::Vector2f(pos.x + tile_width - tile_border, pos.y + tile_height / 2.0f - tile_border - tile_height / 8.0f);
     tile[3].position = sf::Vector2f(pos.x + tile_border, pos.y + tile_height / 2.0f - tile_border - tile_height / 8.0f);
-
-    for (short i = 0; i < 4; i++)
-        tile[i].texCoords = beam[i].position;
 
     rtex.draw(tile, rstate);
 
