@@ -189,14 +189,16 @@ void Btn::update() {
         unclick();
     }
 
-    float w = rect.getSize().x;
-    float h = rect.getSize().y;
-    float x = rect.getPosition().x;
-    float y = rect.getPosition().y;
+    if (state != ButtonState::Pressed) {
+        float w = rect.getSize().x;
+        float h = rect.getSize().y;
+        float x = rect.getPosition().x;
+        float y = rect.getPosition().y;
 
-    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
-        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
-        hover();
+        if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
+            worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+            hover();
+        }
     }
 
     
@@ -334,14 +336,16 @@ void ButtonWithText::update() {
         unclick();
     }
 
-    float w = rect.getSize().x;
-    float h = rect.getSize().y;
-    float x = rect.getPosition().x;
-    float y = rect.getPosition().y;
+    if (state != ButtonState::Pressed) {
+        float w = rect.getSize().x;
+        float h = rect.getSize().y;
+        float x = rect.getPosition().x;
+        float y = rect.getPosition().y;
 
-    if (worldMousePosition.x > x && worldMousePosition.x < x + w &&
-        worldMousePosition.y > y && worldMousePosition.y < y + h) {
-        hover();
+        if (worldMousePosition.x > x && worldMousePosition.x < x + w &&
+            worldMousePosition.y > y && worldMousePosition.y < y + h) {
+            hover();
+        }
     }
 
     
@@ -504,28 +508,30 @@ void ButtonWithImage::update() {
         unclick();
     }
 
-    float w = 0.0f;
-    float h = 0.0f;
-    float x = sprite.getPosition().x;
-    float y = sprite.getPosition().y;
+    if (state != ButtonState::Pressed) {
+        float w = 0.0f;
+        float h = 0.0f;
+        float x = sprite.getPosition().x;
+        float y = sprite.getPosition().y;
 
-    if (texture)
-    {
-        w = texture->getSize().x;
-        h = texture->getSize().y;
-    }
-    else
-    {
-        w = sprite.getTextureRect().width;
-        h = sprite.getTextureRect().height;
+        if (texture)
+        {
+            w = texture->getSize().x;
+            h = texture->getSize().y;
+        }
+        else
+        {
+            w = sprite.getTextureRect().width;
+            h = sprite.getTextureRect().height;
 
-    }
+        }
 
-    if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
-        worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
+        if (worldMousePosition.x > x - w / 2.0f && worldMousePosition.x < x + w / 2.0f &&
+            worldMousePosition.y > y - h / 2.0f && worldMousePosition.y < y + h / 2.0f) {
 
-        hover();
+            hover();
 
+        }
     }
 
     
