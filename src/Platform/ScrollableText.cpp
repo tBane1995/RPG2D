@@ -4,6 +4,7 @@
 #include "TextArea.h"
 #include "Scrollbar.h"
 #include "Camera.h"
+#include "GUI.h"
 
 ScrollableText::ScrollableText(std::wstring text) : Panel(sf::Vector2f(600,400), DialogType::ScrollableText) {
 
@@ -60,7 +61,7 @@ void ScrollableText::handleEvent(sf::Event& event) {
 }
 
 void ScrollableText::update() {
-
+	GUIwasOpen = true;
 }
 
 void ScrollableText::draw() {

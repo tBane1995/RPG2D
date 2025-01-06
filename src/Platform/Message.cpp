@@ -2,6 +2,7 @@
 #include "TextArea.h"
 #include "Theme.h"
 #include "Camera.h"
+#include "GUI.h"
 
 Message::Message(std::wstring message) : Dialog(DialogType::Message) {
 	text = new TextArea(message, cam->position, 400.0f - 2*margin);
@@ -26,7 +27,7 @@ void Message::handleEvent(sf::Event& event) {
 }
 
 void Message::update() {
-
+	GUIwasOpen = true;
 }
 
 void Message::draw() {

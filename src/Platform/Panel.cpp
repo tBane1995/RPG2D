@@ -2,6 +2,7 @@
 #include "Theme.h"
 #include "Window.h"
 #include "Camera.h"
+#include "GUI.h"
 
 Panel::Panel(sf::Vector2f size, DialogType dialog_type) : Dialog(dialog_type) {
 
@@ -23,7 +24,7 @@ void Panel::handleEvent(sf::Event& event) {
 }
 
 void Panel::update() {
-
+	GUIwasOpen = true;
 }
 
 void Panel::draw() {

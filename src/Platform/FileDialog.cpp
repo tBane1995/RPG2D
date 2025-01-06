@@ -7,7 +7,7 @@
 #include <iostream>
 #include "Camera.h"
 #include "Fonts.h"
-
+#include "GUI.h"
 #include "Mouse.h"
 #include "Textures.h"
 #include "Time.h"
@@ -349,6 +349,8 @@ void FileDialog::handleEvent(sf::Event& event) {
 }
 
 void FileDialog::update() {
+
+    GUIwasOpen = true;
 
     selectButton->update();
     cancelButton->update();

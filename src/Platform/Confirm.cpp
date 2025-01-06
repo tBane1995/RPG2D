@@ -8,6 +8,7 @@
 #include "Mouse.h"
 #include "Textures.h"
 #include "Time.h"
+#include "GUI.h"
 
 Confirm::Confirm(std::wstring text) : Dialog(DialogType::Confirm) {
 
@@ -65,6 +66,9 @@ void Confirm::handleEvent(sf::Event& event) {
 }
 
 void Confirm::update() {
+
+	GUIwasOpen = true;
+
 	btn_yes->update();
 	btn_no->update();
 }

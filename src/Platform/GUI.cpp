@@ -2,3 +2,4 @@
 
 bool GUIwasHover;
 bool GUIwasClicked;
+bool GUIwasOpen;

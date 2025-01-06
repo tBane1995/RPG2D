@@ -1,4 +1,5 @@
 #include "Dialog.h"
+#include "GUI.h"
 
 std::vector < Dialog* > dialogs;
 
@@ -15,7 +16,7 @@ void Dialog::handleEvent(sf::Event& event) {
 }
 
 void Dialog::update() {
-
+	GUIwasOpen = true;
 }
 
 void Dialog::draw() {

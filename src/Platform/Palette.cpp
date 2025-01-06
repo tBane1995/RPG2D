@@ -14,6 +14,7 @@
 #include "BrushSizes.h"
 #include "Shaders.h"
 #include "Items.h"
+#include "GUI.h"
 #include <iostream>
 
 /*
@@ -1380,17 +1381,20 @@ void Palette::handleEvent(sf::Event& event) {
 
 
 void Palette::update() {
-    for (auto& tool : toolsButtons)
-        tool->update();
+    
+    if (GUIwasOpen == false) {
+        for (auto& tool : toolsButtons)
+            tool->update();
 
-    for (auto& btn : groupButtons)
-        btn->update();
+        for (auto& btn : groupButtons)
+            btn->update();
 
-    for (auto& btn : paletteButtons)
-        btn->update();
+        for (auto& btn : paletteButtons)
+            btn->update();
 
-    buttonUp->update();
-    buttonDown->update();
+        buttonUp->update();
+        buttonDown->update();
+    }
 }
 
 void Palette::draw()

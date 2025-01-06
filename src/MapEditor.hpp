@@ -113,15 +113,19 @@ void MapEditor() {
 
         GUIwasHover = false;
         GUIwasClicked = false;
-
-        palette->update();
-        menu_bar->update();
-        if (character_side_menu != nullptr)
-            character_side_menu->update();
+        GUIwasOpen = false;
 
         for (auto& dialog : dialogs)
             dialog->update();
 
+        if (character_side_menu != nullptr)
+            character_side_menu->update();
+
+
+        palette->update();
+        menu_bar->update();
+        
+        
 
         if (tip != nullptr && tip->btn != nullptr && tip->btn->state != ButtonState::Hover) {
             delete tip;

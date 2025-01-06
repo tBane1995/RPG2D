@@ -9,6 +9,7 @@
 #include "Time.h"
 #include "BuildingsManager.h"
 #include "ScrollableText.h"
+#include "GUI.h"
 
 void OptionButton::update() {
     ButtonWithText::update();
@@ -458,12 +459,14 @@ void MenuBar::update() {
     bar.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
     logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
 
-    for (auto& m : menu)
-        m->update();
+    if (GUIwasOpen == false) {
+        for (auto& m : menu)
+            m->update();
 
-    if (clickedMenuButton) {
-        for (auto& o : clickedMenuButton->options)
-            o->update();
+        if (clickedMenuButton) {
+            for (auto& o : clickedMenuButton->options)
+                o->update();
+        }
     }
 }
 
