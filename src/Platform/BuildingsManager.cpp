@@ -635,7 +635,7 @@ void Building::load(bool positioning) {
     std::string objectType;
     std::string objectName;
 
-    std::cout << "load building: \n";
+    //std::cout << "load building: \n";
 
     size = sf::Vector2i(16, 16);
     if (positioning == true) {
@@ -662,7 +662,7 @@ void Building::load(bool positioning) {
         std::istringstream lineStream(line);
         lineStream >> objectType;
 
-        std::cout << "objectType: " << objectType << "\n";
+        //std::cout << "objectType: " << objectType << "\n";
 
         if (objectType == "name") {
             getline(lineStream, objectName, '"');
@@ -692,7 +692,7 @@ void Building::load(bool positioning) {
         if (objectType == "door") {
             getline(lineStream, objectName, '"');
             getline(lineStream, objectName, '"');
-            std::cout << "door \"" << objectName << "\"\n";
+            //std::cout << "door \"" << objectName << "\"\n";
 
             GameObject* prefab = getPrefab(objectName);
             if (prefab != nullptr) {
@@ -706,7 +706,7 @@ void Building::load(bool positioning) {
 
             getline(lineStream, objectName, '"');
             getline(lineStream, objectName, '"');
-            std::cout << "top_walls \"" << objectName << "\"\n";
+            //std::cout << "top_walls \"" << objectName << "\"\n";
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
@@ -717,7 +717,7 @@ void Building::load(bool positioning) {
 
             getline(lineStream, objectName, '"');
             getline(lineStream, objectName, '"');
-            std::cout << "walls \"" << objectName << "\"\n";
+            //std::cout << "walls \"" << objectName << "\"\n";
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
@@ -728,7 +728,7 @@ void Building::load(bool positioning) {
 
             getline(lineStream, objectName, '"');
             getline(lineStream, objectName, '"');
-            std::cout << "bottom_walls \"" << objectName << "\"\n";
+            //std::cout << "bottom_walls \"" << objectName << "\"\n";
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
@@ -738,7 +738,7 @@ void Building::load(bool positioning) {
         if (objectType == "windows") {
             getline(lineStream, objectName, '"');
             getline(lineStream, objectName, '"');
-            std::cout << "windows \"" << objectName << "\"\n";
+            //std::cout << "windows \"" << objectName << "\"\n";
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
@@ -747,7 +747,7 @@ void Building::load(bool positioning) {
         }
 
         if (line.find("// FLOORS") != std::string::npos && line.find("// FLOORS" == 0)) {  // TO-DO
-            std::cout << "load the floors\n";
+            //std::cout << "load the floors\n";
 
             if (floors != nullptr)
                 delete floors;
@@ -759,11 +759,11 @@ void Building::load(bool positioning) {
             for (short y = 0; y < size.y; y++) {
                 for (short x = 0; x < size.x; x++) {
                     file >> value;
-                    std::cout << value << " ";
+                    //std::cout << value << " ";
                     floors->edit(x, y, value);
                 }
 
-                std::cout << "\n";
+                //std::cout << "\n";
             }
         }
 
