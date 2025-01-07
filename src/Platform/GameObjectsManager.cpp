@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Time.h"
 #include "Mouse.h"
+#include "TerrainAndFloors.h"
 
 std::vector < GameObject* > selectedGameObjects;
 
@@ -300,15 +301,32 @@ void sortGameObjects()
 
 void drawGameObjects() {
 
-	for (auto& f : flatObjects) {
-		if (f->isVisible)
-			f->draw();
-	}
+    for (auto& f : flatObjects) {
+        if (f->isVisible) {
+            f->drawStatistics();
+        }
+    }
 
-	for (auto& go : gameObjects)
-		if (go->type != GameObjectType::FlatObject)
-			if (go->type == GameObjectType::Building || go->isVisible==true)
-				if(go->isVisible)
-                    go->draw();
+    for (auto& f : flatObjects) {
+        if (f->isVisible) {
+            f->draw();
+        }
+    }
+
+    for (auto& building : buildings) {
+        window->draw(*building->floors);
+        building->draw();
+    }
+
+    for (auto& go : gameObjects) {
+        if (go->type != GameObjectType::FlatObject)
+            if (go->isVisible) {
+                go->drawStatistics();
+            }
+    }
+
+    for (auto& go : gameObjects)
+        if (go->type == GameObjectType::Building || go->isVisible == true)
+            go->draw();
 
 }

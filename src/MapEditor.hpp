@@ -344,30 +344,11 @@ void MapEditor() {
 
         mapa->draw();
         mapa->drawStatistics();
-
-        for (auto& building : buildings) {
-            window->draw(*building->floors);
-            building->draw();
-        }
-
-        for (auto& go : gameObjects) {
-            if (go->type != GameObjectType::FlatObject)
-                if (go->isVisible) {
-                    if (go->mouseIsHover || go->isSelected) {
-                        // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
-                        go->drawAllStatistics();
-                    }
-                    else {
-                        // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
-                        go->drawStatistics();
-                    }
-                }
-        }
-
         drawGameObjects();
         painterDraw();
         palette->draw();
         menu_bar->draw();
+
         if (character_side_menu != nullptr)
             character_side_menu->draw();
 
