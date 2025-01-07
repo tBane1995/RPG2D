@@ -4,7 +4,9 @@
 #include "Collisions.h"
 #include "HitTexts.h"
 #include "Textures.h"
-
+#include "RenderParameters.h"
+#include "Time.h"
+#include "GUI.h"
 float diff_x, diff_y;
 float dist;
 
@@ -83,6 +85,10 @@ Unit::Unit(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	createActionRangeArea();
 }
 
+Unit::~Unit() {
+
+}
+
 void Unit::loadBody() {
 	for (short i = 0; i < 16; i++) {
 		idleTextures[i] = nullptr;
@@ -134,6 +140,22 @@ void Unit::createActionRangeArea() {
 	actionRangeArea.setScale(1.0f, colliders[0]->length / colliders[0]->width);
 }
 
+short Unit::takeDamage(short damage) {
+
+	HP -= damage;
+
+	if (HP < 0)
+		HP = 0;
+
+	return damage;
+}
+
+short Unit::getDamage() {
+	short damage = STRENGTH * 2;
+	damage = damage * (rand() % 50 + 75) / 100;	// 75% - 125%
+	return damage;
+}
+
 void Unit::setLifeBar() {
 	lifeBarBackground = sf::RectangleShape(sf::Vector2f(50.0f, 6.0f));
 	lifeBarBackground.setOrigin(25, 3);
@@ -155,6 +177,11 @@ void Unit::calculateCurrentFrame(float dt) {
 
 	if (frame > 3)
 		frame = frame % 4;
+}
+
+void Unit::cooldownDecrease(float dt) {
+	if (cooldown >= 0.0f)
+		cooldown -= dt;
 }
 
 bool Unit::playerInActionRange() {
@@ -295,20 +322,34 @@ void Unit::idling(float dt) {
 	sprite.setPosition(position);
 }
 
-void Unit::draw() {
+void Unit::update() {
 
-	GameObject::draw();
+	float dt = currentTime.asSeconds() - prevTime.asSeconds();
+
+	calculateCurrentFrame(dt);
+	sprite.setPosition(position);
+	setLifeBar();
+
+	GameObject::update();
+
+	viewRangeArea.setPosition(position);
+	actionRangeArea.setPosition(position);
+}
+
+void Unit::drawStatistics() {
+
+	if (renderViewRange || isSelected || (!GUIwasOpen && !GUIwasClicked && !GUIwasHover && mouseIsHover))
+		window->draw(viewRangeArea);
+
+	if (renderActionRange || isSelected || (!GUIwasOpen && !GUIwasClicked && !GUIwasHover && mouseIsHover))
+		window->draw(actionRangeArea);
+
+	GameObject::drawStatistics();
+}
+
+void Unit::draw() {
 
 	window->draw(sprite);
 	window->draw(lifeBarBackground);
 	window->draw(lifeBar);
-
-	GameObject::draw();
-}
-
-void Unit::drawAllStatistics() {
-	window->draw(viewRangeArea);
-	window->draw(actionRangeArea);
-
-	GameObject::drawAllStatistics();
 }

@@ -3,6 +3,7 @@
 #include "Textures.h"
 #include "HitTexts.h"
 #include "Window.h"
+#include "Time.h"
 
 Player::Player() : GameObject("hero", 0, 0, 24, 12, 64, true, ColliderType::Elipse) {
 	type = GameObjectType::Player;
@@ -396,8 +397,8 @@ bool Player::levelUp() {
 	return false;
 }
 
-void Player::update(float dt) {
-
+void Player::update() {
+	float dt = currentTime.asSeconds() - prevTime.asSeconds();
 	float distance = 20.0f * stepSize * dt;
 
 	if (state == unitStates::attack) {
@@ -491,6 +492,10 @@ void Player::update(float dt) {
 
 	actionRangeArea.setPosition(position);
 
+}
+
+void Player::drawStatistics() {
+	GameObject::drawStatistics();
 }
 
 void Player::draw() {

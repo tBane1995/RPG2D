@@ -11,20 +11,10 @@ public:
 
 	Wall(std::string name, float width, float length, float height);
 	Wall(GameObject* object, float x, float y);
-
-	virtual ~Wall() {
-
-	}
-
-	virtual void setPosition(sf::Vector2f position) override {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
-	virtual void update(float dt) override {
-		
-	}
-
+	virtual ~Wall();
+	virtual void setPosition(sf::Vector2f position) override;
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 };
 

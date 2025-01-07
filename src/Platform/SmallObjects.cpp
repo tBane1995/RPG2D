@@ -20,12 +20,25 @@ SmallObject::SmallObject(GameObject* object, float x, float y) : GameObject(obje
 
 }
 
-void SmallObject::draw() {
+SmallObject::~SmallObject() {
 
-	if (mouseIsHover)
-		GameObject::draw();
+}
+
+void SmallObject::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+void SmallObject::update() {
+
+}
+
+void SmallObject::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
+void SmallObject::draw() {
 
 	window->draw(sprite);
 }
-
 std::vector < SmallObject* > smallObjects;

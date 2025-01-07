@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Pathfinding.h"
 #include "RenderParameters.h"
+#include "GUI.h"
 
 Monster::Monster(std::string name, float width, float length, float height, short EXP) : Unit(name, name, width, length, height)
 {
@@ -204,7 +205,7 @@ void Monster::run(float dt) {
 	SingleTexture::SetTextureForSprite(&sprite, runTextures[direction * 4 + frame]);
 }
 
-void Monster::update(float dt) {
+void Monster::update() {
 
 
 	if (HP == 0 && isAlive == true) {
@@ -236,6 +237,8 @@ void Monster::update(float dt) {
 		
 	if( isAlive == true) {
 
+		float dt = currentTime.asSeconds() - prevTime.asSeconds();
+
 		if (playerInActionRange()) {
 			state = unitStates::attack;
 		}
@@ -259,58 +262,45 @@ void Monster::update(float dt) {
 
 		sprite.setPosition(position);
 
+		GameObject::update();
+
 		setLifeBar();
 		createTextname();
-	}
 
-}
+		// colliders coloring
+		if (collisionPrediction(this, 0, 0))
+			colliders[0]->shape->setFillColor(sf::Color::Red);
+		else
+			colliders[0]->shape->setFillColor(sf::Color(128, 64, 128, 96));
 
-void Monster::updateStatistic(float dt) {
-		
-	Unit::updateStatistic(dt);
+		// ranges
+		viewRangeArea.setPosition(position);
+		actionRangeArea.setPosition(position);
 
-	if (collisionPrediction(this, 0, 0))
-		colliders[0]->shape->setFillColor(sf::Color::Red);
-	else
-		colliders[0]->shape->setFillColor(sf::Color(128, 64, 128, 96));
-		
-	viewRangeArea.setPosition(position);
-	actionRangeArea.setPosition(position);
-
-	// PATH
-
-	pathpoints.clear();
-	for (auto& p : path) {
-		sf::CircleShape point = sf::CircleShape(4);
-		point.setFillColor(sf::Color::Red);
-		point.setOrigin(4, 4);
-		point.setPosition(p.x, p.y);
-		pathpoints.push_back(point);
-	}
-}
-
-void Monster::draw() {
-	if (isAlive)
-	{
-		Unit::draw();
-
-		window->draw(sprite);
-		window->draw(lifeBarBackground);
-		window->draw(lifeBar);
-		//std::cout << "SpritePos: " << sprite.getPosition().x << "x" << sprite.getPosition().y << "  lifeBarPos:" << lifeBar.getPosition().x << "x" << lifeBar.getPosition().y << std::endl;
+		// generate path
+		pathpoints.clear();
+		for (auto& p : path) {
+			sf::CircleShape point = sf::CircleShape(4);
+			point.setFillColor(sf::Color::Red);
+			point.setOrigin(4, 4);
+			point.setPosition(p.x, p.y);
+			pathpoints.push_back(point);
+		}
 	}
 }
 
 void Monster::drawStatistics() {
-		
 
-	if(renderViewRange)
+
+	if (renderViewRange || isSelected || (!GUIwasOpen && !GUIwasClicked && !GUIwasHover && mouseIsHover))
 		window->draw(viewRangeArea);
-		
-	if(renderActionRange)
+
+	if (renderActionRange || isSelected || (!GUIwasOpen && !GUIwasClicked && !GUIwasHover && mouseIsHover))
 		window->draw(actionRangeArea);
-		
-	if (renderMonsterBases) {
+
+	GameObject::drawStatistics();
+
+	if (renderMonsterBases || isSelected || (!GUIwasOpen && !GUIwasClicked && !GUIwasHover && mouseIsHover)) {
 		for (auto& p : pathpoints)
 			window->draw(p);
 
@@ -321,21 +311,21 @@ void Monster::drawStatistics() {
 		window->draw(meta);
 	}
 
-	Unit::drawStatistics();
 }
 
-void Monster::drawAllStatistics() {
-		
-	for (auto& p : pathpoints)
-		window->draw(p);
+void Monster::draw() {
 
-	sf::CircleShape meta(8);
-	meta.setFillColor(sf::Color::Blue);
-	meta.setOrigin(8, 8);
-	meta.setPosition(target.x, target.y);
-	window->draw(meta);
+	if (isAlive) {
 
-	Unit::drawAllStatistics();
+		Unit::draw();
+
+		window->draw(sprite);
+		window->draw(lifeBarBackground);
+		window->draw(lifeBar);
+
+
+	}
 }
+
 
 std::vector < Monster* > monsters;

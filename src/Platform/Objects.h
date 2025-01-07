@@ -18,16 +18,10 @@ public:
 
 	Object(std::string name, float width, float length, float height, bool collisioning);
 	Object(GameObject* object, float x, float y);
-
-	virtual ~Object() { }
-
-	virtual void setPosition(sf::Vector2f position) override {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
-	virtual void update(float dt) override;
-
+	virtual ~Object();
+	virtual void setPosition(sf::Vector2f position) override;
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 };
 

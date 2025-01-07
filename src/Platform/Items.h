@@ -38,20 +38,11 @@ public:
 
 	ItemOnMap(Item* item, float x, float y, short count = 1);
 	ItemOnMap(GameObject* object, float x, float y);
+	virtual ~ItemOnMap();
 
-	virtual ~ItemOnMap() {
-	}
-
-	virtual void setPosition(sf::Vector2f position) override {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
-	virtual void update(float dt) override {
-
-		
-	}
-
+	virtual void setPosition(sf::Vector2f position) override;
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 
 };
@@ -102,20 +93,10 @@ public:
 	Inventory* inventory;
 
 	InventoryOnMap(Inventory* inventory, float x, float y);
-	
-	virtual void setPosition(sf::Vector2f position) override {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
-	virtual ~InventoryOnMap() override {
-
-	}
-
-	virtual void update(float dt) override {
-
-	}
-
+	virtual void setPosition(sf::Vector2f position);
+	virtual ~InventoryOnMap();
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 
 };

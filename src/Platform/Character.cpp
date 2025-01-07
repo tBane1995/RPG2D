@@ -4,6 +4,7 @@
 #include "Items.h"
 #include "Player.h"
 #include "Collisions.h"
+#include "Time.h"
 
 Character::Character(std::string name, std::string bodySet) : Unit(name, bodySet, 36, 18, 64) {		
 	type = GameObjectType::Character;
@@ -306,10 +307,11 @@ void Character::loadAppearance() {
 	sprite.setOrigin(32, 58);
 }
 
-void Character::update(float dt) {
+void Character::update() {
+	float dt = currentTime.asSeconds() - prevTime.asSeconds();;
 
 	calculateCurrentFrame(dt);
-	GameObject::update(dt);
+	GameObject::update();
 	textname.setPosition(position.x, position.y - height - 10);
 
 	SingleTexture::SetTextureForSprite(&bodySprite, idleTextures[direction * 4 + frame]);
@@ -367,13 +369,18 @@ void Character::update(float dt) {
 	loadAppearance();
 	sprite.setPosition(position);
 }
+
+void Character::drawStatistics() {
+	Unit::drawStatistics();
+}
+
 void Character::draw() {
 
 	window->draw(sprite);
-		
+
 	if (showHand == true)
 		window->draw(talkWithSprite);
-		
+
 	GameObject::draw();
 	//window->draw(lifeBarBackground);
 	//window->draw(lifeBar);

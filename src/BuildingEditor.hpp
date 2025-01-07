@@ -322,17 +322,11 @@ void BuildingEditor() {
         window->draw(*building->floors);
 
         for (auto& go : gameObjects) {
-            if (go->type != GameObjectType::FlatObject)
+            if (go->type != GameObjectType::FlatObject) {
                 if (go->isVisible) {
-                    if (go->mouseIsHover || go->isSelected) {
-                        // Obiekt jest najechany kursorem lub zaznaczony - rysuj wszystkie statystyki
-                        go->drawAllStatistics();
-                    }
-                    else {
-                        // Obiekt nie jest najechany ani zaznaczony - rysuj tylko wymagane statystyki
-                        go->drawStatistics();
-                    }
+                    go->drawStatistics();
                 }
+            }
         }
 
         drawGameObjects();

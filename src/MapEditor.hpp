@@ -12,8 +12,6 @@ bool deleteChosenGameObject();
 void unselectPaletteButton();
 void MapEditorEventRightClick();
 
-Plant* grass;
-
 void MapEditor() {
 
     window->setTitle("Map Editor");

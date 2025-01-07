@@ -32,12 +32,9 @@ public:
 	void followThePath(float dt);
 	void idle(float dt);
 	void run(float dt);
-	virtual void update(float dt);
-	virtual void updateStatistic(float dt);
-
-	virtual void draw();
-	virtual void drawStatistics();
-	virtual void drawAllStatistics();
+	virtual void update() override;
+	virtual void drawStatistics() override;
+	virtual void draw() override;
 };
 
 extern std::vector < Monster* > monsters;

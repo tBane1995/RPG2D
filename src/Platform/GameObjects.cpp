@@ -5,6 +5,7 @@
 #include "Collisions.h"
 #include "Theme.h"
 #include "RenderParameters.h"
+#include "GUI.h"
 #include <iostream>
 
 Collider::Collider(float width, float length, sf::Vector2f position, float dx, float dy, ColliderType type) {
@@ -267,38 +268,31 @@ void GameObject::mouseHovering()
 	}
 }
 
-void GameObject::update(float dt) {
+
+void GameObject::update() {
 
 	mouseHovering();
 	createTextname();
+
+	for (auto& col : colliders) {
+		col->setPosition(position);
+	}
 }
 
-void GameObject::updateStatistic(float dt)
-{
-	if (type != GameObjectType::Door)
-		for (auto& col : colliders) {
-			col->setPosition(position);
-		}
-}
+void GameObject::drawStatistics() {
+	if (renderColliders || isSelected || (!GUIwasOpen && !GUIwasClicked && !GUIwasHover && mouseIsHover)) {
 
-void GameObject::draw()
-{
-	window->draw(textname);
-}
-
-void GameObject::drawStatistics()
-{
-	if (renderColliders) {
 		for (auto& col : colliders) {
 			window->draw(*col->shape);
 		}
 	}
+
 }
 
-void GameObject::drawAllStatistics()
-{
-	for (auto& col : colliders) {
-		window->draw(*col->shape);
+void GameObject::draw() {
+
+	if (isSelected || (!GUIwasOpen && !GUIwasClicked && !GUIwasHover && mouseIsHover)) {
+		window->draw(textname);
 	}
 }
 

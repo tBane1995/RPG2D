@@ -17,6 +17,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include "GUI.h"
 
 Building::Building(int width, int height) : GameObject("empty", 0, 0) {
 
@@ -886,33 +887,34 @@ void Building::save(std::string filename) {
     file.close();
 }
 
-void Building::update(float dt) {
+void Building::update() {
     calculateCorners();
     mouseHovering();
 }
-void Building::updateStatistic(float dt)
-{
 
-}
-void Building::draw() {
-    if (isSelected == true) {
+void Building::drawStatistics()
+{
+    if (isSelected) {
         window->draw(*colliders[0]->shape);
     }
-
-    if (player != nullptr && !playerInside()) {
-        window->draw(sprite);
-    }
-
-    // TO-DO - OR
-
-    if (player == nullptr) {
-        if (GameObject::mouseIsHover == false) {
-            window->draw(sprite);
-        }
-    }
 }
-void Building::drawAllStatistics()
-{
+
+void Building::draw() {
+    bool show_outside_sprite = true;
+
+    if (player == nullptr && isSelected) {
+        show_outside_sprite = false;
+    }
+    else if (player == nullptr && GUIwasOpen == false && GUIwasClicked == false && GUIwasHover == false && mouseIsHover) {
+        show_outside_sprite = false;
+    }
+    else if (player != nullptr && playerInside()) {
+        show_outside_sprite = false;
+    }
+
+    if (show_outside_sprite)
+        window->draw(sprite);
+
 }
 
 std::vector < Building* > buildings;

@@ -21,7 +21,7 @@ public:
 		
 	}
 
-	virtual void update(float dt);
+	virtual void update();
 	virtual void draw();
 	
 };
@@ -36,7 +36,7 @@ public:
 		
 	}
 
-	virtual void update(float dt);
+	virtual void update();
 	virtual void draw();
 
 };

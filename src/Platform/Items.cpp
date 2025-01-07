@@ -85,16 +85,30 @@ ItemOnMap::ItemOnMap(GameObject* object, float x, float y) : GameObject(object, 
 	sprite.setScale(0.75f, 0.75f);
 }
 
+ItemOnMap::~ItemOnMap() {
+
+}
+
+void ItemOnMap::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+void ItemOnMap::update() {
+
+	GameObject::update();
+}
+
+void ItemOnMap::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
 void ItemOnMap::draw() {
 
 	window->draw(sprite);
 
-	if (mouseIsHover) {
-
-		GameObject::draw();
-		window->draw(textname);
-	}
 }
+
 
 std::vector < ItemOnMap* > itemsOnMap;
 
@@ -395,14 +409,25 @@ InventoryOnMap::InventoryOnMap(Inventory* inventory, float x, float y) : GameObj
 	this->inventory = inventory;
 }
 
+void InventoryOnMap::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+InventoryOnMap::~InventoryOnMap() {
+
+}
+
+void InventoryOnMap::update() {
+	GameObject::update();
+}
+
+void InventoryOnMap::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
 void InventoryOnMap::draw() {
-
-	if (mouseIsHover)
-	{
-		GameObject::draw();
-	}
 	window->draw(sprite);
-
 }
 
 std::vector < InventoryOnMap* > inventoriesOnMap;

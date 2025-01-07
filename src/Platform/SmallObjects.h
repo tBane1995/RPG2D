@@ -12,18 +12,10 @@ public:
 
 	SmallObject(std::string name, float width, float length, float height);
 	SmallObject(GameObject* object, float x, float y);
-
-	~SmallObject() { }
-
-	virtual void setPosition(sf::Vector2f position) {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
-	virtual void update(float dt) override {
-
-	}
-
+	~SmallObject();
+	virtual void setPosition(sf::Vector2f position) override;
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 };
 

@@ -42,7 +42,17 @@ Furniture::Furniture(GameObject* object, float x, float y) : GameObject(object, 
 	takeItSprite.setPosition(position.x, position.y - 50);
 }
 
-void Furniture::update(float dt) {
+Furniture::~Furniture() {
+
+}
+
+void Furniture::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+
+void Furniture::update() {
 
 		
 	showHand = false;
@@ -94,9 +104,11 @@ void Furniture::update(float dt) {
 
 }
 
-void Furniture:: draw() {
-	if (mouseIsHover)
-		GameObject::draw();
+void Furniture::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
+void Furniture::draw() {
 
 	window->draw(sprite);
 

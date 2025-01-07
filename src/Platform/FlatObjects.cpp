@@ -24,10 +24,24 @@ FlatObject::FlatObject(GameObject* object, float x, float y) : GameObject(object
 
 }
 
-void FlatObject::draw() {
+FlatObject::~FlatObject() {
 
-	if (mouseIsHover)
-		GameObject::draw();
+}
+
+void FlatObject::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+void FlatObject::update() {
+	GameObject::update();
+}
+
+void FlatObject::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
+void FlatObject::draw() {
 
 	window->draw(sprite);
 }

@@ -18,7 +18,7 @@ WaterPrefab::WaterPrefab(std::string name, short id, TerrainPrefab* terrain) : G
 	colliders[0]->shape->setPosition(position);
 }
 
-void WaterPrefab::update(float dt) {
+void WaterPrefab::update() {
 	sf::Vector2f position;
 	position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
 	position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);

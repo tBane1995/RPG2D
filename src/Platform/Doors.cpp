@@ -93,9 +93,9 @@ bool Door::playerNextTo() {
 		return false;
 }
 
-void Door::update(float dt) {
+void Door::update() {
 
-	GameObject::update(dt);
+	GameObject::update();
 
 	(playerNextTo()) ? showHand = true : showHand = false;
 
@@ -132,11 +132,11 @@ void Door::update(float dt) {
 	
 }
 
+void Door::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
 void Door::draw() {
-	if (mouseIsHover)
-		GameObject::draw();
-
-
 
 	window->draw(sprite);
 

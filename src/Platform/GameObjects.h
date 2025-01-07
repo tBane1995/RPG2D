@@ -75,11 +75,9 @@ public:
 	virtual void setPosition(sf::Vector2f position);
 	void createTextname();
 	virtual void mouseHovering();
-	virtual void update(float dt);
-	virtual void updateStatistic(float dt);
-	virtual void draw();
+	virtual void update();
 	virtual void drawStatistics();
-	virtual void drawAllStatistics();
+	virtual void draw();
 };
 
 

@@ -127,7 +127,8 @@ public:
 	void gainEXP(short EXP);
 	bool levelUp();
 
-	virtual void update(float dt) override;
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 };
 

@@ -19,19 +19,25 @@ Wall::Wall(GameObject* object, float x, float y) : GameObject(object, x, y) {
 	sprite.setPosition(position);
 }
 
-void Wall::draw() {
-	if (mouseIsHover)
-		GameObject::draw();
+Wall::~Wall() {
 
+}
+
+void Wall::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+void Wall::update() {
+
+}
+
+void Wall::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
+void Wall::draw() {
 	window->draw(sprite);
-/*
-	sf::RectangleShape Rect(sf::Vector2f(sprite.getLocalBounds().width, sprite.getLocalBounds().height));
-	Rect.setPosition(sprite.getPosition());
-	Rect.setOutlineColor(sf::Color::Red);
-	Rect.setOutlineThickness(1.0f);
-	Rect.setFillColor(sf::Color::Transparent);
-	window->draw(Rect);
-*/
 }
 
 std::vector < Wall* > walls;

@@ -73,7 +73,8 @@ public:
 	void loadRightHand();
 	void loadAppearance();
 
-	virtual void update(float dt) override;
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 };
 

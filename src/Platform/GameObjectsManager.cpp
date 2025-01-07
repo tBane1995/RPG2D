@@ -281,17 +281,16 @@ bool visiblings(GameObject* object) {
 
 void updateGameObjects() {
 
-	for (auto& go : gameObjects) {
+    for (auto& go : gameObjects) {
         if (visiblings(go)) {
 
             go->isVisible = true;
-            go->update(dt);
-            go->updateStatistic(dt);
+            go->update();
             go->mouseHovering();
         }
         else
             go->isVisible = false;
-	}
+    }
 }
 
 void sortGameObjects()

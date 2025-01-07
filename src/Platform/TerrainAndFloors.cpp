@@ -13,7 +13,7 @@ TerrainPrefab::TerrainPrefab(std::string name, short id) : GameObject(name) {
 	colliders[0]->shape->setPosition(position);
 }
 
-void TerrainPrefab::update(float dt) {
+void TerrainPrefab::update() {
 	sf::Vector2f position;
 	position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
 	position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
@@ -29,7 +29,7 @@ FloorPrefab::FloorPrefab(std::string name, short id) : GameObject(name) {
 	this->id = id;
 }
 
-void FloorPrefab::update(float dt) {
+void FloorPrefab::update() {
 	sf::Vector2f position;
 	position.x = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
 	position.y = int(worldMousePosition.y) / int(tileSide) * int(tileSide);

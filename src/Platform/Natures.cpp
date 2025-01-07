@@ -25,20 +25,28 @@ Nature::Nature(GameObject* object, float x, float y) : GameObject(object, x, y) 
 
 }
 
+Nature::~Nature() {
+
+}
+
+void Nature::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+void Nature::update() {
+	GameObject::update();
+}
+
+void Nature::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
 void Nature::draw() {
 
-	if (mouseIsHover)
-		GameObject::draw();
-
-	//window->draw(shadow);
-	Shader* s = getShader("shaders/shadow");
-	s->shader->setUniform("texture", texture->texture);
-	s->shader->setUniform("camPosition", cam->position);
-	s->shader->setUniform("resolution", sf::Vector2f(screenWidth, screenHeight));
-	window->draw(sprite, s->shader);
 	window->draw(sprite);
 
-		
+
 }
 
 std::vector < Nature* > natures;

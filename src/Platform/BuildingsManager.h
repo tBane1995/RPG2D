@@ -49,10 +49,9 @@ public:
     void load(bool positioning=false);
     void save(std::string filename);
 
-    void update(float dt);
-    void updateStatistic(float dt);
+    void update();
+    void drawStatistics();
     void draw();
-    void drawAllStatistics();
 };
 
 extern std::vector < Building* > buildings;

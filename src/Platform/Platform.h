@@ -37,7 +37,6 @@
 #include "Platform/FlatObjects.h"          // manage of Flat Objects (flat plants, flat rocks, etc.)
 #include "Platform/Walls.h"                // manage of Walls 
 #include "Platform/Doors.h"                // manage of Doors
-#include "Platform/Plants.h"               // manage of Plants ( TO-DO - TEST )
 #include "Platform/SmallObjects.h"         // manage of small objects (grass, etc.)
 #include "Platform/Dialogues.h"            
 #include "Platform/Character.h"            // manage of Characters

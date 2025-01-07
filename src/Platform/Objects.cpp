@@ -34,9 +34,18 @@ Object::Object(GameObject* object, float x, float y) : GameObject(object, x, y) 
 
 }
 
-void Object::update(float dt) {
+Object::~Object() {
+
+}
+
+void Object::setPosition(sf::Vector2f position) {
+	this->position = position;
+	sprite.setPosition(position);
+}
+
+void Object::update() {
 	if ((currentTime - last_action_time).asSeconds() > 0.1f) {
-			
+
 		last_action_time = currentTime;
 		frame += 1;
 
@@ -45,17 +54,17 @@ void Object::update(float dt) {
 
 		texture = textures[frame];
 
-		SingleTexture::SetTextureForSprite(&sprite, texture);
+		sprite.setTexture(*texture->texture);
 	}
-		
 
 }
-void Object::draw() {
 
-	if (mouseIsHover)
-		GameObject::draw();
+void Object::drawStatistics() {
+	GameObject::drawStatistics();
+}
+
+void Object::draw() {
 
 	window->draw(sprite);
 }
-
 std::vector < Object* > objects;

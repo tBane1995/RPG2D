@@ -54,37 +54,15 @@ public:
 	Unit(std::string name, std::string bodySet, float width, float length, float height);
 	Unit(GameObject* object, float x, float y);
 
-	virtual ~Unit() {
-	
-	}
-
+	virtual ~Unit();
 	void loadBody();
 	void createViewRangeArea();
 	void createActionRangeArea();
 	void setLifeBar();
-
-	short takeDamage(short damage) {
-
-		HP -= damage;
-
-		if (HP < 0)
-			HP = 0;
-		
-		return damage;
-	}
-
-	short getDamage() {
-		short damage = STRENGTH * 2;
-		damage = damage * (rand() % 50 + 75) / 100;	// 75% - 125%
-		return damage;
-	}
-
+	short takeDamage(short damage);
+	short getDamage();
 	void calculateCurrentFrame(float dt);
-
-	void cooldownDecrease(float dt) {
-		if (cooldown >= 0.0f)
-			cooldown -= dt;
-	}
+	void cooldownDecrease(float dt);
 
 	bool playerInActionRange();
 	bool playerInViewRange();
@@ -95,24 +73,8 @@ public:
 	void attack(float dt);
 	void idling(float dt);
 
-	virtual void update(float dt) override {
-
-		calculateCurrentFrame(dt);
-		sprite.setPosition(position);
-		setLifeBar();
-
-		GameObject::update(dt);
-	}
-
-	virtual void updateStatistic(float dt) override {
-
-		GameObject::updateStatistic(dt);
-
-		viewRangeArea.setPosition(position);
-		actionRangeArea.setPosition(position);
-	}
-
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
-	virtual void drawAllStatistics() override;
 
 };

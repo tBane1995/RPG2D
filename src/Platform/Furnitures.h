@@ -19,17 +19,11 @@ public:
 
 	Furniture(std::string name, float width, float length, float height);
 	Furniture(GameObject* object, float x, float y);
+	virtual ~Furniture();
+	virtual void setPosition(sf::Vector2f position) override;
 
-	virtual ~Furniture() {
-
-	}
-
-	virtual void setPosition(sf::Vector2f position) override {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
-	virtual void update(float dt) override;
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 };
 

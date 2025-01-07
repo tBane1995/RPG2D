@@ -13,19 +13,11 @@ public:
 	FlatObject(std::string name, float width, float length, float height);
 	FlatObject(GameObject* object, float x, float y);
 
-	virtual ~FlatObject() {
-	
-	}
+	virtual ~FlatObject();
+	virtual void setPosition(sf::Vector2f position) override;
 
-	virtual void setPosition(sf::Vector2f position) override {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
-	virtual void update(float dt) override {
-
-	}
-
+	virtual void update() override;
+	virtual void drawStatistics() override;
 	virtual void draw() override;
 };
 

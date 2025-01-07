@@ -91,7 +91,7 @@ void painterUpdate() {
                     dynamic_cast<Unit*>(prefab)->idling(dt);
                 }
                 else {
-                    prefab->update(dt);
+                    prefab->update();
                     prefab->mouseIsHover = false;
 
                 }
