@@ -42,7 +42,7 @@ public:
     virtual void click();
 
     virtual void handleEvent(sf::Event& event);
-    virtual void update();
+    virtual void update(bool hover_action = true);
     virtual void draw();
 };
 
@@ -68,7 +68,7 @@ public:
     virtual void click();
 
     virtual void handleEvent(sf::Event& event);
-    virtual void update();
+    virtual void update(bool hover_action = true);
     virtual void draw();
 
 };
@@ -103,7 +103,7 @@ public:
     virtual void click();
 
     virtual void handleEvent(sf::Event& event);
-    virtual void update();
+    virtual void update(bool hover_action = true);
     virtual void draw();
 };
 

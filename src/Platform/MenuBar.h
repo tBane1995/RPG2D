@@ -16,7 +16,7 @@ public:
         checkbox = nullptr;
     }
 
-    virtual void update();
+    virtual void update(bool hover_action = true);
     virtual void draw();
 };
 
@@ -31,12 +31,8 @@ public:
     }
 
     void addOption(ButtonWithText* btn);
-
+    virtual void update(bool hover_action = true) override;
     virtual void draw() override;
-
-    virtual void update() override {
-        ButtonWithText::update();
-    }
 };
 
 enum class MenuBarType { MapEditor, BuildingEditor };
@@ -84,6 +80,7 @@ public:
     ~MenuBar();
     void createButtons();
     void createMenu();
+    bool bar_is_hover();
     void handleEvent(sf::Event& event);
     void update();
     void draw();

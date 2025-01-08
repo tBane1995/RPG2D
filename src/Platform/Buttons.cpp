@@ -180,7 +180,7 @@ void Btn::handleEvent(sf::Event& event) {
     }
 }
 
-void Btn::update() {
+void Btn::update(bool hover_action) {
 
     rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
@@ -189,7 +189,7 @@ void Btn::update() {
         unclick();
     }
 
-    if (state != ButtonState::Pressed) {
+    if (hover_action && mouse_state != MouseState::Selecting && state != ButtonState::Pressed) {
         float w = rect.getSize().x;
         float h = rect.getSize().y;
         float x = rect.getPosition().x;
@@ -327,7 +327,7 @@ void ButtonWithText::handleEvent(sf::Event& event) {
     }
 }
 
-void ButtonWithText::update() {
+void ButtonWithText::update(bool hover_action) {
 
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
     text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
@@ -336,7 +336,7 @@ void ButtonWithText::update() {
         unclick();
     }
 
-    if (state != ButtonState::Pressed) {
+    if (hover_action && mouse_state != MouseState::Selecting && state != ButtonState::Pressed) {
         float w = rect.getSize().x;
         float h = rect.getSize().y;
         float x = rect.getPosition().x;
@@ -500,7 +500,7 @@ void ButtonWithImage::handleEvent(sf::Event& event) {
     }
 }
 
-void ButtonWithImage::update() {
+void ButtonWithImage::update(bool hover_action) {
 
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 
@@ -508,7 +508,7 @@ void ButtonWithImage::update() {
         unclick();
     }
 
-    if (state != ButtonState::Pressed) {
+    if (hover_action && mouse_state != MouseState::Selecting && state != ButtonState::Pressed) {
         float w = 0.0f;
         float h = 0.0f;
         float x = sprite.getPosition().x;

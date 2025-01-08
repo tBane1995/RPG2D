@@ -10,9 +10,11 @@
 #include "BuildingsManager.h"
 #include "ScrollableText.h"
 #include "GUI.h"
+#include "Mouse.h"
+#include "Buttons.h"
 
-void OptionButton::update() {
-    ButtonWithText::update();
+void OptionButton::update(bool hover_action) {
+    ButtonWithText::update(hover_action);
 
     if (checkbox)
         checkbox->update(dt);
@@ -68,6 +70,9 @@ void MenuButton::addOption(ButtonWithText* btn) {
         }
     }
         
+}
+void MenuButton::update(bool hover_action) {
+    ButtonWithText::update(hover_action);
 }
 
 void MenuButton::draw() {
@@ -427,6 +432,17 @@ void MenuBar::createMenu() {
     }
 }
 
+bool MenuBar::bar_is_hover() {
+    float left = bar.getGlobalBounds().left;
+    float right = left + bar.getGlobalBounds().width;
+    float top = bar.getGlobalBounds().top;
+    float bottom = top + bar.getGlobalBounds().height;
+    if (worldMousePosition.x > left && worldMousePosition.x < right && worldMousePosition.y > top && worldMousePosition.y < bottom)
+        return true;
+    else
+        return false;
+}
+
 void MenuBar::handleEvent(sf::Event& event) {
     bool clicked_in_menu = false;
 
@@ -459,14 +475,17 @@ void MenuBar::update() {
     bar.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
     logo.setPosition(-screenWidth / 2.0f + cam->position.x, -screenHeight / 2.0f + cam->position.y);
 
-    if (GUIwasOpen == false) {
-        for (auto& m : menu)
-            m->update();
+    bool hover_action = !GUIwasOpen;
 
-        if (clickedMenuButton) {
-            for (auto& o : clickedMenuButton->options)
-                o->update();
-        }
+    if (bar_is_hover())
+        GUIwasHover = true;
+
+    for (auto& m : menu)
+        m->update(hover_action);
+
+    if (clickedMenuButton) {
+        for (auto& o : clickedMenuButton->options)
+            o->update(hover_action);
     }
 }
 

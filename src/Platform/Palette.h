@@ -40,7 +40,7 @@ public:
     void setGameObject(GameObject* object);
 
     virtual void handleEvent(sf::Event& event) override;
-    virtual void update() override;
+    virtual void update(bool hover_action = true) override;
     virtual void draw() override;
 };
 

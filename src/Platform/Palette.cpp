@@ -133,8 +133,8 @@ void PaletteButton::handleEvent(sf::Event& event) {
     
 }
 
-void PaletteButton::update() {
-    ButtonWithImage::update();
+void PaletteButton::update(bool hover_action) {
+    ButtonWithImage::update(hover_action);
     sprite.setPosition(position.x + cam->position.x, position.y + cam->position.y);
 }
 
