@@ -1382,19 +1382,19 @@ void Palette::handleEvent(sf::Event& event) {
 
 void Palette::update() {
     
-    if (GUIwasOpen == false) {
-        for (auto& tool : toolsButtons)
-            tool->update();
+    bool hover_action = !GUIwasOpen;
 
-        for (auto& btn : groupButtons)
-            btn->update();
+    for (auto& tool : toolsButtons)
+        tool->update(hover_action);
 
-        for (auto& btn : paletteButtons)
-            btn->update();
+    for (auto& btn : groupButtons)
+        btn->update(hover_action);
 
-        buttonUp->update();
-        buttonDown->update();
-    }
+    for (auto& btn : paletteButtons)
+        btn->update(hover_action);
+
+    buttonUp->update(hover_action);
+    buttonDown->update(hover_action);
 }
 
 void Palette::draw()

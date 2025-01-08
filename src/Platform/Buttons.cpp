@@ -398,6 +398,29 @@ ButtonWithImage::ButtonWithImage(ButtonWithImage* btn, sf::Vector2f position)
     
 }
 
+ButtonWithImage::ButtonWithImage(SingleTexture* texture)
+{
+    this->position = sf::Vector2f(0,0);
+    this->texture = texture;
+
+    sprite = sf::Sprite();
+
+    state = ButtonState::Idle;
+
+    if (texture != nullptr) {
+        SingleTexture::SetTextureForSprite(&sprite, texture);
+        sprite.setOrigin(texture->getSize().x / 2.0f, texture->getSize().y / 2.0f);
+    }
+
+    sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
+
+    hover_func = { };
+    onclick_func = { };
+
+    clickTime = currentTime;
+    changeColor();
+}
+
 ButtonWithImage::ButtonWithImage(SingleTexture* texture, sf::Vector2f position)
 {
     this->position = position;

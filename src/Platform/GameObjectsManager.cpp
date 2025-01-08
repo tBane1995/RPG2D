@@ -66,6 +66,19 @@ void selectGameObjects() {
     selectGameObjects(x, y, w, h);
 }
 
+bool unselectGameObjects() {
+    if (!selectedGameObjects.empty()) {
+        for (auto& sgo : selectedGameObjects)
+            sgo->isSelected = false;
+
+        selectedGameObjects.clear();
+        return true;
+    }
+    else
+        return false;
+
+}
+
 void deleteGameObjectFromMainLists(GameObject* object) {
 
     if (object->type == GameObjectType::Nature) {

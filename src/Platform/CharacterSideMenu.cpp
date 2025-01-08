@@ -2,83 +2,122 @@
 #include "GameObjectsManager.h"
 #include "Map.h"
 #include "CharacterInfoPanel.h"
+#include "BuildingsManager.h"
+#include "GameObjectsManager.h"
+#include "GUI.h"
 
-CharacterSideMenu::CharacterSideMenu(Character* character) {
-	_character = character;
+GameObjectSideMenu::GameObjectSideMenu(GameObject* object) {
 
-	state = CharacterSideMenuState::Idle;
+	_object = object;
 
+	_state = GameObjectSideMenuState::Idle;
 
-	float menu_hgh = 3 * 32 + 2 * 8;
+	if (object->type == GameObjectType::Character) {
+		loadCharacterSideMenu(_object);
+		// edit
+		// remove
+		// cancel
+	}
+	else if (object->type == GameObjectType::Building) {
+		loadBuildingSideMenu(_object);
+		// edit
+		// remove
+		// cancel
+	}
 
-	sf::Vector2f pos;
-	pos.x = character->position.x + character->colliders[0]->width / 2.0f + 16.0f - cam->position.x + 32.0f;
-	pos.y = character->position.y - character->height - cam->position.y - menu_hgh / 2.0f;
+	if (_buttons.empty()) {
+		_state = GameObjectSideMenuState::Close;
+	}
+}
 
-	btn_info = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_info"), sf::Vector2f(pos.x, pos.y + 0));
-	btn_info->onclick_func = [this]() {
-		dialogs.push_back(new CharacterInfoPanel(_character));
-		state = CharacterSideMenuState::Close;
+GameObjectSideMenu::~GameObjectSideMenu() {
+
+	for (auto& btn : _buttons)
+		delete btn;
+}
+
+void GameObjectSideMenu::loadCharacterSideMenu(GameObject* object) {
+	Character* character = dynamic_cast <Character*>(object);
+
+	ButtonWithImage* btn_edit = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_info"));
+	btn_edit->onclick_func = [this, character]() {
+		dialogs.push_back(new CharacterInfoPanel(character));
+		_state = GameObjectSideMenuState::Close;
 		};
 
-	btn_remove = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_remove"), sf::Vector2f(pos.x, pos.y + 32 + 8));
-	btn_remove->onclick_func = [this]() {
-		deleteGameObjectFromMainLists(_character);
+	ButtonWithImage* btn_remove = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_remove"));
+	btn_remove->onclick_func = [this, character]() {
+		deleteGameObjectFromMainLists(character);
 		Chunk* chunk = nullptr;
-		chunk = mapa->getChunk(_character->position);
+		chunk = mapa->getChunk(character->position);
 		if (chunk != nullptr)
-			chunk->deleteGameObject(_character);
-		delete _character;
-		state = CharacterSideMenuState::Close;
+			chunk->deleteGameObject(character);
+		delete character;
+		_state = GameObjectSideMenuState::Close;
 		};
 
-	btn_cancel = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_cancel"), sf::Vector2f(pos.x, pos.y + 64 + 16));
+	ButtonWithImage* btn_cancel = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_cancel"));
 	btn_cancel->onclick_func = [this]() {
-		state = CharacterSideMenuState::Close;
+		_state = GameObjectSideMenuState::Close;
 		};
+
+	_buttons.push_back(btn_edit);
+	_buttons.push_back(btn_remove);
+	_buttons.push_back(btn_cancel);
 }
 
-CharacterSideMenu::~CharacterSideMenu() {
-	delete btn_info;
-	delete btn_remove;
-	delete btn_cancel;
+void GameObjectSideMenu::loadBuildingSideMenu(GameObject* object) {
+	Building* building = dynamic_cast <Building*>(object);
+
+	// TO-DO
+	ButtonWithImage* btn_edit = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_info"));
+	ButtonWithImage* btn_remove = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_info"));
+	ButtonWithImage* btn_cancel = new ButtonWithImage(getSingleTexture("GUI/character_menu/btn_info"));
+
+	_buttons.push_back(btn_edit);
+	_buttons.push_back(btn_remove);
+	_buttons.push_back(btn_cancel);
 }
 
-void CharacterSideMenu::update() {
+void GameObjectSideMenu::handleEvent(sf::Event& event) {
+
+	for (auto& btn : _buttons) {
+		btn->handleEvent(event);
+	}
+
+	if (event.type == sf::Event::MouseButtonReleased) {
+		_state = GameObjectSideMenuState::Close;
+		unselectGameObjects();
+	}
+}
+
+void GameObjectSideMenu::update() {
+
+	GUIwasOpen = true;
 
 	float menu_hgh = 3 * 32 + 2 * 8;
 
 	sf::Vector2f pos;
-	pos.x = _character->position.x + _character->colliders[0]->width / 2.0f + 16.0f - cam->position.x + 32.0f;
-	pos.y = _character->position.y - _character->height - cam->position.y - menu_hgh / 2.0f;
+	pos.x = _object->position.x + _object->colliders[0]->width / 2.0f + 16.0f - cam->position.x + 32.0f;
+	pos.y = _object->position.y - _object->height - cam->position.y - menu_hgh / 2.0f;
 
-	btn_info->setPosition(sf::Vector2f(pos.x, pos.y + 0));
-	btn_remove->setPosition(sf::Vector2f(pos.x, pos.y + 32 + 8));
-	btn_cancel->setPosition(sf::Vector2f(pos.x, pos.y + 64 + 16));
+	if (_object->type == GameObjectType::Building) {
+		pos.y -= dynamic_cast<Building*>(_object)->size.y * 16;
+	}
 
-	btn_info->update();
-	btn_remove->update();
-	btn_cancel->update();
+	for (short i = 0; i < _buttons.size(); i += 1) {
+		_buttons[i]->setPosition(sf::Vector2f(pos.x, pos.y + i * 32 + i * 8));
+		_buttons[i]->update();
+	}
+
 
 }
 
-void CharacterSideMenu::handleEvent(sf::Event& event) {
-	btn_info->handleEvent(event);
-	btn_remove->handleEvent(event);
-	btn_cancel->handleEvent(event);
+void GameObjectSideMenu::draw() {
 
-	if (event.type == sf::Event::KeyPressed) {
-		state = CharacterSideMenuState::Close;
-	}
-	else if (!(btn_info->state == ButtonState::Pressed || btn_remove->state == ButtonState::Pressed || btn_cancel->state == ButtonState::Pressed)) {
-		state = CharacterSideMenuState::Close;
+	for (auto& btn : _buttons) {
+		btn->draw();
 	}
 }
 
-void CharacterSideMenu::draw() {
-	btn_info->draw();
-	btn_remove->draw();
-	btn_cancel->draw();
-}
-
-CharacterSideMenu* character_side_menu = nullptr;
+GameObjectSideMenu* gameobject_side_menu = nullptr;

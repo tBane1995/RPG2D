@@ -11,23 +11,23 @@
 #include "Buttons.h"
 #include "Character.h"
 #include "Textures.h"
-enum class CharacterSideMenuState { Idle, Close };
 
-class CharacterSideMenu {
+enum class GameObjectSideMenuState { Idle, Close };
+
+class GameObjectSideMenu {
 public:
-	Character* _character;
-	CharacterSideMenuState state;
+	GameObject* _object;
+	GameObjectSideMenuState _state;
+	std::vector < ButtonWithImage* > _buttons;
 
-	ButtonWithImage* btn_info;
-	ButtonWithImage* btn_remove;
-	ButtonWithImage* btn_cancel;
-
-	CharacterSideMenu(Character* character);
-	~CharacterSideMenu();
-	virtual void update();
+	GameObjectSideMenu(GameObject* object);
+	~GameObjectSideMenu();
+	void loadCharacterSideMenu(GameObject* object);
+	void loadBuildingSideMenu(GameObject* object);
 	virtual void handleEvent(sf::Event& event);
+	virtual void update();
 	virtual void draw();
 
 };
 
-extern CharacterSideMenu* character_side_menu;
+extern GameObjectSideMenu* gameobject_side_menu;

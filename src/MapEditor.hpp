@@ -7,10 +7,8 @@ enum class MapEditorStates { Start, Editor };
 MapEditorStates mapEditorState;
 
 void editTiles();
-bool unselectGameObjects();
 bool deleteChosenGameObject();
-void unselectPaletteButton();
-void MapEditorEventRightClick();
+void MapEditorEventRightClick(sf::Event& event);
 
 void MapEditor() {
 
@@ -72,7 +70,7 @@ void MapEditor() {
 
     palette = new Palette(PaletteType::MapEditor);
     menu_bar = new MenuBar(MenuBarType::MapEditor);
-    character_side_menu = nullptr;
+    gameobject_side_menu = nullptr;
     tip = nullptr;
 
     mapa = new Mapa();
@@ -116,22 +114,16 @@ void MapEditor() {
         for (auto& dialog : dialogs)
             dialog->update();
 
-        if (character_side_menu != nullptr)
-            character_side_menu->update();
-
+        if (gameobject_side_menu != nullptr)
+            gameobject_side_menu->update();
 
         palette->update();
         menu_bar->update();
-        
-        
 
         if (tip != nullptr && tip->btn != nullptr && tip->btn->state != ButtonState::Hover) {
             delete tip;
             tip = nullptr;
         }
-
-
-
 
         // events
         sf::Event event;
@@ -223,28 +215,24 @@ void MapEditor() {
             }
             else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 
-                mouse_state = MouseState::Click;
-
                 palette->handleEvent(event);
                 menu_bar->handleEvent(event);
-                if (character_side_menu != nullptr) {
-                    character_side_menu->handleEvent(event);
-                    if (character_side_menu->state == CharacterSideMenuState::Close) {
-                        delete character_side_menu;
-                        character_side_menu = nullptr;
+
+                if (gameobject_side_menu != nullptr) {
+                    gameobject_side_menu->handleEvent(event);
+                    if (gameobject_side_menu->_state == GameObjectSideMenuState::Close) {
+                        delete gameobject_side_menu;
+                        gameobject_side_menu = nullptr;
                     }
 
                 }
-
-
-
 
                 if (!GUIwasHover && !GUIwasClicked)
                     if (tool == toolType::AddGameObject) {
                         addPrefabsToMapAndLists();
                     }
 
-
+                mouse_state = MouseState::Click;
                 mouse_state = MouseState::Idle;
 
 
@@ -252,12 +240,12 @@ void MapEditor() {
             }
             else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Right) {
 
-                MapEditorEventRightClick();
+                MapEditorEventRightClick(event);
             }
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
                 if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
-                    if (!GUIwasHover && !GUIwasClicked) {   // TO-DO - now not nowork
+                    if (!GUIwasOpen && !GUIwasHover && !GUIwasClicked) {   // TO-DO - now not nowork
 
                         if (mouse_state == MouseState::Idle) {
 
@@ -347,8 +335,8 @@ void MapEditor() {
         palette->draw();
         menu_bar->draw();
 
-        if (character_side_menu != nullptr)
-            character_side_menu->draw();
+        if (gameobject_side_menu != nullptr)
+            gameobject_side_menu->draw();
 
         for (auto& dial : dialogs)
             dial->draw();
@@ -399,24 +387,7 @@ void editTiles() {
                 mapa->generateBorders(chunk);
             }
         }
-    }
-    
-    
-    
-}
-
-
-bool unselectGameObjects() {
-    if (!selectedGameObjects.empty()) {
-        for (auto& sgo : selectedGameObjects)
-            sgo->isSelected = false;
-
-        selectedGameObjects.clear();
-        return true;
-    }
-    else
-        return false;
-
+    }   
 }
 
 bool deleteChosenGameObject() {
@@ -476,46 +447,59 @@ bool deleteChosenGameObject() {
     return was_delete;
 }
 
-void unselectPaletteButton() {
-    palette->selectedPaletteButton = nullptr;
-    palette->selectedToolButton = palette->btnToolsCursor;
-    tool = toolType::Cursor;
-    prefabToPaint = nullptr;
-}
+void MapEditorEventRightClick(sf::Event& event) {
 
-void MapEditorEventRightClick() {
+    menu_bar->handleEvent(event);
 
-    Character* clicked_character = nullptr;
+    if (gameobject_side_menu != nullptr) {
+        gameobject_side_menu->handleEvent(event);
 
-    for (auto& character : characters)
-        if (pointInEllipse(worldMousePosition.x, worldMousePosition.y, character->position.x, character->position.y, character->colliders[0]->width / 2.0f, character->colliders[0]->length / 2.0f)) {
-            clicked_character = character;
-            break;
+        if (gameobject_side_menu->_state == GameObjectSideMenuState::Close) {
+            delete gameobject_side_menu;
+            gameobject_side_menu = nullptr;
         }
+    }
 
-    if (clicked_character != nullptr) {
+    GameObject* clicked_gameobject = nullptr;
+
+    for (auto& object : gameObjects) {
+        if (object->mouseIsHover) {
+            clicked_gameobject = object;
+        }
+    }
+
+    if (clicked_gameobject != nullptr) {
 
         unselectGameObjects();
 
-        if (character_side_menu != nullptr) {
-            delete character_side_menu;
-            character_side_menu = nullptr;
+        if (gameobject_side_menu != nullptr) {
+            delete gameobject_side_menu;
+            gameobject_side_menu = nullptr;
         }
 
-        character_side_menu = new CharacterSideMenu(clicked_character);
-        selectedGameObjects.push_back(clicked_character);
-        clicked_character->isSelected = true;
+        gameobject_side_menu = new GameObjectSideMenu(clicked_gameobject);
+        selectedGameObjects.push_back(clicked_gameobject);
+        clicked_gameobject->isSelected = true;
+
+        if (gameobject_side_menu->_state == GameObjectSideMenuState::Close) {
+            delete gameobject_side_menu;
+            gameobject_side_menu = nullptr;
+        }
 
     }
-    else if (unselectGameObjects()) {
-        std::cout << "unselect GameObjects\n";
-    }
-    else if (deleteChosenGameObject()) {
-        std::cout << "delete chosen GameObject\n";
-    }
-    else {
-        unselectPaletteButton();
-        std::cout << "unselect Palette Button\n";
+
+    if (gameobject_side_menu == nullptr) {
+
+        if (unselectGameObjects()) {
+            std::cout << "unselect GameObjects\n";
+        }
+        else if (deleteChosenGameObject()) {
+            std::cout << "delete chosen GameObject\n";
+        }
+        else {
+            palette->unselectPaletteButton();
+            std::cout << "unselect Palette Button\n";
+        }
     }
 }
 #endif

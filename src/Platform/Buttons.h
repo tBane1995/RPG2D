@@ -87,6 +87,7 @@ public:
     ButtonWithImage();
     ButtonWithImage(ButtonWithImage* btn);
     ButtonWithImage(ButtonWithImage* btn, sf::Vector2f position);
+    ButtonWithImage(SingleTexture* texture);
     ButtonWithImage(SingleTexture* texture, sf::Vector2f position);
 
     virtual void setTexture(SingleTexture* texture);
