@@ -118,7 +118,7 @@ public:
     void scrollUp();
     void scrollDown();
 
-    void unselectPaletteButton();
+    bool unselectPaletteButton();
 
     void handleEvent(sf::Event& event);
     void update();

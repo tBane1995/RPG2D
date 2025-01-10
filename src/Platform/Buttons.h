@@ -108,5 +108,35 @@ public:
     virtual void draw();
 };
 
+class ButtonWithTextAndIcon {
+public:
+    sf::Vector2f position;
+    sf::RectangleShape rect;
+    sf::Text text;
+    sf::Sprite _icon;
+    ButtonState state;
+    std::function<void()> hover_func;
+    std::function<void()> onclick_func;
+    sf::Time clickTime;
+    short margin;
+
+    sf::Vector2u icon_size;
+
+
+    ButtonWithTextAndIcon(std::wstring s, SingleTexture* icon);
+    virtual void setPosition(sf::Vector2f position);
+    virtual void changeColor();
+    void setRectSize(sf::Vector2f rect_size);
+    virtual void unclick();
+    virtual void hover();
+    virtual void click();
+    virtual void handleEvent(sf::Event& event);
+    virtual void update(bool hover_action = true);
+    virtual void draw();
+
+
+};
+
+
 
 void initButtonsGlobalVariables();

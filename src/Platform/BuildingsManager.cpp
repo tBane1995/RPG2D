@@ -126,6 +126,7 @@ bool Building::playerInside() {
     else
         return false;
 }
+
 bool Building::isPart(GameObject* object) {
     if (object == nullptr)
         return false;
@@ -141,6 +142,9 @@ bool Building::isPart(GameObject* object) {
     for (auto& wall : _walls)
         if (object == wall)
             return true;
+
+    if (object == _door)
+        return true;
 
     return false;
 }

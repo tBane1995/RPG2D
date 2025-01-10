@@ -44,13 +44,37 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
 
     for (auto& go : gameObjects) {
 
-        if (go->type == GameObjectType::Furniture || isPartOfBuilding(go)==nullptr) {
-            if (intersectionRectangleWithElipse(rect_x, rect_y, rect_w, rect_h, go->position.x, go->position.y, go->colliders[0]->width / 2, go->colliders[0]->length / 2)) {
+        if (go->type == GameObjectType::Building) {
+
+            float x = go->colliders[0]->position.x + go->colliders[0]->dx;
+            float y = go->colliders[0]->position.y + go->colliders[0]->dy - dynamic_cast<Building*>(go)->size.y * 16 / 2;
+            float w = go->colliders[0]->width;
+            float h = go->colliders[0]->length;
+
+            if (intersectionTwoRectangles(rect_x, rect_y, rect_w, rect_h, x, y, w, h)) {
                 go->isSelected = true;
                 selectedGameObjects.push_back(go);
             }
+
         }
-            
+        else if (go->type != GameObjectType::Wall) {
+
+            for (auto& collider : go->colliders) {
+                if (collider->type == ColliderType::Rectangle) {
+                    if (intersectionTwoRectangles(rect_x, rect_y, rect_w, rect_h, collider->position.x + collider->dx, collider->position.y + collider->dy, collider->width, collider->length)) {
+                        go->isSelected = true;
+                        selectedGameObjects.push_back(go);
+                    }
+                }
+                else if (collider->type == ColliderType::Elipse) {
+                    if (intersectionRectangleWithElipse(rect_x, rect_y, rect_w, rect_h, go->position.x + collider->dx, go->position.y + collider->dy, collider->width / 2, collider->length / 2)) {
+                        go->isSelected = true;
+                        selectedGameObjects.push_back(go);
+                    }
+                }
+            }
+        }
+
     }
 }
 

@@ -88,8 +88,8 @@ void BuildingEditor() {
 
         palette->update();
         menu_bar->update();
-        if (gameobject_side_menu != nullptr)
-            gameobject_side_menu->update();
+        if (context_menu != nullptr)
+            context_menu->update();
 
         for (auto& dialog : dialogs)
             dialog->update();
@@ -198,11 +198,11 @@ void BuildingEditor() {
 
                 palette->handleEvent(event);
                 menu_bar->handleEvent(event);
-                if (gameobject_side_menu != nullptr) {
-                    gameobject_side_menu->handleEvent(event);
-                    if (gameobject_side_menu->_state == GameObjectSideMenuState::Close) {
-                        delete gameobject_side_menu;
-                        gameobject_side_menu = nullptr;
+                if (context_menu != nullptr) {
+                    context_menu->handleEvent(event);
+                    if (context_menu->_state == ContextMenuState::Close) {
+                        delete context_menu;
+                        context_menu = nullptr;
                     }
 
                 }

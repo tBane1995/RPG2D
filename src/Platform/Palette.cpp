@@ -1358,11 +1358,18 @@ void Palette::scrollDown() {
         scroll += 1;
 }
 
-void Palette::unselectPaletteButton() {
-    selectedPaletteButton = nullptr;
-    selectedToolButton = btnToolsCursor;
-    tool = toolType::Cursor;
-    prefabToPaint = nullptr;
+bool Palette::unselectPaletteButton() {
+
+    if (selectedPaletteButton != nullptr) {
+        selectedPaletteButton = nullptr;
+        selectedToolButton = btnToolsCursor;
+        tool = toolType::Cursor;
+        prefabToPaint = nullptr;
+        return true;
+    }
+    else
+        return false;
+
 }
 
 void Palette::handleEvent(sf::Event& event) {

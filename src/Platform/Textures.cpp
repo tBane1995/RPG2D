@@ -340,9 +340,12 @@ void loadTextures()
 	loadSingleTexture("GUI/icons/file.png", 15, 15);
 	loadSingleTexture("GUI/icons/empty.png", 15, 15);
 
-	loadSingleTexture("GUI/character_menu/btn_info.png", 16, 16);
-	loadSingleTexture("GUI/character_menu/btn_remove.png", 16, 16);
-	loadSingleTexture("GUI/character_menu/btn_cancel.png", 16, 16);
+	loadSingleTexture("GUI/context_menu/btn_default.png", 15, 15);
+	loadSingleTexture("GUI/context_menu/btn_info.png", 15, 15);
+	loadSingleTexture("GUI/context_menu/btn_edit.png", 15, 15);
+	loadSingleTexture("GUI/context_menu/btn_remove.png", 15, 15);
+	loadSingleTexture("GUI/context_menu/btn_cancel.png", 15, 15);
+
 	loadSingleTexture("GUI/character_menu/menu_slot.png", 32, 20);
 	loadSingleTexture("GUI/character_menu/menu_statistics.png", 32, 20);
 	loadSingleTexture("GUI/character_menu/menu_layout.png", 32, 20);

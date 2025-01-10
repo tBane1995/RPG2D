@@ -565,6 +565,146 @@ void ButtonWithImage::draw() {
     window->draw(sprite);
 }
 
+ButtonWithTextAndIcon::ButtonWithTextAndIcon(std::wstring s, SingleTexture* icon) {
+
+    float characterSize = 17;
+    icon_size = icon->getSize();
+
+    this->position = sf::Vector2f(0, 0);
+    margin = float(characterSize) * 0.4f;
+
+    _icon = sf::Sprite();
+    SingleTexture::SetTextureForSprite(&_icon, icon);
+    _icon.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+    text = sf::Text();
+    text.setFont(basicFont);
+    text.setFillColor(textColor);
+    text.setCharacterSize(characterSize);
+    text.setString(s);
+    text.setPosition(position.x + cam->position.x + float(margin) * 0.95f + icon_size.x, position.y + cam->position.y + float(margin) * 0.6f);
+
+    rect = sf::RectangleShape();
+    sf::Vector2f size;
+    size.x = text.getLocalBounds().getSize().x + float(margin) * 2.15f + icon_size.x;
+    size.y = float(text.getCharacterSize()) * 1.1f + float(margin) * 1.8f;
+    rect.setSize(size);
+    rect.setFillColor(idleColor);
+    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+    state = ButtonState::Idle;
+    hover_func = { };
+    onclick_func = { };
+
+    clickTime = currentTime;
+}
+
+void ButtonWithTextAndIcon::setPosition(sf::Vector2f position) {
+    this->position = position;
+    _icon.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    text.setPosition(position.x + cam->position.x + margin + icon_size.x, position.y + cam->position.y + float(margin) * 0.6f);
+    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+
+}
+
+void ButtonWithTextAndIcon::changeColor() {
+
+    if (state == ButtonState::Pressed) {
+        rect.setFillColor(pressedColor);
+    }
+    else if (state == ButtonState::Hover) {
+        rect.setFillColor(hoverColor);
+    }
+    else {
+        rect.setFillColor(idleColor);
+    }
+
+}
+
+void ButtonWithTextAndIcon::setRectSize(sf::Vector2f rect_size) {
+    rect.setSize(rect_size);
+}
+
+void ButtonWithTextAndIcon::unclick() {
+    state = ButtonState::Idle;
+    changeColor();
+}
+
+void ButtonWithTextAndIcon::hover() {
+
+    state = ButtonState::Hover;
+    changeColor();
+    GUIwasHover = true;
+}
+
+void ButtonWithTextAndIcon::click() {
+
+    state = ButtonState::Pressed;
+    changeColor();
+    GUIwasClicked = true;
+    clickTime = currentTime;
+
+    if (onclick_func)
+        onclick_func();
+
+}
+
+void ButtonWithTextAndIcon::handleEvent(sf::Event& event) {
+
+    if (mouse_state != MouseState::Selecting) {
+
+        float w = rect.getSize().x;
+        float h = rect.getSize().y;
+        float x = rect.getPosition().x;
+        float y = rect.getPosition().y;
+
+        if (worldMousePosition.x > x && worldMousePosition.x < x + w &&
+            worldMousePosition.y > y && worldMousePosition.y < y + h) {
+
+            if (event.type == sf::Event::MouseButtonReleased)
+                if (event.mouseButton.button == sf::Mouse::Left)
+                    click();
+
+        }
+    }
+}
+
+void ButtonWithTextAndIcon::update(bool hover_action) {
+
+    rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    _icon.setPosition(position.x + cam->position.x, position.y + cam->position.y);
+    text.setPosition(position.x + cam->position.x + float(margin) * 0.95f + icon_size.x, position.y + cam->position.y + float(margin) * 0.6f);
+
+    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+        unclick();
+    }
+
+
+
+    if (hover_action && mouse_state != MouseState::Selecting && state != ButtonState::Pressed) {
+
+        float w = rect.getSize().x;
+        float h = rect.getSize().y;
+        float x = rect.getPosition().x;
+        float y = rect.getPosition().y;
+
+        if (worldMousePosition.x > x && worldMousePosition.x < x + w &&
+            worldMousePosition.y > y && worldMousePosition.y < y + h) {
+            hover();
+        }
+    }
+
+
+}
+
+void ButtonWithTextAndIcon::draw() {
+
+    window->draw(rect);
+    window->draw(_icon);
+    window->draw(text);
+}
+
+
 void initButtonsGlobalVariables()
 {
     float idle_val = 255.0f;

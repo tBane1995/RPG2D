@@ -70,7 +70,7 @@ void MapEditor() {
 
     palette = new Palette(PaletteType::MapEditor);
     menu_bar = new MenuBar(MenuBarType::MapEditor);
-    gameobject_side_menu = nullptr;
+    context_menu = nullptr;
     tip = nullptr;
 
     mapa = new Mapa();
@@ -114,8 +114,8 @@ void MapEditor() {
         for (auto& dialog : dialogs)
             dialog->update();
 
-        if (gameobject_side_menu != nullptr)
-            gameobject_side_menu->update();
+        if (context_menu != nullptr)
+            context_menu->update();
 
         palette->update();
         menu_bar->update();
@@ -215,26 +215,28 @@ void MapEditor() {
             }
             else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left) {
 
-                palette->handleEvent(event);
-                menu_bar->handleEvent(event);
-
-                if (gameobject_side_menu != nullptr) {
-                    gameobject_side_menu->handleEvent(event);
-                    if (gameobject_side_menu->_state == GameObjectSideMenuState::Close) {
-                        delete gameobject_side_menu;
-                        gameobject_side_menu = nullptr;
+                if (context_menu != nullptr) {
+                    context_menu->handleEvent(event);
+                    if (context_menu->_state == ContextMenuState::Close) {
+                        delete context_menu;
+                        context_menu = nullptr;
                     }
 
                 }
+                else {
+                    palette->handleEvent(event);
+                    menu_bar->handleEvent(event);
 
-                if (!GUIwasHover && !GUIwasClicked)
-                    if (tool == toolType::AddGameObject) {
-                        addPrefabsToMapAndLists();
-                    }
+                    if (!GUIwasHover && !GUIwasClicked)
+                        if (tool == toolType::AddGameObject) {
+                            addPrefabsToMapAndLists();
+                        }
+                        else
+                            selectGameObjects();
+                }
 
                 mouse_state = MouseState::Click;
                 mouse_state = MouseState::Idle;
-
 
 
             }
@@ -255,6 +257,7 @@ void MapEditor() {
                             startWorldMousePosition = worldMousePosition;
 
                         }
+
                     }
                 }
 
@@ -310,18 +313,20 @@ void MapEditor() {
         mapa->update();
 
         cam->update();
-        if (mouse_state == MouseState::Selecting)
+
+
+
+        if (context_menu == nullptr && mouse_state == MouseState::Selecting) {
             selectGameObjects();
+        }
+
         updateGameObjects();
         sortGameObjects();
+
         painterUpdate();
-
-
 
         if (tip != nullptr)
             tip->update();
-
-
 
         // RENDER ////////////////////////////////////////////////////////////////////////////
 
@@ -330,16 +335,17 @@ void MapEditor() {
 
         mapa->draw();
         mapa->drawStatistics();
+
         drawGameObjects();
         painterDraw();
         palette->draw();
         menu_bar->draw();
 
-        if (gameobject_side_menu != nullptr)
-            gameobject_side_menu->draw();
-
         for (auto& dial : dialogs)
             dial->draw();
+
+        if (context_menu != nullptr)
+            context_menu->draw();
 
         if (tip != nullptr)
             tip->draw();
@@ -449,57 +455,35 @@ bool deleteChosenGameObject() {
 
 void MapEditorEventRightClick(sf::Event& event) {
 
+    if (palette->unselectPaletteButton())
+        return;
+
     menu_bar->handleEvent(event);
 
-    if (gameobject_side_menu != nullptr) {
-        gameobject_side_menu->handleEvent(event);
+    if (context_menu != nullptr)
+        delete context_menu;
 
-        if (gameobject_side_menu->_state == GameObjectSideMenuState::Close) {
-            delete gameobject_side_menu;
-            gameobject_side_menu = nullptr;
+    startMousePosition = mousePosition;
+    startWorldMousePosition = worldMousePosition;
+    mouseSelection();
+    selectGameObjects();
+
+    GameObject* clickedObject = nullptr;
+    for (auto& go : gameObjects) {
+        if (go->mouseIsHover) {
+
+            if (isPartOfBuilding(go) != nullptr) {
+                clickedObject = isPartOfBuilding(go);
+                break;
+            }
+            else {
+                clickedObject = go;
+                break;
+            }
         }
     }
 
-    GameObject* clicked_gameobject = nullptr;
+    context_menu = new ContextMenu(clickedObject);
 
-    for (auto& object : gameObjects) {
-        if (object->mouseIsHover) {
-            clicked_gameobject = object;
-        }
-    }
-
-    if (clicked_gameobject != nullptr) {
-
-        unselectGameObjects();
-
-        if (gameobject_side_menu != nullptr) {
-            delete gameobject_side_menu;
-            gameobject_side_menu = nullptr;
-        }
-
-        gameobject_side_menu = new GameObjectSideMenu(clicked_gameobject);
-        selectedGameObjects.push_back(clicked_gameobject);
-        clicked_gameobject->isSelected = true;
-
-        if (gameobject_side_menu->_state == GameObjectSideMenuState::Close) {
-            delete gameobject_side_menu;
-            gameobject_side_menu = nullptr;
-        }
-
-    }
-
-    if (gameobject_side_menu == nullptr) {
-
-        if (unselectGameObjects()) {
-            std::cout << "unselect GameObjects\n";
-        }
-        else if (deleteChosenGameObject()) {
-            std::cout << "delete chosen GameObject\n";
-        }
-        else {
-            palette->unselectPaletteButton();
-            std::cout << "unselect Palette Button\n";
-        }
-    }
 }
 #endif
