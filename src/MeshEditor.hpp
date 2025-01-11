@@ -1,6 +1,8 @@
 ﻿#ifndef MeshEditor_hpp
 #define MeshEditor_hpp
 
+#include "Platform/Utils.h"
+
 enum class MeshEditorStates { Start, Editor };
 MeshEditorStates meshEditorState;
 
