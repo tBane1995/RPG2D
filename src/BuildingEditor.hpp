@@ -62,7 +62,7 @@ void BuildingEditor() {
     createFloorsPrefabs();
     createWaterPrefabs();
 
-    prefabToPaint = nullptr;
+    clearPrefabsToPaint();
     selectedGameObjects.clear();
     mouse_state = MouseState::Idle;
 
@@ -279,6 +279,8 @@ void BuildingEditor() {
             }
         } // events
 
+        /*
+        // TO-DO
         // drawing a terrain
         if (dialogs.empty()) {
             if (!GUIwasHover && !GUIwasClicked) {
@@ -294,6 +296,7 @@ void BuildingEditor() {
                 }
             }
         }
+        */
 
         // UPDATE ///////////////////////////////////////////////////////////////////////
         if (!dialogs.empty())

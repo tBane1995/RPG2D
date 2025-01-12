@@ -64,14 +64,15 @@ void MapEditor() {
     createFloorsPrefabs();
     createWaterPrefabs();
 
-    prefabToPaint = nullptr;
+    clearPrefabsToPaint();
     selectedGameObjects.clear();
     mouse_state = MouseState::Idle;
 
     palette = new Palette(PaletteType::MapEditor);
     menu_bar = new MenuBar(MenuBarType::MapEditor);
-    context_menu = nullptr;
     tip = nullptr;
+    context_menu = nullptr;
+    clipboard = new Clipboard();
 
     mapa = new Mapa();
     mapa->load();
@@ -288,6 +289,9 @@ void MapEditor() {
             }
         } // events
 
+        /*
+        // TO-DO
+
         // drawing a terrain
         if (dialogs.empty()) {
             if (!GUIwasHover && !GUIwasClicked) {
@@ -301,6 +305,7 @@ void MapEditor() {
                 }
             }
         }
+        */
 
 
         // UPDATE ////////////////////////////////////////////////////////////////////////
@@ -455,18 +460,26 @@ bool deleteChosenGameObject() {
 
 void MapEditorEventRightClick(sf::Event& event) {
 
-    if (palette->unselectPaletteButton())
+    if (!prefabsToPaint.empty()) {
+        palette->unselectPaletteButton();
+        clearPrefabsToPaint();
         return;
+    }
+
 
     menu_bar->handleEvent(event);
 
     if (context_menu != nullptr)
         delete context_menu;
 
-    startMousePosition = mousePosition;
-    startWorldMousePosition = worldMousePosition;
-    mouseSelection();
-    selectGameObjects();
+    if (selectedGameObjects.empty()) {
+
+        startMousePosition = mousePosition;
+        startWorldMousePosition = worldMousePosition;
+
+        mouseSelection();
+        selectGameObjects();
+    }
 
     GameObject* clickedObject = nullptr;
     for (auto& go : gameObjects) {

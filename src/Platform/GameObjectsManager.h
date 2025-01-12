@@ -16,6 +16,7 @@ bool unselectGameObjects();
 void deleteGameObjectFromMainLists(GameObject* object);
 void clearAllMainListsOfGameObjects();
 bool visiblings(GameObject* object);
+GameObject* getNewGameObject(GameObject* object);
 void updateGameObjects();
 void sortGameObjects();
 void drawGameObjects();

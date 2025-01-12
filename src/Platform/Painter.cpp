@@ -20,89 +20,22 @@
 #include "Doors.h"
 #include "BuildingsManager.h"
 
-void clearPrefabsFromPainter() {
-
-    prefabsToPaint.clear();
-}
-
 void painterUpdate() {
 
-    if (GUIwasHover || GUIwasClicked) {
-        clearPrefabsFromPainter();
-        return;
-    }
-    else if (tool == toolType::Cursor && mouse_state == MouseState::Selecting) {
+    if (tool == toolType::Cursor && mouse_state == MouseState::Selecting) {
         mouseSelection();
     }
-    else if (prefabToPaint != nullptr) {
-
-        if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Floor || prefabToPaint->type == GameObjectType::Water) {
-
-            clearPrefabsFromPainter();
-
-            // RECTANGLE    ///////////////////////////////////////////////////////////////////////////////////////////////
-            if (tool == toolType::Rectangle) {
-                if (mouse_state == MouseState::Selecting) {
-                    generateRectangle();
-                }
-            }
-
-            // ELIPSE   ///////////////////////////////////////////////////////////////////////////////////////////////////
-            if (tool == toolType::Elipse) {
-                if (mouse_state == MouseState::Selecting) {
-                    generateElipse();
-                }
-            }
-
-            //  BRUSH   ////////////////////////////////////////////////////////////////////////////////////////////
-            if (tool == toolType::Brush) {
-                generateBrush();
-            }
-
-            //  RECT BRUSH  ////////////////////////////////////////////////////////////////////////////////////////
-            if (tool == toolType::RectBrush) {
-                generateRectBrush();
-            }
-
-        }
-        else {
-            // prefab is a GameObject
+    else {
+        for (auto& prefab : prefabsToPaint) {
 
             float x = short(worldMousePosition.x) / short(tileSide) * short(tileSide);
             float y = short(worldMousePosition.y) / short(tileSide) * short(tileSide);
 
-            if (prefabsToPaint.size() == 0 || prefabsToPaint[0] != prefabToPaint) {
-
-                if (prefabsToPaint.size() != 0 && prefabsToPaint[0] != prefabToPaint)
-                    clearPrefabsFromPainter();
-
-                prefabsToPaint.push_back(prefabToPaint);
-
-            }
-            else {
-                for (auto& prefab : prefabsToPaint) {
-                    prefab->setPosition(sf::Vector2f(x, y));
-                }
-
-            }
-
-            for (auto& prefab : prefabsToPaint) {
-                if (prefab->type == GameObjectType::Unit || prefab->type == GameObjectType::Monster || prefab->type == GameObjectType::Character) {
-                    dynamic_cast<Unit*>(prefab)->idling(dt);
-                }
-                else {
-                    prefab->update();
-                    prefab->mouseIsHover = false;
-
-                }
-            }
-
+            prefab->setPosition(sf::Vector2f(x, y));
         }
+    }
 
-    }
-    else {
-        clearPrefabsFromPainter();
-    }
+
 
 }
 

@@ -10,7 +10,7 @@
 TerrainPrefab* ter = nullptr;
 FloorPrefab* flo = nullptr;
 
-void generateBrush() {
+void generateBrush(GameObject* prefabToPaint) {
     int baseX = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
     int baseY = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
 
@@ -53,7 +53,7 @@ void generateBrush() {
     }
 }
 
-void generateRectBrush() {
+void generateRectBrush(GameObject* prefabToPaint) {
     int baseX = int(worldMousePosition.x) / int(tileSide) * int(tileSide);
     int baseY = int(worldMousePosition.y) / int(tileSide) * int(tileSide);
 
@@ -96,7 +96,7 @@ void generateRectBrush() {
     }
 }
 
-void generateRectangle() {
+void generateRectangle(GameObject* prefabToPaint) {
     int start_x = std::min((startWorldMousePosition.x / tileSide), (worldMousePosition.x / tileSide));
     int start_y = std::min((startWorldMousePosition.y / tileSide), (worldMousePosition.y / tileSide));
     int end_x = std::max(ceil(startWorldMousePosition.x / tileSide), ceil(worldMousePosition.x / tileSide));
@@ -139,7 +139,7 @@ void generateRectangle() {
 
 }
 
-void generateElipse() {
+void generateElipse(GameObject* prefabToPaint) {
     int start_x = std::min((startWorldMousePosition.x / tileSide), (worldMousePosition.x / tileSide));
     int start_y = std::min((startWorldMousePosition.y / tileSide), (worldMousePosition.y / tileSide));
     int end_x = std::max(ceil(startWorldMousePosition.x / tileSide), ceil(worldMousePosition.x / tileSide));

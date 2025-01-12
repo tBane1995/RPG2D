@@ -8,6 +8,7 @@
 #include "GameObjectsManager.h"
 #include "Map.h"
 #include "BuildingsManager.h"
+#include "Clipboard.h"
 
 ContextMenu::ContextMenu(GameObject* object) {
 
@@ -29,6 +30,8 @@ ContextMenu::ContextMenu(GameObject* object) {
 		loadObjectMenu(object);
 
 	}
+
+	std::cout << "selected GameObjects: " << selectedGameObjects.size() << "\n";
 
 	// calculate max width of buttons
 	short btn_width = 0;
@@ -61,7 +64,11 @@ ContextMenu::~ContextMenu() {
 
 void ContextMenu::loadDefaultMenu() {
 	ButtonWithTextAndIcon* btn_undo = new ButtonWithTextAndIcon(L"undo", getSingleTexture("GUI/context_menu/btn_default"));
+
 	ButtonWithTextAndIcon* btn_paste = new ButtonWithTextAndIcon(L"paste", getSingleTexture("GUI/context_menu/btn_default"));
+	btn_paste->onclick_func = [this]() {
+		clipboard->paste();
+		};
 
 	_buttons.push_back(btn_undo);
 	_buttons.push_back(btn_paste);
@@ -76,7 +83,14 @@ void ContextMenu::loadCharacterMenu(GameObject* object) {
 		};
 
 	ButtonWithTextAndIcon* btn_copy = new ButtonWithTextAndIcon(L"copy", getSingleTexture("GUI/context_menu/btn_default"));
+	btn_copy->onclick_func = [this]() {
+		clipboard->copy();
+		};
+
 	ButtonWithTextAndIcon* btn_cut = new ButtonWithTextAndIcon(L"cut", getSingleTexture("GUI/context_menu/btn_default"));
+	btn_cut->onclick_func = [this]() {
+		clipboard->cut();
+		};
 
 	ButtonWithTextAndIcon* btn_remove = new ButtonWithTextAndIcon(L"remove", getSingleTexture("GUI/context_menu/btn_remove"));
 	btn_remove->onclick_func = [this, character]() {
@@ -102,8 +116,17 @@ void ContextMenu::loadBuildingMenu(GameObject* object) {
 
 	// TO-DO
 	ButtonWithTextAndIcon* btn_edit = new ButtonWithTextAndIcon(L"edit", getSingleTexture("GUI/context_menu/btn_edit"));
+
 	ButtonWithTextAndIcon* btn_copy = new ButtonWithTextAndIcon(L"copy", getSingleTexture("GUI/context_menu/btn_default"));
+	btn_copy->onclick_func = [this]() {
+		clipboard->copy();
+		};
+
 	ButtonWithTextAndIcon* btn_cut = new ButtonWithTextAndIcon(L"cut", getSingleTexture("GUI/context_menu/btn_default"));
+	btn_cut->onclick_func = [this]() {
+		clipboard->cut();
+		};
+
 	ButtonWithTextAndIcon* btn_remove = new ButtonWithTextAndIcon(L"remove", getSingleTexture("GUI/context_menu/btn_remove"));
 	ButtonWithTextAndIcon* btn_cancel = new ButtonWithTextAndIcon(L"cancel", getSingleTexture("GUI/context_menu/btn_cancel"));
 
@@ -112,11 +135,19 @@ void ContextMenu::loadBuildingMenu(GameObject* object) {
 	_buttons.push_back(btn_cut);
 	_buttons.push_back(btn_remove);
 	_buttons.push_back(btn_cancel);
+
 }
 
 void ContextMenu::loadObjectMenu(GameObject* object) {
 	ButtonWithTextAndIcon* btn_copy = new ButtonWithTextAndIcon(L"copy", getSingleTexture("GUI/context_menu/btn_default"));
+	btn_copy->onclick_func = [this]() {
+		clipboard->copy();
+		};
+
 	ButtonWithTextAndIcon* btn_cut = new ButtonWithTextAndIcon(L"cut", getSingleTexture("GUI/context_menu/btn_default"));
+	btn_cut->onclick_func = [this]() {
+		clipboard->cut();
+		};
 
 	ButtonWithTextAndIcon* btn_remove = new ButtonWithTextAndIcon(L"remove", getSingleTexture("GUI/context_menu/btn_remove"));
 	btn_remove->onclick_func = [this, object]() {

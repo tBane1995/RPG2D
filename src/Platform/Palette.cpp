@@ -15,6 +15,7 @@
 #include "Shaders.h"
 #include "Items.h"
 #include "GUI.h"
+#include "GameObjectsManager.h"
 #include <iostream>
 
 /*
@@ -88,26 +89,12 @@ void PaletteButton::setGameObject(GameObject* object) {
         }
 
         hover_func = [this]() {
-            if (tip == nullptr || tip->btn != this) {
+            if (tip == nullptr || (tip != nullptr && tip->btn != this)) {
                 sf::Vector2f pos;
-                if (this->object->type != GameObjectType::Water) {
-                    pos.x = this->position.x - this->object->texture->getSize().x / 2.0f;
-                    pos.y = this->position.y + this->object->texture->getSize().y / 4.0f;
-                }
-                else
-                {
-                    WaterPrefab* o = dynamic_cast<WaterPrefab*>(this->object);
-                    pos.x = this->position.x - o->terrain->texture->getSize().x / 2.0f;
-                    pos.y = this->position.y + o->terrain->texture->getSize().y / 4.0f;
-                }
+                pos.x = this->position.x - sprite.getTexture()->getSize().x / 2.0f;
+                pos.y = this->position.y + sprite.getTexture()->getSize().y / 4.0f;
                 tip = new Tip(ConvertUtf8ToWide(this->object->name), pos, this);       // TO-DO delete convert and use std::wstring
             }
-
-        };
-
-        onclick_func = [this]() {
-            tool = toolType::AddGameObject;
-            prefabToPaint = this->object;
             };
     }
     else {
@@ -810,36 +797,36 @@ void Palette::loadPalette() {
         (index < availableGameObjects.size()) ? object = availableGameObjects[index] : object = nullptr;
         paletteButtons[i]->setGameObject(object);
 
-        if (object != nullptr)
-            if (object->type == GameObjectType::Terrain || object->type == GameObjectType::Floor || object->type == GameObjectType::Water) {
-                // object is a Terrain or Floor
-                auto button = paletteButtons[i];
-                paletteButtons[i]->onclick_func = [this, button]() {
-                    prefabToPaint = button->object;
-                    selectedPaletteButton = button;
+        if (object != nullptr) {
+            auto button = paletteButtons[i];
 
+            paletteButtons[i]->hover_func = [this, button]() {
+                if (tip == nullptr || (tip != nullptr && tip->btn != button)) {
+                    sf::Vector2f pos;
+                    pos.x = button->position.x - button->sprite.getTexture()->getSize().x / 2.0f;
+                    pos.y = button->position.y + button->sprite.getTexture()->getSize().y / 4.0f;
+                    tip = new Tip(ConvertUtf8ToWide(button->object->name), pos, button);       // TO-DO delete convert and use std::wstring
+                }
+                };
+
+            paletteButtons[i]->onclick_func = [this, button]() {
+
+                selectedPaletteButton = button;
+                clearPrefabsToPaint();
+                prefabsToPaint.push_back(getNewGameObject(button->object));
+
+                if (button->object->type == GameObjectType::Terrain || button->object->type == GameObjectType::Floor || button->object->type == GameObjectType::Water) {
                     if (tool == toolType::Cursor || tool == toolType::AddGameObject) {
                         tool = toolType::Brush;
                         selectedToolButton = btnToolsBrush;
                     }
-
-                    };
-            }
-            else {
-                // object is not Terrain, Floor or Water
-                auto button = paletteButtons[i];
-                paletteButtons[i]->onclick_func = [this, button]() {
-                    prefabToPaint = button->object;
-                    selectedPaletteButton = button;
-
+                }
+                else {
                     tool = toolType::AddGameObject;
                     selectedToolButton = btnToolsEmpty;
-                    };
-            }
-
-
-
-
+                }
+                };
+        }
     }
 }
 
@@ -887,8 +874,8 @@ void Palette::createToolsButtons() {
     btnToolsCursor->onclick_func = [this]() {
         selectedToolButton = btnToolsCursor;
         tool = toolType::Cursor;
+        clearPrefabsToPaint();
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
         };
 
 
@@ -903,10 +890,12 @@ void Palette::createToolsButtons() {
     btnToolsBrush->onclick_func = [this]() {
         selectedToolButton = btnToolsBrush;
         tool = toolType::Brush;
-        if (prefabToPaint == nullptr) {
-            prefabToPaint = availableGameObjects[1];
+        if (selectedPaletteButton == nullptr)
             selectedPaletteButton = paletteButtons[1];
-        }
+
+        clearPrefabsToPaint();
+        std::cout << selectedPaletteButton->object->name << "\n";
+        //generateBrush(selectedPaletteButton->object);
         };
 
 
@@ -921,10 +910,11 @@ void Palette::createToolsButtons() {
     btnToolsRectBrush->onclick_func = [this]() {
         selectedToolButton = btnToolsRectBrush;
         tool = toolType::RectBrush;
-        if (prefabToPaint == nullptr) {
-            prefabToPaint = availableGameObjects[1];
+        if (selectedPaletteButton == nullptr)
             selectedPaletteButton = paletteButtons[1];
-        }
+
+        clearPrefabsToPaint();
+        generateRectBrush(selectedPaletteButton->object);
         };
 
 
@@ -941,11 +931,21 @@ void Palette::createToolsButtons() {
             if (brushSize < 5) {
                 brushSize++;
                 setBrushSize(brushSize);
-
                 coutBrush();
                 //cout << "\n\n";
-            }
 
+                clearPrefabsToPaint();
+                if (selectedPaletteButton != nullptr) {
+                    if (selectedToolButton == btnToolsBrush)
+                        generateBrush(selectedPaletteButton->object);
+                    else if (selectedToolButton == btnToolsRectBrush)
+                        generateRectBrush(selectedPaletteButton->object);
+                    else if (selectedToolButton == btnToolsRectangle)
+                        generateRectangle(selectedPaletteButton->object);
+                    else if (selectedToolButton == btnToolsElipse)
+                        generateElipse(selectedPaletteButton->object);
+                }
+            }
         }
         };
 
@@ -963,9 +963,21 @@ void Palette::createToolsButtons() {
             if (brushSize > 0) {
                 brushSize--;
                 setBrushSize(brushSize);
-
-                //coutBrush();
+                coutBrush();
                 //cout << "\n\n";
+
+                clearPrefabsToPaint();
+
+                if (selectedPaletteButton != nullptr) {
+                    if (selectedToolButton == btnToolsBrush)
+                        generateBrush(selectedPaletteButton->object);
+                    else if (selectedToolButton == btnToolsRectBrush)
+                        generateRectBrush(selectedPaletteButton->object);
+                    else if (selectedToolButton == btnToolsRectangle)
+                        generateRectangle(selectedPaletteButton->object);
+                    else if (selectedToolButton == btnToolsElipse)
+                        generateElipse(selectedPaletteButton->object);
+                }
             }
 
 
@@ -984,9 +996,10 @@ void Palette::createToolsButtons() {
     btnToolsRectangle->onclick_func = [this]() {
         selectedToolButton = btnToolsRectangle;
         tool = toolType::Rectangle;
-        if (prefabToPaint == nullptr) {
-            prefabToPaint = availableGameObjects[1];
+        if (prefabsToPaint.empty()) {
             selectedPaletteButton = paletteButtons[1];
+            clearPrefabsToPaint();
+            generateRectangle(selectedPaletteButton->object);
         }
         };
 
@@ -1002,9 +1015,10 @@ void Palette::createToolsButtons() {
     btnToolsElipse->onclick_func = [this]() {
         selectedToolButton = btnToolsElipse;
         tool = toolType::Elipse;
-        if (prefabToPaint == nullptr) {
-            prefabToPaint = availableGameObjects[1];
+        if (prefabsToPaint.empty()) {
             selectedPaletteButton = paletteButtons[1];
+            clearPrefabsToPaint();
+            generateElipse(selectedPaletteButton->object);
         }
         };
 
@@ -1034,12 +1048,8 @@ void Palette::createToolsButtons() {
     btnToolsEraser->onclick_func = [this]() {
         selectedToolButton = btnToolsEraser;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         tool = toolType::Eraser;
-        if (prefabToPaint == nullptr) {
-            prefabToPaint = availableGameObjects[1];
-            selectedPaletteButton = paletteButtons[1];
-        }
         };
 
     ////////////////////////////////////////////////////////////////////////////////////
@@ -1121,7 +1131,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupTerrain;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 7);
         createNavButtons();
         createToolsButtons();
@@ -1138,7 +1148,7 @@ void Palette::createGroupButtons() {
     btnGroupFloors->onclick_func = [this]() {
         selectedGroupButton = btnGroupFloors;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 7);
         createNavButtons();
         createToolsButtons();
@@ -1155,7 +1165,7 @@ void Palette::createGroupButtons() {
     btnGroupWater->onclick_func = [this]() {
         selectedGroupButton = btnGroupWater;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 7);
         createNavButtons();
         createToolsButtons();
@@ -1173,7 +1183,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupFurnitures;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1191,7 +1201,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupWalls;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1209,7 +1219,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupMonsters;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1227,7 +1237,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupFlatObjects;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1245,7 +1255,7 @@ void Palette::createGroupButtons() {
         selectedGroupButton = btnGroupItems;
         tool = toolType::Cursor;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1263,7 +1273,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedGroupButton = btnGroupNatures;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1281,7 +1291,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedGroupButton = btnGroupObjects;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1299,7 +1309,7 @@ void Palette::createGroupButtons() {
         tool = toolType::Cursor;
         selectedGroupButton = btnGroupSmallObjects;
         selectedPaletteButton = nullptr;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         createPaletteButtons(5, 8);
         createNavButtons();
         deleteToolsButtons();
@@ -1364,7 +1374,7 @@ bool Palette::unselectPaletteButton() {
         selectedPaletteButton = nullptr;
         selectedToolButton = btnToolsCursor;
         tool = toolType::Cursor;
-        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         return true;
     }
     else
