@@ -25,24 +25,25 @@
 #include "Platform/Borders.h"
 #include "Platform/Pathfinding.h"
 
-#include "Platform/HitTexts.h"             // Hit texts
-#include "Platform/Items.h"                // manage of items, itemsOnMap, Inventory and InventoryOnMap
-#include "Platform/UnitStates.h"           // states for Units
-#include "Platform/Player.h"               // manage of Player
-#include "Platform/Units.h"                // manage of Units 
-#include "Platform/Monsters.h"             // manage of Monster (dziobak, kolcorozec, bies, etc.)
-#include "Platform/Natures.h"              // manage of Natures (tree, rock, boulder, etc.)
-#include "Platform/Objects.h"              // manage of Objects (palisade, etc.)
-#include "Platform/Furnitures.h"           // manage of Furnitures (barel, table, chest, etc.)
-#include "Platform/FlatObjects.h"          // manage of Flat Objects (flat plants, flat rocks, etc.)
-#include "Platform/Walls.h"                // manage of Walls 
-#include "Platform/Doors.h"                // manage of Doors
-#include "Platform/SmallObjects.h"         // manage of small objects (grass, etc.)
+#include "Platform/HitTexts.h"					// Hit texts
+#include "Platform/Items.h"						// manage of items, itemsOnMap, Inventory and InventoryOnMap
+#include "Platform/UnitStates.h"				// states for Units
+#include "Platform/Player.h"					// manage of Player
+#include "Platform/Units.h"						// manage of Units 
+#include "Platform/Monsters.h"					// manage of Monster (dziobak, kolcorozec, bies, etc.)
+#include "Platform/Natures.h"					// manage of Natures (tree, rock, boulder, etc.)
+#include "Platform/Objects.h"					// manage of Objects (palisade, etc.)
+#include "Platform/Furnitures.h"				// manage of Furnitures (barel, table, chest, etc.)
+#include "Platform/FlatObjects.h"				// manage of Flat Objects (flat plants, flat rocks, etc.)
+#include "Platform/Walls.h"						// manage of Walls 
+#include "Platform/Doors.h"						// manage of Doors
+#include "Platform/SmallObjects.h"				// manage of small objects (grass, etc.)
 #include "Platform/Dialogues.h"            
-#include "Platform/Character.h"            // manage of Characters
-#include "Platform/Prefabs.h"              // manage of all prefabs
-#include "Platform/BuildingsManager.h"     // manage of Buildings
-#include "Platform/GameObjectsManager.h"   // manage of GameObjects - update/sort/render/
+#include "Platform/Character.h"					// manage of Characters
+#include "Platform/Prefabs.h"					// manage of all prefabs
+#include "Platform/BuildingsManager.h"			// manage of Buildings
+#include "Platform/MouseMovedGameObjects.h"     // manage of Mouse Moved GameObjects
+#include "Platform/GameObjectsManager.h"		// manage of GameObjects - update/sort/render/
 #include "Platform/Map.h"
 #include "Platform/Quests.h"
 
