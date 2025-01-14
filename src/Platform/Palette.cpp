@@ -793,6 +793,8 @@ void Palette::loadPalette() {
                     sf::Vector2f pos;
                     pos.x = button->position.x - button->sprite.getTexture()->getSize().x / 2.0f;
                     pos.y = button->position.y + button->sprite.getTexture()->getSize().y / 4.0f;
+                    pos.x = button->position.x - button->sprite.getGlobalBounds().width / 2.0f;
+                    pos.y = button->position.y + button->sprite.getGlobalBounds().height / 2.0f;
                     if (tip != nullptr)
                         delete tip;
                     tip = new Tip(ConvertUtf8ToWide(button->object->name), pos, button);       // TO-DO delete convert and use std::wstring
