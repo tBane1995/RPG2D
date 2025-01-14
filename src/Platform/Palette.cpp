@@ -93,6 +93,8 @@ void PaletteButton::setGameObject(GameObject* object) {
                 sf::Vector2f pos;
                 pos.x = this->position.x - sprite.getTexture()->getSize().x / 2.0f;
                 pos.y = this->position.y + sprite.getTexture()->getSize().y / 4.0f;
+                if (tip != nullptr)
+                    delete tip;
                 tip = new Tip(ConvertUtf8ToWide(this->object->name), pos, this);       // TO-DO delete convert and use std::wstring
             }
             };
@@ -801,10 +803,12 @@ void Palette::loadPalette() {
             auto button = paletteButtons[i];
 
             paletteButtons[i]->hover_func = [this, button]() {
-                if (tip == nullptr || (tip != nullptr && tip->btn != button)) {
+                if (tip == nullptr || tip->btn != button) {
                     sf::Vector2f pos;
                     pos.x = button->position.x - button->sprite.getTexture()->getSize().x / 2.0f;
                     pos.y = button->position.y + button->sprite.getTexture()->getSize().y / 4.0f;
+                    if (tip != nullptr)
+                        delete tip;
                     tip = new Tip(ConvertUtf8ToWide(button->object->name), pos, button);       // TO-DO delete convert and use std::wstring
                 }
                 };
@@ -866,8 +870,12 @@ void Palette::createToolsButtons() {
     btnToolsCursor = new ButtonWithImage();
     btnToolsCursor->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-cursor"));
     btnToolsCursor->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsCursor)
+        if (tip == nullptr || tip->btn != btnToolsCursor) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Cursor", btnToolsCursor);
+        }
+            
 
 
         };
@@ -882,9 +890,13 @@ void Palette::createToolsButtons() {
     btnToolsBrush = new ButtonWithImage();
     btnToolsBrush->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-brush"));
     btnToolsBrush->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsBrush)
+        if (tip == nullptr || tip->btn != btnToolsBrush) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Brush", btnToolsBrush);
 
+        }
+            
 
         };
     btnToolsBrush->onclick_func = [this]() {
@@ -902,9 +914,12 @@ void Palette::createToolsButtons() {
     btnToolsRectBrush = new ButtonWithImage();
     btnToolsRectBrush->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-rect_brush"));
     btnToolsRectBrush->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsRectBrush)
+        if (tip == nullptr || tip->btn != btnToolsRectBrush) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Rectangle Brush", btnToolsRectBrush);
-
+        }
+            
 
         };
     btnToolsRectBrush->onclick_func = [this]() {
@@ -921,8 +936,12 @@ void Palette::createToolsButtons() {
     btnToolsIncrease = new ButtonWithImage();
     btnToolsIncrease->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-increase"));
     btnToolsIncrease->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsIncrease)
+        if (tip == nullptr || tip->btn != btnToolsIncrease) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Increase", btnToolsIncrease);
+        }
+            
 
 
         };
@@ -953,8 +972,12 @@ void Palette::createToolsButtons() {
     btnToolsDecrease = new ButtonWithImage();
     btnToolsDecrease->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-decrease"));
     btnToolsDecrease->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsDecrease)
+        if (tip == nullptr || tip->btn != btnToolsDecrease) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Decrease", btnToolsDecrease);
+        }
+            
 
 
         };
@@ -988,8 +1011,12 @@ void Palette::createToolsButtons() {
     btnToolsRectangle = new ButtonWithImage();
     btnToolsRectangle->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-rectangle"));
     btnToolsRectangle->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsRectangle)
+        if (tip == nullptr || tip->btn != btnToolsRectangle) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Rectangle", btnToolsRectangle);
+        }
+            
 
 
         };
@@ -1007,8 +1034,12 @@ void Palette::createToolsButtons() {
     btnToolsElipse = new ButtonWithImage();
     btnToolsElipse->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-elipse"));
     btnToolsElipse->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsElipse)
+        if (tip == nullptr || tip->btn != btnToolsElipse) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Elipse", btnToolsElipse);
+        }
+            
 
 
         };
@@ -1026,8 +1057,12 @@ void Palette::createToolsButtons() {
     btnToolsFill = new ButtonWithImage();
     btnToolsFill->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-fill"));
     btnToolsFill->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsElipse)
+        if (tip == nullptr || tip->btn != btnToolsElipse) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Fill", btnToolsFill);
+        }
+            
 
 
         };
@@ -1040,8 +1075,12 @@ void Palette::createToolsButtons() {
     btnToolsEraser = new ButtonWithImage();
     btnToolsEraser->setTexture(getSingleTexture("GUI/toolButtons/toolbutton-eraser"));
     btnToolsEraser->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnToolsEraser)
+        if (tip == nullptr || tip->btn != btnToolsEraser) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Eraser", btnToolsEraser);
+        }
+            
 
 
         };
@@ -1122,8 +1161,12 @@ void Palette::createGroupButtons() {
     btnGroupTerrain = new ButtonWithImage();
     btnGroupTerrain->setTexture(getSingleTexture("GUI/menuButtons/menuButton-terrain"));
     btnGroupTerrain->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupTerrain)
+        if (tip == nullptr || tip->btn != btnGroupTerrain) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Terrains", btnGroupTerrain);
+        }
+            
 
 
         };
@@ -1142,8 +1185,12 @@ void Palette::createGroupButtons() {
     btnGroupFloors = new ButtonWithImage();
     btnGroupFloors->setTexture(getSingleTexture("GUI/menuButtons/menuButton-floors"));
     btnGroupFloors->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupFloors)
+        if (tip == nullptr || tip->btn != btnGroupFloors) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Floors", btnGroupFloors);
+        }
+            
         };
     btnGroupFloors->onclick_func = [this]() {
         selectedGroupButton = btnGroupFloors;
@@ -1159,8 +1206,12 @@ void Palette::createGroupButtons() {
     btnGroupWater = new ButtonWithImage();
     btnGroupWater->setTexture(getSingleTexture("GUI/menuButtons/menuButton-water"));
     btnGroupWater->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupWater)
+        if (tip == nullptr || tip->btn != btnGroupWater) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Waters", btnGroupWater);
+        }
+            
         };
     btnGroupWater->onclick_func = [this]() {
         selectedGroupButton = btnGroupWater;
@@ -1176,8 +1227,12 @@ void Palette::createGroupButtons() {
     btnGroupFurnitures = new ButtonWithImage();
     btnGroupFurnitures->setTexture(getSingleTexture("GUI/menuButtons/menuButton-furnitures"));
     btnGroupFurnitures->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupFurnitures)
+        if (tip == nullptr || tip->btn != btnGroupFurnitures) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Furnitures", btnGroupFurnitures);
+        }
+            
         };
     btnGroupFurnitures->onclick_func = [this]() {
         selectedGroupButton = btnGroupFurnitures;
@@ -1194,8 +1249,12 @@ void Palette::createGroupButtons() {
     btnGroupWalls = new ButtonWithImage();
     btnGroupWalls->setTexture(getSingleTexture("GUI/menuButtons/menuButton-walls"));
     btnGroupWalls->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupWalls)
+        if (tip == nullptr || tip->btn != btnGroupWalls) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Walls", btnGroupWalls);
+        }
+            
         };
     btnGroupWalls->onclick_func = [this]() {
         selectedGroupButton = btnGroupWalls;
@@ -1212,8 +1271,12 @@ void Palette::createGroupButtons() {
     btnGroupMonsters = new ButtonWithImage();
     btnGroupMonsters->setTexture(getSingleTexture("GUI/menuButtons/menuButton-monsters"));
     btnGroupMonsters->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupMonsters)
+        if (tip == nullptr || tip->btn != btnGroupMonsters) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Monsters", btnGroupMonsters);
+        }
+            
         };
     btnGroupMonsters->onclick_func = [this]() {
         selectedGroupButton = btnGroupMonsters;
@@ -1230,8 +1293,12 @@ void Palette::createGroupButtons() {
     btnGroupFlatObjects = new ButtonWithImage();
     btnGroupFlatObjects->setTexture(getSingleTexture("GUI/menuButtons/menuButton-flat_objects"));
     btnGroupFlatObjects->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupFlatObjects)
+        if (tip == nullptr || tip->btn != btnGroupFlatObjects) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Flat Objects", btnGroupFlatObjects);
+        }
+            
         };
     btnGroupFlatObjects->onclick_func = [this]() {
         selectedGroupButton = btnGroupFlatObjects;
@@ -1248,8 +1315,12 @@ void Palette::createGroupButtons() {
     btnGroupItems = new ButtonWithImage();
     btnGroupItems->setTexture(getSingleTexture("GUI/menuButtons/menuButton-items"));
     btnGroupItems->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupItems)
+        if (tip == nullptr || tip->btn != btnGroupItems) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Items", btnGroupItems);
+        }
+            
         };
     btnGroupItems->onclick_func = [this]() {
         selectedGroupButton = btnGroupItems;
@@ -1266,8 +1337,12 @@ void Palette::createGroupButtons() {
     btnGroupNatures = new ButtonWithImage();
     btnGroupNatures->setTexture(getSingleTexture("GUI/menuButtons/menuButton-natures"));
     btnGroupNatures->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupNatures)
+        if (tip == nullptr || tip->btn != btnGroupNatures) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Natures Objects", btnGroupNatures);
+        }
+            
         };
     btnGroupNatures->onclick_func = [this]() {
         tool = toolType::Cursor;
@@ -1284,8 +1359,12 @@ void Palette::createGroupButtons() {
     btnGroupObjects = new ButtonWithImage();
     btnGroupObjects->setTexture(getSingleTexture("GUI/menuButtons/menuButton-objects"));
     btnGroupObjects->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupObjects)
+        if (tip == nullptr || tip->btn != btnGroupObjects) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Objects", btnGroupObjects);
+        }
+            
         };
     btnGroupObjects->onclick_func = [this]() {
         tool = toolType::Cursor;
@@ -1302,8 +1381,12 @@ void Palette::createGroupButtons() {
     btnGroupSmallObjects = new ButtonWithImage();
     btnGroupSmallObjects->setTexture(getSingleTexture("GUI/menuButtons/menuButton-smallObjects"));
     btnGroupSmallObjects->hover_func = [this]() {
-        if (tip == nullptr || tip->btn != btnGroupSmallObjects)
+        if (tip == nullptr || tip->btn != btnGroupSmallObjects) {
+            if (tip != nullptr)
+                delete tip;
             tip = new Tip(L"Small Objects", btnGroupSmallObjects);
+        }
+            
         };
     btnGroupSmallObjects->onclick_func = [this]() {
         tool = toolType::Cursor;
