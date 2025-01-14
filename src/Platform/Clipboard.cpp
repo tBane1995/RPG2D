@@ -6,6 +6,7 @@
 #include "TerrainAndFloors.h"
 #include "PrefabToPaint.h"
 #include "Palette.h"
+#include "Painter.h"
 #include <iostream>
 
 

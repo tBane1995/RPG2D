@@ -19,23 +19,71 @@
 #include "Walls.h"
 #include "Doors.h"
 #include "BuildingsManager.h"
+#include "PrefabToPaint.h"
+
+void clearPrefabsToPaint() {
+
+    prefabsToPaint.clear();
+}
 
 void painterUpdate() {
+
+    clearPrefabsToPaint();
 
     if (tool == toolType::Cursor && mouse_state == MouseState::Selecting) {
         mouseSelection();
     }
-    else {
-        for (auto& prefab : prefabsToPaint) {
+    else if (prefabToPaint != nullptr) {
+
+        if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Floor || prefabToPaint->type == GameObjectType::Water) {
+
+            clearPrefabsToPaint();
+
+            if (tool == toolType::Rectangle) {
+                if (mouse_state == MouseState::Selecting) {
+                    generateRectangle();
+                }
+            }
+            else if (tool == toolType::Elipse) {
+                if (mouse_state == MouseState::Selecting) {
+                    generateElipse();
+                }
+            }
+            else if (tool == toolType::Brush) {
+                generateBrush();
+            }
+            else if (tool == toolType::RectBrush) {
+                generateRectBrush();
+            }
+
+        }
+        else {
+            // prefab isn't Terrain/Floor/Water
+
+            if (prefabsToPaint.size() != 1 || prefabsToPaint[0] != prefabToPaint) {
+                clearPrefabsToPaint();
+                prefabsToPaint.push_back(prefabToPaint);
+
+            }
 
             float x = short(worldMousePosition.x) / short(tileSide) * short(tileSide);
             float y = short(worldMousePosition.y) / short(tileSide) * short(tileSide);
 
-            prefab->setPosition(sf::Vector2f(x, y));
+            for (auto& prefab : prefabsToPaint) {
+
+                prefab->setPosition(sf::Vector2f(x, y));
+
+                if (prefab->type == GameObjectType::Unit || prefab->type == GameObjectType::Monster || prefab->type == GameObjectType::Character) {
+                    dynamic_cast<Unit*>(prefab)->idling(dt);
+                }
+                else {
+                    prefab->update();
+                    prefab->mouseIsHover = false;
+
+                }
+            }
         }
     }
-
-
 
 }
 

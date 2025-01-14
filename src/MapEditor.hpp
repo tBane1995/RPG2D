@@ -80,8 +80,6 @@ void MapEditor() {
 
     updateGameObjects();
 
-    dialogs.push_back(new Panel());
-
     while (window->isOpen()) {
 
         prevTime = currentTime;
@@ -462,7 +460,7 @@ void MapEditorEventRightClick(sf::Event& event) {
 
     if (!prefabsToPaint.empty()) {
         palette->unselectPaletteButton();
-        clearPrefabsToPaint();
+        prefabToPaint = nullptr;
         return;
     }
 
