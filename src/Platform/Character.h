@@ -51,6 +51,8 @@ public:
 	sf::Sprite leftHandSprite;
 	sf::Sprite rightHandSprite;
 	
+	sf::RenderTexture* renderTexture;
+
 	Dialogue* dialogue;
 
 	SingleTexture* talkWithTexture;

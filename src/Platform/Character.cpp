@@ -15,6 +15,8 @@ Character::Character(std::string name, std::string bodySet) : Unit(name, bodySet
 	leftHand = nullptr;
 	rightHand = nullptr;
 
+	renderTexture = new sf::RenderTexture();
+
 	loadBody();
 	loadHelmet();
 	loadArmor();
@@ -31,6 +33,8 @@ Character::Character(std::string name, std::string bodySet) : Unit(name, bodySet
 	talkWithSprite.setOrigin(talkWithTexture->cx, talkWithTexture->cy);
 	showHand = false;
 
+	
+
 }
 
 Character::Character(GameObject* object, float x, float y) : Unit(object, x, y) {
@@ -41,6 +45,8 @@ Character::Character(GameObject* object, float x, float y) : Unit(object, x, y) 
 	pants = dynamic_cast <Character*>(object)->pants;
 	leftHand = dynamic_cast <Character*>(object)->leftHand;
 	rightHand = dynamic_cast <Character*>(object)->rightHand;
+
+	renderTexture = new sf::RenderTexture();
 
 	loadBody();
 	loadHelmet();
@@ -57,6 +63,8 @@ Character::Character(GameObject* object, float x, float y) : Unit(object, x, y) 
 	SingleTexture::SetTextureForSprite(&talkWithSprite, talkWithTexture);
 	talkWithSprite.setOrigin(talkWithTexture->cx, talkWithTexture->cy);
 	showHand = false;
+
+	
 }
 
 void Character::loadBody() {
@@ -261,50 +269,50 @@ void Character::loadRightHand() {
 }
 
 void Character::loadAppearance() {
-	sf::RenderTexture* tex = new sf::RenderTexture();
-	tex->create(64, 64);
-	tex->clear(sf::Color::Transparent);
+	renderTexture->create(64, 64);
+	renderTexture->clear(sf::Color::Transparent);
 
 	switch (direction) {
 	case 0: // TOP
-		tex->draw(rightHandSprite);
-		tex->draw(leftHandSprite);
-		tex->draw(bodySprite);
-		tex->draw(helmetSprite);
-		tex->draw(pantsSprite);
-		tex->draw(armorSprite);
+		renderTexture->draw(rightHandSprite);
+		renderTexture->draw(leftHandSprite);
+		renderTexture->draw(bodySprite);
+		renderTexture->draw(helmetSprite);
+		renderTexture->draw(pantsSprite);
+		renderTexture->draw(armorSprite);
 		break;
 	case 1: // RIGHT
-		tex->draw(leftHandSprite);
-		tex->draw(bodySprite);
-		tex->draw(helmetSprite);
-		tex->draw(pantsSprite);
-		tex->draw(armorSprite);
-		tex->draw(rightHandSprite);
+		renderTexture->draw(leftHandSprite);
+		renderTexture->draw(bodySprite);
+		renderTexture->draw(helmetSprite);
+		renderTexture->draw(pantsSprite);
+		renderTexture->draw(armorSprite);
+		renderTexture->draw(rightHandSprite);
 		break;
 	case 2: // BOTTOM
-		tex->draw(bodySprite);
-		tex->draw(helmetSprite);
-		tex->draw(pantsSprite);
-		tex->draw(armorSprite);
-		tex->draw(leftHandSprite);
-		tex->draw(rightHandSprite);
+		renderTexture->draw(bodySprite);
+		renderTexture->draw(helmetSprite);
+		renderTexture->draw(pantsSprite);
+		renderTexture->draw(armorSprite);
+		renderTexture->draw(leftHandSprite);
+		renderTexture->draw(rightHandSprite);
 		break;
 	case 3: // LEFT
-		tex->draw(rightHandSprite);
-		tex->draw(bodySprite);
-		tex->draw(helmetSprite);
-		tex->draw(pantsSprite);
-		tex->draw(armorSprite);
-		tex->draw(leftHandSprite);
+		renderTexture->draw(rightHandSprite);
+		renderTexture->draw(bodySprite);
+		renderTexture->draw(helmetSprite);
+		renderTexture->draw(pantsSprite);
+		renderTexture->draw(armorSprite);
+		renderTexture->draw(leftHandSprite);
 		break;
 	default:
 		break;
 	}
 
-	tex->display();
-	sprite.setTexture(tex->getTexture());
+	renderTexture->display();
+	sprite.setTexture(renderTexture->getTexture());
 	sprite.setOrigin(32, 58);
+	GameObject::draw();
 }
 
 void Character::update() {
