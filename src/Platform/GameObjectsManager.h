@@ -13,6 +13,7 @@ Building* isPartOfBuilding(GameObject* object);
 void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h);
 void selectGameObjects();
 bool unselectGameObjects();
+GameObject* getNewGameObject(GameObject* object);
 void deleteGameObjectFromMainLists(GameObject* object);
 void clearAllMainListsOfGameObjects();
 bool visiblings(GameObject* object);
