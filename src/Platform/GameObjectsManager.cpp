@@ -367,52 +367,6 @@ bool visiblings(GameObject* object) {
     return true;
 }
 
-GameObject* getNewGameObject(GameObject* object) {
-
-    if (object->type == GameObjectType::Terrain) {
-        TerrainPrefab* o = new TerrainPrefab(object->name, dynamic_cast<TerrainPrefab*>(object)->id);
-        return o;
-    }
-    else if (object->type == GameObjectType::Water) {
-        WaterPrefab* o = new WaterPrefab(object->name, dynamic_cast<WaterPrefab*>(object)->id, dynamic_cast<WaterPrefab*>(object)->terrain);
-        return o;
-    }
-    else if (object->type == GameObjectType::Floor) {
-        FloorPrefab* o = new FloorPrefab(object->name, dynamic_cast<FloorPrefab*>(object)->id);
-        return o;
-    }
-    else if (object->type == GameObjectType::Nature) {
-        Nature* o = new Nature(object, 0, 0);
-        return o;
-    }
-    else if (object->type == GameObjectType::Object) {
-        Object* o = new Object(object, 0, 0);
-        return o;
-    }
-    else if (object->type == GameObjectType::Monster) {
-        Monster* o = new Monster(object, 0, 0);
-        return o;
-    }
-    else if (object->type == GameObjectType::Character) {
-        Character* o = new Character(object, 0, 0);
-        return o;
-    }
-    else if (object->type == GameObjectType::ItemOnMap) {
-        ItemOnMap* o = new ItemOnMap(object, 0, 0);
-        return o;
-    }
-    else if (object->type == GameObjectType::FlatObject) {
-        FlatObject* o = new FlatObject(object, 0, 0);
-        return o;
-    }
-    else if (object->type == GameObjectType::SmallObject) {
-        SmallObject* o = new SmallObject(object, 0, 0);
-        return o;
-    }
-
-    return nullptr;
-}
-
 void updateGameObjects() {
 
     for (auto& go : gameObjects) {

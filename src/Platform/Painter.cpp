@@ -20,8 +20,12 @@
 #include "Doors.h"
 #include "BuildingsManager.h"
 #include "PrefabToPaint.h"
+#include "GameObjectsManager.h"
 
 void clearPrefabsToPaint() {
+
+    for (auto& prefab : prefabsToPaint)
+        delete prefab;
 
     prefabsToPaint.clear();
 }
@@ -59,12 +63,8 @@ void painterUpdate() {
         }
         else {
             // prefab isn't Terrain/Floor/Water
-
-            if (prefabsToPaint.size() != 1 || prefabsToPaint[0] != prefabToPaint) {
-                clearPrefabsToPaint();
-                prefabsToPaint.push_back(prefabToPaint);
-
-            }
+            clearPrefabsToPaint();
+            prefabsToPaint.push_back(getNewGameObject(prefabToPaint));
 
             float x = short(worldMousePosition.x) / short(tileSide) * short(tileSide);
             float y = short(worldMousePosition.y) / short(tileSide) * short(tileSide);
