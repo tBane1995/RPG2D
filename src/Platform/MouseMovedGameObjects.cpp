@@ -1,5 +1,7 @@
 #include "MouseMovedGameObjects.h"
 #include "GameObjects.h"
+#include "Mouse.h"
+#include "TerrainAndFloors.h"
 
 MouseMovedGameObject::MouseMovedGameObject(GameObject* object) {
 	_object = object;

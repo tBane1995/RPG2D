@@ -29,7 +29,8 @@ void generateBrush() {
                     ter->position = sf::Vector2f(xx + 8, yy + 8);
                     ter->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     ter->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                    prefabsToPaint.push_back(ter);
+                    MouseMovedGameObject* moved_object = new MouseMovedGameObject(ter);
+                    prefabsToPaint.push_back(moved_object);
                 }
 
                 if (prefabToPaint->type == GameObjectType::Floor) {
@@ -37,7 +38,8 @@ void generateBrush() {
                     flo->position = sf::Vector2f(xx + 8, yy + 8);
                     flo->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     flo->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                    prefabsToPaint.push_back(flo);
+                    MouseMovedGameObject* moved_object = new MouseMovedGameObject(flo);
+                    prefabsToPaint.push_back(moved_object);
                 }
 
                 if (prefabToPaint->type == GameObjectType::Water) {
@@ -45,7 +47,8 @@ void generateBrush() {
                     wat->position = sf::Vector2f(xx + 8, yy + 8);
                     wat->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     wat->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                    prefabsToPaint.push_back(wat);
+                    MouseMovedGameObject* moved_object = new MouseMovedGameObject(wat);
+                    prefabsToPaint.push_back(moved_object);
                 }
 
             }
@@ -71,7 +74,8 @@ void generateRectBrush() {
                 ter->position = sf::Vector2f(xx + 8, yy + 8);
                 ter->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 ter->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                prefabsToPaint.push_back(ter);
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(ter);
+                prefabsToPaint.push_back(moved_object);
             }
 
             if (prefabToPaint->type == GameObjectType::Floor) {
@@ -79,7 +83,8 @@ void generateRectBrush() {
                 flo->position = sf::Vector2f(xx + 8, yy + 8);
                 flo->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 flo->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                prefabsToPaint.push_back(flo);
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(flo);
+                prefabsToPaint.push_back(moved_object);
             }
 
             if (prefabToPaint->type == GameObjectType::Water) {
@@ -87,7 +92,8 @@ void generateRectBrush() {
                 wat->position = sf::Vector2f(xx + 8, yy + 8);
                 wat->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 wat->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                prefabsToPaint.push_back(wat);
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(wat);
+                prefabsToPaint.push_back(moved_object);
             }
 
             
@@ -116,7 +122,8 @@ void generateRectangle() {
                 ter->position = sf::Vector2f(xx + 8, yy + 8);
                 ter->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 ter->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                prefabsToPaint.push_back(ter);
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(ter);
+                prefabsToPaint.push_back(moved_object);
             }
 
             if (prefabToPaint->type == GameObjectType::Floor) {
@@ -124,7 +131,8 @@ void generateRectangle() {
                 flo->position = sf::Vector2f(xx + 8, yy + 8);
                 flo->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 flo->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                prefabsToPaint.push_back(flo);
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(flo);
+                prefabsToPaint.push_back(moved_object);
             }
 
             if (prefabToPaint->type == GameObjectType::Water) {
@@ -132,7 +140,8 @@ void generateRectangle() {
                 wat->position = sf::Vector2f(xx + 8, yy + 8);
                 wat->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                 wat->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                prefabsToPaint.push_back(wat);
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(wat);
+                prefabsToPaint.push_back(moved_object);
             }
 
         }
@@ -173,7 +182,8 @@ void generateElipse() {
                     ter->position = sf::Vector2f(xx + 8, yy + 8);
                     ter->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     ter->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                    prefabsToPaint.push_back(ter);
+                    MouseMovedGameObject* moved_object = new MouseMovedGameObject(ter);
+                    prefabsToPaint.push_back(moved_object);
                 }
 
                 if (prefabToPaint->type == GameObjectType::Floor) {
@@ -181,7 +191,8 @@ void generateElipse() {
                     flo->position = sf::Vector2f(xx + 8, yy + 8);
                     flo->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     flo->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                    prefabsToPaint.push_back(flo);
+                    MouseMovedGameObject* moved_object = new MouseMovedGameObject(flo);
+                    prefabsToPaint.push_back(moved_object);
                 }
 
                 if (prefabToPaint->type == GameObjectType::Water) {
@@ -189,7 +200,8 @@ void generateElipse() {
                     wat->position = sf::Vector2f(xx + 8, yy + 8);
                     wat->colliders[0]->shape->setFillColor(sf::Color(129, 48, 48, 128));
                     wat->colliders[0]->shape->setPosition(sf::Vector2f(xx, yy));
-                    prefabsToPaint.push_back(wat);
+                    MouseMovedGameObject* moved_object = new MouseMovedGameObject(wat);
+                    prefabsToPaint.push_back(moved_object);
                 }
 
 

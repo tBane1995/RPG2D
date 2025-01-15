@@ -8,7 +8,7 @@ public:
 
 	MouseMovedGameObject(GameObject* object);
 	~MouseMovedGameObject();
-	void setOffset(sf::Vector2f offset = sf::Vector2f(0, 0));
+	void setOffset(sf::Vector2f offset);
 	void update();
 	void draw();
 };

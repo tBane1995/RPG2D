@@ -1,6 +1,7 @@
 #include "PrefabToPaint.h"
 #include "GameObjects.h"
+#include "MouseMovedGameObjects.h"
 
 GameObject* prefabToPaint;
-std::vector < GameObject* > prefabsToPaint;
+std::vector <MouseMovedGameObject* > prefabsToPaint;
 

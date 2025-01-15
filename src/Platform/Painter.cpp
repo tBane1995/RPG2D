@@ -21,11 +21,15 @@
 #include "BuildingsManager.h"
 #include "PrefabToPaint.h"
 #include "GameObjectsManager.h"
+#include "MouseMovedGameObjects.h"
 
 void clearPrefabsToPaint() {
 
-    for (auto& prefab : prefabsToPaint)
+    for (auto& prefab : prefabsToPaint) {
+        delete prefab->_object;
         delete prefab;
+    }
+        
 
     prefabsToPaint.clear();
 }
@@ -64,21 +68,22 @@ void painterUpdate() {
         else {
             // prefab isn't Terrain/Floor/Water
             clearPrefabsToPaint();
-            prefabsToPaint.push_back(getNewGameObject(prefabToPaint));
+            MouseMovedGameObject* moved_object = new MouseMovedGameObject(getNewGameObject(prefabToPaint));
+            prefabsToPaint.push_back(moved_object);
 
             float x = short(worldMousePosition.x) / short(tileSide) * short(tileSide);
             float y = short(worldMousePosition.y) / short(tileSide) * short(tileSide);
 
             for (auto& prefab : prefabsToPaint) {
 
-                prefab->setPosition(sf::Vector2f(x, y));
+                prefab->_object->setPosition(sf::Vector2f(x, y));
 
-                if (prefab->type == GameObjectType::Unit || prefab->type == GameObjectType::Monster || prefab->type == GameObjectType::Character) {
-                    dynamic_cast<Unit*>(prefab)->idling(dt);
+                if (prefab->_object->type == GameObjectType::Unit || prefab->_object->type == GameObjectType::Monster || prefab->_object->type == GameObjectType::Character) {
+                    dynamic_cast<Unit*>(prefab->_object)->idling(dt);
                 }
                 else {
-                    prefab->update();
-                    prefab->mouseIsHover = false;
+                    prefab->_object->update();
+                    prefab->_object->mouseIsHover = false;
 
                 }
             }
@@ -112,65 +117,65 @@ void addPrefabsToMapAndLists() {
 
     for (auto& prefab : prefabsToPaint) {
 
-        float x = prefab->position.x;
-        float y = prefab->position.y;
+        float x = prefab->_object->position.x;
+        float y = prefab->_object->position.y;
 
-        if (prefab->type == GameObjectType::Nature) {
+        if (prefab->_object->type == GameObjectType::Nature) {
 
-            Nature* nature = new Nature(prefab, x, y);
+            Nature* nature = new Nature(prefab->_object, x, y);
             nature->isInTheMainList = true;
             gameObjects.push_back(nature);
             natures.push_back(nature);
             chunk->_natures.push_back(nature);
         }
 
-        if (prefab->type == GameObjectType::Object) {
+        if (prefab->_object->type == GameObjectType::Object) {
 
-            Object* object = new Object(prefab, x, y);
+            Object* object = new Object(prefab->_object, x, y);
             object->isInTheMainList = true;
             gameObjects.push_back(object);
             objects.push_back(object);
             chunk->_objects.push_back(object);
         }
 
-        if (prefab->type == GameObjectType::Monster) {
+        if (prefab->_object->type == GameObjectType::Monster) {
 
-            Monster* monster = new Monster(prefab, x, y);
+            Monster* monster = new Monster(prefab->_object, x, y);
             monster->isInTheMainList = true;
             gameObjects.push_back(monster);
             monsters.push_back(monster);
             chunk->_monsters.push_back(monster);
         }
 
-        if (prefab->type == GameObjectType::ItemOnMap) {
+        if (prefab->_object->type == GameObjectType::ItemOnMap) {
 
-            ItemOnMap* item = new ItemOnMap(prefab, x, y);
+            ItemOnMap* item = new ItemOnMap(prefab->_object, x, y);
             item->isInTheMainList = true;
             gameObjects.push_back(item);
             itemsOnMap.push_back(item);
             chunk->_items.push_back(item);
         }
 
-        if (prefab->type == GameObjectType::FlatObject) {
+        if (prefab->_object->type == GameObjectType::FlatObject) {
 
-            FlatObject* flat = new FlatObject(prefab, x, y);
+            FlatObject* flat = new FlatObject(prefab->_object, x, y);
             flat->isInTheMainList = true;
             gameObjects.push_back(flat);
             flatObjects.push_back(flat);
             chunk->_flatObjects.push_back(flat);
         }
 
-        if (prefab->type == GameObjectType::SmallObject) {
+        if (prefab->_object->type == GameObjectType::SmallObject) {
 
-            SmallObject* object = new SmallObject(prefab, x, y);
+            SmallObject* object = new SmallObject(prefab->_object, x, y);
             object->isInTheMainList = true;
             gameObjects.push_back(object);
             smallObjects.push_back(object);
             chunk->_smallObjects.push_back(object);
         }
 
-        if (prefab->type == GameObjectType::Door) {
-            Door* door = new Door(prefab, x, y);
+        if (prefab->_object->type == GameObjectType::Door) {
+            Door* door = new Door(prefab->_object, x, y);
             door->isInTheMainList = true;
             gameObjects.push_back(door);
             doors.push_back(door);
@@ -186,11 +191,11 @@ void addPrefabsToBuildingAndLists() {
 
     for (auto& prefab : prefabsToPaint) {
 
-        float x = prefab->position.x;
-        float y = prefab->position.y;
+        float x = prefab->_object->position.x;
+        float y = prefab->_object->position.y;
 
-        if (prefab->type == GameObjectType::Wall) {
-            Wall* wall = new Wall(prefab, x, y);
+        if (prefab->_object->type == GameObjectType::Wall) {
+            Wall* wall = new Wall(prefab->_object, x, y);
             wall->isInTheMainList = true;
             gameObjects.push_back(wall);
             walls.push_back(wall);

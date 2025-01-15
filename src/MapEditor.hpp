@@ -366,9 +366,9 @@ void editTiles() {
 
     for(auto& prefab : prefabsToPaint) {
 
-        if (prefab->type == GameObjectType::Terrain) {
+        if (prefab->_object->type == GameObjectType::Terrain) {
             
-            TerrainPrefab* tp = dynamic_cast<TerrainPrefab*>(prefab);
+            TerrainPrefab* tp = dynamic_cast<TerrainPrefab*>(prefab->_object);
             //std::cout << prefab->position.x << ", " << prefab->position.y << "\n";
 
             Chunk* chunk = mapa->getChunk(tp->position);
@@ -383,9 +383,9 @@ void editTiles() {
             }
         }
 
-        if (prefab->type == GameObjectType::Water) {
+        if (prefab->_object->type == GameObjectType::Water) {
 
-            WaterPrefab* wp = dynamic_cast<WaterPrefab*>(prefab);
+            WaterPrefab* wp = dynamic_cast<WaterPrefab*>(prefab->_object);
             //std::cout << prefab->position.x << ", " << prefab->position.y << "\n";
 
             Chunk* chunk = mapa->getChunk(wp->position);

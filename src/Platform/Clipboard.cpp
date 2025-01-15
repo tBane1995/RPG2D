@@ -60,7 +60,8 @@ void Clipboard::paste() {
 	clearPrefabsToPaint();
 
 	for (auto& so : _objects) {
-		prefabsToPaint.push_back(getNewGameObject(so));
+		MouseMovedGameObject* moved_object = new MouseMovedGameObject(getNewGameObject(so));
+		prefabsToPaint.push_back(moved_object);
 	}
 }
 
