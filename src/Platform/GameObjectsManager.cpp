@@ -79,18 +79,21 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
                 if (collider->type == ColliderType::Rectangle) {
                     if (intersectionTwoRectangles(rect_x, rect_y, rect_w, rect_h, collider->position.x + collider->dx, collider->position.y + collider->dy, collider->width, collider->length)) {
                         go->isSelected = true;
-                        MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
-                        selectedGameObjects.push_back(moved_object);
                     }
                 }
                 else if (collider->type == ColliderType::Elipse) {
                     if (intersectionRectangleWithElipse(rect_x, rect_y, rect_w, rect_h, go->position.x + collider->dx, go->position.y + collider->dy, collider->width / 2, collider->length / 2)) {
                         go->isSelected = true;
-                        MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
-                        selectedGameObjects.push_back(moved_object);
+                        
                     }
                 }
             }
+
+            if (go->isSelected) {
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
+                selectedGameObjects.push_back(moved_object);
+            }
+
         }
 
     }

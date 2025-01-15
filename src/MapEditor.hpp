@@ -7,7 +7,6 @@ enum class MapEditorStates { Start, Editor };
 MapEditorStates mapEditorState;
 
 void editTiles();
-bool deleteChosenGameObject();
 void MapEditorEventRightClick(sf::Event& event);
 
 void MapEditor() {
@@ -401,63 +400,6 @@ void editTiles() {
     }   
 }
 
-bool deleteChosenGameObject() {
-    bool was_delete = false;
-
-    ////////////////////////////////////////////////////////
-
-    for (auto it = buildings.begin(); it != buildings.end(); ) {
-        Building* b = *it;
-
-        if (b->mouseIsHover == true) {
-
-            deleteGameObjectFromMainLists(b);   // erase
-
-            Chunk* chunk = mapa->getChunk(b->position);  // erase
-            if (chunk != nullptr) {
-                chunk->deleteGameObject(b);
-            }
-
-            delete b;
-            was_delete = true;
-            break;
-        }
-        else
-            it++;
-    }
-
-    if (was_delete == false) {
-        for (auto it = gameObjects.begin(); it != gameObjects.end(); ) {
-            GameObject* go = *it;
-
-            if (go->type != GameObjectType::Building && go->mouseIsHover == true) {
-
-                deleteGameObjectFromMainLists(go);  // erase
-
-                Chunk* chunk = nullptr;
-
-                if (go->type == GameObjectType::Monster)
-                    chunk = mapa->getChunk(dynamic_cast<Monster*>(go)->base);
-                else
-                    chunk = mapa->getChunk(go->position);
-
-                if (chunk != nullptr) {
-                    chunk->deleteGameObject(go);    // erase
-                }
-
-                delete go;      // delete
-
-                was_delete = true;
-                break;
-            }
-            else
-                it++;
-        }
-    }
-
-    return was_delete;
-}
-
 void MapEditorEventRightClick(sf::Event& event) {
 
     if (!prefabsToPaint.empty()) {
@@ -466,7 +408,6 @@ void MapEditorEventRightClick(sf::Event& event) {
         clearPrefabsToPaint();
         return;
     }
-
 
     menu_bar->handleEvent(event);
 
