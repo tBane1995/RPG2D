@@ -113,8 +113,14 @@ void MapEditor() {
         for (auto& dialog : dialogs)
             dialog->update();
 
-        if (context_menu != nullptr)
+        if (context_menu != nullptr) {
             context_menu->update();
+
+            if (context_menu->_state == ContextMenuState::Close) {
+                delete context_menu;
+                context_menu = nullptr;
+            }
+        }
 
         palette->update();
         menu_bar->update();

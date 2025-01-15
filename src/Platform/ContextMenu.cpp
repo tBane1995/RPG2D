@@ -175,8 +175,7 @@ void ContextMenu::handleEvent(sf::Event& event) {
 	}
 
 	if (event.type == sf::Event::MouseButtonReleased) {
-		_state = ContextMenuState::Close;
-		unselectGameObjects();
+		_state = ContextMenuState::Closing;
 	}
 }
 
@@ -191,7 +190,21 @@ void ContextMenu::update() {
 		_buttons[i]->update();
 	}
 
+	if (_state == ContextMenuState::Closing) {
+		bool do_close = true;
+		for (auto& btn : _buttons) {
+			if (btn->state == ButtonState::Pressed) {
+				do_close = false;
+				break;
+			}
+		}
 
+		if (do_close) {
+			_state = ContextMenuState::Close;
+			unselectGameObjects();
+		}
+
+	}
 }
 
 void ContextMenu::draw() {

@@ -158,8 +158,7 @@ void Btn::click() {
     GUIwasClicked = true;
     clickTime = currentTime;
 
-    if (onclick_func)
-        onclick_func();
+    
 
 }
 
@@ -185,7 +184,11 @@ void Btn::update(bool hover_action) {
     rect.setPosition(cam->position.x + position.x, cam->position.y + position.y);
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 
-    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+    if ((currentTime - clickTime).asSeconds() > 0.05f) {
+        if (state == ButtonState::Pressed) {
+            if (onclick_func)
+                onclick_func();
+        }
         unclick();
     }
 
@@ -305,9 +308,6 @@ void ButtonWithText::click() {
     changeColor();
     GUIwasClicked = true;
     clickTime = currentTime;
-
-    if (onclick_func)
-        onclick_func();
 }
 
 void ButtonWithText::handleEvent(sf::Event& event) {
@@ -332,7 +332,11 @@ void ButtonWithText::update(bool hover_action) {
     rect.setPosition(position.x + cam->position.x, position.y + cam->position.y);
     text.setPosition(position.x + cam->position.x + float(margin) * 0.95f, position.y + cam->position.y + float(margin) * 0.6f);
 
-    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+    if ((currentTime - clickTime).asSeconds() > 0.05f) {
+        if (state == ButtonState::Pressed) {
+            if (onclick_func)
+                onclick_func();
+        }
         unclick();
     }
 
@@ -486,12 +490,7 @@ void ButtonWithImage::click() {
     state = ButtonState::Pressed;
     changeColor();
     GUIwasClicked = true;
-    clickTime = currentTime;
-
-    if (onclick_func) {
-        onclick_func();
-    }
-        
+    clickTime = currentTime; 
 }
 
 void ButtonWithImage::handleEvent(sf::Event& event) {
@@ -527,7 +526,12 @@ void ButtonWithImage::update(bool hover_action) {
 
     sprite.setPosition(cam->position.x + position.x, cam->position.y + position.y);
 
-    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+    if ((currentTime - clickTime).asSeconds() > 0.05f) {
+        if (state == ButtonState::Pressed) {
+            if (onclick_func) {
+                onclick_func();
+            }
+        }
         unclick();
     }
 
@@ -643,10 +647,6 @@ void ButtonWithTextAndIcon::click() {
     changeColor();
     GUIwasClicked = true;
     clickTime = currentTime;
-
-    if (onclick_func)
-        onclick_func();
-
 }
 
 void ButtonWithTextAndIcon::handleEvent(sf::Event& event) {
@@ -675,7 +675,11 @@ void ButtonWithTextAndIcon::update(bool hover_action) {
     _icon.setPosition(position.x + cam->position.x, position.y + cam->position.y);
     text.setPosition(position.x + cam->position.x + float(margin) * 0.95f + icon_size.x, position.y + cam->position.y + float(margin) * 0.6f);
 
-    if ((currentTime - clickTime).asSeconds() > 0.1f) {
+    if ((currentTime - clickTime).asSeconds() > 0.05f) {
+        if (state == ButtonState::Pressed) {
+            if (onclick_func)
+                onclick_func();
+        }
         unclick();
     }
 

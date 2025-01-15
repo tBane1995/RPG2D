@@ -36,13 +36,14 @@ void clearPrefabsToPaint() {
 
 void painterUpdate() {
 
-    clearPrefabsToPaint();
+    
 
     if (tool == toolType::Cursor && mouse_state == MouseState::Selecting) {
+        clearPrefabsToPaint();
         mouseSelection();
     }
     else if (prefabToPaint != nullptr) {
-
+        clearPrefabsToPaint();
         if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Floor || prefabToPaint->type == GameObjectType::Water) {
 
             if (tool == toolType::Rectangle) {
@@ -85,6 +86,23 @@ void painterUpdate() {
                 }
             }
         }
+    }
+    else {
+
+        // a few GameObjects to draw
+        for (auto& prefab : prefabsToPaint) {
+            prefab->update();
+
+            if (prefab->_object->type == GameObjectType::Unit || prefab->_object->type == GameObjectType::Monster || prefab->_object->type == GameObjectType::Character) {
+                dynamic_cast<Unit*>(prefab->_object)->idling(dt);
+            }
+            else {
+                prefab->update();
+                prefab->_object->mouseIsHover = false;
+
+            }
+        }
+
     }
 
 }

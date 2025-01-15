@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Buttons.h"
 #include "GameObjects.h"
-enum class ContextMenuState { Idle, Close };
+enum class ContextMenuState { Idle, Closing, Close };
 
 class ContextMenu {
 public:
