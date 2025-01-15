@@ -9,6 +9,7 @@
 #include "Map.h"
 #include "BuildingsManager.h"
 #include "Clipboard.h"
+#include "Monsters.h"
 
 ContextMenu::ContextMenu(GameObject* object) {
 
@@ -150,13 +151,22 @@ void ContextMenu::loadObjectMenu(GameObject* object) {
 		};
 
 	ButtonWithTextAndIcon* btn_remove = new ButtonWithTextAndIcon(L"remove", getSingleTexture("GUI/context_menu/btn_remove"));
-	btn_remove->onclick_func = [this, object]() {
-		deleteGameObjectFromMainLists(object);
-		Chunk* chunk = nullptr;
-		chunk = mapa->getChunk(object->position);
-		if (chunk != nullptr)
-			chunk->deleteGameObject(object);
-		delete object;
+	btn_remove->onclick_func = [this]() {
+
+		for (auto& so : selectedGameObjects) {
+
+			deleteGameObjectFromMainLists(so->_object);
+			Chunk* chunk = nullptr;
+			(so->_object->type == GameObjectType::Monster)? chunk = mapa->getChunk(dynamic_cast<Monster*>(so->_object)->base) : chunk = mapa->getChunk(so->_object->position);
+
+			if (chunk != nullptr)
+				chunk->deleteGameObject(so->_object);
+			
+			delete so->_object;
+			delete so;
+		}
+
+		selectedGameObjects.clear();
 		};
 
 	ButtonWithTextAndIcon* btn_cancel = new ButtonWithTextAndIcon(L"cancel", getSingleTexture("GUI/context_menu/btn_cancel"));

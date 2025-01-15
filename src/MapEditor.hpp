@@ -463,6 +463,7 @@ void MapEditorEventRightClick(sf::Event& event) {
     if (!prefabsToPaint.empty()) {
         palette->unselectPaletteButton();
         prefabToPaint = nullptr;
+        clearPrefabsToPaint();
         return;
     }
 
