@@ -222,10 +222,6 @@ void MapEditor() {
 
                 if (context_menu != nullptr) {
                     context_menu->handleEvent(event);
-                    if (context_menu->_state == ContextMenuState::Close) {
-                        delete context_menu;
-                        context_menu = nullptr;
-                    }
 
                 }
                 else {
@@ -293,7 +289,7 @@ void MapEditor() {
             }
         } // events
 
-        /*
+        
         // TO-DO
 
         // drawing a terrain
@@ -309,7 +305,7 @@ void MapEditor() {
                 }
             }
         }
-        */
+        
 
 
         // UPDATE ////////////////////////////////////////////////////////////////////////
