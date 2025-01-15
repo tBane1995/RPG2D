@@ -17,8 +17,9 @@
 #include "Mouse.h"
 #include "TerrainAndFloors.h"
 #include "Water.h"
+#include "MouseMovedGameObjects.h"
 
-std::vector < GameObject* > selectedGameObjects;
+std::vector < MouseMovedGameObject* > selectedGameObjects;
 
 Building* isPartOfBuilding(GameObject* object) {
 
@@ -35,13 +36,26 @@ Building* isPartOfBuilding(GameObject* object) {
     return nullptr;
 }
 
+bool unselectGameObjects() {
+    if (!selectedGameObjects.empty()) {
+        for (auto& sgo : selectedGameObjects) {
+            sgo->_object->isSelected = false;
+            delete sgo;
+        }
+            
+
+        selectedGameObjects.clear();
+        return true;
+    }
+    else
+        return false;
+
+}
+
 void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
 
     if (!selectedGameObjects.empty())
-        for (auto& s : selectedGameObjects)
-            s->isSelected = false;
-
-    selectedGameObjects.clear();
+        unselectGameObjects();
 
     for (auto& go : gameObjects) {
 
@@ -54,7 +68,8 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
 
             if (intersectionTwoRectangles(rect_x, rect_y, rect_w, rect_h, x, y, w, h)) {
                 go->isSelected = true;
-                selectedGameObjects.push_back(go);
+                MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
+                selectedGameObjects.push_back(moved_object);
             }
 
         }
@@ -64,13 +79,15 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
                 if (collider->type == ColliderType::Rectangle) {
                     if (intersectionTwoRectangles(rect_x, rect_y, rect_w, rect_h, collider->position.x + collider->dx, collider->position.y + collider->dy, collider->width, collider->length)) {
                         go->isSelected = true;
-                        selectedGameObjects.push_back(go);
+                        MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
+                        selectedGameObjects.push_back(moved_object);
                     }
                 }
                 else if (collider->type == ColliderType::Elipse) {
                     if (intersectionRectangleWithElipse(rect_x, rect_y, rect_w, rect_h, go->position.x + collider->dx, go->position.y + collider->dy, collider->width / 2, collider->length / 2)) {
                         go->isSelected = true;
-                        selectedGameObjects.push_back(go);
+                        MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
+                        selectedGameObjects.push_back(moved_object);
                     }
                 }
             }
@@ -91,18 +108,7 @@ void selectGameObjects() {
     selectGameObjects(x, y, w, h);
 }
 
-bool unselectGameObjects() {
-    if (!selectedGameObjects.empty()) {
-        for (auto& sgo : selectedGameObjects)
-            sgo->isSelected = false;
 
-        selectedGameObjects.clear();
-        return true;
-    }
-    else
-        return false;
-
-}
 
 GameObject* getNewGameObject(GameObject* object) {
 

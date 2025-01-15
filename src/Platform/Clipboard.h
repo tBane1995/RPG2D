@@ -1,12 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "MouseMovedGameObjects.h"
 
 class GameObject;
 
 class Clipboard {
 public:
 	sf::Vector2f _position;
-	std::vector < GameObject* > _objects;
+	std::vector < MouseMovedGameObject* > _objects;
 
 	Clipboard();
 	~Clipboard();
