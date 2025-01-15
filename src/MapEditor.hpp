@@ -402,19 +402,21 @@ void editTiles() {
 
 void MapEditorEventRightClick(sf::Event& event) {
 
+    menu_bar->handleEvent(event);
+
     if (!prefabsToPaint.empty()) {
         palette->unselectPaletteButton();
         prefabToPaint = nullptr;
         clearPrefabsToPaint();
+        tool = toolType::Cursor;
         return;
     }
-
-    menu_bar->handleEvent(event);
-
-    if (context_menu != nullptr)
+    else if (context_menu != nullptr) {
         delete context_menu;
-
-    if (selectedGameObjects.empty()) {
+        context_menu = nullptr;
+        return;
+    }
+    else if (selectedGameObjects.empty()) {
 
         startMousePosition = mousePosition;
         startWorldMousePosition = worldMousePosition;
