@@ -45,8 +45,6 @@ void painterUpdate() {
 
         if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Floor || prefabToPaint->type == GameObjectType::Water) {
 
-            clearPrefabsToPaint();
-
             if (tool == toolType::Rectangle) {
                 if (mouse_state == MouseState::Selecting) {
                     generateRectangle();
@@ -67,7 +65,6 @@ void painterUpdate() {
         }
         else {
             // prefab isn't Terrain/Floor/Water
-            clearPrefabsToPaint();
             MouseMovedGameObject* moved_object = new MouseMovedGameObject(getNewGameObject(prefabToPaint));
             prefabsToPaint.push_back(moved_object);
 
