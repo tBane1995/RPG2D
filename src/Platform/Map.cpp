@@ -468,7 +468,10 @@ void Chunk::drawAllStatistics() {
 
 Mapa::Mapa()
 {
+    for (auto& chunk : chunks)
+        delete chunk;
     chunks.clear();
+    clearAllMainListsOfGameObjects();
 
     width = 32;
     height = 32;
