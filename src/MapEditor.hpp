@@ -231,7 +231,7 @@ void MapEditor() {
                         if (tool == toolType::AddGameObject) {
                             addPrefabsToMapAndLists();
                         }
-                        else
+                        else if(mouse_state == MouseState::Selecting)
                             selectGameObjects();
                 }
 
@@ -251,10 +251,49 @@ void MapEditor() {
 
                         if (mouse_state == MouseState::Idle) {
 
-                            mouse_state = MouseState::Selecting;
-                            mouse_start_time = currentTime;
-                            startMousePosition = mousePosition;
-                            startWorldMousePosition = worldMousePosition;
+                            GameObject* clickedObject = nullptr;
+                            for (auto& go : gameObjects) {
+                                if (go->mouseIsHover) {
+
+                                    if (isPartOfBuilding(go) != nullptr) {
+                                        clickedObject = isPartOfBuilding(go);
+                                        break;
+                                    }
+                                    else {
+                                        clickedObject = go;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (clickedObject != nullptr) {
+                                // MOVING GAMEOBJECTS
+
+                                sf::Vector2f center(0, 0);
+                                for (auto& obj : selectedGameObjects)
+                                    center += obj->_object->position;
+
+                                center.x /= selectedGameObjects.size();
+                                center.y /= selectedGameObjects.size();
+
+                                sf::Vector2f offset;
+                                for (auto& obj : selectedGameObjects) {
+                                    offset = obj->_object->position - worldMousePosition;
+                                    obj->setOffset(offset);
+                                }
+
+                                mouse_state = MouseState::MovingGameObjects;
+                            }
+                            else {
+                                // SELECTING
+                                mouse_state = MouseState::Selecting;
+                                mouse_start_time = currentTime;
+                                startMousePosition = mousePosition;
+                                startWorldMousePosition = worldMousePosition;
+
+                            }
+
+
 
                         }
 
@@ -294,11 +333,17 @@ void MapEditor() {
         // drawing a terrain
         if (dialogs.empty()) {
             if (!GUIwasHover && !GUIwasClicked) {
-                if (prefabToPaint != nullptr) {
+                if (!(menu_bar->clickedMenuButton != nullptr && menu_bar->clickedMenuButton->isOpen)) {
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                        if (tool == toolType::Brush || tool == toolType::RectBrush) {
-                            if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Water)
-                                editTiles();
+                        if (prefabToPaint != nullptr) {
+                            if (tool == toolType::Brush || tool == toolType::RectBrush) {
+                                if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Water)
+                                    editTiles();
+                            }
+                        }
+                        else if (mouse_state == MouseState::MovingGameObjects) {
+                            for (auto& obj : selectedGameObjects)
+                                obj->update();
                         }
                     }
                 }

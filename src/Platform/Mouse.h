@@ -14,7 +14,7 @@ extern sf::RectangleShape selectArea;
 
 extern float mouseDoubleClickTime;
 
-enum class MouseState { Idle, Click, Selecting };
+enum class MouseState { Idle, Click, Selecting, MovingGameObjects };
 extern MouseState mouse_state;
 
 void mouseSelection();
