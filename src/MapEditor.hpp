@@ -402,7 +402,26 @@ void editTiles() {
 
 void MapEditorEventRightClick(sf::Event& event) {
 
-    menu_bar->handleEvent(event);
+    if (menu_bar->clickedMenuButton != nullptr && menu_bar->clickedMenuButton->isOpen) {
+        menu_bar->handleEvent(event);
+        return;
+    }
+    
+    if (context_menu != nullptr) {
+        delete context_menu;
+        context_menu = nullptr;
+        return;
+    }
+    
+    if (!selectedGameObjects.empty()) {
+
+        startMousePosition = mousePosition;
+        startWorldMousePosition = worldMousePosition;
+
+        mouseSelection();
+        selectGameObjects();
+        return;
+    }
 
     if (!prefabsToPaint.empty()) {
         palette->unselectPaletteButton();
@@ -410,19 +429,6 @@ void MapEditorEventRightClick(sf::Event& event) {
         clearPrefabsToPaint();
         tool = toolType::Cursor;
         return;
-    }
-    else if (context_menu != nullptr) {
-        delete context_menu;
-        context_menu = nullptr;
-        return;
-    }
-    else if (selectedGameObjects.empty()) {
-
-        startMousePosition = mousePosition;
-        startWorldMousePosition = worldMousePosition;
-
-        mouseSelection();
-        selectGameObjects();
     }
 
     GameObject* clickedObject = nullptr;
