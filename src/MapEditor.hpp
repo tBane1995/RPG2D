@@ -406,28 +406,10 @@ void MapEditorEventRightClick(sf::Event& event) {
         menu_bar->handleEvent(event);
         return;
     }
-    
+
     if (context_menu != nullptr) {
         delete context_menu;
         context_menu = nullptr;
-        return;
-    }
-    
-    if (!selectedGameObjects.empty()) {
-
-        startMousePosition = mousePosition;
-        startWorldMousePosition = worldMousePosition;
-
-        mouseSelection();
-        selectGameObjects();
-        return;
-    }
-
-    if (!prefabsToPaint.empty()) {
-        palette->unselectPaletteButton();
-        prefabToPaint = nullptr;
-        clearPrefabsToPaint();
-        tool = toolType::Cursor;
         return;
     }
 
@@ -446,7 +428,30 @@ void MapEditorEventRightClick(sf::Event& event) {
         }
     }
 
-    context_menu = new ContextMenu(clickedObject);
+    if (clickedObject != nullptr) {
+        context_menu = new ContextMenu(clickedObject);
+        return;
+    }
+
+    if (!selectedGameObjects.empty()) {
+
+        startMousePosition = mousePosition;
+        startWorldMousePosition = worldMousePosition;
+
+        mouseSelection();
+        selectGameObjects();
+        return;
+    }
+
+    if (!prefabsToPaint.empty()) {
+        palette->unselectPaletteButton();
+        prefabToPaint = nullptr;
+        clearPrefabsToPaint();
+        tool = toolType::Cursor;
+        return;
+    }
+
+    context_menu = new ContextMenu(nullptr);
 
 }
 #endif
