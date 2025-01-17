@@ -452,28 +452,25 @@ void MapEditorEventRightClick(sf::Event& event) {
         return;
     }
 
-    if (context_menu != nullptr) {
-        delete context_menu;
-        context_menu = nullptr;
-        return;
-    }
-
     GameObject* clickedObject = nullptr;
     for (auto& go : gameObjects) {
         if (go->mouseIsHover) {
 
             if (isPartOfBuilding(go) != nullptr) {
                 clickedObject = isPartOfBuilding(go);
-                break;
             }
             else {
                 clickedObject = go;
-                break;
             }
         }
     }
 
     if (clickedObject != nullptr) {
+        if (clickedObject->isSelected == false) {
+            clickedObject->isSelected = true;
+            unselectGameObjects();
+            selectedGameObjects.push_back(new MouseMovedGameObject(clickedObject));
+        }
         context_menu = new ContextMenu(clickedObject);
         return;
     }
@@ -495,6 +492,9 @@ void MapEditorEventRightClick(sf::Event& event) {
         tool = toolType::Cursor;
         return;
     }
+
+    if (context_menu != nullptr)
+        delete context_menu;
 
     context_menu = new ContextMenu(nullptr);
 
