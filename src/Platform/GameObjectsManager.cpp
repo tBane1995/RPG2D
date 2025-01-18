@@ -42,8 +42,7 @@ bool unselectGameObjects() {
             sgo->_object->isSelected = false;
             delete sgo;
         }
-            
-
+        std::cout << "unselect\n";
         selectedGameObjects.clear();
         return true;
     }
@@ -58,7 +57,6 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
         unselectGameObjects();
 
     for (auto& go : gameObjects) {
-
         if (go->type == GameObjectType::Building) {
 
             float x = go->colliders[0]->position.x + go->colliders[0]->dx;

@@ -3,10 +3,10 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
+#include "GameObjects.h"
+#include "BuildingsManager.h"
 #include "MouseMovedGameObjects.h"
 
-class GameObject;
-class Building;
 
 extern std::vector < MouseMovedGameObject* > selectedGameObjects;
 

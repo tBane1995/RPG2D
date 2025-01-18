@@ -70,9 +70,8 @@ void Clipboard::cut() {
 
 void Clipboard::paste() {
 	std::cout << "paste\n";
-	_state = ClipboardState::Pase;
+	_state = ClipboardState::Paste;
 	std::cout << "size: " << _objects.size() << "\n";
-	tool = toolType::AddGameObject;
 
 	// paste GameObjects
 	std::vector < MouseMovedGameObject* > objects_to_paste;

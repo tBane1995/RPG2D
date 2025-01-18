@@ -4,7 +4,7 @@
 
 class GameObject;
 
-enum class ClipboardState { Idle, Copy, Pase, Cut };
+enum class ClipboardState { Idle, Copy, Paste, Cut };
 
 class Clipboard {
 public:

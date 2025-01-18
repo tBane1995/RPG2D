@@ -211,7 +211,7 @@ void ContextMenu::update() {
 
 		if (do_close) {
 			_state = ContextMenuState::Close;
-			unselectGameObjects();
+			
 		}
 
 	}

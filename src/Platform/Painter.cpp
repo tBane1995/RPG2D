@@ -124,13 +124,12 @@ void painterDraw() {
 
 void addGameObjectsToMapAndLists(std::vector <MouseMovedGameObject*> &prefabsToPaint, bool selectGameObjects) {
 
-    Chunk* chunk;
-    sf::Vector2f pos;
-
     if (selectGameObjects) {
         unselectGameObjects();
     }
 
+    Chunk* chunk;
+    sf::Vector2f pos;
 
     for (auto& prefab : prefabsToPaint) {
 

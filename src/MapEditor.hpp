@@ -256,7 +256,6 @@ void MapEditor() {
 
                 if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
                     if (!GUIwasOpen && !GUIwasHover && !GUIwasClicked) {   // TO-DO - now not nowork
-
                         if (mouse_state == MouseState::Idle) {
 
                             GameObject* clickedObject = nullptr;
