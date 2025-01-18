@@ -122,23 +122,33 @@ void painterDraw() {
 
 }
 
-void addPrefabsToMapAndLists() {
+void addGameObjectsToMapAndLists(std::vector <MouseMovedGameObject*> &prefabsToPaint, bool selectGameObjects) {
 
+    Chunk* chunk;
+    sf::Vector2f pos;
 
-    Chunk* chunk = mapa->getChunk(worldMousePosition);
+    if (selectGameObjects) {
+        unselectGameObjects();
+    }
 
-    if (chunk == nullptr)
-        return;
 
     for (auto& prefab : prefabsToPaint) {
 
-        float x = prefab->_object->position.x;
-        float y = prefab->_object->position.y;
+        (prefab->_object->type == GameObjectType::Monster) ? pos = dynamic_cast<Monster*>(prefab->_object)->base : pos = prefab->_object->position;
+
+        chunk = mapa->getChunk(pos);
+
+        if (chunk == nullptr)
+            break;
 
         if (prefab->_object->type == GameObjectType::Nature) {
 
-            Nature* nature = new Nature(prefab->_object, x, y);
+            Nature* nature = new Nature(prefab->_object, pos.x, pos.y);
             nature->isInTheMainList = true;
+            if (selectGameObjects) {
+                nature->isSelected = true;
+                selectedGameObjects.push_back(new MouseMovedGameObject(nature));
+            }
             gameObjects.push_back(nature);
             natures.push_back(nature);
             chunk->_natures.push_back(nature);
@@ -146,8 +156,12 @@ void addPrefabsToMapAndLists() {
 
         if (prefab->_object->type == GameObjectType::Object) {
 
-            Object* object = new Object(prefab->_object, x, y);
+            Object* object = new Object(prefab->_object, pos.x, pos.y);
             object->isInTheMainList = true;
+            if (selectGameObjects) {
+                object->isSelected = true;
+                selectedGameObjects.push_back(new MouseMovedGameObject(object));
+            }
             gameObjects.push_back(object);
             objects.push_back(object);
             chunk->_objects.push_back(object);
@@ -155,8 +169,12 @@ void addPrefabsToMapAndLists() {
 
         if (prefab->_object->type == GameObjectType::Monster) {
 
-            Monster* monster = new Monster(prefab->_object, x, y);
+            Monster* monster = new Monster(prefab->_object, pos.x, pos.y);
             monster->isInTheMainList = true;
+            if (selectGameObjects) {
+                monster->isSelected = true;
+                selectedGameObjects.push_back(new MouseMovedGameObject(monster));
+            }
             gameObjects.push_back(monster);
             monsters.push_back(monster);
             chunk->_monsters.push_back(monster);
@@ -164,8 +182,12 @@ void addPrefabsToMapAndLists() {
 
         if (prefab->_object->type == GameObjectType::ItemOnMap) {
 
-            ItemOnMap* item = new ItemOnMap(prefab->_object, x, y);
+            ItemOnMap* item = new ItemOnMap(prefab->_object, pos.x, pos.y);
             item->isInTheMainList = true;
+            if (selectGameObjects) {
+                item->isSelected = true;
+                selectedGameObjects.push_back(new MouseMovedGameObject(item));
+            }
             gameObjects.push_back(item);
             itemsOnMap.push_back(item);
             chunk->_items.push_back(item);
@@ -173,8 +195,12 @@ void addPrefabsToMapAndLists() {
 
         if (prefab->_object->type == GameObjectType::FlatObject) {
 
-            FlatObject* flat = new FlatObject(prefab->_object, x, y);
+            FlatObject* flat = new FlatObject(prefab->_object, pos.x, pos.y);
             flat->isInTheMainList = true;
+            if (selectGameObjects) {
+                flat->isSelected = true;
+                selectedGameObjects.push_back(new MouseMovedGameObject(flat));
+            }
             gameObjects.push_back(flat);
             flatObjects.push_back(flat);
             chunk->_flatObjects.push_back(flat);
@@ -182,16 +208,24 @@ void addPrefabsToMapAndLists() {
 
         if (prefab->_object->type == GameObjectType::SmallObject) {
 
-            SmallObject* object = new SmallObject(prefab->_object, x, y);
+            SmallObject* object = new SmallObject(prefab->_object, pos.x, pos.y);
             object->isInTheMainList = true;
+            if (selectGameObjects) {
+                object->isSelected = true;
+                selectedGameObjects.push_back(new MouseMovedGameObject(object));
+            }
             gameObjects.push_back(object);
             smallObjects.push_back(object);
             chunk->_smallObjects.push_back(object);
         }
 
         if (prefab->_object->type == GameObjectType::Door) {
-            Door* door = new Door(prefab->_object, x, y);
+            Door* door = new Door(prefab->_object, pos.x, pos.y);
             door->isInTheMainList = true;
+            if (selectGameObjects) {
+                door->isSelected = true;
+                selectedGameObjects.push_back(new MouseMovedGameObject(door));
+            }
             gameObjects.push_back(door);
             doors.push_back(door);
             chunk->_doors.push_back(door);
@@ -199,6 +233,7 @@ void addPrefabsToMapAndLists() {
 
     }
 }
+
 
 void addPrefabsToBuildingAndLists() {
     if (building == nullptr)

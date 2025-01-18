@@ -112,6 +112,10 @@ void MapEditor() {
         for (auto& dialog : dialogs)
             dialog->update();
 
+        palette->update();
+        menu_bar->update();
+        clipboard->update();
+
         if (context_menu != nullptr) {
             context_menu->update();
 
@@ -120,9 +124,6 @@ void MapEditor() {
                 context_menu = nullptr;
             }
         }
-
-        palette->update();
-        menu_bar->update();
 
         if (tip != nullptr && tip->btn != nullptr && tip->btn->state != ButtonState::Hover) {
             delete tip;
@@ -227,12 +228,19 @@ void MapEditor() {
                     palette->handleEvent(event);
                     menu_bar->handleEvent(event);
 
-                    if (!GUIwasHover && !GUIwasClicked)
-                        if (tool == toolType::AddGameObject) {
-                            addPrefabsToMapAndLists();
+                    if (!GUIwasHover && !GUIwasClicked) {
+                        if (mouse_state == MouseState::MovingGameObjects) {
+                            std::cout << "end of moving\n";
                         }
-                        else if(mouse_state == MouseState::Selecting)
+                        else if (tool == toolType::AddGameObject) {
+                            addGameObjectsToMapAndLists(prefabsToPaint, false);
+                        }
+                        else if (mouse_state == MouseState::Selecting) {
                             selectGameObjects();
+                        }
+
+                    }
+
                 }
 
                 mouse_state = MouseState::Click;
@@ -284,7 +292,7 @@ void MapEditor() {
 
                                 mouse_state = MouseState::MovingGameObjects;
                             }
-                            else {
+                            else if (clipboard->_state == ClipboardState::Idle) {
                                 // SELECTING
                                 mouse_state = MouseState::Selecting;
                                 mouse_start_time = currentTime;

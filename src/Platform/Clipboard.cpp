@@ -13,6 +13,7 @@
 
 Clipboard::Clipboard() {
 	clear();
+	_state = ClipboardState::Idle;
 }
 
 Clipboard::~Clipboard() {
@@ -30,9 +31,8 @@ void Clipboard::clear() {
 
 void Clipboard::copy() {
 	std::cout << "copy\n";
-	clear();
+	_state = ClipboardState::Copy;
 
-	std::cout << "copy\n";
 	clear();
 
 	// calculate center point
@@ -62,6 +62,7 @@ void Clipboard::copy() {
 
 void Clipboard::cut() {
 	std::cout << "cut\n";
+	_state = ClipboardState::Cut;
 	copy();
 
 	// TO-DO - remove objects
@@ -69,18 +70,25 @@ void Clipboard::cut() {
 
 void Clipboard::paste() {
 	std::cout << "paste\n";
+	_state = ClipboardState::Pase;
 	std::cout << "size: " << _objects.size() << "\n";
 	tool = toolType::AddGameObject;
 
-	prefabToPaint = nullptr;
-	clearPrefabsToPaint();
-
+	// paste GameObjects
+	std::vector < MouseMovedGameObject* > objects_to_paste;
 	sf::Vector2f offset;
 	for (auto& obj : _objects) {
 		MouseMovedGameObject* mv = new MouseMovedGameObject(getNewGameObject(obj->_object));
 		mv->setOffset(obj->_offset);
-		prefabsToPaint.push_back(mv);
+		mv->update();
+		objects_to_paste.push_back(mv);
 	}
+
+	addGameObjectsToMapAndLists(objects_to_paste, true);
+}
+
+void Clipboard::update() {
+	_state = ClipboardState::Idle;
 }
 
 Clipboard* clipboard = nullptr;

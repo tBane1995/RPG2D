@@ -4,9 +4,12 @@
 
 class GameObject;
 
+enum class ClipboardState { Idle, Copy, Pase, Cut };
+
 class Clipboard {
 public:
 	sf::Vector2f _position;
+	ClipboardState _state;
 	std::vector < MouseMovedGameObject* > _objects;
 
 	Clipboard();
@@ -15,6 +18,7 @@ public:
 	void copy();
 	void cut();
 	void paste();
+	void update();
 };
 
 extern Clipboard* clipboard;
