@@ -49,7 +49,6 @@
 
 #include "Platform/GUI.h"
 #include "Platform/PrefabToPaint.h"
-#include "Platform/BrushSizes.h"
 
 #include "Platform/TextArea.h"
 #include "Platform/EditableTextArea.h"
@@ -65,9 +64,7 @@
 
 #include "Platform/Tips.h"
 #include "Platform/MenuBar.h"
-#include "Platform/Tools.h"
 #include "Platform/Palette.h"
-#include "Platform/Painter.h"
 #include "Platform/CharacterInfoPanel.h"
 #include "Platform/Clipboard.h"
 #include "Platform/ContextMenu.h"

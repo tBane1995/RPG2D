@@ -7,7 +7,7 @@ buildingEditorStates buildingEditorState;
 bool BuildingEditor_deleteChosenGameObject();
 
 void BuildingEditor() {
-
+    /*
     window->setTitle("Building Editor");
 
     // load the icon for windows
@@ -62,13 +62,13 @@ void BuildingEditor() {
     createFloorsPrefabs();
     createWaterPrefabs();
 
-    clearPrefabsToPaint();
     selectedGameObjects.clear();
     mouse_state = MouseState::Idle;
 
     menu_bar = new MenuBar(MenuBarType::BuildingEditor);
     palette = new Palette(PaletteType::BuildingEditor);
     tip = nullptr;
+    painter = new Painter();
 
     loadBuildingFromFile(); // load building
     terrain = new Terrain(0, 0, building->size.x, building->size.y);
@@ -211,8 +211,8 @@ void BuildingEditor() {
 
 
                 if (!GUIwasHover && !GUIwasClicked)
-                    if (tool == toolType::AddGameObject) {
-                        addPrefabsToBuildingAndLists();
+                    if (painter->tool == toolType::AddGameObject) {
+                        //painter->addPrefabsToBuildingAndLists();
                     }
 
 
@@ -238,7 +238,7 @@ void BuildingEditor() {
             }
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
-                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                if (painter->tool == toolType::Cursor || painter->tool == toolType::Rectangle || painter->tool == toolType::Elipse) {
                     if (!GUIwasHover && !GUIwasClicked) {   // TO-DO - now not nowork
 
                         if (mouse_state == MouseState::Idle) {
@@ -278,6 +278,7 @@ void BuildingEditor() {
 
             }
         } // events
+        */
 
         /*
         // TO-DO
@@ -299,6 +300,7 @@ void BuildingEditor() {
         */
 
         // UPDATE ///////////////////////////////////////////////////////////////////////
+        /*
         if (!dialogs.empty())
             dialogs.back()->update();
 
@@ -311,7 +313,7 @@ void BuildingEditor() {
 
         updateGameObjects();
         sortGameObjects();
-        painterUpdate();
+        painter->update();
 
         if (tip != nullptr)
             tip->update();
@@ -333,7 +335,7 @@ void BuildingEditor() {
         }
 
         drawGameObjects();
-        painterDraw();
+        painter->draw();
         palette->draw();
         menu_bar->draw();
 
@@ -345,6 +347,7 @@ void BuildingEditor() {
 
         window->display();
     }
+    */
 }
 
 bool BuildingEditor_deleteChosenGameObject() {

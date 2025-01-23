@@ -3,7 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <vector>
-#include "Tools.h"
 #include "Buttons.h"
 
 /*
@@ -20,8 +19,6 @@ short paletteCols;
 short paletteRows;
 */
 
-extern toolType tool;
-extern short brushSize;
 extern sf::Texture tileset;
 
 

@@ -24,7 +24,7 @@
 
 #include "Game.hpp"
 #include "MapEditor.hpp"
-#include "BuildingEditor.hpp"
+//#include "BuildingEditor.hpp"
 #include "MeshEditor.hpp"
 
 

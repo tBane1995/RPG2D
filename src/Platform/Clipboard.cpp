@@ -6,7 +6,6 @@
 #include "TerrainAndFloors.h"
 #include "PrefabToPaint.h"
 #include "Palette.h"
-#include "Painter.h"
 #include <iostream>
 
 
@@ -83,7 +82,7 @@ void Clipboard::paste() {
 		objects_to_paste.push_back(mv);
 	}
 
-	addGameObjectsToMapAndLists(objects_to_paste, true);
+	painter->addGameObjectsToMapAndLists(objects_to_paste, true);
 }
 
 void Clipboard::update() {

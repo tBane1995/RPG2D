@@ -71,7 +71,7 @@ public:
 	void idle(float dt);
 	void run(float dt);
 	void attack(float dt);
-	void idling(float dt);
+	void idling();
 
 	virtual void update() override;
 	virtual void drawStatistics() override;

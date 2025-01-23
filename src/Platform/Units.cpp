@@ -275,7 +275,6 @@ void Unit::idle(float dt) {
 }
 
 void Unit::run(float dt) {
-
 	goToTarget(dt);
 
 	calculateCurrentFrame(dt);
@@ -314,8 +313,8 @@ void Unit::attack(float dt) {
 	SingleTexture::SetTextureForSprite(&sprite, texture);
 }
 
-void Unit::idling(float dt) {
-
+void Unit::idling() {
+	float dt = currentTime.asSeconds() - prevTime.asSeconds();
 	calculateCurrentFrame(dt);
 	texture = idleTextures[direction * 4 + frame];
 	SingleTexture::SetTextureForSprite(&sprite, texture);

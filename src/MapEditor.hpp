@@ -63,13 +63,13 @@ void MapEditor() {
     createFloorsPrefabs();
     createWaterPrefabs();
 
-    clearPrefabsToPaint();
     selectedGameObjects.clear();
     mouse_state = MouseState::Idle;
 
     palette = new Palette(PaletteType::MapEditor);
     menu_bar = new MenuBar(MenuBarType::MapEditor);
     tip = nullptr;
+    painter = new Painter();
     context_menu = nullptr;
     clipboard = new Clipboard();
 
@@ -193,7 +193,7 @@ void MapEditor() {
                         dialogs.pop_back();
                     }
                     else if (dial->state == FileDialogState::FileSelected) {
-                        dial->selectButton->state == ButtonState::Idle;
+                        dial->selectButton->state = ButtonState::Idle;
                         mapa->load(dial->getPathfile());
                         delete dial;
                         dialogs.pop_back();
@@ -232,8 +232,8 @@ void MapEditor() {
                         if (mouse_state == MouseState::MovingGameObjects) {
                             std::cout << "end of moving\n";
                         }
-                        else if (tool == toolType::AddGameObject) {
-                            addGameObjectsToMapAndLists(prefabsToPaint, false);
+                        else if (painter->tool == toolType::AddGameObject) {
+                            painter->addGameObjectsToMapAndLists(painter->prefabsToPaint, false);
                         }
                         else if (mouse_state == MouseState::Selecting) {
                             selectGameObjects();
@@ -254,7 +254,7 @@ void MapEditor() {
             }
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
-                if (tool == toolType::Cursor || tool == toolType::Rectangle || tool == toolType::Elipse) {
+                if (painter->tool == toolType::Cursor || painter->tool == toolType::Rectangle || painter->tool == toolType::Elipse) {
                     if (!GUIwasOpen && !GUIwasHover && !GUIwasClicked) {   // TO-DO - now not nowork
                         if (mouse_state == MouseState::Idle) {
 
@@ -342,9 +342,9 @@ void MapEditor() {
             if (!GUIwasHover && !GUIwasClicked) {
                 if (!(menu_bar->clickedMenuButton != nullptr && menu_bar->clickedMenuButton->isOpen)) {
                     if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                        if (prefabToPaint != nullptr) {
-                            if (tool == toolType::Brush || tool == toolType::RectBrush) {
-                                if (prefabToPaint->type == GameObjectType::Terrain || prefabToPaint->type == GameObjectType::Water)
+                        if (painter->prefabToPaint != nullptr) {
+                            if (painter->tool == toolType::Brush || painter->tool == toolType::RectBrush) {
+                                if (painter->prefabToPaint->type == GameObjectType::Terrain || painter->prefabToPaint->type == GameObjectType::Water)
                                     editTiles();
                             }
                         }
@@ -379,7 +379,7 @@ void MapEditor() {
         updateGameObjects();
         sortGameObjects();
 
-        painterUpdate();
+        painter->update();
 
         if (tip != nullptr)
             tip->update();
@@ -393,7 +393,7 @@ void MapEditor() {
         mapa->drawStatistics();
 
         drawGameObjects();
-        painterDraw();
+        painter->draw();
         palette->draw();
         menu_bar->draw();
 
@@ -417,7 +417,7 @@ void MapEditor() {
 
 void editTiles() {
 
-    for(auto& prefab : prefabsToPaint) {
+    for(auto& prefab : painter->prefabsToPaint) {
 
         if (prefab->_object->type == GameObjectType::Terrain) {
             
@@ -492,11 +492,11 @@ void MapEditorEventRightClick(sf::Event& event) {
         return;
     }
 
-    if (!prefabsToPaint.empty()) {
+    if (!painter->prefabsToPaint.empty()) {
         palette->unselectPaletteButton();
-        prefabToPaint = nullptr;
-        clearPrefabsToPaint();
-        tool = toolType::Cursor;
+        painter->prefabToPaint = nullptr;
+        painter->clear();
+        painter->tool = toolType::Cursor;
         return;
     }
 
