@@ -69,6 +69,8 @@
 #include "Platform/Clipboard.h"
 #include "Platform/ContextMenu.h"
 
+#include "Platform/Config.h"
+
 #include "Platform/ControlsPanel.h"
 #include "Platform/InventoryPanel.h"
 #include "Platform/TradePanel.h"

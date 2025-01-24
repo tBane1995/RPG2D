@@ -705,7 +705,7 @@ int main()
     
     // PROGRAMS
 	//game();
-    MapEditor();
+    Editor();
     //BuildingEditor();
     //MeshEditor();
 
