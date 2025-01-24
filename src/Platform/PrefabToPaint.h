@@ -40,6 +40,10 @@ public:
 
     ~Painter() { }
 
+    void setPrefabToPaint(GameObject* prefab) {
+        prefabToPaint = prefab;
+    }
+
     void setBrushSize(short size) {
         brushSize = size;
         brush = brushes[size];

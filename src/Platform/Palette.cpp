@@ -793,7 +793,7 @@ void Palette::loadPalette() {
             paletteButtons[i]->onclick_func = [this, button]() {
 
                 selectedPaletteButton = button;
-                painter->prefabToPaint = button->object;
+                painter->setPrefabToPaint(button->object);
 
                 if (button->object->type == GameObjectType::Terrain || button->object->type == GameObjectType::Floor || button->object->type == GameObjectType::Water) {
                     if (painter->tool == toolType::Cursor || painter->tool == toolType::AddGameObject) {
@@ -862,7 +862,7 @@ void Palette::createToolsButtons() {
     btnToolsCursor->onclick_func = [this]() {
         selectedToolButton = btnToolsCursor;
         painter->tool = toolType::Cursor;
-        painter->prefabToPaint = nullptr;
+        painter->setPrefabToPaint(nullptr);
         selectedPaletteButton = nullptr;
         };
 
@@ -905,7 +905,7 @@ void Palette::createToolsButtons() {
         if (selectedPaletteButton == nullptr)
             selectedPaletteButton = paletteButtons[1];
 
-        painter->prefabToPaint = selectedPaletteButton->object;
+        painter->setPrefabToPaint(selectedPaletteButton->object);
         };
 
 
@@ -958,7 +958,7 @@ void Palette::createToolsButtons() {
         painter->tool = toolType::Rectangle;
         if (painter->prefabToPaint == nullptr) {
             selectedPaletteButton = paletteButtons[1];
-            painter->prefabToPaint = selectedPaletteButton->object;
+            painter->setPrefabToPaint(selectedPaletteButton->object);
         }
         };
 
@@ -978,7 +978,7 @@ void Palette::createToolsButtons() {
         painter->tool = toolType::Elipse;
         if (painter->prefabToPaint == nullptr) {
             selectedPaletteButton = paletteButtons[1];
-            painter->prefabToPaint = selectedPaletteButton->object;
+            painter->setPrefabToPaint(selectedPaletteButton->object);
         }
         };
 
@@ -1091,7 +1091,7 @@ void Palette::createGroupButtons() {
     btnGroupTerrain->onclick_func = [this]() {
         selectedGroupButton = btnGroupTerrain;
         painter->tool = toolType::Cursor;
-        painter->prefabToPaint = nullptr;
+        painter->setPrefabToPaint(nullptr);
         selectedPaletteButton = nullptr;
         createPaletteButtons(5, 7);
         createNavButtons();
