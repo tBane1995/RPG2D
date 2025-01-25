@@ -56,6 +56,7 @@ public:
     ButtonWithText* newBuildingBtn;
     ButtonWithText* loadBuildingBtn;
     ButtonWithText* saveBuildingBtn;
+    ButtonWithText* closeBuildingBtn;
 
     OptionButton* bordersBtn;
     OptionButton* coordsBtn;

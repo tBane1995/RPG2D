@@ -55,7 +55,7 @@ public:
 };
 
 extern std::vector < Building* > buildings;
-extern Building* building;
+extern Building* building_to_edit;
 
 void addGameObjectsToMainLists();
 void deleteGameObjectsFromMainLists();

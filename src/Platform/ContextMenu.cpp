@@ -10,6 +10,7 @@
 #include "BuildingsManager.h"
 #include "Clipboard.h"
 #include "Monsters.h"
+#include "EditorStates.h"
 
 ContextMenu::ContextMenu(GameObject* object) {
 
@@ -117,6 +118,10 @@ void ContextMenu::loadBuildingMenu(GameObject* object) {
 
 	// TO-DO
 	ButtonWithTextAndIcon* btn_edit = new ButtonWithTextAndIcon(L"edit", getSingleTexture("GUI/context_menu/btn_edit"));
+	btn_edit->onclick_func = [this, building]() {
+		editor_state = EditorStates::BuildingEditorInit;
+		building_to_edit = building;
+		};
 
 	ButtonWithTextAndIcon* btn_copy = new ButtonWithTextAndIcon(L"copy", getSingleTexture("GUI/context_menu/btn_default"));
 	btn_copy->onclick_func = [this]() {

@@ -17,4 +17,7 @@ extern sf::Color textColor;
 
 extern float margin;
 
+extern sf::Color backgroundColor;	// color of outside map
+
+
 void initTheme();

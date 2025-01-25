@@ -12,6 +12,7 @@
 #include "GUI.h"
 #include "Mouse.h"
 #include "Buttons.h"
+#include "EditorStates.h"
 
 void OptionButton::update(bool hover_action) {
     ButtonWithText::update(hover_action);
@@ -196,6 +197,11 @@ void MenuBar::createButtons() {
     saveBuildingBtn->onclick_func = [this]() {
         // TO-DO
         saveBuildingToFile();
+        };
+
+    closeBuildingBtn = new ButtonWithText("Close Building");
+    closeBuildingBtn->onclick_func = [this]() {
+        editor_state = EditorStates::MapEditorInit;
         };
 
     bordersBtn = new OptionButton("Map Borders");
@@ -423,6 +429,7 @@ void MenuBar::createMenu() {
         menu[0]->addOption(newBuildingBtn);
         menu[0]->addOption(loadBuildingBtn);
         menu[0]->addOption(saveBuildingBtn);
+        menu[0]->addOption(closeBuildingBtn);
 
         menu[1]->addOption(collidersBtn);
 

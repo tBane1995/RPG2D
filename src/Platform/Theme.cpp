@@ -11,7 +11,11 @@ sf::Color panelColor_light;
 sf::Color panelColor_medium;
 sf::Color panelColor_dark;
 sf::Color textColor;
+
 float margin;
+
+sf::Color backgroundColor;
+
 
 void initTheme() {
 
@@ -29,4 +33,8 @@ void initTheme() {
 	textColor = sf::Color::White;
 
 	margin = 8;
+
+	backgroundColor = sf::Color(48, 48, 48);	// color of outside map
+
+
 }

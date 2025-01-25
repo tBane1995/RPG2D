@@ -62,6 +62,8 @@
 #include "Platform/Confirm.h"
 #include "Platform/CheckBox.h"
 
+#include "Platform/EditorStates.h"
+
 #include "Platform/Tips.h"
 #include "Platform/MenuBar.h"
 #include "Platform/Palette.h"

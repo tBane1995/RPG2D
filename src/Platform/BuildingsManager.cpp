@@ -922,23 +922,23 @@ void Building::draw() {
 }
 
 std::vector < Building* > buildings;
-Building* building = nullptr;
+Building* building_to_edit = nullptr;
 
 void addGameObjectsToMainLists() {
-    doors.push_back(building->_door);
-    gameObjects.push_back(building->_door);
+    doors.push_back(building_to_edit->_door);
+    gameObjects.push_back(building_to_edit->_door);
 
-    for (auto& item : building->_items) {
+    for (auto& item : building_to_edit->_items) {
         itemsOnMap.push_back(item);
         gameObjects.push_back(item);
     }
 
-    for (auto& furniture : building->_furnitures) {
+    for (auto& furniture : building_to_edit->_furnitures) {
         furnitures.push_back(furniture);
         gameObjects.push_back(furniture);
     }
 
-    for (auto& wall : building->_walls) {
+    for (auto& wall : building_to_edit->_walls) {
         walls.push_back(wall);
         gameObjects.push_back(wall);
     }
@@ -946,16 +946,16 @@ void addGameObjectsToMainLists() {
 
 void deleteGameObjectsFromMainLists() {
     // delete door
-    auto itd = std::find(doors.begin(), doors.end(), building->_door);
+    auto itd = std::find(doors.begin(), doors.end(), building_to_edit->_door);
     if (itd != doors.end())
         doors.erase(itd);
 
-    auto god = std::find(gameObjects.begin(), gameObjects.end(), building->_door);
+    auto god = std::find(gameObjects.begin(), gameObjects.end(), building_to_edit->_door);
     if (god != gameObjects.end())
         gameObjects.erase(god);
 
     // delete building _items
-    for (auto& item : building->_items) {
+    for (auto& item : building_to_edit->_items) {
         auto it = std::find(itemsOnMap.begin(), itemsOnMap.end(), item);
         if (it != itemsOnMap.end())
             itemsOnMap.erase(it);
@@ -966,7 +966,7 @@ void deleteGameObjectsFromMainLists() {
     }
 
     // delete building _furnitures
-    for (auto& furniture : building->_furnitures) {
+    for (auto& furniture : building_to_edit->_furnitures) {
         auto it = std::find(furnitures.begin(), furnitures.end(), furniture);
         if (it != furnitures.end())
             furnitures.erase(it);
@@ -977,7 +977,7 @@ void deleteGameObjectsFromMainLists() {
     }
 
     // delete building _walls
-    for (auto& wall : building->_walls) {
+    for (auto& wall : building_to_edit->_walls) {
         auto it = std::find(walls.begin(), walls.end(), wall);
         if (it != walls.end())
             walls.erase(it);
@@ -989,32 +989,32 @@ void deleteGameObjectsFromMainLists() {
 }
 
 void createNewBuilding() {
-    if (building) {
+    if (building_to_edit) {
         // TO-DO - chyba jeszcze powinno byc czyszczenie głównych list - zrobić test pamięci
-        delete building;
-        building = nullptr;
+        delete building_to_edit;
+        building_to_edit = nullptr;
     }
 
     clearAllMainListsOfGameObjects();
-    building = new Building(36, 40);
-    terrain = new Terrain(0, 0, building->size.x, building->size.y);
-    cam->setPosition(building->size.x * 16 / 2 + 160, building->size.y * 16 / 2);
+    building_to_edit = new Building(36, 40);
+    terrain = new Terrain(0, 0, building_to_edit->size.x, building_to_edit->size.y);
+    cam->setPosition(building_to_edit->size.x * 16 / 2 + 160, building_to_edit->size.y * 16 / 2);
 
 }
 
 void loadBuildingFromFile(std::string filename) {
-    if (building) {
+    if (building_to_edit) {
         deleteGameObjectsFromMainLists();   // TO-DO
-        delete building;
-        building = nullptr;
+        delete building_to_edit;
+        building_to_edit = nullptr;
     }
 
     clearAllMainListsOfGameObjects();
-    building = new Building(filename);
-    terrain = new Terrain(0, 0, building->size.x, building->size.y);
+    building_to_edit = new Building(filename);
+    terrain = new Terrain(0, 0, building_to_edit->size.x, building_to_edit->size.y);
     addGameObjectsToMainLists();    // TO-DO
 }
 
 void saveBuildingToFile(std::string filename) {
-    building->save(filename);
+    building_to_edit->save(filename);
 }
