@@ -368,7 +368,8 @@ void Editor() {
                 }
             } // events
 
-            // drawing a terrain
+            // UPDATE ////////////////////////////////////////////////////////////////////////
+            
             if (dialogs.empty()) {
                 if (!GUIwasHover && !GUIwasClicked) {
                     if (!(menu_bar->clickedMenuButton != nullptr && menu_bar->clickedMenuButton->isOpen)) {
@@ -380,16 +381,44 @@ void Editor() {
                                 }
                             }
                             else if (mouse_state == MouseState::MovingGameObjects) {
-                                for (auto& obj : selectedGameObjects)
+                                for (auto& obj : selectedGameObjects) {
+                                    Chunk* chunk;
+                                    sf::Vector2f pos;
+
+                                    (obj->_object->type == GameObjectType::Monster) ? pos = dynamic_cast<Monster*>(obj->_object)->base : pos = obj->_object->position;
+                                    chunk = mapa->getChunk(pos);
+
+                                    if (chunk != nullptr)
+                                        chunk->deleteGameObject(obj->_object);
+
+
                                     obj->update();
+                                    if (obj->_object->type == GameObjectType::Monster) {
+                                        Monster* m = dynamic_cast<Monster*>(obj->_object);
+                                        m->base = obj->_object->position;
+                                        m->state = unitStates::idle;
+                                        m->path.clear();    // TO-DO
+
+
+                                    }
+
+
+                                    (obj->_object->type == GameObjectType::Monster) ? pos = dynamic_cast<Monster*>(obj->_object)->base : pos = obj->_object->position;
+                                    chunk = mapa->getChunk(pos);
+
+                                    if (chunk != nullptr) {
+                                        std::cout << "new chunk is [" << chunk->coords.x << ", " << chunk->coords.y << "]\n";
+                                        chunk->addGameObject(obj->_object);
+                                    }
+                                    else
+                                        std::cout << "new chunk is nullptr\n";
+                                }
+
                             }
                         }
                     }
                 }
             }
-
-
-            // UPDATE ////////////////////////////////////////////////////////////////////////
             if (!dialogs.empty())
                 dialogs.back()->update();
 
@@ -621,6 +650,7 @@ void Editor() {
                                         obj->setOffset(offset);
                                     }
 
+                                    std::cout << "moving gameObjects\n";
                                     mouse_state = MouseState::MovingGameObjects;
                                 }
                                 else if (clipboard->_state == ClipboardState::Idle) {
@@ -667,6 +697,7 @@ void Editor() {
             } // events
 
             // UPDATE ////////////////////////////////////////////////////////////////////////
+
             if (!dialogs.empty())
                 dialogs.back()->update();
 

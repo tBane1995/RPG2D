@@ -306,6 +306,53 @@ void Chunk::removeGameObjectsFromMainLists()
     std::erase_if(gameObjects, [](const auto& go) { return !go->isInTheMainList; });
 }
 
+void Chunk::addGameObject(GameObject* object) {
+    if (object == nullptr)
+        return;
+
+    if (object->type == GameObjectType::Nature) {
+        _natures.push_back(dynamic_cast<Nature*>(object));
+    }
+
+    if (object->type == GameObjectType::Object) {
+        _objects.push_back(dynamic_cast<Object*>(object));
+    }
+
+    if (object->type == GameObjectType::Monster) {
+        _monsters.push_back(dynamic_cast<Monster*>(object));
+    }
+
+    if (object->type == GameObjectType::Character) {
+        _characters.push_back(dynamic_cast<Character*>(object));
+    }
+
+    if (object->type == GameObjectType::ItemOnMap) {
+        _items.push_back(dynamic_cast<ItemOnMap*>(object));
+    }
+
+    if (object->type == GameObjectType::InventoryOnMap) {
+        _inventories.push_back(dynamic_cast<InventoryOnMap*>(object));
+    }
+
+    if (object->type == GameObjectType::FlatObject) {
+        _flatObjects.push_back(dynamic_cast<FlatObject*>(object));
+    }
+
+    if (object->type == GameObjectType::SmallObject) {
+        _smallObjects.push_back(dynamic_cast<SmallObject*>(object));
+    }
+
+    if (object->type == GameObjectType::Door) {
+        _doors.push_back(dynamic_cast<Door*>(object));
+    }
+
+    if (object->type == GameObjectType::Furniture) {
+        furnitures.push_back(dynamic_cast<Furniture*>(object));
+    }
+
+
+}
+
 void Chunk::deleteGameObject(GameObject* object)
 {
     if (object == nullptr)

@@ -48,6 +48,7 @@ public:
 
     void addGameObjectsToMainLists();
     void removeGameObjectsFromMainLists();
+    void addGameObject(GameObject* object);
     void deleteGameObject(GameObject* object);
     void addBuildingToMainLists(Building* building);
     void removeBuildingFromMainLists(Building* building);

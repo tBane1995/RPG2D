@@ -161,6 +161,57 @@ GameObject* getNewGameObject(GameObject* object) {
     return nullptr;
 }
 
+void addGameObjectToMainLists(GameObject* object) {
+    if (object == nullptr)
+        return;
+
+    if (object->type == GameObjectType::Nature) {
+        natures.push_back(dynamic_cast<Nature*>(object));
+    }
+
+    if (object->type == GameObjectType::Object) {
+        objects.push_back(dynamic_cast<Object*>(object));
+    }
+
+    if (object->type == GameObjectType::Monster) {
+        monsters.push_back(dynamic_cast<Monster*>(object));
+    }
+
+    if (object->type == GameObjectType::Character) {
+        characters.push_back(dynamic_cast<Character*>(object));
+    }
+
+    if (object->type == GameObjectType::ItemOnMap) {
+        itemsOnMap.push_back(dynamic_cast<ItemOnMap*>(object));
+    }
+
+    if (object->type == GameObjectType::InventoryOnMap) {
+        inventoriesOnMap.push_back(dynamic_cast<InventoryOnMap*>(object));
+    }
+
+    if (object->type == GameObjectType::FlatObject) {
+        flatObjects.push_back(dynamic_cast<FlatObject*>(object));
+    }
+
+    if (object->type == GameObjectType::SmallObject) {
+        smallObjects.push_back(dynamic_cast<SmallObject*>(object));
+    }
+
+    if (object->type == GameObjectType::Door) {
+        doors.push_back(dynamic_cast<Door*>(object));
+    }
+
+    if (object->type == GameObjectType::Furniture) {
+        furnitures.push_back(dynamic_cast<Furniture*>(object));
+    }
+
+    if (object->type == GameObjectType::Wall) {
+        walls.push_back(dynamic_cast<Wall*>(object));
+    }
+
+    gameObjects.push_back(object);
+}
+
 void deleteGameObjectFromMainLists(GameObject* object) {
 
     if (object->type == GameObjectType::Nature) {

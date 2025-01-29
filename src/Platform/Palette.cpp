@@ -921,7 +921,7 @@ void Palette::createToolsButtons() {
 
     btnToolsIncrease->onclick_func = [this]() {
         if (selectedToolButton == btnToolsBrush || selectedToolButton == btnToolsRectBrush || selectedToolButton == btnToolsEraser) {
-            painter->increaseBrtush();
+            painter->increaseBrush();
         }
         };
 
