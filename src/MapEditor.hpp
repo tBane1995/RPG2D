@@ -108,6 +108,12 @@ void Editor() {
             clipboard = new Clipboard();
 
             mapa = new Mapa();
+            cam = new Camera();
+
+            buildings.push_back(new Building(building_to_edit->name));
+            buildings[0]->addGameObjectsToMainLists();
+                
+            cam->setPosition(buildings[0]->size.x * 16 / 2 + 160, buildings[0]->size.y * 16 / 2);;
 
             std::cout << "Building Editor run\n";
             editor_state = EditorStates::BuildingEditor;

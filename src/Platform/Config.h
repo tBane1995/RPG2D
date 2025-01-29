@@ -17,7 +17,7 @@
 #include "Furnitures.h"
 #include "Walls.h"
 #include "BuildingsManager.h"
-
+#include "Camera.h"
 
 class Config {
 public:
@@ -27,6 +27,7 @@ public:
     Clipboard* _clipboard;
     Mapa* _mapa;
     Painter* _painter;
+    Camera* _cam;
 
     std::vector < GameObject* > _gameObjects;
     std::vector < Nature* > _natures;

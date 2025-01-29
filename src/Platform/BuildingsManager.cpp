@@ -18,6 +18,8 @@
 #include <sstream>
 #include <fstream>
 #include "GUI.h"
+#include "Walls.h"
+#include "EditorStates.h"
 
 Building::Building(int width, int height) : GameObject("empty", 0, 0) {
 
@@ -85,6 +87,27 @@ void Building::mouseHovering() {
     else
         mouseIsHover = false;
 }
+
+void Building::addGameObjectsToMainLists() {
+    doors.push_back(_door);
+    gameObjects.push_back(_door);
+
+    for (auto& item : _items) {
+        itemsOnMap.push_back(item);
+        gameObjects.push_back(item);
+    }
+
+    for (auto& furniture : _furnitures) {
+        furnitures.push_back(furniture);
+        gameObjects.push_back(furniture);
+    }
+
+    for (auto& wall : _walls) {
+        walls.push_back(wall);
+        gameObjects.push_back(wall);
+    }
+}
+
 void Building::deleteGameObject(GameObject* object) {
 
     if (object == nullptr)
@@ -170,12 +193,12 @@ void Building::loadTexture() {
     sf::Image house_image;
     house_image.create(size.x * 16 + tile_width, (walls_height + size.x / 2.0f) * 16.0f + tiles_rows * tile_height + tile_height * 0.75f, sf::Color::Transparent);
 
-    sf::Image ImageMap = walls->texture->copyToImage();
+    sf::Image ImageMap = texture_walls->texture->copyToImage();
 
     // DRAWING A WALLS
     sf::Image walls_image;
     walls_image.create(32, 32, sf::Color::Transparent);
-    walls_image.copy(ImageMap, 0, 0, sf::IntRect(walls->GetTexturePosInMap().x, walls->GetTexturePosInMap().y, walls->getSize().x, walls->getSize().y));
+    walls_image.copy(ImageMap, 0, 0, sf::IntRect(texture_walls->GetTexturePosInMap().x, texture_walls->GetTexturePosInMap().y, texture_walls->getSize().x, texture_walls->getSize().y));
 
     for (short y = 2; y <= walls_height; y++) {
         for (short x = 0; x < size.x / 2; x++) {
@@ -185,7 +208,7 @@ void Building::loadTexture() {
 
     sf::Image bottom_walls_image;
     bottom_walls_image.create(32, 32, sf::Color::Transparent);
-    bottom_walls_image.copy(ImageMap, 0, 0, sf::IntRect(bottom_walls->GetTexturePosInMap().x, bottom_walls->GetTexturePosInMap().y, bottom_walls->getSize().x, bottom_walls->getSize().y));
+    bottom_walls_image.copy(ImageMap, 0, 0, sf::IntRect(texture_bottom_walls->GetTexturePosInMap().x, texture_bottom_walls->GetTexturePosInMap().y, texture_bottom_walls->getSize().x, texture_bottom_walls->getSize().y));
 
     for (short x = 0; x < size.x / 2; x++) {
         house_image.copy(bottom_walls_image, x * 2 * 16 + tile_width / 2.0f, house_image.getSize().y - 2 * 16);
@@ -194,7 +217,7 @@ void Building::loadTexture() {
     // top_walls
     sf::Image top_walls_image;
     top_walls_image.create(32, 32, sf::Color::Transparent);
-    top_walls_image.copy(ImageMap, 0, 0, sf::IntRect(top_walls->GetTexturePosInMap().x, top_walls->GetTexturePosInMap().y, top_walls->getSize().x, top_walls->getSize().y));
+    top_walls_image.copy(ImageMap, 0, 0, sf::IntRect(texture_top_walls->GetTexturePosInMap().x, texture_top_walls->GetTexturePosInMap().y, texture_top_walls->getSize().x, texture_top_walls->getSize().y));
 
     short width = size.x / 2;
     short start_x;
@@ -556,11 +579,11 @@ void Building::loadTexture() {
 
     // RENDER WINDOWS
     if ((size.x / 2 - 1) > 2 && (size.x / 4 - 1) % 2 == 1) {
-        if (windows != nullptr) {
-            sf::Texture win_tex = *windows->texture;
+        if (texture_windows != nullptr) {
+            sf::Texture win_tex = *texture_windows->texture;
             sf::Image window_image;
             window_image.create(32, 32, sf::Color::Transparent);
-            window_image.copy(ImageMap, 0, 0, sf::IntRect(windows->GetTexturePosInMap().x, windows->GetTexturePosInMap().y, windows->getSize().x, windows->getSize().y));
+            window_image.copy(ImageMap, 0, 0, sf::IntRect(texture_windows->GetTexturePosInMap().x, texture_windows->GetTexturePosInMap().y, texture_windows->getSize().x, texture_windows->getSize().y));
 
             short left_window_pos;
             short right_window_pos;
@@ -653,10 +676,10 @@ void Building::load(bool positioning) {
 
     floors = new Floors(position.x / 16 - size.x / 2, position.y / 16 - size.y, size.x, size.y);
     _door = new Door(getPrefab("doors/wooden_door"), position.x, position.y);
-    top_walls = getSingleTexture("walls/wooden_wall");
-    walls = getSingleTexture("walls/stone_wall");
-    bottom_walls = getSingleTexture("walls/stone_wall");
-    windows = nullptr;
+    texture_top_walls = getSingleTexture("walls/wooden_wall");
+    texture_walls = getSingleTexture("walls/stone_wall");
+    texture_bottom_walls = getSingleTexture("walls/stone_wall");
+    texture_windows = nullptr;
 
     while (std::getline(file, line)) {
 
@@ -715,7 +738,7 @@ void Building::load(bool positioning) {
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
-                top_walls = tex;
+                texture_top_walls = tex;
         }
 
         if (objectType == "walls") {
@@ -726,7 +749,7 @@ void Building::load(bool positioning) {
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
-                walls = tex;
+                texture_walls = tex;
         }
 
         if (objectType == "bottom_walls") {
@@ -737,7 +760,7 @@ void Building::load(bool positioning) {
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
-                bottom_walls = tex;
+                texture_bottom_walls = tex;
         }
 
         if (objectType == "windows") {
@@ -747,7 +770,7 @@ void Building::load(bool positioning) {
 
             SingleTexture* tex = getSingleTexture(objectName);
             if (tex != nullptr)
-                windows = tex;
+                texture_windows = tex;
 
         }
 
@@ -906,7 +929,10 @@ void Building::drawStatistics()
 void Building::draw() {
     bool show_outside_sprite = true;
 
-    if (player == nullptr && isSelected) {
+    if (editor_state == EditorStates::BuildingEditor) {
+        show_outside_sprite = false;
+    }
+    else if (player == nullptr && isSelected) {
         show_outside_sprite = false;
     }
     else if (player == nullptr && GUIwasOpen == false && GUIwasClicked == false && GUIwasHover == false && mouseIsHover) {

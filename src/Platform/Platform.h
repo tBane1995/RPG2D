@@ -19,6 +19,8 @@
 #include "Platform/GameStates.h"
 #include "Platform/RenderParameters.h"     // bools of the render value for example renderCoords, renderBorders
 
+#include "Platform/EditorStates.h"
+
 #include "Platform/GameObjects.h"
 #include "Platform/TerrainAndFloors.h"     // Terrain and Floors
 #include "Platform/Water.h"
@@ -61,8 +63,6 @@
 #include "Platform/FileDialog.h"
 #include "Platform/Confirm.h"
 #include "Platform/CheckBox.h"
-
-#include "Platform/EditorStates.h"
 
 #include "Platform/Tips.h"
 #include "Platform/MenuBar.h"

@@ -23,10 +23,10 @@ public:
     std::vector < Furniture* > _furnitures; // from furniture Manager
     std::vector < Wall* > _walls;           // from wall Manager
     
-    SingleTexture* top_walls = nullptr;
-    SingleTexture* walls = nullptr;
-    SingleTexture* bottom_walls = nullptr;
-    SingleTexture* windows = nullptr;
+    SingleTexture* texture_top_walls = nullptr;
+    SingleTexture* texture_walls = nullptr;
+    SingleTexture* texture_bottom_walls = nullptr;
+    SingleTexture* texture_windows = nullptr;
     Door* _door = nullptr;
     Floors* floors = nullptr;
 
@@ -41,6 +41,7 @@ public:
 
     void calculateCorners();
     void mouseHovering();
+    void addGameObjectsToMainLists();
     void deleteGameObject(GameObject* object);
     bool playerInside();
     bool isPart(GameObject* object);
