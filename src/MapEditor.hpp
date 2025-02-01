@@ -110,6 +110,8 @@ void Editor() {
             mapa = new Mapa();
             cam = new Camera();
 
+            unselectGameObjects();
+
             buildings.push_back(new Building(building_to_edit->name));
             buildings[0]->addGameObjectsToMainLists();
                 
@@ -595,7 +597,7 @@ void Editor() {
                                 std::cout << "end of moving\n";
                             }
                             else if (painter->tool == toolType::AddGameObject) {
-                                painter->addGameObjectsToMapAndLists(painter->prefabsToPaint, false);
+                                painter->addGameObjectsToBuildingAndLists(painter->prefabsToPaint, false);
                             }
                             else if (mouse_state == MouseState::Selecting) {
                                 selectGameObjects();
@@ -697,7 +699,37 @@ void Editor() {
             } // events
 
             // UPDATE ////////////////////////////////////////////////////////////////////////
+            // drawing a terrain
+            if (dialogs.empty()) {
+                if (!GUIwasHover && !GUIwasClicked) {
+                    if (!(menu_bar->clickedMenuButton != nullptr && menu_bar->clickedMenuButton->isOpen)) {
+                        if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                            if (painter->prefabToPaint != nullptr) {
+                                if (painter->tool == toolType::Brush || painter->tool == toolType::RectBrush) {
+                                    if (painter->prefabToPaint->type == GameObjectType::Terrain || painter->prefabToPaint->type == GameObjectType::Water) {
+                                        //editTiles();
+                                    }
 
+                                }
+                            }
+                            else if (mouse_state == MouseState::MovingGameObjects) {
+                                for (auto& obj : selectedGameObjects) {
+                                    sf::Vector2f pos;
+
+                                    obj->update();
+                                    if (obj->_object->type == GameObjectType::Monster) {
+                                        Monster* m = dynamic_cast<Monster*>(obj->_object);
+                                        m->base = obj->_object->position;
+                                        m->state = unitStates::idle;
+                                        m->path.clear();    // TO-DO
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
             if (!dialogs.empty())
                 dialogs.back()->update();
 

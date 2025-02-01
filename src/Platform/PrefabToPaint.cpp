@@ -347,6 +347,31 @@ void Painter::addGameObjectsToMapAndLists(std::vector <MouseMovedGameObject*>& p
     }
 }
 
+void Painter::addGameObjectsToBuildingAndLists(std::vector <MouseMovedGameObject*>& prefabsToPaint, bool selectGameObjects) {
+
+    if (selectGameObjects) {
+        unselectGameObjects();
+    }
+
+    sf::Vector2f pos;
+
+    for (auto& prefab : prefabsToPaint) {
+
+        GameObject* object = getNewGameObject(prefab->_object);
+        object->setPosition(prefab->_object->position);
+        std::cout << object->position.x << " " << object->position.y << "\n";
+
+
+        object->isInTheMainList = true;
+        if (selectGameObjects) {
+            object->isSelected = true;
+        }
+
+        building_to_edit->addGameObject(object);
+        addGameObjectToMainLists(object);
+
+    }
+}
 void Painter::update() {
 
     if (tool == toolType::Cursor && mouse_state == MouseState::Selecting) {

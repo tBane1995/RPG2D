@@ -41,14 +41,17 @@ public:
 
     void calculateCorners();
     void mouseHovering();
-    void addGameObjectsToMainLists();
+    void addGameObject(GameObject* object);
     void deleteGameObject(GameObject* object);
+    void addGameObjectsToMainLists();
+    //void deleteGameObjectsFromMainLists();
     bool playerInside();
     bool isPart(GameObject* object);
 
     void loadTexture();
     void load(bool positioning=false);
     void save(std::string filename);
+    void save();
 
     void update();
     void drawStatistics();
@@ -58,8 +61,4 @@ public:
 extern std::vector < Building* > buildings;
 extern Building* building_to_edit;
 
-void addGameObjectsToMainLists();
-void deleteGameObjectsFromMainLists();
 void createNewBuilding();
-void loadBuildingFromFile(std::string filename = "assets/buildings/test_building.building");
-void saveBuildingToFile(std::string filename = "assets/buildings/test_building.building");

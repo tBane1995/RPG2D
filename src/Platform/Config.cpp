@@ -13,7 +13,7 @@ void Config::save() {
     _palette = palette;
     _painter = painter;
     _clipboard = clipboard;
-    _mapa = mapa;
+    //_mapa = mapa;
     _cam = cam;
 
 
@@ -38,14 +38,14 @@ void Config::load() {
     delete palette;
     delete painter;
     delete clipboard;
-    delete mapa;
+    //delete mapa;
     delete cam;
 
     menu_bar = _menu_bar;
     palette = _palette;
     painter = _painter;
     clipboard = _clipboard;
-    mapa = _mapa;
+    //mapa = _mapa;
     cam = _cam;
 
     // TO-DO - must prev a delete

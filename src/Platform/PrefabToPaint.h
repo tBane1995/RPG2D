@@ -44,6 +44,7 @@ public:
     void generateElipse();
     void clear();
     void addGameObjectsToMapAndLists(std::vector <MouseMovedGameObject*>& prefabsToPaint, bool selectGameObjects);
+    void addGameObjectsToBuildingAndLists(std::vector <MouseMovedGameObject*>& prefabsToPaint, bool selectGameObjects);
     void update();
     void draw();
     

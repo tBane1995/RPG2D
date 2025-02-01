@@ -157,6 +157,16 @@ GameObject* getNewGameObject(GameObject* object) {
         Door* o = new Door(object, 0, 0);
         return o;
     }
+    else if (object->type == GameObjectType::Wall) {
+        Wall* o = new Wall(object, 0, 0);
+        return o;
+    }
+    else if (object->type == GameObjectType::Furniture) {
+        Furniture* o = new Furniture(object, 0, 0);
+        return o;
+    }
+
+
 
     return nullptr;
 }

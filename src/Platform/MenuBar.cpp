@@ -195,8 +195,7 @@ void MenuBar::createButtons() {
 
     saveBuildingBtn = new ButtonWithText("Save Building");
     saveBuildingBtn->onclick_func = [this]() {
-        // TO-DO
-        saveBuildingToFile();
+            building_to_edit->save();
         };
 
     closeBuildingBtn = new ButtonWithText("Close Building");

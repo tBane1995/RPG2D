@@ -39,7 +39,7 @@ Object::~Object() {
 }
 
 void Object::setPosition(sf::Vector2f position) {
-	this->position = position;
+	GameObject::setPosition(position);
 	sprite.setPosition(position);
 }
 

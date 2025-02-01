@@ -90,7 +90,7 @@ ItemOnMap::~ItemOnMap() {
 }
 
 void ItemOnMap::setPosition(sf::Vector2f position) {
-	this->position = position;
+	GameObject::setPosition(position);
 	sprite.setPosition(position);
 }
 
@@ -410,7 +410,7 @@ InventoryOnMap::InventoryOnMap(Inventory* inventory, float x, float y) : GameObj
 }
 
 void InventoryOnMap::setPosition(sf::Vector2f position) {
-	this->position = position;
+	GameObject::setPosition(position);
 	sprite.setPosition(position);
 }
 

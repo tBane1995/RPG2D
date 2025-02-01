@@ -88,6 +88,24 @@ void Building::mouseHovering() {
         mouseIsHover = false;
 }
 
+void Building::addGameObject(GameObject* object) {
+
+    if (object == nullptr)
+        return;
+
+    if (object->type == GameObjectType::Wall) {
+        _walls.push_back(dynamic_cast<Wall*>(object));
+    }
+
+    if (object->type == GameObjectType::Furniture) {
+        _furnitures.push_back(dynamic_cast<Furniture*>(object));
+    }
+
+    if (object->type == GameObjectType::ItemOnMap) {
+        _items.push_back(dynamic_cast<ItemOnMap*>(object));
+    }
+}
+
 void Building::addGameObjectsToMainLists() {
     doors.push_back(_door);
     gameObjects.push_back(_door);
@@ -860,6 +878,7 @@ void Building::load(bool positioning) {
 
     file.close();
 }
+
 void Building::save(std::string filename) {
     std::ofstream file(filename);
 
@@ -870,7 +889,11 @@ void Building::save(std::string filename) {
 
     file << "name \"testBuilding\"\n";
     file << "size " << std::to_string(floors->width) << " " << std::to_string(floors->height) << "\n";
-    file << "door \"door_0\"\n";
+    file << "door \"" << _door->name << "\"\n";
+    file << "top_walls \"" << texture_top_walls->name << "\"\n";
+    file << "walls \"" << texture_walls->name << "\"\n";
+    file << "bottom_walls \"" << texture_bottom_walls->name << "\"\n";
+    file << "windows \"" << texture_windows->name << "\"\n";
 
     file << "\n";
 
@@ -889,29 +912,49 @@ void Building::save(std::string filename) {
     // SAVE ITEMS
     if (_items.size() > 0)
         file << "// ITEMS\n";
-    for (auto& item : _items)
-        file << "Item " << char(34) << item->name << char(34) << " " << int(item->position.x) << " " << int(item->position.y) << "\n";
+    for (auto& item : _items) {
+        sf::Vector2i position;
+        position.x = int(item->position.x) + size.x / 2 * 16 + position.x;
+        position.y = int(item->position.y) + size.y * 16;
+        file << "Item " << char(34) << item->name << char(34) << " " << position.x << " " << position.y << "\n";
+    }
+
     if (_items.size() > 0)
         file << "\n";
 
 
     if (_furnitures.size() > 0)
         file << "// FURNITURES\n";
-    for (auto& furniture : _furnitures)
+    for (auto& furniture : _furnitures) {
+        sf::Vector2i position;
+        position.x = int(furniture->position.x) + size.x / 2 * 16 + position.x;
+        position.y = int(furniture->position.y) + size.y * 16;
         file << "Furniture " << char(34) << furniture->name << char(34) << " " << int(furniture->position.x) << " " << int(furniture->position.y) << "\n";
+
+    }
+
     if (_furnitures.size() > 0)
         file << "\n";
 
 
     if (_walls.size() > 0)
         file << "// WALLS\n";
-    for (auto& wall : _walls)
-        file << "Wall " << char(34) << wall->name << char(34) << " " << int(wall->position.x) << " " << int(wall->position.y) << "\n";
+    for (auto& wall : _walls) {
+        sf::Vector2i position;
+        position.x = int(wall->position.x) + size.x / 2 * 16 + position.x;
+        position.y = int(wall->position.y) + size.y * 16;
+        file << "Wall " << char(34) << wall->name << char(34) << " " << position.x << " " << position.y << "\n";
+    }
+
     if (_walls.size() > 0)
         file << "\n";
 
 
     file.close();
+}
+
+void Building::save() {
+    save(name);
 }
 
 void Building::update() {
@@ -950,70 +993,6 @@ void Building::draw() {
 std::vector < Building* > buildings;
 Building* building_to_edit = nullptr;
 
-void addGameObjectsToMainLists() {
-    doors.push_back(building_to_edit->_door);
-    gameObjects.push_back(building_to_edit->_door);
-
-    for (auto& item : building_to_edit->_items) {
-        itemsOnMap.push_back(item);
-        gameObjects.push_back(item);
-    }
-
-    for (auto& furniture : building_to_edit->_furnitures) {
-        furnitures.push_back(furniture);
-        gameObjects.push_back(furniture);
-    }
-
-    for (auto& wall : building_to_edit->_walls) {
-        walls.push_back(wall);
-        gameObjects.push_back(wall);
-    }
-}
-
-void deleteGameObjectsFromMainLists() {
-    // delete door
-    auto itd = std::find(doors.begin(), doors.end(), building_to_edit->_door);
-    if (itd != doors.end())
-        doors.erase(itd);
-
-    auto god = std::find(gameObjects.begin(), gameObjects.end(), building_to_edit->_door);
-    if (god != gameObjects.end())
-        gameObjects.erase(god);
-
-    // delete building _items
-    for (auto& item : building_to_edit->_items) {
-        auto it = std::find(itemsOnMap.begin(), itemsOnMap.end(), item);
-        if (it != itemsOnMap.end())
-            itemsOnMap.erase(it);
-
-        auto go = std::find(gameObjects.begin(), gameObjects.end(), item);
-        if (go != gameObjects.end())
-            gameObjects.erase(go);
-    }
-
-    // delete building _furnitures
-    for (auto& furniture : building_to_edit->_furnitures) {
-        auto it = std::find(furnitures.begin(), furnitures.end(), furniture);
-        if (it != furnitures.end())
-            furnitures.erase(it);
-
-        auto go = std::find(gameObjects.begin(), gameObjects.end(), furniture);
-        if (go != gameObjects.end())
-            gameObjects.erase(go);
-    }
-
-    // delete building _walls
-    for (auto& wall : building_to_edit->_walls) {
-        auto it = std::find(walls.begin(), walls.end(), wall);
-        if (it != walls.end())
-            walls.erase(it);
-
-        auto go = std::find(gameObjects.begin(), gameObjects.end(), wall);
-        if (go != gameObjects.end())
-            gameObjects.erase(go);
-    }
-}
-
 void createNewBuilding() {
     if (building_to_edit) {
         // TO-DO - chyba jeszcze powinno byc czyszczenie głównych list - zrobić test pamięci
@@ -1026,21 +1005,4 @@ void createNewBuilding() {
     terrain = new Terrain(0, 0, building_to_edit->size.x, building_to_edit->size.y);
     cam->setPosition(building_to_edit->size.x * 16 / 2 + 160, building_to_edit->size.y * 16 / 2);
 
-}
-
-void loadBuildingFromFile(std::string filename) {
-    if (building_to_edit) {
-        deleteGameObjectsFromMainLists();   // TO-DO
-        delete building_to_edit;
-        building_to_edit = nullptr;
-    }
-
-    clearAllMainListsOfGameObjects();
-    building_to_edit = new Building(filename);
-    terrain = new Terrain(0, 0, building_to_edit->size.x, building_to_edit->size.y);
-    addGameObjectsToMainLists();    // TO-DO
-}
-
-void saveBuildingToFile(std::string filename) {
-    building_to_edit->save(filename);
-}
+} 

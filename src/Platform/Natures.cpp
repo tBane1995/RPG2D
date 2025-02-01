@@ -30,7 +30,7 @@ Nature::~Nature() {
 }
 
 void Nature::setPosition(sf::Vector2f position) {
-	this->position = position;
+	GameObject::setPosition(position);
 	sprite.setPosition(position);
 }
 

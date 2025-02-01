@@ -30,12 +30,7 @@ public:
 	void open();
 	void close();
 	bool playerNextTo();
-
-	virtual void setPosition(sf::Vector2f position) override {
-		this->position = position;
-		sprite.setPosition(position);
-	}
-
+	virtual void setPosition(sf::Vector2f position) override;
 	virtual void update() override;
 	virtual void drawStatistics() override;
 	virtual void draw() override;

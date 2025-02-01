@@ -48,6 +48,12 @@ windows "buildings/parts/window"
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 
+// FURNITURES
+Furniture "furnitures/table_alchemist_2" -288 -1088
+Furniture "furnitures/table_alchemist_2" -208 -1008
+Furniture "furnitures/table_alchemist_2" 352 208
+Furniture "furnitures/bench" 288 288
+
 // WALLS
 Wall "walls/stone_wall" 336 624
 Wall "walls/stone_wall" 368 624

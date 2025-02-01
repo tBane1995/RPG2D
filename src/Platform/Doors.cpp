@@ -93,6 +93,11 @@ bool Door::playerNextTo() {
 		return false;
 }
 
+void Door::setPosition(sf::Vector2f position) {
+	GameObject::setPosition(position);
+	sprite.setPosition(position);
+}
+
 void Door::update() {
 
 	GameObject::update();

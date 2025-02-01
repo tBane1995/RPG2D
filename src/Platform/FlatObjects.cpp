@@ -29,7 +29,7 @@ FlatObject::~FlatObject() {
 }
 
 void FlatObject::setPosition(sf::Vector2f position) {
-	this->position = position;
+	GameObject::setPosition(position);
 	sprite.setPosition(position);
 }
 

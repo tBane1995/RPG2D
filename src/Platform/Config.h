@@ -25,7 +25,7 @@ public:
     MenuBar* _menu_bar;
     Palette* _palette;
     Clipboard* _clipboard;
-    Mapa* _mapa;
+    //Mapa* _mapa;
     Painter* _painter;
     Camera* _cam;
 
