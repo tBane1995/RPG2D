@@ -914,8 +914,8 @@ void Building::save(std::string filename) {
         file << "// ITEMS\n";
     for (auto& item : _items) {
         sf::Vector2i position;
-        position.x = int(item->position.x) + size.x / 2 * 16 + position.x;
-        position.y = int(item->position.y) + size.y * 16;
+        position.x = int(item->position.x) - int(this->position.x) + size.x / 2 * 16;
+        position.y = int(item->position.y) - int(this->position.y) + size.y * 16;
         file << "Item " << char(34) << item->name << char(34) << " " << position.x << " " << position.y << "\n";
     }
 
@@ -927,9 +927,9 @@ void Building::save(std::string filename) {
         file << "// FURNITURES\n";
     for (auto& furniture : _furnitures) {
         sf::Vector2i position;
-        position.x = int(furniture->position.x) + size.x / 2 * 16 + position.x;
-        position.y = int(furniture->position.y) + size.y * 16;
-        file << "Furniture " << char(34) << furniture->name << char(34) << " " << int(furniture->position.x) << " " << int(furniture->position.y) << "\n";
+        position.x = int(furniture->position.x) - int(this->position.x) + size.x / 2 * 16;
+        position.y = int(furniture->position.y) - int(this->position.y) + size.y * 16;
+        file << "Furniture " << char(34) << furniture->name << char(34) << " " << position.x << " " << position.y << "\n";
 
     }
 
@@ -941,8 +941,8 @@ void Building::save(std::string filename) {
         file << "// WALLS\n";
     for (auto& wall : _walls) {
         sf::Vector2i position;
-        position.x = int(wall->position.x) + size.x / 2 * 16 + position.x;
-        position.y = int(wall->position.y) + size.y * 16;
+        position.x = int(wall->position.x) - int(this->position.x) + size.x / 2 * 16;
+        position.y = int(wall->position.y) - int(this->position.y) + size.y * 16;
         file << "Wall " << char(34) << wall->name << char(34) << " " << position.x << " " << position.y << "\n";
     }
 

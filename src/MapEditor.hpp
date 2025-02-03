@@ -113,6 +113,8 @@ void Editor() {
             unselectGameObjects();
 
             buildings.push_back(new Building(building_to_edit->name));
+            delete building_to_edit;
+            building_to_edit = buildings[0];
             buildings[0]->addGameObjectsToMainLists();
                 
             cam->setPosition(buildings[0]->size.x * 16 / 2 + 160, buildings[0]->size.y * 16 / 2);;
