@@ -6,6 +6,7 @@
 
 void editTiles();
 void MapEditorEventRightClick(sf::Event& event);
+void BuildingEditorEventRightClick(sf::Event& event);
 
 void Editor() {
 
@@ -615,7 +616,7 @@ void Editor() {
                 }
                 else if (event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Right) {
 
-                    MapEditorEventRightClick(event);
+                    BuildingEditorEventRightClick(event);
                 }
                 else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
@@ -701,7 +702,6 @@ void Editor() {
             } // events
 
             // UPDATE ////////////////////////////////////////////////////////////////////////
-            // drawing a terrain
             if (dialogs.empty()) {
                 if (!GUIwasHover && !GUIwasClicked) {
                     if (!(menu_bar->clickedMenuButton != nullptr && menu_bar->clickedMenuButton->isOpen)) {
@@ -837,6 +837,55 @@ void MapEditorEventRightClick(sf::Event& event) {
             else {
                 clickedObject = go;
             }
+        }
+    }
+
+    if (clickedObject != nullptr) {
+        if (clickedObject->isSelected == false) {
+            clickedObject->isSelected = true;
+            unselectGameObjects();
+            selectedGameObjects.push_back(new MouseMovedGameObject(clickedObject));
+        }
+        context_menu = new ContextMenu(clickedObject);
+        return;
+    }
+
+    if (!selectedGameObjects.empty()) {
+
+        startMousePosition = mousePosition;
+        startWorldMousePosition = worldMousePosition;
+
+        mouseSelection();
+        selectGameObjects();
+        return;
+    }
+
+    if (!painter->prefabsToPaint.empty()) {
+        palette->unselectPaletteButton();
+        painter->setPrefabToPaint(nullptr);
+        painter->clear();
+        painter->tool = toolType::Cursor;
+        return;
+    }
+
+    if (context_menu != nullptr)
+        delete context_menu;
+
+    context_menu = new ContextMenu(nullptr);
+
+}
+
+void BuildingEditorEventRightClick(sf::Event& event) {
+
+    if (menu_bar->clickedMenuButton != nullptr && menu_bar->clickedMenuButton->isOpen) {
+        menu_bar->handleEvent(event);
+        return;
+    }
+
+    GameObject* clickedObject = nullptr;
+    for (auto& go : gameObjects) {
+        if (go->mouseIsHover) {
+            clickedObject = go;
         }
     }
 

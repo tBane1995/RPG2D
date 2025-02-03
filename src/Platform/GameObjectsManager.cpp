@@ -18,6 +18,7 @@
 #include "TerrainAndFloors.h"
 #include "Water.h"
 #include "MouseMovedGameObjects.h"
+#include "EditorStates.h"
 
 std::vector < MouseMovedGameObject* > selectedGameObjects;
 
@@ -57,6 +58,7 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
         unselectGameObjects();
 
     for (auto& go : gameObjects) {
+
         if (go->type == GameObjectType::Building) {
 
             float x = go->colliders[0]->position.x + go->colliders[0]->dx;
@@ -71,7 +73,7 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
             }
 
         }
-        else if (go->type != GameObjectType::Wall) {
+        else if ((go->type != GameObjectType::Wall && go->type != GameObjectType::Furniture) || editor_state == EditorStates::BuildingEditor) {
 
             for (auto& collider : go->colliders) {
                 if (collider->type == ColliderType::Rectangle) {
@@ -82,16 +84,14 @@ void selectGameObjects(float rect_x, float rect_y, float rect_w, float rect_h) {
                 else if (collider->type == ColliderType::Elipse) {
                     if (intersectionRectangleWithElipse(rect_x, rect_y, rect_w, rect_h, go->position.x + collider->dx, go->position.y + collider->dy, collider->width / 2, collider->length / 2)) {
                         go->isSelected = true;
-                        
                     }
                 }
-            }
 
-            if (go->isSelected) {
-                MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
-                selectedGameObjects.push_back(moved_object);
+                if (go->isSelected) {
+                    MouseMovedGameObject* moved_object = new MouseMovedGameObject(go);
+                    selectedGameObjects.push_back(moved_object);
+                }
             }
-
         }
 
     }

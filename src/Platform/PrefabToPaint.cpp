@@ -339,6 +339,7 @@ void Painter::addGameObjectsToMapAndLists(std::vector <MouseMovedGameObject*>& p
         object->isInTheMainList = true;
         if (selectGameObjects) {
             object->isSelected = true;
+            selectedGameObjects.push_back(new MouseMovedGameObject(object));
         }
 
         chunk->addGameObject(object);
@@ -365,10 +366,12 @@ void Painter::addGameObjectsToBuildingAndLists(std::vector <MouseMovedGameObject
         object->isInTheMainList = true;
         if (selectGameObjects) {
             object->isSelected = true;
+            selectedGameObjects.push_back(new MouseMovedGameObject(object));
         }
 
         building_to_edit->addGameObject(object);
         addGameObjectToMainLists(object);
+        std::cout << "add - position of wall: " << object->position.x << " " << object->position.y << "\n";
 
     }
 }
